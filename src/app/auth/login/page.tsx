@@ -25,8 +25,8 @@ function LoginForm() {
       <div className="w-full max-w-sm fade-up">
         <div className="text-center mb-7">
           <div className="flex items-center justify-center gap-3 mb-1">
-            <LottieSticker name="approved" size={56} />
-            <h1 className="display text-3xl">С возвращением</h1>
+            <LottieSticker name="approved" size={80} />
+            <h1 className="display text-4xl whitespace-nowrap">С возвращением</h1>
           </div>
           <p className="font-semibold text-ink/60">Войди в свой кабинет</p>
         </div>
