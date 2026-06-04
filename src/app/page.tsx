@@ -31,7 +31,7 @@ export default function LandingPage() {
       </nav>
 
       {/* Hero */}
-      <section className="relative max-w-7xl mx-auto px-4 md:px-5 pt-2 pb-10">
+      <section className="relative px-4 md:px-5 pt-2 pb-10">
         <div className="relative rounded-[2.5rem] overflow-hidden border-2 border-ink" style={{ minHeight: 'min(78vh, 720px)' }}>
           {/* Blue background */}
           <div
@@ -80,17 +80,16 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+      </div>{/* end Nav+Hero white block */}
 
       {/* Stats marquee */}
-      <div className="max-w-7xl w-full mx-auto">
-        <Marquee
-          bg="var(--yellow)"
-          items={['190+ СТРАН', '50+ VPN-СЕРВЕРОВ', '0 ₽ ЗА ОТКРЫТИЕ', 'VISA / MASTERCARD', 'АКТИВАЦИЯ ЗА 1 МИНУТУ']}
-        />
-      </div>
+      <Marquee
+        bg="var(--yellow)"
+        items={['190+ СТРАН', '50+ VPN-СЕРВЕРОВ', '0 ₽ ЗА ОТКРЫТИЕ', 'VISA / MASTERCARD', 'АКТИВАЦИЯ ЗА 1 МИНУТУ']}
+      />
 
       {/* Services */}
-      <section id="services" className="max-w-7xl w-full mx-auto rounded-xl px-5 md:px-12 py-16" style={{ background: 'var(--paper)' }}>
+      <section id="services" className="rounded-xl px-5 md:px-12 py-16" style={{ background: 'var(--paper)' }}>
         <h2 className="display text-5xl md:text-7xl text-center mb-4">Три сервиса.<br />Один кабинет.</h2>
         <p className="text-center text-lg font-semibold text-ink/60 mb-14">Управляй всем из одного места</p>
 
@@ -137,7 +136,7 @@ export default function LandingPage() {
       </section>
 
       {/* Pricing */}
-      <section id="pricing" className="max-w-7xl w-full mx-auto rounded-xl px-5 md:px-12 py-16" style={{ background: 'var(--cream)' }}>
+      <section id="pricing" className="rounded-xl px-5 md:px-12 py-16" style={{ background: 'var(--cream)' }}>
         <h2 className="display text-5xl md:text-7xl text-center mb-4">Простые тарифы</h2>
         <p className="text-center text-lg font-semibold text-ink/60 mb-14">Плати только за то, что используешь</p>
 
@@ -171,7 +170,7 @@ export default function LandingPage() {
       </section>
 
       {/* CTA */}
-      <section className="max-w-7xl w-full mx-auto rounded-xl text-center py-16 px-6" style={{ background: 'var(--green)' }}>
+      <section className="rounded-xl text-center py-16 px-6" style={{ background: 'var(--green)' }}>
         <div className="flex justify-center mb-4">
           <LottieSticker name="rocket" size={120} />
         </div>
@@ -181,7 +180,7 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="max-w-7xl w-full mx-auto rounded-xl" style={{ background: 'var(--paper)' }}>
+      <footer className="rounded-xl" style={{ background: 'var(--paper)' }}>
         <div className="px-5 md:px-8 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <Logo size="md" />
           <p className="text-sm font-semibold text-ink/60">© 2026 IMBA. Все права защищены.</p>
