@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     type: 'website',
     images: [
       {
-        url: '/opengraph-image.png',
+        url: 'https://imba-sitesynth.vercel.app/opengraph-image.png',
         width: 1200,
         height: 630,
         alt: 'IMBA — eSIM, VPN и виртуальная карта',
@@ -50,7 +50,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'IMBA — eSIM, VPN и виртуальная карта',
     description: 'Твой интернет без границ.',
-    images: ['/opengraph-image.png'],
+    images: ['https://imba-sitesynth.vercel.app/opengraph-image.png'],
   },
 }
 
