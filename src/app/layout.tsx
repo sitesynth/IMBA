@@ -24,6 +24,7 @@ const word = Archivo_Black({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://imba.live'),
   title: 'IMBA — eSIM, VPN и виртуальная карта',
   description: 'Твой интернет без границ. eSIM, VPN и виртуальная карта в одном приложении для граждан РФ.',
   icons: {
