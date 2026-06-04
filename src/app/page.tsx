@@ -58,11 +58,15 @@ export default function LandingPage() {
             </h1>
           </div>
 
-          {/* Lottie stickers — z-20 above logo, original positions */}
-          <LottieSticker name="keys"   size={132} className="sticker" style={{ zIndex: 20, top: '9%',   left: '6%',  ['--rot' as string]: '-12deg', animationDelay: '0s' }} />
-          <LottieSticker name="plane"  size={116} className="sticker" style={{ zIndex: 20, top: '16%',  right: '8%', ['--rot' as string]: '10deg',  animationDelay: '0.8s' }} />
-          <LottieSticker name="cards"  size={128} className="sticker" style={{ zIndex: 20, bottom: '12%', left: '10%', ['--rot' as string]: '8deg',  animationDelay: '1.4s' }} />
-          <LottieSticker name="lock"   size={116} className="sticker" style={{ zIndex: 20, bottom: '18%', right: '7%', ['--rot' as string]: '-8deg', animationDelay: '0.4s' }} />
+          {/* Lottie stickers */}
+          <LottieSticker name="keys"   size={88}  className="sticker md:hidden" style={{ zIndex: 20, top: '6%',    left: '4%',  ['--rot' as string]: '-12deg', animationDelay: '0s' }} />
+          <LottieSticker name="plane"  size={76}  className="sticker md:hidden" style={{ zIndex: 20, top: '6%',    right: '4%', ['--rot' as string]: '10deg',  animationDelay: '0.8s' }} />
+          <LottieSticker name="cards"  size={88}  className="sticker md:hidden" style={{ zIndex: 20, bottom: '6%', left: '4%',  ['--rot' as string]: '8deg',   animationDelay: '1.4s' }} />
+          <LottieSticker name="lock"   size={76}  className="sticker md:hidden" style={{ zIndex: 20, bottom: '6%', right: '4%', ['--rot' as string]: '-8deg',  animationDelay: '0.4s' }} />
+          <LottieSticker name="keys"   size={132} className="sticker hidden md:block" style={{ zIndex: 20, top: '9%',    left: '6%',  ['--rot' as string]: '-12deg', animationDelay: '0s' }} />
+          <LottieSticker name="plane"  size={116} className="sticker hidden md:block" style={{ zIndex: 20, top: '16%',   right: '8%', ['--rot' as string]: '10deg',  animationDelay: '0.8s' }} />
+          <LottieSticker name="cards"  size={128} className="sticker hidden md:block" style={{ zIndex: 20, bottom: '12%', left: '10%', ['--rot' as string]: '8deg',  animationDelay: '1.4s' }} />
+          <LottieSticker name="lock"   size={116} className="sticker hidden md:block" style={{ zIndex: 20, bottom: '18%', right: '7%', ['--rot' as string]: '-8deg', animationDelay: '0.4s' }} />
         </div>
 
         {/* Subhead + CTA below blob */}
