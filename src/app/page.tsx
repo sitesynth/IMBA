@@ -147,24 +147,24 @@ export default function LandingPage() {
       </section>
 
       {/* Pricing */}
-      <section id="pricing" className="rounded-xl px-5 md:px-12 py-16" style={{ background: 'var(--cream)' }}>
-        <h2 className="display text-5xl md:text-7xl text-center mb-4">Простые тарифы</h2>
-        <p className="text-center text-lg font-semibold text-ink/60 mb-14">Плати только за то, что используешь</p>
+      <section id="pricing" className="rounded-xl px-4 md:px-12 py-10 md:py-16" style={{ background: 'var(--cream)' }}>
+        <h2 className="display text-3xl md:text-7xl text-center mb-3 md:mb-4">Простые тарифы</h2>
+        <p className="text-center text-sm md:text-lg font-semibold text-ink/60 mb-8 md:mb-14">Плати только за то, что используешь</p>
 
-        <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        <div className="grid md:grid-cols-3 gap-4 md:gap-6 max-w-6xl mx-auto">
           {[
             { name: 'Старт', price: 'Бесплатно', bg: 'var(--paper)', feats: ['1 eSIM профиль', 'VPN базовый (5 серверов)', '1 виртуальная карта'], cta: 'Начать' },
             { name: 'Про', price: '$9.99/мес', bg: 'var(--yellow)', hot: true, feats: ['5 eSIM профилей', 'VPN Pro (50+ серверов)', '3 виртуальные карты', 'Приоритетная поддержка'], cta: 'Подключить Про' },
             { name: 'Бизнес', price: '$24.99/мес', bg: 'var(--violet-100)', feats: ['Безлимит eSIM', 'VPN безлимит', '10 виртуальных карт', 'API доступ'], cta: 'Связаться' },
           ].map((p) => (
-            <div key={p.name} className="panel relative flex flex-col" style={{ background: p.bg }}>
+            <div key={p.name} className="panel relative flex flex-col p-5 md:p-7" style={{ background: p.bg }}>
               {p.hot && (
                 <span className="chip bg-ink absolute -top-3.5 left-1/2 -translate-x-1/2" style={{ color: '#fff' }}>
                   🔥 Популярный
                 </span>
               )}
-              <div className="display text-xl mb-2">{p.name}</div>
-              <div className="display text-4xl mb-6">{p.price}</div>
+              <div className="display text-lg md:text-xl mb-1 md:mb-2">{p.name}</div>
+              <div className="display text-2xl md:text-4xl mb-4 md:mb-6">{p.price}</div>
               <ul className="space-y-2.5 font-semibold text-sm mb-7 flex-1">
                 {p.feats.map((f) => (
                   <li key={f} className="flex items-center gap-2">
@@ -181,9 +181,9 @@ export default function LandingPage() {
       </section>
 
       {/* FAQ */}
-      <section id="faq" className="rounded-xl px-5 md:px-12 py-16" style={{ background: 'var(--blue-100)' }}>
-        <h2 className="display text-5xl md:text-7xl text-center mb-2">Вопросы?</h2>
-        <p className="text-center font-semibold text-ink/60 mb-12 text-lg">Ответы на всё что тебя беспокоит</p>
+      <section id="faq" className="rounded-xl px-4 md:px-12 py-10 md:py-16" style={{ background: 'var(--blue-100)' }}>
+        <h2 className="display text-3xl md:text-7xl text-center mb-2">Вопросы?</h2>
+        <p className="text-center font-semibold text-ink/60 mb-8 md:mb-12 text-sm md:text-lg">Ответы на всё что тебя беспокоит</p>
 
         <div className="max-w-3xl mx-auto space-y-3">
           {[
@@ -194,11 +194,11 @@ export default function LandingPage() {
             { q: 'Мои данные в безопасности?', a: 'Мы не храним логи. VPN работает по принципу zero-knowledge — мы физически не можем узнать что ты делал в сети.', color: 'var(--violet-100)' },
           ].map((item, i) => (
             <details key={i} className="group rounded-2xl border-2 border-ink overflow-hidden" style={{ background: item.color }}>
-              <summary className="flex items-center justify-between px-6 py-5 cursor-pointer select-none list-none">
-                <span className="display text-lg md:text-xl">{item.q}</span>
-                <span className="text-2xl font-black transition-transform duration-300 group-open:rotate-45 flex-shrink-0 ml-4">+</span>
+              <summary className="flex items-center justify-between px-4 md:px-6 py-4 md:py-5 cursor-pointer select-none list-none">
+                <span className="display text-sm md:text-xl" style={{ textWrap: 'wrap' }}>{item.q}</span>
+                <span className="text-xl md:text-2xl font-black transition-transform duration-300 group-open:rotate-45 flex-shrink-0 ml-3">+</span>
               </summary>
-              <div className="px-6 pb-6 font-semibold text-ink/75 leading-relaxed">
+              <div className="px-4 md:px-6 pb-4 md:pb-6 font-semibold text-ink/75 leading-relaxed text-sm md:text-base">
                 {item.a}
               </div>
             </details>
