@@ -17,14 +17,14 @@ export default function LandingPage() {
 
       {/* Nav + Hero combined white block */}
       <div className="rounded-xl overflow-hidden" style={{ background: 'var(--paper)' }}>
-      <nav className="flex items-center justify-between px-5 md:px-8 py-4 max-w-7xl mx-auto">
+      <nav className="grid grid-cols-3 items-center px-5 md:px-8 py-4 max-w-7xl mx-auto">
         <Logo size="lg" />
-        <div className="hidden md:flex items-center gap-7 text-sm uppercase" style={{ fontFamily: 'var(--font-display), Impact, sans-serif', fontWeight: 900, letterSpacing: '-0.01em' }}>
+        <div className="hidden md:flex items-center justify-center gap-7 text-sm uppercase" style={{ fontFamily: 'var(--font-display), Impact, sans-serif', fontWeight: 900, letterSpacing: '-0.01em' }}>
           <a href="#services" className="hover:opacity-60 transition-opacity">Сервисы</a>
           <a href="#pricing" className="hover:opacity-60 transition-opacity">Тарифы</a>
           <a href="#faq" className="hover:opacity-60 transition-opacity">Вопросы</a>
         </div>
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center justify-end gap-2.5">
           <Link href="/auth/login" className="pill pill-paper pill-sm">Войти</Link>
           <Link href="/auth/register" className="pill pill-ink pill-sm">Открыть IMBA</Link>
         </div>
