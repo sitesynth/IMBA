@@ -118,28 +118,22 @@ export default function LandingPage() {
               points: ['Visa / Mastercard', 'USD / EUR / AED', 'Моментальный выпуск'],
             },
           ].map((s) => (
-            <div key={s.tag} className="panel flex flex-col md:flex-row md:items-stretch gap-4 md:gap-5" style={{ background: s.bg }}>
-              <div className="flex items-center gap-3 md:hidden">
-                <LottieSticker name={s.lottie} size={56} />
-                <div>
-                  <span className="chip bg-paper w-fit mb-1">{s.tag}</span>
-                  <h3 className="display text-xl">{s.title}</h3>
-                </div>
-              </div>
+            <div key={s.tag} className="panel flex items-stretch gap-4 md:gap-5 p-4 md:p-7" style={{ background: s.bg }}>
               <div className="flex-1 flex flex-col">
-                <span className="chip bg-paper mb-4 w-fit hidden md:inline-flex">{s.tag}</span>
-                <h3 className="display text-2xl mb-3 hidden md:block">{s.title}</h3>
-                <p className="font-medium text-ink/75 mb-4 leading-relaxed text-sm">{s.desc}</p>
-                <ul className="space-y-2 font-bold text-sm mt-auto">
+                <span className="chip bg-paper mb-3 md:mb-4 w-fit">{s.tag}</span>
+                <h3 className="display text-lg md:text-2xl mb-2 md:mb-3">{s.title}</h3>
+                <p className="font-medium text-ink/75 mb-3 md:mb-4 leading-relaxed text-xs md:text-sm">{s.desc}</p>
+                <ul className="space-y-1.5 md:space-y-2 font-bold text-xs md:text-sm mt-auto">
                   {s.points.map((p) => (
                     <li key={p} className="flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-ink" /> {p}
+                      <span className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-ink" /> {p}
                     </li>
                   ))}
                 </ul>
               </div>
-              <div className="hidden md:flex items-center">
-                <LottieSticker name={s.lottie} size={140} />
+              <div className="flex items-center">
+                <LottieSticker name={s.lottie} size={72} className="md:hidden" />
+                <LottieSticker name={s.lottie} size={140} className="hidden md:block" />
               </div>
             </div>
           ))}

@@ -47,7 +47,7 @@ export function LottieSticker({
 
   return (
     <div className={className} style={{ width: size, height: size, ...style }}>
-      <Lottie animationData={data} loop={loop} autoplay={!reduce.current} />
+      <Lottie animationData={data} loop={loop} autoplay />
     </div>
   )
 }
