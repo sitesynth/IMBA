@@ -112,18 +112,22 @@ export default function LandingPage() {
               points: ['Visa / Mastercard', 'USD / EUR / AED', 'Моментальный выпуск'],
             },
           ].map((s) => (
-            <div key={s.tag} className="panel" style={{ background: s.bg }}>
-              <LottieSticker name={s.lottie} size={72} className="mb-4 -ml-1" />
-              <span className="chip bg-paper mb-4">{s.tag}</span>
-              <h3 className="display text-2xl mb-3 mt-3">{s.title}</h3>
-              <p className="font-medium text-ink/75 mb-5 leading-relaxed">{s.desc}</p>
-              <ul className="space-y-2 font-bold text-sm">
-                {s.points.map((p) => (
-                  <li key={p} className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-ink" /> {p}
-                  </li>
-                ))}
-              </ul>
+            <div key={s.tag} className="panel flex items-stretch gap-5" style={{ background: s.bg }}>
+              <div className="flex-1 flex flex-col">
+                <span className="chip bg-paper mb-4 w-fit">{s.tag}</span>
+                <h3 className="display text-2xl mb-3">{s.title}</h3>
+                <p className="font-medium text-ink/75 mb-4 leading-relaxed text-sm">{s.desc}</p>
+                <ul className="space-y-2 font-bold text-sm mt-auto">
+                  {s.points.map((p) => (
+                    <li key={p} className="flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-ink" /> {p}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="flex items-center">
+                <LottieSticker name={s.lottie} size={140} />
+              </div>
             </div>
           ))}
         </div>
