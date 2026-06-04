@@ -1,6 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
-  <rect width="32" height="32" rx="7" fill="#111111"/>
-  <rect x="2" y="2" width="28" height="28" rx="5.5" fill="#FFD731"/>
-  <rect x="2" y="2" width="28" height="28" rx="5.5" fill="none" stroke="#111111" stroke-width="2"/>
-  <text x="16" y="24" font-family="Arial Black, Impact, sans-serif" font-weight="900" font-size="22" text-anchor="middle" fill="#111111">I</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <!-- Yellow background -->
+  <rect width="128" height="128" rx="28" fill="#FFD731"/>
+  <!-- Black border -->
+  <rect x="4" y="4" width="120" height="120" rx="24" fill="none" stroke="#111111" stroke-width="8"/>
+  <!-- Bold I letter -->
+  <text x="64" y="95" font-family="Arial, sans-serif" font-weight="900" font-size="96" text-anchor="middle" fill="#111111">I</text>
 </svg>

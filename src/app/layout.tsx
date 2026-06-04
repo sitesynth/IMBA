@@ -37,11 +37,20 @@ export const metadata: Metadata = {
     siteName: 'IMBA',
     locale: 'ru_RU',
     type: 'website',
+    images: [
+      {
+        url: '/opengraph-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'IMBA — eSIM, VPN и виртуальная карта',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'IMBA — eSIM, VPN и виртуальная карта',
     description: 'Твой интернет без границ.',
+    images: ['/opengraph-image.png'],
   },
 }
 
