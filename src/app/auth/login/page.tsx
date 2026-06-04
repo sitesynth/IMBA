@@ -24,6 +24,7 @@ function LoginForm() {
     <div className="min-h-screen flex items-center justify-center px-4 py-10">
       <div className="w-full max-w-sm fade-up">
         <div className="text-center mb-7">
+          <div className="flex justify-center mb-5"><Logo size="lg" /></div>
           <div className="flex items-center justify-center gap-3 mb-1">
             <LottieSticker name="approved" size={80} />
             <h1 className="display text-4xl whitespace-nowrap">С возвращением</h1>
