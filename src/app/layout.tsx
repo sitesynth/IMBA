@@ -26,6 +26,23 @@ const word = Archivo_Black({
 export const metadata: Metadata = {
   title: 'IMBA — eSIM, VPN и виртуальная карта',
   description: 'Твой интернет без границ. eSIM, VPN и виртуальная карта в одном приложении для граждан РФ.',
+  icons: {
+    icon: '/favicon.svg',
+    shortcut: '/favicon.svg',
+    apple: '/favicon.svg',
+  },
+  openGraph: {
+    title: 'IMBA — eSIM, VPN и виртуальная карта',
+    description: 'Твой интернет без границ. eSIM, VPN и виртуальная карта.',
+    siteName: 'IMBA',
+    locale: 'ru_RU',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'IMBA — eSIM, VPN и виртуальная карта',
+    description: 'Твой интернет без границ.',
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
