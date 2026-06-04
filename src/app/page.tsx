@@ -18,7 +18,7 @@ export default function LandingPage() {
       {/* Nav */}
       <nav className="flex items-center justify-between px-5 md:px-8 py-4 max-w-7xl mx-auto">
         <Logo size="lg" />
-        <div className="hidden md:flex items-center gap-7 text-sm font-black uppercase tracking-tight">
+        <div className="hidden md:flex items-center gap-7 text-sm uppercase" style={{ fontFamily: 'var(--font-display), Impact, sans-serif', fontWeight: 900, letterSpacing: '-0.01em' }}>
           <a href="#services" className="hover:opacity-60 transition-opacity">Сервисы</a>
           <a href="#pricing" className="hover:opacity-60 transition-opacity">Тарифы</a>
           <a href="#faq" className="hover:opacity-60 transition-opacity">Вопросы</a>
