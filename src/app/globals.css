@@ -155,7 +155,9 @@ body {
   flex-wrap: nowrap;
   width: max-content;
   align-items: center;
+  -webkit-animation: marquee 30s linear infinite;
   animation: marquee 30s linear infinite;
+  -webkit-transform: translateZ(0);
   will-change: transform;
 }
 .marquee__item {
@@ -205,8 +207,6 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink) !important
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .marquee__track { animation: none; }
-  .sticker { animation: none; }
   .fade-up { animation: none; }
   html { scroll-behavior: auto; }
 }
