@@ -27,9 +27,9 @@ export const metadata: Metadata = {
   title: 'IMBA — eSIM, VPN и виртуальная карта',
   description: 'Твой интернет без границ. eSIM, VPN и виртуальная карта в одном приложении для граждан РФ.',
   icons: {
-    icon: '/favicon.svg',
-    shortcut: '/favicon.svg',
-    apple: '/favicon.svg',
+    icon: '/favicon.ico',
+    shortcut: '/favicon.ico',
+    apple: '/favicon.png',
   },
   openGraph: {
     title: 'IMBA — eSIM, VPN и виртуальная карта',
@@ -57,6 +57,11 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ru" className={`h-full ${display.variable} ${sans.variable} ${word.variable}`}>
+      <head>
+        <link rel="icon" href="/favicon.ico" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" href="/favicon.png" />
+      </head>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   )
