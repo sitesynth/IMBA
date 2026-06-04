@@ -25,8 +25,8 @@ const word = Archivo_Black({
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://imba.live'),
-  title: 'IMBA — eSIM, VPN и виртуальная карта',
-  description: 'Твой интернет без границ. eSIM, VPN и виртуальная карта в одном приложении для граждан РФ.',
+  title: 'IMBA — eSIM, VPN и виртуальная карта для граждан России',
+  description: 'Купи eSIM для 190+ стран, подключи VPN без логов на протоколе WireGuard и получи виртуальную Visa/Mastercard для оплаты зарубежных сервисов. Всё в одном кабинете.',
   icons: {
     icon: '/favicon.ico',
     shortcut: '/favicon.ico',
@@ -34,13 +34,13 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: 'IMBA — eSIM, VPN и виртуальная карта',
-    description: 'Твой интернет без границ. eSIM, VPN и виртуальная карта.',
+    description: 'eSIM для 190+ стран, VPN без логов и виртуальная Visa/Mastercard. Без границ.',
     siteName: 'IMBA',
     locale: 'ru_RU',
     type: 'website',
     images: [
       {
-        url: 'https://imba-sitesynth.vercel.app/opengraph-image.png',
+        url: 'https://imba-sitesynth.vercel.app/og-image.png',
         width: 1200,
         height: 630,
         alt: 'IMBA — eSIM, VPN и виртуальная карта',
@@ -51,7 +51,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'IMBA — eSIM, VPN и виртуальная карта',
     description: 'Твой интернет без границ.',
-    images: ['https://imba-sitesynth.vercel.app/opengraph-image.png'],
+    images: ['https://imba-sitesynth.vercel.app/og-image.png'],
   },
 }
 
