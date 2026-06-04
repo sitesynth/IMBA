@@ -27,7 +27,7 @@ function LoginForm() {
           <div className="flex justify-center mb-5"><Logo size="lg" /></div>
           <div className="flex items-center justify-center gap-3 mb-1">
             <LottieSticker name="approved" size={80} />
-            <h1 className="display text-4xl whitespace-nowrap">С возвращением</h1>
+            <h1 className="display text-4xl" style={{ whiteSpace: 'nowrap', textWrap: 'nowrap' }}>С возвращением</h1>
           </div>
           <p className="font-semibold text-ink/60">Войди в свой кабинет</p>
         </div>
