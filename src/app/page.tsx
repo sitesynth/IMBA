@@ -140,7 +140,7 @@ export default function LandingPage() {
             { name: 'Про', price: '$9.99/мес', bg: 'var(--yellow)', hot: true, feats: ['5 eSIM профилей', 'VPN Pro (50+ серверов)', '3 виртуальные карты', 'Приоритетная поддержка'], cta: 'Подключить Про' },
             { name: 'Бизнес', price: '$24.99/мес', bg: 'var(--violet-100)', feats: ['Безлимит eSIM', 'VPN безлимит', '10 виртуальных карт', 'API доступ'], cta: 'Связаться' },
           ].map((p) => (
-            <div key={p.name} className="panel relative" style={{ background: p.bg }}>
+            <div key={p.name} className="panel relative flex flex-col" style={{ background: p.bg }}>
               {p.hot && (
                 <span className="chip bg-ink absolute -top-3.5 left-1/2 -translate-x-1/2" style={{ color: '#fff' }}>
                   🔥 Популярный
@@ -148,7 +148,7 @@ export default function LandingPage() {
               )}
               <div className="display text-xl mb-2">{p.name}</div>
               <div className="display text-4xl mb-6">{p.price}</div>
-              <ul className="space-y-2.5 font-semibold text-sm mb-7">
+              <ul className="space-y-2.5 font-semibold text-sm mb-7 flex-1">
                 {p.feats.map((f) => (
                   <li key={f} className="flex items-center gap-2">
                     <span className="w-2 h-2 rounded-full bg-ink" /> {f}
