@@ -87,12 +87,11 @@ export default function LandingPage() {
       />
 
       {/* Services */}
-      <section id="services" className="max-w-7xl mx-auto px-5 md:px-8 py-16">
-        <div className="rounded-[2.5rem] border-2 border-ink p-14" style={{ boxShadow: '8px 8px 0 0 var(--ink)' }}>
-          <h2 className="display text-5xl md:text-7xl text-center mb-4">Три сервиса.<br />Один кабинет.</h2>
-          <p className="text-center text-lg font-semibold text-ink/60 mb-14">Управляй всем из одного места</p>
+      <section id="services" className="max-w-7xl mx-auto px-5 md:px-8 py-20">
+        <h2 className="display text-5xl md:text-7xl text-center mb-4">Три сервиса.<br />Один кабинет.</h2>
+        <p className="text-center text-lg font-semibold text-ink/60 mb-14">Управляй всем из одного места</p>
 
-          <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-3 gap-6">
           {[
             {
               lottie: 'plane', tag: 'eSIM', bg: 'var(--violet-100)',
@@ -131,13 +130,11 @@ export default function LandingPage() {
               </div>
             </div>
           ))}
-          </div>
         </div>
       </section>
 
       {/* Pricing */}
-      <section id="pricing" className="max-w-7xl mx-auto px-5 md:px-8 py-16">
-        <div className="rounded-[2.5rem] border-2 border-ink p-14" style={{ boxShadow: '8px 8px 0 0 var(--ink)' }}>
+      <section id="pricing" className="max-w-7xl mx-auto px-5 md:px-8 py-20">
         <h2 className="display text-5xl md:text-7xl text-center mb-4">Простые тарифы</h2>
         <p className="text-center text-lg font-semibold text-ink/60 mb-14">Плати только за то, что используешь</p>
 
@@ -168,12 +165,11 @@ export default function LandingPage() {
             </div>
           ))}
         </div>
-        </div>
       </section>
 
       {/* CTA */}
-      <section className="max-w-7xl mx-auto px-5 md:px-8 py-16">
-        <div className="rounded-[2.5rem] border-2 border-ink p-14 text-center" style={{ background: 'var(--green)', boxShadow: '8px 8px 0 0 var(--ink)' }}>
+      <section className="max-w-7xl mx-auto px-5 md:px-8 py-20">
+        <div className="panel text-center py-16 px-6" style={{ background: 'var(--green)' }}>
           <div className="text-5xl mb-4">🚀</div>
           <h2 className="display text-4xl md:text-6xl mb-4">Готов начать?</h2>
           <p className="font-semibold text-lg text-ink/70 mb-8">Регистрация за минуту. Без привязки карты.</p>
@@ -182,7 +178,6 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <div className="h-8" />
       <footer className="border-t-2 border-ink">
         <div className="max-w-7xl mx-auto px-5 md:px-8 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <Logo size="md" />
