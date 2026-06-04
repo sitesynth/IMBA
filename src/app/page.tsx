@@ -8,14 +8,15 @@ import { SkyBackground } from '@/components/SkyBackground'
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen">
-      {/* Top ticker */}
+    <div className="min-h-screen flex flex-col gap-1.5" style={{ background: 'var(--ink)', padding: '5px' }}>
+      {/* Top ticker — full width, no rounding */}
       <Marquee
         bg="var(--violet-100)"
         items={['eSIM В 190 СТРАНАХ', 'VPN БЕЗ ЛОГОВ', 'ВИРТУАЛЬНАЯ КАРТА', 'ОПЛАТА ВЕЗДЕ', 'БЕЗ ГРАНИЦ']}
       />
 
-      {/* Nav */}
+      {/* Nav + Hero combined white block */}
+      <div className="rounded-xl overflow-hidden" style={{ background: 'var(--paper)' }}>
       <nav className="flex items-center justify-between px-5 md:px-8 py-4 max-w-7xl mx-auto">
         <Logo size="lg" />
         <div className="hidden md:flex items-center gap-7 text-sm uppercase" style={{ fontFamily: 'var(--font-display), Impact, sans-serif', fontWeight: 900, letterSpacing: '-0.01em' }}>
@@ -30,7 +31,7 @@ export default function LandingPage() {
       </nav>
 
       {/* Hero */}
-      <section className="relative max-w-7xl mx-auto px-5 md:px-8 pt-6 pb-16">
+      <section className="relative max-w-7xl mx-auto px-4 md:px-5 pt-2 pb-10">
         <div className="relative rounded-[2.5rem] overflow-hidden border-2 border-ink" style={{ minHeight: 'min(78vh, 720px)' }}>
           {/* Blue background */}
           <div
@@ -81,13 +82,15 @@ export default function LandingPage() {
       </section>
 
       {/* Stats marquee */}
-      <Marquee
-        bg="var(--yellow)"
-        items={['190+ СТРАН', '50+ VPN-СЕРВЕРОВ', '0 ₽ ЗА ОТКРЫТИЕ', 'VISA / MASTERCARD', 'АКТИВАЦИЯ ЗА 1 МИНУТУ']}
-      />
+      <div className="max-w-7xl w-full mx-auto">
+        <Marquee
+          bg="var(--yellow)"
+          items={['190+ СТРАН', '50+ VPN-СЕРВЕРОВ', '0 ₽ ЗА ОТКРЫТИЕ', 'VISA / MASTERCARD', 'АКТИВАЦИЯ ЗА 1 МИНУТУ']}
+        />
+      </div>
 
       {/* Services */}
-      <section id="services" className="max-w-7xl mx-auto px-5 md:px-8 py-20">
+      <section id="services" className="max-w-7xl w-full mx-auto rounded-xl px-5 md:px-12 py-16" style={{ background: 'var(--paper)' }}>
         <h2 className="display text-5xl md:text-7xl text-center mb-4">Три сервиса.<br />Один кабинет.</h2>
         <p className="text-center text-lg font-semibold text-ink/60 mb-14">Управляй всем из одного места</p>
 
@@ -134,7 +137,7 @@ export default function LandingPage() {
       </section>
 
       {/* Pricing */}
-      <section id="pricing" className="max-w-7xl mx-auto px-5 md:px-8 py-20">
+      <section id="pricing" className="max-w-7xl w-full mx-auto rounded-xl px-5 md:px-12 py-16" style={{ background: 'var(--cream)' }}>
         <h2 className="display text-5xl md:text-7xl text-center mb-4">Простые тарифы</h2>
         <p className="text-center text-lg font-semibold text-ink/60 mb-14">Плати только за то, что используешь</p>
 
@@ -168,20 +171,18 @@ export default function LandingPage() {
       </section>
 
       {/* CTA */}
-      <section className="max-w-7xl mx-auto px-5 md:px-8 py-20">
-        <div className="panel text-center py-16 px-6" style={{ background: 'var(--green)' }}>
-          <div className="flex justify-center mb-4">
-            <LottieSticker name="rocket" size={120} />
-          </div>
-          <h2 className="display text-4xl md:text-6xl mb-4">Готов начать?</h2>
-          <p className="font-semibold text-lg text-ink/70 mb-8">Регистрация за минуту. Без привязки карты.</p>
-          <Link href="/auth/register" className="pill pill-ink text-base">Открыть IMBA →</Link>
+      <section className="max-w-7xl w-full mx-auto rounded-xl text-center py-16 px-6" style={{ background: 'var(--green)' }}>
+        <div className="flex justify-center mb-4">
+          <LottieSticker name="rocket" size={120} />
         </div>
+        <h2 className="display text-4xl md:text-6xl mb-4">Готов начать?</h2>
+        <p className="font-semibold text-lg text-ink/70 mb-8">Регистрация за минуту. Без привязки карты.</p>
+        <Link href="/auth/register" className="pill pill-ink text-base">Открыть IMBA →</Link>
       </section>
 
       {/* Footer */}
-      <footer className="border-t-2 border-ink">
-        <div className="max-w-7xl mx-auto px-5 md:px-8 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
+      <footer className="max-w-7xl w-full mx-auto rounded-xl" style={{ background: 'var(--paper)' }}>
+        <div className="px-5 md:px-8 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <Logo size="md" />
           <p className="text-sm font-semibold text-ink/60">© 2026 IMBA. Все права защищены.</p>
           <div className="flex gap-5 text-sm font-bold">

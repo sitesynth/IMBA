@@ -1,7 +1,7 @@
 export function Marquee({ items, bg }: { items: string[]; bg: string }) {
   const row = [...items, ...items]
   return (
-    <div className="marquee border-y-2 border-ink py-2.5" style={{ background: bg }} aria-hidden="true">
+    <div className="marquee py-2.5" style={{ background: bg }} aria-hidden="true">
       <div className="marquee__track">
         {row.map((t, i) => (
           <span
