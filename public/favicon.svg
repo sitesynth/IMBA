@@ -1,8 +1,26 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
-  <!-- Yellow background -->
-  <rect width="128" height="128" rx="28" fill="#FFD731"/>
-  <!-- Black border -->
-  <rect x="4" y="4" width="120" height="120" rx="24" fill="none" stroke="#111111" stroke-width="8"/>
-  <!-- Bold I letter -->
-  <text x="64" y="95" font-family="Arial, sans-serif" font-weight="900" font-size="96" text-anchor="middle" fill="#111111">I</text>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 128 128">
+  <!-- Generator: Adobe Illustrator 29.1.0, SVG Export Plug-In . SVG Version: 2.1.0 Build 142)  -->
+  <defs>
+    <style>
+      .st0 {
+        fill: none;
+        stroke: #111;
+        stroke-width: 8px;
+      }
+
+      .st1 {
+        fill: #ffd731;
+      }
+    </style>
+  </defs>
+  <rect class="st1" width="128" height="128" rx="28" ry="28"/>
+  <rect class="st0" x="4" y="4" width="120" height="120" rx="24" ry="24"/>
+  <path d="M54.2,19.5h38.5c1.5,0,2.7,1.2,2.7,2.7l-20,82.5c0,1.5-1.2,2.7-2.7,2.7h-38.5c-1.5,0-2.7-1.2-2.7-2.7L51.4,22.2c0-1.5,1.2-2.7,2.7-2.7Z"/>
+  <metadata>
+    <sfw xmlns="http://ns.adobe.com/SaveForWeb/1.0/">
+      <slices/>
+      <sliceSourceBounds x="0" y="0" width="128" height="128" bottomLeftOrigin="true"/>
+    </sfw>
+  </metadata>
 </svg>
