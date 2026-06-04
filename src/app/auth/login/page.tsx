@@ -24,13 +24,10 @@ function LoginForm() {
     <div className="min-h-screen flex items-center justify-center px-4 py-10">
       <div className="w-full max-w-sm fade-up">
         <div className="text-center mb-7">
-          {/* Animated check integrated into the logo lockup */}
-          <div className="flex items-center justify-center gap-2 mb-5">
-            <LottieSticker name="approved" size={64} />
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/imba-black.svg" alt="IMBA" style={{ height: 32, width: 'auto' }} />
+          <div className="flex items-center justify-center gap-3 mb-1">
+            <LottieSticker name="approved" size={56} />
+            <h1 className="display text-3xl">С возвращением</h1>
           </div>
-          <h1 className="display text-3xl mb-1">С возвращением</h1>
           <p className="font-semibold text-ink/60">Войди в свой кабинет</p>
         </div>
 
