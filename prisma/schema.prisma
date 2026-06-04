@@ -1,0 +1,76 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  password  String
+  createdAt DateTime @default(now())
+
+  esims  Esim[]
+  vpns   VpnSubscription[]
+  cards  VirtualCard[]
+}
+
+model Esim {
+  id        String   @id @default(cuid())
+  userId    String
+  label     String
+  country   String
+  dataGb    Float
+  usedGb    Float    @default(0)
+  status    String   @default("active")
+  iccid     String   @unique @default(cuid())
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VpnSubscription {
+  id        String   @id @default(cuid())
+  userId    String
+  plan      String
+  status    String   @default("active")
+  serverKey String
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VirtualCard {
+  id          String   @id @default(cuid())
+  userId      String
+  last4       String
+  balance     Float    @default(0)
+  currency    String   @default("USD")
+  status      String   @default("active")
+  cardHolder  String
+  expiryMonth Int
+  expiryYear  Int
+  createdAt   DateTime @default(now())
+
+  transactions Transaction[]
+  user         User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Transaction {
+  id        String   @id @default(cuid())
+  cardId    String
+  amount    Float
+  currency  String   @default("USD")
+  merchant  String
+  type      String
+  status    String   @default("completed")
+  createdAt DateTime @default(now())
+
+  card VirtualCard @relation(fields: [cardId], references: [id], onDelete: Cascade)
+}

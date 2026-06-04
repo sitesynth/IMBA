@@ -1,26 +1,205 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Slush-derived palette */
+  --cream: #F3F0E9;
+  --ink: #111111;
+  --paper: #FFFFFF;
+
+  --blue: #2E7DF6;
+  --blue-deep: #1452C9;
+  --blue-100: #DCEEFF;
+  --violet: #C9A4FF;
+  --violet-100: #E9CCFF;
+  --green: #55DB9C;
+  --green-100: #CFF6E4;
+  --yellow: #FFD731;
+  --yellow-100: #FFF0B8;
+  --orange: #FF7A3D;
+
+  --shadow-pop: 0 18px 0 -8px rgba(17,17,17,0.12);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-cream: var(--cream);
+  --color-ink: var(--ink);
+  --color-paper: var(--paper);
+  --color-blue: var(--blue);
+  --color-violet: var(--violet);
+  --color-green: var(--green);
+  --color-yellow: var(--yellow);
+  --font-display: var(--font-display);
+  --font-sans: var(--font-sans);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ── Display type ───────────────────────────── */
+.display {
+  font-family: var(--font-display), Impact, sans-serif;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 0.92;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+.mega {
+  font-family: var(--font-word), Impact, sans-serif;
+  font-weight: 400;
+  font-size: clamp(5rem, 21vw, 17rem);
+  letter-spacing: -0.02em;
+  line-height: 0.84;
+  text-transform: uppercase;
+}
+
+/* Brand wordmark (energy-can spirit) */
+.wordmark {
+  font-family: var(--font-word), Impact, sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+
+/* Logo badge */
+.logo-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--yellow);
+  color: var(--ink);
+  border: 2px solid var(--ink);
+  border-radius: 0.7rem;
+  padding: 0.28em 0.55em;
+  line-height: 1;
+  box-shadow: 3px 3px 0 0 var(--ink);
+}
+.logo-badge--blue {
+  background: var(--blue);
+}
+
+/* ── Pill buttons (3D pop) ──────────────────── */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1.6rem;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: 0.95rem;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  border: 2px solid var(--ink);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: transform 0.18s cubic-bezier(.2,.8,.2,1), box-shadow 0.18s, background 0.18s;
+}
+.pill:hover { transform: translateY(-2px); }
+.pill:active { transform: translateY(0) scale(0.97); }
+
+.pill-ink { background: var(--ink); color: var(--paper); box-shadow: 0 6px 0 0 rgba(17,17,17,0.25); }
+.pill-ink:hover { box-shadow: 0 9px 0 0 rgba(17,17,17,0.25); }
+
+.pill-paper { background: var(--paper); color: var(--ink); box-shadow: 0 6px 0 0 rgba(17,17,17,0.18); }
+.pill-paper:hover { box-shadow: 0 9px 0 0 rgba(17,17,17,0.18); }
+
+.pill-yellow { background: var(--yellow); color: var(--ink); box-shadow: 0 6px 0 0 rgba(17,17,17,0.2); }
+.pill-green  { background: var(--green);  color: var(--ink); box-shadow: 0 6px 0 0 rgba(17,17,17,0.2); }
+
+.pill-sm { padding: 0.55rem 1.1rem; font-size: 0.85rem; box-shadow: 0 4px 0 0 rgba(17,17,17,0.2); }
+
+/* ── Blocky cards ───────────────────────────── */
+.panel {
+  border: 2px solid var(--ink);
+  border-radius: 1.75rem;
+  padding: 1.75rem;
+  background: var(--paper);
+  box-shadow: 6px 6px 0 0 var(--ink);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.9rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  border: 2px solid var(--ink);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+/* ── Marquee ticker ─────────────────────────── */
+.marquee {
+  overflow: hidden;
+}
+.marquee__track {
+  display: flex;
+  flex-wrap: nowrap;
+  width: max-content;
+  align-items: center;
+  animation: marquee 30s linear infinite;
+  will-change: transform;
+}
+.marquee__item {
+  flex: none;
+  white-space: nowrap;
+}
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* ── Floating stickers ──────────────────────── */
+.sticker {
+  position: absolute;
+  filter: drop-shadow(4px 6px 0 rgba(17,17,17,0.22));
+  animation: float 6s ease-in-out infinite;
+  will-change: transform;
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(var(--rot, 0deg)); }
+  50%      { transform: translateY(-14px) rotate(var(--rot, 0deg)); }
+}
+
+/* ── Hero blob ──────────────────────────────── */
+.blob {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(120% 90% at 50% 40%, var(--blue) 0%, var(--blue-deep) 70%);
+  -webkit-mask: var(--blob-mask);
+  mask: var(--blob-mask);
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-up { animation: fade-up 0.5s cubic-bezier(.2,.8,.2,1) both; }
+
+input:focus, textarea:focus { outline: none; border-color: var(--ink) !important; }
+
+/* Responsive animated logo in hero */
+.hero-logo {
+  max-width: min(74vw, 860px) !important;
+  height: auto !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee__track { animation: none; }
+  .sticker { animation: none; }
+  .fade-up { animation: none; }
+  html { scroll-behavior: auto; }
 }
