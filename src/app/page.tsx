@@ -173,6 +173,32 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* FAQ */}
+      <section id="faq" className="rounded-xl px-5 md:px-12 py-16" style={{ background: 'var(--yellow)' }}>
+        <h2 className="display text-5xl md:text-7xl text-center mb-2">Вопросы?</h2>
+        <p className="text-center font-semibold text-ink/60 mb-12 text-lg">Ответы на всё что тебя беспокоит</p>
+
+        <div className="max-w-3xl mx-auto space-y-3">
+          {[
+            { q: 'Что такое eSIM?', a: 'eSIM — это электронная SIM-карта, встроенная в твой телефон. Не нужно идти в салон: купи тариф, отсканируй QR — и уже в сети.', color: 'var(--violet-100)' },
+            { q: 'Работает ли VPN в России?', a: 'Да. Мы используем протокол WireGuard — он выглядит как обычный HTTPS-трафик. 50+ серверов в 30+ странах, без логов.', color: 'var(--blue-100)' },
+            { q: 'Для чего виртуальная карта?', a: 'Для оплаты Netflix, Spotify, ChatGPT Plus, Adobe, Amazon и любых других зарубежных сервисов, которые не принимают российские карты.', color: 'var(--green-100)' },
+            { q: 'Нужно ли привязывать российскую карту?', a: 'Нет. Карту для пополнения не требуем. Пополнение через криптовалюту или переводом.', color: 'var(--paper)' },
+            { q: 'Мои данные в безопасности?', a: 'Мы не храним логи. VPN работает по принципу zero-knowledge — мы физически не можем узнать что ты делал в сети.', color: 'var(--violet-100)' },
+          ].map((item, i) => (
+            <details key={i} className="group rounded-2xl border-2 border-ink overflow-hidden" style={{ background: item.color }}>
+              <summary className="flex items-center justify-between px-6 py-5 cursor-pointer select-none list-none">
+                <span className="display text-lg md:text-xl">{item.q}</span>
+                <span className="text-2xl font-black transition-transform duration-300 group-open:rotate-45 flex-shrink-0 ml-4">+</span>
+              </summary>
+              <div className="px-6 pb-6 font-semibold text-ink/75 leading-relaxed">
+                {item.a}
+              </div>
+            </details>
+          ))}
+        </div>
+      </section>
+
       {/* CTA */}
       <section className="rounded-xl text-center py-16 px-6" style={{ background: 'var(--green)' }}>
         <div className="flex justify-center mb-4">
