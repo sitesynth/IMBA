@@ -32,7 +32,7 @@ export default function LandingPage() {
 
       {/* Hero */}
       <section className="relative px-4 md:px-5 pt-2 pb-10">
-        <div className="relative rounded-[2.5rem] overflow-hidden border-2 border-ink" style={{ minHeight: 'min(78vh, 720px)' }}>
+        <div className="relative rounded-[2.5rem] overflow-hidden border-2 border-ink" style={{ minHeight: 'min(55vh, 720px)' }}>
           {/* Blue background */}
           <div
             className="absolute inset-0"
@@ -42,7 +42,7 @@ export default function LandingPage() {
           />
 
           {/* Mega wordmark — animated swirl clipped to IMBA letterforms */}
-          <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-6" style={{ minHeight: 'min(78vh, 720px)' }}>
+          <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-6" style={{ minHeight: 'min(55vh, 720px)' }}>
             <h1
               aria-label="IMBA"
               style={{
@@ -118,10 +118,17 @@ export default function LandingPage() {
               points: ['Visa / Mastercard', 'USD / EUR / AED', 'Моментальный выпуск'],
             },
           ].map((s) => (
-            <div key={s.tag} className="panel flex items-stretch gap-5" style={{ background: s.bg }}>
+            <div key={s.tag} className="panel flex flex-col md:flex-row md:items-stretch gap-4 md:gap-5" style={{ background: s.bg }}>
+              <div className="flex items-center gap-3 md:hidden">
+                <LottieSticker name={s.lottie} size={56} />
+                <div>
+                  <span className="chip bg-paper w-fit mb-1">{s.tag}</span>
+                  <h3 className="display text-xl">{s.title}</h3>
+                </div>
+              </div>
               <div className="flex-1 flex flex-col">
-                <span className="chip bg-paper mb-4 w-fit">{s.tag}</span>
-                <h3 className="display text-2xl mb-3">{s.title}</h3>
+                <span className="chip bg-paper mb-4 w-fit hidden md:inline-flex">{s.tag}</span>
+                <h3 className="display text-2xl mb-3 hidden md:block">{s.title}</h3>
                 <p className="font-medium text-ink/75 mb-4 leading-relaxed text-sm">{s.desc}</p>
                 <ul className="space-y-2 font-bold text-sm mt-auto">
                   {s.points.map((p) => (
@@ -131,7 +138,7 @@ export default function LandingPage() {
                   ))}
                 </ul>
               </div>
-              <div className="flex items-center">
+              <div className="hidden md:flex items-center">
                 <LottieSticker name={s.lottie} size={140} />
               </div>
             </div>
