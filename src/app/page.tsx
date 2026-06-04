@@ -174,7 +174,7 @@ export default function LandingPage() {
       </section>
 
       {/* FAQ */}
-      <section id="faq" className="rounded-xl px-5 md:px-12 py-16" style={{ background: 'var(--yellow)' }}>
+      <section id="faq" className="rounded-xl px-5 md:px-12 py-16" style={{ background: 'var(--blue-100)' }}>
         <h2 className="display text-5xl md:text-7xl text-center mb-2">Вопросы?</h2>
         <p className="text-center font-semibold text-ink/60 mb-12 text-lg">Ответы на всё что тебя беспокоит</p>
 
