@@ -141,7 +141,7 @@ export default function LandingPage() {
       </section>
 
       {/* Pricing */}
-      <section id="pricing" className="rounded-xl px-4 md:px-12 py-10 md:py-16" style={{ background: 'var(--cream)' }}>
+      <section id="pricing" className="rounded-xl px-3 md:px-12 py-10 md:py-16 overflow-hidden" style={{ background: 'var(--cream)' }}>
         <h2 className="display text-3xl md:text-7xl text-center mb-3 md:mb-4">Простые тарифы</h2>
         <p className="text-center text-sm md:text-lg font-semibold text-ink/60 mb-8 md:mb-14">Плати только за то, что используешь</p>
 
