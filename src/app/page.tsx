@@ -58,7 +58,7 @@ export default function LandingPage() {
           </div>
 
           {/* Lottie stickers — z-20 above logo, original positions */}
-          <LottieSticker name="rocket" size={132} className="sticker" style={{ zIndex: 20, top: '9%',   left: '6%',  ['--rot' as string]: '-12deg', animationDelay: '0s' }} />
+          <LottieSticker name="keys"   size={132} className="sticker" style={{ zIndex: 20, top: '9%',   left: '6%',  ['--rot' as string]: '-12deg', animationDelay: '0s' }} />
           <LottieSticker name="plane"  size={116} className="sticker" style={{ zIndex: 20, top: '16%',  right: '8%', ['--rot' as string]: '10deg',  animationDelay: '0.8s' }} />
           <LottieSticker name="cards"  size={128} className="sticker" style={{ zIndex: 20, bottom: '12%', left: '10%', ['--rot' as string]: '8deg',  animationDelay: '1.4s' }} />
           <LottieSticker name="lock"   size={116} className="sticker" style={{ zIndex: 20, bottom: '18%', right: '7%', ['--rot' as string]: '-8deg', animationDelay: '0.4s' }} />
@@ -170,7 +170,9 @@ export default function LandingPage() {
       {/* CTA */}
       <section className="max-w-7xl mx-auto px-5 md:px-8 py-20">
         <div className="panel text-center py-16 px-6" style={{ background: 'var(--green)' }}>
-          <div className="text-5xl mb-4">🚀</div>
+          <div className="flex justify-center mb-4">
+            <LottieSticker name="rocket" size={120} />
+          </div>
           <h2 className="display text-4xl md:text-6xl mb-4">Готов начать?</h2>
           <p className="font-semibold text-lg text-ink/70 mb-8">Регистрация за минуту. Без привязки карты.</p>
           <Link href="/auth/register" className="pill pill-ink text-base">Открыть IMBA →</Link>
