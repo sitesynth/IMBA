@@ -1,10 +1,15 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
+import dynamic from 'next/dynamic'
 import { ArrowRight, Wallet, Plus } from 'lucide-react'
 import { getCurrentUser } from '@/lib/auth'
 import { api } from '@/lib/api'
-import { LottieSticker } from '@/components/LottieSticker'
 import type { Esim, VpnSubscription, VirtualCard, Transaction } from '@/lib/types'
+
+const LottieSticker = dynamic(() => import('@/components/LottieSticker').then(m => ({ default: m.LottieSticker })), {
+  ssr: false,
+  loading: () => <div style={{ width: 88, height: 88 }} />,
+})
 
 export default async function DashboardPage() {
   const user = await getCurrentUser()
