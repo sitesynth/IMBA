@@ -8,7 +8,6 @@ import type { Esim, VpnSubscription, VirtualCard, Transaction } from '@/lib/type
 
 const LottieSticker = dynamic(() => import('@/components/LottieSticker').then(m => ({ default: m.LottieSticker })), {
   ssr: false,
-  loading: () => <div style={{ width: 88, height: 88 }} />,
 })
 
 export default async function DashboardPage() {
