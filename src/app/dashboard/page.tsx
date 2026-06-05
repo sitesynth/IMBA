@@ -6,9 +6,7 @@ import { getCurrentUser } from '@/lib/auth'
 import { api } from '@/lib/api'
 import type { Esim, VpnSubscription, VirtualCard, Transaction } from '@/lib/types'
 
-const LottieSticker = dynamic(() => import('@/components/LottieSticker').then(m => ({ default: m.LottieSticker })), {
-  ssr: false,
-})
+const LottieSticker = dynamic(() => import('@/components/LottieSticker').then(m => ({ default: m.LottieSticker })))
 
 export default async function DashboardPage() {
   const user = await getCurrentUser()
