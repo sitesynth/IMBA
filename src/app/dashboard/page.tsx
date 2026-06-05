@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowRight, Wallet, Plus } from 'lucide-react'
 import { getCurrentUser } from '@/lib/auth'
-import { api } from '@/lib/api'
+import { api } from '@/lib/api-client'
 import { LottieSticker } from '@/components/LottieSticker'
 import type { Esim, VpnSubscription, VirtualCard, Transaction, UserProfile } from '@/lib/types'
 
