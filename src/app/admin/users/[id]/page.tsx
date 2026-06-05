@@ -1,7 +1,8 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
-import { getUser, addBalance, AdminUserDetail } from '@/lib/admin-api'
+import type { AdminUserDetail } from '@/lib/admin-api'
+import { getUser, addBalance } from '@/lib/admin-api'
 
 export default function AdminUserDetail() {
   const params = useParams()
