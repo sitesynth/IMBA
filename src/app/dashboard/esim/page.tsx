@@ -1,92 +1,157 @@
 import { redirect } from 'next/navigation'
-import { Plus, QrCode } from 'lucide-react'
+import { revalidatePath } from 'next/cache'
+import { QrCode, RefreshCw } from 'lucide-react'
 import { getCurrentUser } from '@/lib/auth'
-import { prisma } from '@/lib/db'
+import { api, apiFetch, ApiError } from '@/lib/api'
+import { LottieSticker } from '@/components/LottieSticker'
+import type { Esim, EsimCatalog } from '@/lib/types'
 
-const STATUS: Record<string, { label: string; bg: string }> = {
-  active: { label: 'Активен', bg: 'var(--green-100)' },
-  expired: { label: 'Истёк', bg: '#EFEBE2' },
-  pending: { label: 'Ожидание', bg: 'var(--yellow-100)' },
+async function buyEsim(formData: FormData) {
+  'use server'
+  const country = formData.get('country') as string
+  const data_gb = Number(formData.get('data_gb'))
+  try {
+    await apiFetch('/v1/me/esims', {
+      method: 'POST',
+      body: JSON.stringify({ country, data_gb, label: '' }),
+    })
+  } catch (e) {
+    if (e instanceof ApiError) console.error('eSIM purchase failed:', e.message)
+  }
+  revalidatePath('/dashboard/esim')
+  revalidatePath('/dashboard')
 }
-
-const FLAGS: Record<string, string> = { TR: '🇹🇷', DE: '🇩🇪', US: '🇺🇸', AE: '🇦🇪', TH: '🇹🇭', GE: '🇬🇪' }
 
 export default async function EsimPage() {
   const user = await getCurrentUser()
   if (!user) redirect('/auth/login')
 
-  const esims = await prisma.esim.findMany({ where: { userId: user.id }, orderBy: { createdAt: 'desc' } })
+  const [esims, catalog] = await Promise.all([
+    api.get<Esim[]>('/v1/me/esims').catch(() => [] as Esim[]),
+    api.get<EsimCatalog>('/v1/me/esims/catalog').catch(() => ({} as EsimCatalog)),
+  ])
 
   return (
-    <div className="max-w-3xl fade-up">
-      <div className="flex items-center justify-between mb-8">
+    <div className="fade-up space-y-6">
+      <div className="flex items-end justify-between gap-4 flex-wrap">
         <div>
-          <h1 className="display text-4xl mb-1">eSIM</h1>
-          <p className="font-semibold text-ink/60">Управление SIM-профилями</p>
+          <h1 className="display text-4xl md:text-5xl mb-1">Твои eSIM</h1>
+          <p className="font-semibold text-ink/60">Мобильный интернет в 190+ странах</p>
         </div>
-        <button className="pill pill-ink pill-sm"><Plus className="w-4 h-4" strokeWidth={2.5} /> Купить</button>
+        <span className="chip" style={{ background: 'var(--violet-100)' }}>
+          {esims.length} активных
+        </span>
       </div>
 
-      {esims.length === 0 ? (
-        <Empty />
-      ) : (
-        <div className="space-y-5">
+      {esims.length > 0 ? (
+        <div className="grid md:grid-cols-2 gap-5">
           {esims.map((esim) => {
-            const st = STATUS[esim.status] ?? STATUS.expired
-            const pct = Math.min((esim.usedGb / esim.dataGb) * 100, 100)
+            const usagePercent = Math.min((esim.used_gb / esim.data_gb) * 100, 100)
+            const flag = catalog[esim.country]?.flag || '🌍'
+            const countryName = catalog[esim.country]?.country || esim.country
             return (
-              <div key={esim.id} className="panel" style={{ background: st.bg }}>
-                <div className="flex items-start justify-between mb-5">
-                  <div className="flex items-center gap-3">
-                    <span className="text-4xl">{FLAGS[esim.country] ?? '🌍'}</span>
-                    <div>
-                      <div className="display text-lg">{esim.label}</div>
-                      <div className="text-xs font-mono font-semibold text-ink/50">{esim.iccid.slice(0, 18)}…</div>
+              <div key={esim.id} className="panel" style={{ background: 'var(--violet-100)' }}>
+                <div className="flex items-start justify-between mb-4 gap-3">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <span className="text-4xl flex-shrink-0">{flag}</span>
+                    <div className="min-w-0">
+                      <div className="display text-xl truncate">{esim.label || countryName}</div>
+                      <div className="text-xs font-bold text-ink/60 mt-0.5 truncate">
+                        ICCID: {esim.iccid.slice(0, 14)}…
+                      </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className="chip bg-paper">{st.label}</span>
-                    <button className="chip bg-paper hover:bg-ink hover:text-paper transition-colors"><QrCode className="w-3.5 h-3.5" /> QR</button>
-                  </div>
+                  <span
+                    className="chip flex-shrink-0"
+                    style={{
+                      background:
+                        esim.status === 'active'
+                          ? 'var(--green)'
+                          : esim.status === 'expired'
+                          ? 'var(--orange)'
+                          : 'var(--paper)',
+                    }}
+                  >
+                    {esim.status === 'active'
+                      ? '● Активна'
+                      : esim.status === 'expired'
+                      ? 'Истекла'
+                      : 'В обработке'}
+                  </span>
                 </div>
 
-                <div className="flex justify-between text-sm font-bold mb-1.5">
-                  <span className="text-ink/60">Использовано</span>
-                  <span>{esim.usedGb} / {esim.dataGb} ГБ</span>
+                <div className="flex justify-between text-sm font-bold mb-2">
+                  <span>{esim.used_gb.toFixed(1)} ГБ</span>
+                  <span className="text-ink/50">из {esim.data_gb} ГБ</span>
                 </div>
                 <div className="h-3 bg-paper border-2 border-ink rounded-full overflow-hidden mb-4">
-                  <div className="h-full bg-ink" style={{ width: `${pct}%` }} />
+                  <div className="h-full bg-ink" style={{ width: `${usagePercent}%` }} />
                 </div>
 
-                <div className="flex items-center justify-between text-xs font-bold text-ink/50">
-                  <span>Истекает {new Date(esim.expiresAt).toLocaleDateString('ru-RU')}</span>
-                  <button className="underline underline-offset-2 hover:text-ink">Продлить</button>
+                {esim.expires_at && (
+                  <div className="text-xs font-semibold text-ink/60 mb-4">
+                    Действует до: {new Date(esim.expires_at).toLocaleDateString('ru-RU')}
+                  </div>
+                )}
+
+                <div className="flex gap-2">
+                  <button className="pill pill-paper pill-sm">
+                    <QrCode className="w-4 h-4" strokeWidth={2.5} /> QR-код
+                  </button>
+                  <button className="pill pill-ink pill-sm">
+                    <RefreshCw className="w-4 h-4" strokeWidth={2.5} /> Продлить
+                  </button>
                 </div>
               </div>
             )
           })}
         </div>
+      ) : (
+        <div className="panel flex items-center gap-5" style={{ background: 'var(--violet-100)' }}>
+          <LottieSticker name="plane" size={80} />
+          <div>
+            <div className="display text-2xl mb-1">У тебя ещё нет eSIM</div>
+            <p className="font-semibold text-ink/60 text-sm">
+              Выбери страну ниже — активация по QR за минуту.
+            </p>
+          </div>
+        </div>
       )}
 
-      <div className="panel mt-6" style={{ background: 'var(--violet-100)' }}>
-        <h3 className="display text-lg mb-3">Популярные направления</h3>
-        <div className="flex flex-wrap gap-2">
-          {['🇹🇷 Турция', '🇦🇪 ОАЭ', '🇩🇪 Германия', '🇹🇭 Таиланд', '🇬🇪 Грузия', '🇺🇸 США'].map((c) => (
-            <button key={c} className="chip bg-paper hover:bg-ink hover:text-paper transition-colors">{c}</button>
-          ))}
+      <div>
+        <h2 className="display text-2xl md:text-3xl mb-1">Купить eSIM</h2>
+        <p className="font-semibold text-ink/60 mb-5 text-sm">Списание происходит с баланса IMBA</p>
+
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
+          {Object.entries(catalog).map(([code, info]) => {
+            const cheapest = Math.min(...Object.values(info.prices))
+            return (
+              <details key={code} className="panel group" style={{ background: 'var(--paper)' }}>
+                <summary className="flex items-center justify-between cursor-pointer list-none">
+                  <div className="flex items-center gap-3">
+                    <span className="text-3xl">{info.flag}</span>
+                    <div>
+                      <div className="display text-base">{info.country}</div>
+                      <div className="text-xs font-bold text-ink/50">от ${cheapest.toFixed(2)}</div>
+                    </div>
+                  </div>
+                  <span className="text-xl font-black transition-transform group-open:rotate-45">+</span>
+                </summary>
+                <div className="mt-4 pt-4 border-t-2 border-cream space-y-2">
+                  {Object.entries(info.prices).map(([gb, price]) => (
+                    <form key={gb} action={buyEsim} className="flex items-center justify-between gap-2">
+                      <input type="hidden" name="country" value={code} />
+                      <input type="hidden" name="data_gb" value={gb} />
+                      <div className="text-sm font-extrabold">{gb} ГБ</div>
+                      <button className="pill pill-ink pill-sm">${price.toFixed(2)}</button>
+                    </form>
+                  ))}
+                </div>
+              </details>
+            )
+          })}
         </div>
       </div>
-    </div>
-  )
-}
-
-function Empty() {
-  return (
-    <div className="panel text-center py-14">
-      <div className="text-6xl mb-4">📶</div>
-      <h3 className="display text-xl mb-2">Нет eSIM профилей</h3>
-      <p className="font-semibold text-ink/60 mb-6">Купи первый eSIM для интернета в любой стране</p>
-      <button className="pill pill-ink mx-auto">Купить eSIM →</button>
     </div>
   )
 }

@@ -1,109 +1,225 @@
 import { redirect } from 'next/navigation'
-import { ArrowUpRight, ArrowDownLeft, Plus, EyeOff } from 'lucide-react'
+import { revalidatePath } from 'next/cache'
+import { Plus, Snowflake, Eye } from 'lucide-react'
 import { getCurrentUser } from '@/lib/auth'
-import { prisma } from '@/lib/db'
+import { api, apiFetch, ApiError } from '@/lib/api'
+import { LottieSticker } from '@/components/LottieSticker'
+import type { VirtualCard, Transaction } from '@/lib/types'
+
+async function issueCard(formData: FormData) {
+  'use server'
+  const card_holder = (formData.get('card_holder') as string) || 'IMBA USER'
+  const currency = (formData.get('currency') as string) || 'USD'
+  try {
+    await apiFetch('/v1/me/cards', {
+      method: 'POST',
+      body: JSON.stringify({ card_holder, currency }),
+    })
+  } catch (e) {
+    if (e instanceof ApiError) console.error('Card issue failed:', e.message)
+  }
+  revalidatePath('/dashboard/card')
+  revalidatePath('/dashboard')
+}
 
 export default async function CardPage() {
   const user = await getCurrentUser()
   if (!user) redirect('/auth/login')
 
-  const cards = await prisma.virtualCard.findMany({
-    where: { userId: user.id },
-    include: { transactions: { orderBy: { createdAt: 'desc' }, take: 20 } },
-  })
+  const cards = await api.get<VirtualCard[]>('/v1/me/cards').catch(() => [] as VirtualCard[])
   const card = cards[0]
 
-  return (
-    <div className="max-w-3xl fade-up">
-      <div className="flex items-center justify-between mb-8">
+  let txs: Transaction[] = []
+  if (card) {
+    txs = await api
+      .get<Transaction[]>(`/v1/me/cards/${card.id}/transactions`)
+      .catch(() => [])
+  }
+
+  if (!card) {
+    return (
+      <div className="fade-up space-y-6">
         <div>
-          <h1 className="display text-4xl mb-1">Виртуальная карта</h1>
-          <p className="font-semibold text-ink/60">Оплата зарубежных сервисов</p>
+          <h1 className="display text-4xl md:text-5xl mb-1">Виртуальная карта</h1>
+          <p className="font-semibold text-ink/60">Visa/Mastercard для зарубежных сервисов</p>
+        </div>
+
+        <div className="panel" style={{ background: 'var(--green-100)' }}>
+          <div className="flex items-start gap-5 mb-5">
+            <LottieSticker name="cards" size={96} />
+            <div>
+              <div className="display text-2xl md:text-3xl mb-2">Открой карту IMBA</div>
+              <p className="font-semibold text-ink/70 text-sm mb-3">
+                Моментальный выпуск, оплата Netflix, Spotify, ChatGPT, Adobe и любых других зарубежных
+                сервисов.
+              </p>
+              <ul className="space-y-1.5 font-bold text-sm">
+                <li className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-ink" /> Visa / Mastercard
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-ink" /> USD / EUR / AED
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-ink" /> Комиссия за выпуск $5
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <form action={issueCard} className="space-y-3">
+            <div className="flex flex-col md:flex-row gap-3">
+              <input
+                name="card_holder"
+                placeholder="Имя на карте (латиницей)"
+                defaultValue={(user.name || 'IMBA USER').toUpperCase()}
+                className="flex-1 px-4 py-3 rounded-2xl border-2 border-ink bg-paper font-extrabold text-sm"
+              />
+              <select
+                name="currency"
+                className="px-4 py-3 rounded-2xl border-2 border-ink bg-paper font-extrabold text-sm"
+              >
+                <option value="USD">USD</option>
+                <option value="EUR">EUR</option>
+                <option value="AED">AED</option>
+              </select>
+            </div>
+            <button type="submit" className="pill pill-ink">
+              <Plus className="w-4 h-4" strokeWidth={2.5} /> Выпустить карту за $5
+            </button>
+          </form>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="fade-up space-y-6">
+      <div className="flex items-end justify-between gap-4 flex-wrap">
+        <div>
+          <h1 className="display text-4xl md:text-5xl mb-1">Карта IMBA</h1>
+          <p className="font-semibold text-ink/60">Управляй балансом и операциями</p>
+        </div>
+        <span
+          className="chip"
+          style={{
+            background:
+              card.status === 'active'
+                ? 'var(--green)'
+                : card.status === 'frozen'
+                ? 'var(--blue-100)'
+                : 'var(--orange)',
+          }}
+        >
+          {card.status === 'active' ? '● Активна' : card.status === 'frozen' ? '❄ Заморожена' : 'Истекла'}
+        </span>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-5">
+        {/* Card visual */}
+        <div
+          className="panel relative overflow-hidden flex flex-col justify-between"
+          style={{
+            background: 'linear-gradient(135deg, var(--blue) 0%, var(--blue-deep) 100%)',
+            color: 'var(--paper)',
+            minHeight: 240,
+          }}
+        >
+          <div className="flex items-start justify-between">
+            <div className="wordmark text-2xl tracking-wider">IMBA</div>
+            <div className="text-right text-xs font-bold opacity-80">
+              <div>VISA</div>
+              <div>Mastercard</div>
+            </div>
+          </div>
+
+          <div>
+            <div className="display text-2xl md:text-3xl mb-3 tracking-widest">
+              •••• •••• •••• {card.last4}
+            </div>
+            <div className="flex items-end justify-between">
+              <div>
+                <div className="text-[10px] font-bold uppercase opacity-60 tracking-widest">
+                  Держатель
+                </div>
+                <div className="font-extrabold tracking-wider text-sm">{card.card_holder}</div>
+              </div>
+              <div>
+                <div className="text-[10px] font-bold uppercase opacity-60 tracking-widest">
+                  Срок
+                </div>
+                <div className="font-extrabold tracking-wider text-sm">
+                  {String(card.expiry_month).padStart(2, '0')}/{String(card.expiry_year).slice(-2)}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Balance + actions */}
+        <div className="panel" style={{ background: 'var(--green-100)' }}>
+          <div className="text-xs font-extrabold uppercase tracking-widest text-ink/50 mb-2">
+            Баланс карты
+          </div>
+          <div className="display text-5xl mb-1">${card.balance.toFixed(2)}</div>
+          <div className="text-sm font-bold text-ink/60 mb-5">{card.currency}</div>
+
+          <div className="flex flex-wrap gap-2">
+            <button className="pill pill-ink pill-sm">
+              <Plus className="w-4 h-4" strokeWidth={2.5} /> Пополнить
+            </button>
+            <button className="pill pill-paper pill-sm">
+              <Eye className="w-4 h-4" strokeWidth={2.5} /> Показать CVV
+            </button>
+            <button className="pill pill-paper pill-sm">
+              <Snowflake className="w-4 h-4" strokeWidth={2.5} /> Заморозить
+            </button>
+          </div>
         </div>
       </div>
 
-      {card ? (
-        <>
-          {/* Card visual */}
-          <div className="rounded-[1.75rem] border-2 border-ink p-6 mb-6 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #2E7DF6 0%, #1452C9 100%)', minHeight: 210, boxShadow: '6px 6px 0 0 var(--ink)' }}>
-            <div className="absolute top-0 right-0 w-56 h-56 rounded-full opacity-20" style={{ background: 'radial-gradient(circle, #fff 0%, transparent 70%)', transform: 'translate(30%,-30%)' }} />
-            <div className="relative">
-              <div className="flex items-center justify-between mb-8">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/imba-white.svg" alt="IMBA" style={{ height: 20, width: 'auto' }} />
-                <div className="flex">
-                  <span className="w-8 h-8 rounded-full bg-orange-500/90" />
-                  <span className="w-8 h-8 rounded-full bg-yellow-400/90 -ml-3.5" />
-                </div>
-              </div>
-              <div className="font-mono text-lg font-semibold mb-6" style={{ color: 'rgba(255,255,255,0.85)' }}>•••• •••• •••• {card.last4}</div>
-              <div className="flex items-end justify-between">
-                <div>
-                  <div className="text-[10px] uppercase font-bold mb-0.5" style={{ color: 'rgba(255,255,255,0.6)' }}>Держатель</div>
-                  <div className="font-extrabold text-sm" style={{ color: '#fff' }}>{card.cardHolder}</div>
-                </div>
-                <div className="text-right">
-                  <div className="text-[10px] uppercase font-bold mb-0.5" style={{ color: 'rgba(255,255,255,0.6)' }}>До</div>
-                  <div className="font-extrabold text-sm font-mono" style={{ color: '#fff' }}>{String(card.expiryMonth).padStart(2, '0')}/{String(card.expiryYear).slice(-2)}</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-5 mb-6">
-            <div className="panel" style={{ background: 'var(--green-100)' }}>
-              <div className="text-xs font-extrabold uppercase text-ink/50 mb-1">Баланс</div>
-              <div className="display text-3xl">${card.balance.toFixed(2)}</div>
-              <div className="text-xs font-bold text-ink/40 mt-1">{card.currency}</div>
-            </div>
-            <div className="panel flex flex-col justify-between">
-              <div className="text-xs font-extrabold uppercase text-ink/50 mb-2">Статус</div>
-              <span className="chip bg-cream w-fit">{card.status === 'active' ? '● Активна' : card.status === 'frozen' ? '❄ Заморожена' : 'Истекла'}</span>
-              <button className="text-xs font-bold text-ink/50 hover:text-ink mt-3 text-left underline underline-offset-2">
-                {card.status === 'active' ? 'Заморозить карту' : 'Разморозить'}
-              </button>
-            </div>
-          </div>
-
-          <div className="flex gap-3 mb-8">
-            <button className="pill pill-ink flex-1 justify-center"><Plus className="w-4 h-4" strokeWidth={2.5} /> Пополнить</button>
-            <button className="pill pill-paper flex-1 justify-center"><EyeOff className="w-4 h-4" strokeWidth={2.5} /> Показать CVV</button>
-          </div>
-
-          <div className="panel">
-            <h3 className="display text-xl mb-5">Транзакции</h3>
-            {card.transactions.length === 0 ? (
-              <div className="text-center py-8 font-semibold text-ink/40">Транзакций пока нет</div>
-            ) : (
-              <div className="space-y-1">
-                {card.transactions.map((tx) => (
-                  <div key={tx.id} className="flex items-center justify-between py-3 border-b-2 border-cream last:border-0">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full border-2 border-ink flex items-center justify-center" style={{ background: tx.type === 'credit' ? 'var(--green-100)' : 'var(--cream)' }}>
-                        {tx.type === 'credit' ? <ArrowDownLeft className="w-4 h-4" strokeWidth={2.5} /> : <ArrowUpRight className="w-4 h-4" strokeWidth={2.5} />}
-                      </div>
-                      <div>
-                        <div className="font-extrabold text-sm">{tx.merchant}</div>
-                        <div className="text-xs font-semibold text-ink/40">{new Date(tx.createdAt).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' })}</div>
-                      </div>
-                    </div>
-                    <div className={`font-extrabold ${tx.type === 'credit' ? 'text-green-600' : ''}`}>
-                      {tx.type === 'credit' ? '+' : ''}{tx.amount.toFixed(2)} {tx.currency}
+      {/* Transactions */}
+      <div className="panel">
+        <div className="flex items-center justify-between mb-5">
+          <h2 className="display text-xl md:text-2xl">Операции</h2>
+          <span className="chip">{txs.length}</span>
+        </div>
+        {txs.length === 0 ? (
+          <p className="font-semibold text-ink/50 text-sm py-4">
+            Пока нет операций. Сделай первую покупку — она появится здесь.
+          </p>
+        ) : (
+          <div className="space-y-1">
+            {txs.map((tx) => (
+              <div
+                key={tx.id}
+                className="flex items-center justify-between py-3 border-b-2 border-cream last:border-0"
+              >
+                <div className="flex items-center gap-3">
+                  <div
+                    className="w-9 h-9 rounded-full border-2 border-ink flex items-center justify-center text-sm"
+                    style={{
+                      background: tx.type === 'credit' ? 'var(--green-100)' : 'var(--paper)',
+                    }}
+                  >
+                    {tx.type === 'credit' ? '↓' : '↑'}
+                  </div>
+                  <div>
+                    <div className="font-extrabold text-sm">{tx.merchant}</div>
+                    <div className="text-xs font-semibold text-ink/40">
+                      {new Date(tx.created_at).toLocaleDateString('ru-RU')}
                     </div>
                   </div>
-                ))}
+                </div>
+                <div className={`font-extrabold ${tx.type === 'credit' ? 'text-green-600' : ''}`}>
+                  {tx.type === 'credit' ? '+' : '−'}
+                  {Math.abs(tx.amount).toFixed(2)} {tx.currency}
+                </div>
               </div>
-            )}
+            ))}
           </div>
-        </>
-      ) : (
-        <div className="panel text-center py-14">
-          <div className="text-6xl mb-4">💳</div>
-          <h3 className="display text-xl mb-2">Нет виртуальной карты</h3>
-          <p className="font-semibold text-ink/60 mb-6 max-w-xs mx-auto">Выпусти Visa/Mastercard для оплаты зарубежных сервисов</p>
-          <button className="pill pill-ink mx-auto">Выпустить карту →</button>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   )
 }

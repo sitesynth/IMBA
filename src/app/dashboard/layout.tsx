@@ -1,57 +1,122 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { LayoutDashboard, Wifi, Shield, CreditCard, LogOut } from 'lucide-react'
+import { LayoutDashboard, Wifi, Shield, CreditCard, Wallet, Settings, LogOut } from 'lucide-react'
 import { getCurrentUser, logout } from '@/lib/auth'
 import { Logo } from '@/components/Logo'
+import { Marquee } from '@/components/Marquee'
 
 const navItems = [
-  { href: '/dashboard', label: 'Обзор', icon: LayoutDashboard },
-  { href: '/dashboard/esim', label: 'eSIM', icon: Wifi },
-  { href: '/dashboard/vpn', label: 'VPN', icon: Shield },
-  { href: '/dashboard/card', label: 'Карта', icon: CreditCard },
+  { href: '/dashboard', label: 'Обзор', icon: LayoutDashboard, color: 'var(--paper)' },
+  { href: '/dashboard/esim', label: 'eSIM', icon: Wifi, color: 'var(--violet-100)' },
+  { href: '/dashboard/vpn', label: 'VPN', icon: Shield, color: 'var(--blue-100)' },
+  { href: '/dashboard/card', label: 'Карта', icon: CreditCard, color: 'var(--green-100)' },
+  { href: '/dashboard/billing', label: 'Биллинг', icon: Wallet, color: 'var(--yellow-100)' },
+  { href: '/dashboard/settings', label: 'Настройки', icon: Settings, color: 'var(--cream)' },
 ]
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const user = await getCurrentUser()
   if (!user) redirect('/auth/login')
 
+  const initials = (user.name || user.email)
+    .split(/\s+/)
+    .map((s) => s[0])
+    .slice(0, 2)
+    .join('')
+    .toUpperCase()
+
   return (
-    <div className="min-h-screen flex">
-      <aside className="w-64 flex-shrink-0 border-r-2 border-ink bg-paper flex flex-col p-5 gap-1 sticky top-0 h-screen">
-        <div className="mb-8 px-1"><Logo size="md" tone="blue" /></div>
+    <div className="min-h-screen flex flex-col gap-1.5" style={{ background: 'var(--ink)', padding: '5px' }}>
+      <Marquee
+        bg="var(--yellow)"
+        items={['ТВОЙ КАБИНЕТ IMBA', 'eSIM · VPN · КАРТА', 'БЕЗ ГРАНИЦ', 'БЕЗ ЛИШНИХ ВОПРОСОВ', `БАЛАНС $${user.balance.toFixed(2)}`]}
+      />
 
-        <nav className="flex-1 space-y-1.5">
-          {navItems.map(({ href, label, icon: Icon }) => (
-            <Link
-              key={href}
-              href={href}
-              className="flex items-center gap-3 px-3.5 py-3 rounded-2xl text-sm font-extrabold text-ink/70 border-2 border-transparent hover:border-ink hover:bg-cream transition-colors"
-            >
-              <Icon className="w-4.5 h-4.5" strokeWidth={2.5} />
-              {label}
-            </Link>
-          ))}
-        </nav>
-
-        <div className="border-t-2 border-ink pt-4 mt-2">
-          <div className="px-1 mb-3">
-            <div className="text-sm font-extrabold truncate">{user.name}</div>
-            <div className="text-xs font-semibold text-ink/50 truncate">{user.email}</div>
-          </div>
+      {/* Mobile top bar (above the row) */}
+      <div className="md:hidden flex items-center justify-between rounded-xl px-4 py-3" style={{ background: 'var(--paper)' }}>
+        <Link href="/dashboard"><Logo size="sm" tone="blue" /></Link>
+        <div className="flex items-center gap-2">
+          <span className="chip" style={{ background: 'var(--yellow)' }}>${user.balance.toFixed(2)}</span>
           <form action={logout}>
-            <button
-              type="submit"
-              className="flex items-center gap-3 w-full px-3.5 py-3 rounded-2xl text-sm font-extrabold text-ink/60 border-2 border-transparent hover:border-ink transition-colors"
-              style={{ ['--hover' as string]: '#FFD7D7' }}
-            >
-              <LogOut className="w-4.5 h-4.5" strokeWidth={2.5} />
-              Выйти
+            <button type="submit" className="pill pill-paper pill-sm" aria-label="Выйти">
+              <LogOut className="w-4 h-4" strokeWidth={2.5} />
             </button>
           </form>
         </div>
-      </aside>
+      </div>
 
-      <main className="flex-1 p-6 md:p-10 overflow-y-auto">{children}</main>
+      <div className="flex flex-1 gap-1.5 min-h-0">
+        {/* Sidebar */}
+        <aside
+          className="hidden md:flex w-64 flex-shrink-0 flex-col rounded-xl overflow-hidden"
+          style={{ background: 'var(--paper)' }}
+        >
+          <div className="p-5 flex flex-col gap-1 flex-1">
+            <div className="mb-6 px-1">
+              <Link href="/dashboard"><Logo size="md" tone="blue" /></Link>
+            </div>
+
+            <nav className="flex-1 space-y-1.5">
+              {navItems.map(({ href, label, icon: Icon }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  className="flex items-center gap-3 px-3.5 py-3 rounded-2xl text-sm font-extrabold text-ink/70 border-2 border-transparent hover:border-ink hover:bg-cream transition-colors"
+                >
+                  <Icon className="w-4 h-4" strokeWidth={2.5} />
+                  {label}
+                </Link>
+              ))}
+            </nav>
+
+            <div className="border-t-2 border-ink pt-4 mt-2">
+              <div className="px-1 mb-3 flex items-center gap-2.5">
+                <div
+                  className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-black border-2 border-ink flex-shrink-0"
+                  style={{ background: 'var(--yellow)' }}
+                >
+                  {initials}
+                </div>
+                <div className="min-w-0">
+                  <div className="text-sm font-extrabold truncate">{user.name || 'IMBA User'}</div>
+                  <div className="text-xs font-semibold text-ink/50 truncate">{user.email}</div>
+                </div>
+              </div>
+              <form action={logout}>
+                <button
+                  type="submit"
+                  className="flex items-center gap-3 w-full px-3.5 py-3 rounded-2xl text-sm font-extrabold text-ink/60 border-2 border-transparent hover:border-ink transition-colors"
+                >
+                  <LogOut className="w-4 h-4" strokeWidth={2.5} />
+                  Выйти
+                </button>
+              </form>
+            </div>
+          </div>
+        </aside>
+
+        {/* Main */}
+        <main className="flex-1 rounded-xl overflow-y-auto" style={{ background: 'var(--cream)' }}>
+          <div className="p-5 md:p-10 max-w-6xl mx-auto">{children}</div>
+        </main>
+      </div>
+
+      {/* Mobile bottom nav */}
+      <nav
+        className="md:hidden rounded-xl flex items-center justify-around px-2 py-2"
+        style={{ background: 'var(--paper)' }}
+      >
+        {navItems.slice(0, 5).map(({ href, label, icon: Icon }) => (
+          <Link
+            key={href}
+            href={href}
+            className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl text-[10px] font-extrabold text-ink/60"
+          >
+            <Icon className="w-5 h-5" strokeWidth={2.5} />
+            {label}
+          </Link>
+        ))}
+      </nav>
     </div>
   )
 }
