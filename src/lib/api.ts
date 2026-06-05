@@ -1,4 +1,3 @@
-import 'server-only'
 import { cookies } from 'next/headers'
 
 const BASE = process.env.IMBA_API_URL || 'http://localhost:8100'
