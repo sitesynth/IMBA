@@ -1,41 +1,64 @@
+'use client'
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { redirect } from 'next/navigation'
-import dynamic from 'next/dynamic'
 import { ArrowRight, Wallet, Plus } from 'lucide-react'
 import { getCurrentUser } from '@/lib/auth'
 import { api } from '@/lib/api'
-import type { Esim, VpnSubscription, VirtualCard, Transaction } from '@/lib/types'
+import { LottieSticker } from '@/components/LottieSticker'
+import type { Esim, VpnSubscription, VirtualCard, Transaction, UserProfile } from '@/lib/types'
 
-const LottieSticker = dynamic(() => import('@/components/LottieSticker').then(m => ({ default: m.LottieSticker })))
+export default function DashboardPage() {
+  const router = useRouter()
+  const [user, setUser] = useState<UserProfile | null>(null)
+  const [esims, setEsims] = useState<Esim[]>([])
+  const [vpns, setVpns] = useState<VpnSubscription[]>([])
+  const [cards, setCards] = useState<VirtualCard[]>([])
+  const [recentTx, setRecentTx] = useState<Transaction[]>([])
+  const [loading, setLoading] = useState(true)
 
-export default async function DashboardPage() {
-  const user = await getCurrentUser()
-  if (!user) redirect('/auth/login')
+  useEffect(() => {
+    async function load() {
+      const currentUser = await getCurrentUser()
+      if (!currentUser) {
+        router.push('/auth/login')
+        return
+      }
+      setUser(currentUser)
 
-  // Ensure user has required fields
+      const [esimData, vpnData, cardData] = await Promise.all([
+        api.get<Esim[]>('/v1/me/esims').catch(() => [] as Esim[]),
+        api.get<VpnSubscription[]>('/v1/me/vpn').catch(() => [] as VpnSubscription[]),
+        api.get<VirtualCard[]>('/v1/me/cards').catch(() => [] as VirtualCard[]),
+      ])
+
+      setEsims(esimData)
+      setVpns(vpnData)
+      setCards(cardData)
+
+      if (cardData[0]) {
+        const txData = await api
+          .get<Transaction[]>(`/v1/me/cards/${cardData[0].id}/transactions`)
+          .catch(() => [])
+        setRecentTx(txData.slice(0, 5))
+      }
+
+      setLoading(false)
+    }
+    load()
+  }, [router])
+
+  if (loading || !user) return <div className="p-8 text-center">Loading...</div>
+
   const safeUser = {
     ...user,
     balance: typeof user.balance === 'number' ? user.balance : 0,
     plan_name: user.plan_name || 'План IMBA',
   }
 
-  const [esims, vpns, cards] = await Promise.all([
-    api.get<Esim[]>('/v1/me/esims').catch(() => [] as Esim[]),
-    api.get<VpnSubscription[]>('/v1/me/vpn').catch(() => [] as VpnSubscription[]),
-    api.get<VirtualCard[]>('/v1/me/cards').catch(() => [] as VirtualCard[]),
-  ])
-
   const activeEsim = esims.find((e) => e.status === 'active')
   const activeVpn = vpns.find((v) => v.status === 'active')
   const card = cards[0]
-
-  let recentTx: Transaction[] = []
-  if (card) {
-    recentTx = await api
-      .get<Transaction[]>(`/v1/me/cards/${card.id}/transactions`)
-      .catch(() => [])
-    recentTx = recentTx.slice(0, 5)
-  }
 
   const hour = new Date().getHours()
   const greeting = hour < 12 ? 'Доброе утро' : hour < 18 ? 'Добрый день' : 'Добрый вечер'
