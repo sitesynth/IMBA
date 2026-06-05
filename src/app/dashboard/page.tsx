@@ -10,6 +10,13 @@ export default async function DashboardPage() {
   const user = await getCurrentUser()
   if (!user) redirect('/auth/login')
 
+  // Ensure user has required fields
+  const safeUser = {
+    ...user,
+    balance: typeof user.balance === 'number' ? user.balance : 0,
+    plan_name: user.plan_name || 'План IMBA',
+  }
+
   const [esims, vpns, cards] = await Promise.all([
     api.get<Esim[]>('/v1/me/esims').catch(() => [] as Esim[]),
     api.get<VpnSubscription[]>('/v1/me/vpn').catch(() => [] as VpnSubscription[]),
@@ -30,7 +37,7 @@ export default async function DashboardPage() {
 
   const hour = new Date().getHours()
   const greeting = hour < 12 ? 'Доброе утро' : hour < 18 ? 'Добрый день' : 'Добрый вечер'
-  const firstName = (user.name || user.email.split('@')[0]).split(' ')[0]
+  const firstName = (safeUser.name || safeUser.email.split('@')[0]).split(' ')[0]
 
   return (
     <div className="fade-up space-y-6">
@@ -41,7 +48,7 @@ export default async function DashboardPage() {
           <p className="font-semibold text-ink/60">Вот что происходит с твоими сервисами</p>
         </div>
         <Link href="/dashboard/billing" className="pill pill-ink pill-sm">
-          <Wallet className="w-4 h-4" strokeWidth={2.5} /> ${user.balance.toFixed(2)}
+          <Wallet className="w-4 h-4" strokeWidth={2.5} /> ${safeUser.balance.toFixed(2)}
         </Link>
       </div>
 
@@ -53,10 +60,10 @@ export default async function DashboardPage() {
         <div className="flex items-start justify-between gap-4 relative z-10">
           <div>
             <div className="text-xs font-extrabold uppercase tracking-widest opacity-60 mb-2">
-              {user.plan_name || 'План IMBA'}
+              {safeUser.plan_name}
             </div>
             <div className="display text-5xl md:text-6xl mb-1" style={{ color: 'var(--yellow)' }}>
-              ${user.balance.toFixed(2)}
+              ${safeUser.balance.toFixed(2)}
             </div>
             <div className="text-sm font-semibold opacity-60">Доступный баланс</div>
           </div>
