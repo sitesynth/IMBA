@@ -2,16 +2,14 @@ import Link from 'next/link'
 import { Logo } from '@/components/Logo'
 import { Marquee } from '@/components/Marquee'
 
-export default function AuthLayout({ children }: { children: React.ReactNode }) {
+export default function LegalLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen flex flex-col gap-1.5" style={{ background: 'var(--ink)', padding: '5px' }}>
-      {/* Ticker */}
       <Marquee
         bg="var(--violet-100)"
         items={['eSIM В 190 СТРАНАХ', 'VPN БЕЗ ЛОГОВ', 'ВИРТУАЛЬНАЯ КАРТА', 'ОПЛАТА ВЕЗДЕ', 'БЕЗ ГРАНИЦ']}
       />
 
-      {/* Nav */}
       <div className="rounded-xl overflow-hidden" style={{ background: 'var(--paper)' }}>
         <nav className="flex items-center justify-between px-4 md:px-8 py-3 md:py-4 max-w-7xl mx-auto">
           <Link href="/"><Logo size="lg" /></Link>
@@ -27,12 +25,12 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         </nav>
       </div>
 
-      {/* Page content */}
-      <div className="rounded-xl flex-1" style={{ background: 'var(--cream)' }}>
-        {children}
+      <div className="rounded-xl flex-1" style={{ background: 'var(--paper)' }}>
+        <div className="max-w-3xl mx-auto px-5 md:px-8 py-10 md:py-16">
+          {children}
+        </div>
       </div>
 
-      {/* Footer */}
       <footer className="rounded-xl" style={{ background: 'var(--paper)' }}>
         <div className="px-5 md:px-8 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <Logo size="md" />
@@ -44,7 +42,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         </div>
         <div className="px-5 md:px-8 pb-6 border-t border-ink/10 pt-4">
           <p className="text-xs text-ink/40 text-center leading-relaxed">
-            IMBA S.R.L. · Reg. No. 3-102-942736 · Costa Rica, San José, Mata Redonda, Sabana Oeste, twelfth avenue, ninetieth street, ERP Lawyers Law Firm offices
+            IMBA SRL · Reg. No. 3-102-942736 · Registered 25.08.2025 · Costa Rica, San José, Mata Redonda, Sabana Oeste, Avenida Doce Calle Noventa, ERP Lawyers Law Firm
           </p>
         </div>
       </footer>
