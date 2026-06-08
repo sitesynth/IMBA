@@ -41,8 +41,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
             <Link href="/terms" className="hover:opacity-60">Условия</Link>
           </div>
         </div>
-        <div className="px-5 md:px-8 pb-6 border-t border-ink/10 pt-4 flex flex-col items-center gap-1">
-          <p className="text-xs text-ink/30 text-center">© 2026 IMBA. Все права защищены.</p>
+        <div className="px-5 md:px-8 pb-6 border-t border-ink/10 pt-4">
           <p className="text-xs text-ink/40 text-center leading-relaxed">
             IMBA S.R.L. · Reg. No. 3-102-942736 · Costa Rica, San José, Mata Redonda, Sabana Oeste, twelfth avenue, ninetieth street, ERP Lawyers Law Firm offices
           </p>
