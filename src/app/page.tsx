@@ -214,13 +214,13 @@ export default function LandingPage() {
       <footer className="rounded-xl" style={{ background: 'var(--paper)' }}>
         <div className="px-5 md:px-8 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <Logo size="md" />
-          <p className="text-sm font-semibold text-ink/60">© 2026 IMBA. Все права защищены.</p>
           <div className="flex gap-5 text-sm font-bold">
             <Link href="/privacy-policy" className="hover:opacity-60">Конфиденциальность</Link>
             <Link href="/terms" className="hover:opacity-60">Условия</Link>
           </div>
         </div>
-        <div className="px-5 md:px-8 pb-6 border-t border-ink/10 pt-4">
+        <div className="px-5 md:px-8 pb-6 border-t border-ink/10 pt-4 flex flex-col items-center gap-1">
+          <p className="text-xs text-ink/30 text-center">© 2026 IMBA. Все права защищены.</p>
           <p className="text-xs text-ink/40 text-center leading-relaxed">
             IMBA SRL · Reg. No. 3-102-942736 · Registered 25.08.2025 · Costa Rica, San José, Mata Redonda, Sabana Oeste, Avenida Doce Calle Noventa, ERP Lawyers Law Firm
           </p>
