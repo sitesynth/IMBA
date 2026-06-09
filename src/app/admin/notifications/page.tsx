@@ -138,7 +138,7 @@ export default function AdminNotifications() {
               <tr key={n.id} className="hover:bg-gray-50">
                 <td className="px-6 py-4 text-sm">{n.email || '—'}</td>
                 <td className="px-6 py-4 text-sm font-medium">{n.title}</td>
-                <td className="px-6 py-4 text-sm">{n.type}</td>
+                <td className="px-6 py-4 text-sm">{n.notification_type}</td>
                 <td className="px-6 py-4 text-sm">{n.is_read ? '✓' : '✗'}</td>
                 <td className="px-6 py-4 text-sm">{new Date(n.created_at).toLocaleDateString()}</td>
               </tr>

@@ -1,12 +1,11 @@
 'use client'
 
 import { useState } from 'react'
-import { loadStripe } from '@stripe/js'
 import { CardElement, Elements, useStripe, useElements } from '@stripe/react-stripe-js'
-import { createPaymentIntent } from '@/lib/stripe-client'
+import { createPaymentIntent, getStripe } from '@/lib/stripe-client'
 import { Plus } from 'lucide-react'
 
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '')
+const stripePromise = getStripe()
 
 interface StripePaymentFormProps {
   amount: number
