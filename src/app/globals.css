@@ -198,6 +198,26 @@ body {
 }
 .fade-up { animation: fade-up 0.5s cubic-bezier(.2,.8,.2,1) both; }
 
+@keyframes wobble {
+  0%   { transform: rotate(0deg) scale(1); }
+  10%  { transform: rotate(-2.5deg) scale(1.015); }
+  25%  { transform: rotate(2deg) scale(1.01); }
+  40%  { transform: rotate(-1.5deg) scale(1.005); }
+  55%  { transform: rotate(1deg); }
+  70%  { transform: rotate(-0.5deg); }
+  85%  { transform: rotate(0.3deg); }
+  100% { transform: rotate(0deg) scale(1); }
+}
+.wobble { animation: wobble 0.5s cubic-bezier(.2,.8,.2,1) both; }
+
+.faq-body {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s cubic-bezier(.2,.8,.2,1);
+}
+.faq-body.open { grid-template-rows: 1fr; }
+.faq-body > div { overflow: hidden; }
+
 input:focus, textarea:focus { outline: none; border-color: var(--ink) !important; }
 
 /* Responsive animated logo in hero */
