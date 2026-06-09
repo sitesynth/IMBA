@@ -2,10 +2,11 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 const publicPaths = ['/', '/auth/login', '/auth/register', '/admin/login', '/terms', '/privacy-policy']
+const publicPrefixes = ['/blog']
 
 export async function proxy(request: NextRequest) {
   const path = request.nextUrl.pathname
-  const isPublic = publicPaths.includes(path)
+  const isPublic = publicPaths.includes(path) || publicPrefixes.some((p) => path.startsWith(p))
   const token = request.cookies.get('imba_token')?.value
 
   if (!isPublic && !token) {
