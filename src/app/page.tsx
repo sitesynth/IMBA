@@ -23,6 +23,7 @@ export default function LandingPage() {
           <a href="#services" className="hover:opacity-60 transition-opacity">Сервисы</a>
           <a href="#pricing" className="hover:opacity-60 transition-opacity">Тарифы</a>
           <a href="#faq" className="hover:opacity-60 transition-opacity">Вопросы</a>
+          <Link href="/blog" className="hover:opacity-60 transition-opacity">Блог</Link>
         </div>
         <div className="flex items-center gap-1.5 md:gap-2.5">
           <Link href="/auth/login" className="pill pill-paper pill-sm text-xs md:text-sm">Войти</Link>
@@ -215,6 +216,7 @@ export default function LandingPage() {
         <div className="px-5 md:px-8 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <Logo size="md" />
           <div className="flex gap-5 text-sm font-bold">
+            <Link href="/blog" className="hover:opacity-60">Блог</Link>
             <Link href="/privacy-policy" className="hover:opacity-60">Конфиденциальность</Link>
             <Link href="/terms" className="hover:opacity-60">Условия</Link>
           </div>
