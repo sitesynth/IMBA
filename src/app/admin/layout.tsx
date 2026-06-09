@@ -24,6 +24,14 @@ function AdminSidebar({ onClose }: { onClose?: () => void }) {
         { href: '/admin/support', label: 'Support' },
       ],
     },
+    {
+      title: 'Billing',
+      items: [
+        { href: '/admin/invoices', label: 'Invoices' },
+        { href: '/admin/notifications', label: 'Notifications' },
+        { href: '/admin/referrals', label: 'Referral Programs' },
+      ],
+    },
   ]
 
   return (

@@ -201,3 +201,90 @@ export function updatePlan(planId: string, body: Omit<Plan, 'plan_id'>) {
     body: JSON.stringify(body),
   })
 }
+
+export interface Notification {
+  id: string
+  user_id: string
+  email?: string
+  notification_type: string
+  title: string
+  message: string
+  channel: string
+  is_read: boolean
+  created_at: string
+  read_at?: string
+}
+
+export interface Invoice {
+  id: string
+  user_id: string
+  email?: string
+  invoice_number: string
+  amount: number
+  currency: string
+  items?: any[]
+  status: string
+  issued_at?: string
+  due_at?: string
+  paid_at?: string
+}
+
+export interface ReferralProgram {
+  id: string
+  referrer_id: string
+  referrer_email?: string
+  referral_code: string
+  referrer_bonus: number
+  referee_bonus: number
+  is_active: boolean
+  total_referrals: number
+  completed: number
+  pending: number
+  total_earned: number
+}
+
+export interface ReferralConversion {
+  id: string
+  referral_id: string
+  referee_id: string
+  referee_email?: string
+  status: string
+  referrer_bonus_paid: boolean
+  referee_bonus_paid: boolean
+  completed_at?: string
+}
+
+export function getNotifications() {
+  return adminReq<Notification[]>("/v1/admin/notifications")
+}
+
+export function sendNotification(body: { user_id: string; title: string; message: string; type?: string }) {
+  return adminReq<Notification>("/v1/admin/notifications/send-to-user", {
+    method: "POST",
+    body: JSON.stringify(body),
+  })
+}
+
+export function getInvoices() {
+  return adminReq<Invoice[]>("/v1/admin/invoices")
+}
+
+export function markInvoicePaid(invoiceId: string) {
+  return adminReq<Invoice>(`/v1/admin/invoices/${invoiceId}/mark-paid`, {
+    method: "POST",
+  })
+}
+
+export function getReferralPrograms() {
+  return adminReq<ReferralProgram[]>("/v1/admin/referrals")
+}
+
+export function getReferralConversions(programId: string) {
+  return adminReq<ReferralConversion[]>(`/v1/admin/referrals/${programId}/conversions`)
+}
+
+export function toggleReferralProgram(programId: string) {
+  return adminReq<ReferralProgram>(`/v1/admin/referrals/${programId}/toggle`, {
+    method: "POST",
+  })
+}
