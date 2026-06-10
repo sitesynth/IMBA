@@ -1,11 +1,14 @@
 'use client'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { saveAdminToken, AdminApiError } from '@/lib/admin-api'
+import { saveAdminToken } from '@/lib/admin-api'
+
+const API = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8100'
 
 export default function AdminLoginPage() {
   const router = useRouter()
-  const [token, setToken] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
@@ -13,50 +16,87 @@ export default function AdminLoginPage() {
     e.preventDefault()
     setError('')
     setLoading(true)
+
     try {
-      saveAdminToken(token)
-      const res = await fetch('http://138.2.134.17:8100/v1/admin/stats', {
-        headers: { 'Authorization': `Bearer ${token}` },
+      const res = await fetch(`${API}/v1/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
       })
+
+      const data = await res.json()
+
       if (!res.ok) {
-        localStorage.removeItem('imba_admin')
-        setError('Invalid token')
+        setError(data.detail || 'Неверный email или пароль')
         setLoading(false)
         return
       }
+
+      // Verify this user is actually an admin
+      const check = await fetch(`${API}/v1/admin/stats`, {
+        headers: { 'Authorization': `Bearer ${data.token}` },
+      })
+
+      if (!check.ok) {
+        setError('Нет прав администратора')
+        setLoading(false)
+        return
+      }
+
+      saveAdminToken(data.token)
       router.push('/admin/stats')
-    } catch (err) {
-      localStorage.removeItem('imba_admin')
-      setError('Connection error')
+    } catch {
+      setError('Сервер недоступен')
       setLoading(false)
     }
   }
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg border border-gray-200 p-8 w-full max-w-sm">
-        <h1 className="text-2xl font-bold text-gray-900 mb-6 text-center">IMBA Admin</h1>
+      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-8 w-full max-w-sm">
+        <div className="text-center mb-8">
+          <div className="text-3xl font-black tracking-tight text-gray-900 mb-1">IMBA</div>
+          <div className="text-sm text-gray-500">Admin Panel</div>
+        </div>
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              JWT Token
-            </label>
-            <textarea
-              value={token}
-              onChange={(e) => setToken(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Paste your JWT token here"
+            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="admin@imba.app"
               required
-              rows={4}
+              autoFocus
+              className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
-          {error && <p className="text-red-600 text-sm">{error}</p>}
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Пароль</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••"
+              required
+              className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+          </div>
+
+          {error && (
+            <div className="bg-red-50 border border-red-200 rounded-lg px-3 py-2 text-sm text-red-700">
+              {error}
+            </div>
+          )}
+
           <button
             type="submit"
-            disabled={loading || !token}
-            className="w-full bg-blue-600 text-white rounded-lg px-4 py-2 text-sm font-medium hover:bg-blue-700 disabled:opacity-50 transition"
+            disabled={loading || !email || !password}
+            className="w-full bg-blue-600 text-white rounded-lg px-4 py-2.5 text-sm font-semibold hover:bg-blue-700 disabled:opacity-50 transition-colors"
           >
-            {loading ? 'Verifying...' : 'Login'}
+            {loading ? 'Вход...' : 'Войти'}
           </button>
         </form>
       </div>
