@@ -27,6 +27,7 @@ function AdminSidebar({ onClose }: { onClose?: () => void }) {
     {
       title: 'Billing',
       items: [
+        { href: '/admin/subscriptions', label: 'Subscriptions' },
         { href: '/admin/invoices', label: 'Invoices' },
         { href: '/admin/notifications', label: 'Notifications' },
         { href: '/admin/referrals', label: 'Referral Programs' },
