@@ -73,6 +73,8 @@ export default function LandingPage() {
 
         {/* Subhead + CTA below blob */}
         <div className="text-center mt-10 fade-up">
+          {/* Visually hidden H1 for SEO — visual heading is the animated logo above */}
+          <h1 className="sr-only">eSIM, VPN и виртуальная карта для граждан России — IMBA</h1>
           <h2 className="display text-4xl md:text-6xl mb-5">
             Твой интернет.<br />Без границ.
           </h2>
@@ -110,8 +112,8 @@ export default function LandingPage() {
             {
               lottie: 'lock', tag: 'VPN', bg: 'var(--blue-100)',
               title: 'Свобода и защита',
-              desc: 'Доступ к Instagram, LinkedIn и YouTube. Протокол WireGuard — быстро и без логов.',
-              points: ['WireGuard', '50+ серверов', 'Без логов'],
+              desc: 'Доступ к Instagram, LinkedIn и YouTube. VLESS Reality и WireGuard — быстро, без логов, работает в России.',
+              points: ['VLESS Reality / WireGuard', '50+ серверов', 'Без логов'],
             },
             {
               lottie: 'cards', tag: 'Карта', bg: 'var(--green-100)',
@@ -201,6 +203,24 @@ export default function LandingPage() {
         <p className="font-semibold text-lg text-ink/70 mb-8">Регистрация за минуту. Без привязки карты.</p>
         <Link href="/auth/register" className="pill pill-ink text-base">Открыть IMBA →</Link>
       </section>
+
+      {/* Structured data */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: [
+          { '@type': 'Question', name: 'Что такое eSIM?', acceptedAnswer: { '@type': 'Answer', text: 'eSIM — это электронная SIM-карта, встроенная в твой телефон. Не нужно идти в салон: купи тариф, отсканируй QR — и уже в сети. IMBA поддерживает eSIM в 190+ странах с активацией за 1 минуту.' } },
+          { '@type': 'Question', name: 'Работает ли VPN в России?', acceptedAnswer: { '@type': 'Answer', text: 'Да. IMBA использует два протокола: VLESS Reality (для Москвы и СПб — неотличим от HTTPS для ТСПУ) и WireGuard (для регионов). 50+ серверов в 30+ странах, без логов.' } },
+          { '@type': 'Question', name: 'Для чего нужна виртуальная карта IMBA?', acceptedAnswer: { '@type': 'Answer', text: 'Виртуальная Visa/Mastercard от IMBA предназначена для оплаты Netflix, Spotify, ChatGPT Plus, Adobe, Amazon и других зарубежных сервисов, которые не принимают российские карты.' } },
+          { '@type': 'Question', name: 'Нужно ли привязывать российскую карту для пополнения?', acceptedAnswer: { '@type': 'Answer', text: 'Нет. Российская карта не требуется. Пополнение доступно через криптовалюту или денежным переводом.' } },
+          { '@type': 'Question', name: 'Мои данные в безопасности?', acceptedAnswer: { '@type': 'Answer', text: 'IMBA не хранит логи активности. VPN работает по принципу zero-knowledge — провайдер физически не может знать, что вы делали в сети.' } },
+        ],
+      })}} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify([
+        { '@context': 'https://schema.org', '@type': 'Product', '@id': 'https://www.imba.live/#plan-start', name: 'IMBA Старт', description: 'Бесплатный тариф: 1 eSIM профиль, базовый VPN (5 серверов), 1 виртуальная карта.', brand: { '@type': 'Brand', name: 'IMBA' }, offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD', availability: 'https://schema.org/InStock', url: 'https://www.imba.live/auth/register' } },
+        { '@context': 'https://schema.org', '@type': 'Product', '@id': 'https://www.imba.live/#plan-pro', name: 'IMBA Про', description: '5 eSIM профилей, VPN Pro (50+ серверов), 3 виртуальные карты, приоритетная поддержка.', brand: { '@type': 'Brand', name: 'IMBA' }, offers: { '@type': 'Offer', price: '9.99', priceCurrency: 'USD', availability: 'https://schema.org/InStock', url: 'https://www.imba.live/auth/register' } },
+        { '@context': 'https://schema.org', '@type': 'Product', '@id': 'https://www.imba.live/#plan-business', name: 'IMBA Бизнес', description: 'Безлимит eSIM, VPN безлимит, 10 виртуальных карт, API-доступ.', brand: { '@type': 'Brand', name: 'IMBA' }, offers: { '@type': 'Offer', price: '24.99', priceCurrency: 'USD', availability: 'https://schema.org/InStock', url: 'https://www.imba.live/auth/register' } },
+      ])}} />
 
       {/* Footer */}
       <footer className="rounded-xl" style={{ background: 'var(--paper)' }}>

@@ -26,18 +26,20 @@ const word = Archivo_Black({
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.imba.live'),
   title: 'IMBA — eSIM, VPN и виртуальная карта для граждан России',
-  description: 'Купи eSIM для 190+ стран, подключи VPN без логов на протоколе WireGuard и получи виртуальную Visa/Mastercard для оплаты зарубежных сервисов. Всё в одном кабинете.',
+  description: 'eSIM для 190+ стран, VPN без логов (VLESS Reality и WireGuard) и виртуальная Visa/Mastercard для оплаты Netflix, Spotify, ChatGPT и других зарубежных сервисов. Всё в одном кабинете.',
+  alternates: { canonical: 'https://www.imba.live' },
   icons: {
     icon: '/favicon.ico',
     shortcut: '/favicon.ico',
     apple: '/favicon.png',
   },
   openGraph: {
-    title: 'IMBA — eSIM, VPN и виртуальная карта',
+    title: 'IMBA — eSIM, VPN и виртуальная карта для граждан России',
     description: 'eSIM для 190+ стран, VPN без логов и виртуальная Visa/Mastercard. Без границ.',
     siteName: 'IMBA',
     locale: 'ru_RU',
     type: 'website',
+    url: 'https://www.imba.live',
     images: [
       {
         url: 'https://www.imba.live/og-image.png',
@@ -49,10 +51,36 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'IMBA — eSIM, VPN и виртуальная карта',
-    description: 'Твой интернет без границ.',
+    title: 'IMBA — eSIM, VPN и виртуальная карта для граждан России',
+    description: 'eSIM для 190+ стран, VPN без логов и виртуальная Visa/Mastercard.',
     images: ['https://www.imba.live/og-image.png'],
   },
+}
+
+const orgSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  '@id': 'https://www.imba.live/#organization',
+  name: 'IMBA',
+  legalName: 'IMBA SRL',
+  url: 'https://www.imba.live',
+  logo: { '@type': 'ImageObject', url: 'https://www.imba.live/favicon.png', width: 512, height: 512 },
+  foundingDate: '2025',
+  description: 'eSIM для 190+ стран, VPN без логов и виртуальная Visa/Mastercard для граждан России.',
+  contactPoint: { '@type': 'ContactPoint', email: 'support@imba.live', contactType: 'customer support', availableLanguage: ['Russian'] },
+  address: { '@type': 'PostalAddress', streetAddress: 'Mata Redonda, Sabana Oeste, Avenida Doce Calle Noventa, ERP Lawyers Law Firm', addressLocality: 'San José', addressCountry: 'CR' },
+  identifier: { '@type': 'PropertyValue', name: 'Registro Nacional de Costa Rica', value: '3-102-942736' },
+}
+
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  '@id': 'https://www.imba.live/#website',
+  name: 'IMBA',
+  url: 'https://www.imba.live',
+  description: 'eSIM, VPN и виртуальная карта для граждан России',
+  inLanguage: 'ru',
+  publisher: { '@id': 'https://www.imba.live/#organization' },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -62,6 +90,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="icon" href="/favicon.ico" />
         <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" href="/favicon.png" />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgSchema) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }} />
       </head>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>

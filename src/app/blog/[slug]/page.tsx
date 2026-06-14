@@ -9,6 +9,15 @@ export async function generateStaticParams() {
   return posts.map((p) => ({ slug: p.slug }))
 }
 
+const MONTH_MAP: Record<string, string> = {
+  'января':'01','февраля':'02','марта':'03','апреля':'04','мая':'05','июня':'06',
+  'июля':'07','августа':'08','сентября':'09','октября':'10','ноября':'11','декабря':'12',
+}
+function toIso(date: string) {
+  const parts = date.split(' ')
+  return parts.length === 3 ? `${parts[2]}-${MONTH_MAP[parts[1]] ?? '01'}-${parts[0].padStart(2, '0')}` : date
+}
+
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params
   const post = getPost(slug)
@@ -16,6 +25,22 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     title: `${post.title} — IMBA`,
     description: post.excerpt,
+    alternates: { canonical: `https://www.imba.live/blog/${slug}` },
+    openGraph: {
+      title: post.title,
+      description: post.excerpt,
+      type: 'article',
+      url: `https://www.imba.live/blog/${slug}`,
+      images: [{ url: 'https://www.imba.live/og-image.png', width: 1200, height: 630 }],
+      locale: 'ru_RU',
+      siteName: 'IMBA',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: post.title,
+      description: post.excerpt,
+      images: ['https://www.imba.live/og-image.png'],
+    },
   }
 }
 
@@ -179,6 +204,31 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           </div>
         </div>
       </div>
+
+      {/* Article JSON-LD */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'Article',
+        '@id': `https://www.imba.live/blog/${slug}#article`,
+        headline: post.title,
+        description: post.excerpt,
+        url: `https://www.imba.live/blog/${slug}`,
+        datePublished: toIso(post.date),
+        dateModified: toIso(post.date),
+        inLanguage: 'ru',
+        author: { '@type': 'Organization', '@id': 'https://www.imba.live/#organization', name: 'IMBA' },
+        publisher: { '@type': 'Organization', '@id': 'https://www.imba.live/#organization', name: 'IMBA', logo: { '@type': 'ImageObject', url: 'https://www.imba.live/favicon.png', width: 512, height: 512 } },
+        image: { '@type': 'ImageObject', url: 'https://www.imba.live/og-image.png', width: 1200, height: 630 },
+        isPartOf: { '@type': 'WebSite', '@id': 'https://www.imba.live/#website' },
+        breadcrumb: {
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'IMBA', item: 'https://www.imba.live' },
+            { '@type': 'ListItem', position: 2, name: 'Блог', item: 'https://www.imba.live/blog' },
+            { '@type': 'ListItem', position: 3, name: post.title, item: `https://www.imba.live/blog/${slug}` },
+          ],
+        },
+      })}} />
 
       {/* Footer */}
       <footer className="rounded-xl" style={{ background: 'var(--paper)' }}>
