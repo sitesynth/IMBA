@@ -4,6 +4,7 @@ import { LayoutDashboard, Wifi, Shield, CreditCard, Wallet, Settings, LogOut } f
 import { getCurrentUser, logout } from '@/lib/auth'
 import { Logo } from '@/components/Logo'
 import { Marquee } from '@/components/Marquee'
+import { AnimatedBalance } from '@/components/AnimatedBalance'
 
 const navItems = [
   { href: '/dashboard', label: 'Обзор', icon: LayoutDashboard, color: 'var(--paper)' },
@@ -36,7 +37,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
       <div className="md:hidden flex items-center justify-between rounded-xl px-4 py-3" style={{ background: 'var(--paper)' }}>
         <Link href="/dashboard"><Logo size="sm" tone="blue" /></Link>
         <div className="flex items-center gap-2">
-          <span className="chip" style={{ background: 'var(--yellow)' }}>${user.balance.toFixed(2)}</span>
+          <span className="chip" style={{ background: 'var(--yellow)' }}><AnimatedBalance balance={user.balance} /></span>
           <form action={logout}>
             <button type="submit" className="pill pill-paper pill-sm" aria-label="Выйти">
               <LogOut className="w-4 h-4" strokeWidth={2.5} />

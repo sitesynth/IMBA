@@ -1,9 +1,11 @@
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
-import { Shield, Download, Copy, Zap } from 'lucide-react'
+import { Shield, Zap, Smartphone, Wallet } from 'lucide-react'
 import { getCurrentUser } from '@/lib/auth'
 import { api, apiFetch, ApiError } from '@/lib/api'
 import { LottieSticker } from '@/components/LottieSticker'
+import { CopyButton } from '@/components/CopyButton'
+import { AnimatedBalance } from '@/components/AnimatedBalance'
 import type { VpnSubscription, VpnServer } from '@/lib/types'
 
 async function activateVpn(formData: FormData) {
@@ -38,64 +40,85 @@ export default async function VpnPage() {
       <div className="flex items-end justify-between gap-4 flex-wrap">
         <div>
           <h1 className="display text-4xl md:text-5xl mb-1">VPN</h1>
-          <p className="font-semibold text-ink/60">WireGuard, 50+ серверов, без логов</p>
+          <p className="font-semibold text-ink/60">VLESS+Reality, без логов</p>
         </div>
-        {active && (
-          <span className="chip" style={{ background: 'var(--green)' }}>
-            <span className="w-2 h-2 rounded-full bg-ink inline-block" /> Активен
+        <div className="flex items-center gap-3">
+          {active && (
+            <span className="chip" style={{ background: 'var(--green)' }}>
+              <span className="w-2 h-2 rounded-full bg-ink inline-block" /> Активен
+            </span>
+          )}
+          <span className="chip" style={{ background: 'var(--yellow)' }}>
+            <Wallet className="w-3.5 h-3.5" strokeWidth={2.5} />
+            <AnimatedBalance balance={user.balance} />
           </span>
-        )}
+        </div>
       </div>
 
       {active ? (
-        <>
-          <div className="panel" style={{ background: 'var(--blue-100)' }}>
-            <div className="flex items-start justify-between gap-4 mb-5">
-              <div>
-                <div className="text-xs font-extrabold uppercase tracking-widest text-ink/50 mb-1">
-                  План
-                </div>
-                <div className="display text-3xl capitalize">{active.plan}</div>
-                {active.expires_at && (
-                  <div className="text-xs font-semibold text-ink/60 mt-2">
-                    До: {new Date(active.expires_at).toLocaleDateString('ru-RU')}
-                  </div>
-                )}
+        <div className="panel" style={{ background: 'var(--blue-100)' }}>
+          <div className="flex items-start justify-between gap-4 mb-5">
+            <div>
+              <div className="text-xs font-extrabold uppercase tracking-widest text-ink/50 mb-1">
+                План
               </div>
-              <LottieSticker name="lock" size={84} className="hidden md:block" />
+              <div className="display text-3xl capitalize">{active.plan}</div>
+              {active.expires_at && (
+                <div className="text-xs font-semibold text-ink/60 mt-2">
+                  До: {new Date(active.expires_at).toLocaleDateString('ru-RU')}
+                </div>
+              )}
             </div>
+            <LottieSticker name="lock" size={84} className="hidden md:block" />
+          </div>
 
-            {active.server_key && (
-              <div className="rounded-2xl p-4 border-2 border-ink" style={{ background: 'var(--paper)' }}>
-                <div className="flex items-center justify-between mb-2">
-                  <div className="text-xs font-extrabold uppercase tracking-widest text-ink/50">
-                    WireGuard конфигурация
-                  </div>
-                  <button className="pill pill-paper pill-sm">
-                    <Copy className="w-4 h-4" strokeWidth={2.5} /> Копировать
-                  </button>
+          {active.server_key && (
+            <div className="rounded-2xl p-4 border-2 border-ink" style={{ background: 'var(--paper)' }}>
+              <div className="flex items-center justify-between mb-3">
+                <div className="text-xs font-extrabold uppercase tracking-widest text-ink/50">
+                  Ссылка подписки Happ
                 </div>
-                <pre className="text-[10px] font-mono overflow-x-auto whitespace-pre text-ink/70 max-h-32">
-{active.server_key}
-                </pre>
+                <CopyButton text={active.server_key} />
               </div>
-            )}
+              <p className="text-sm font-mono break-all text-ink/70 select-all">
+                {active.server_key}
+              </p>
+            </div>
+          )}
 
-            <div className="flex gap-2 mt-4">
-              <button className="pill pill-ink pill-sm">
-                <Download className="w-4 h-4" strokeWidth={2.5} /> Скачать .conf
-              </button>
+          {active.server_key && (
+            <div className="mt-4 rounded-2xl p-4 border border-ink/20" style={{ background: 'var(--paper)' }}>
+              <div className="flex items-center gap-2 mb-3">
+                <Smartphone className="w-4 h-4 text-ink/50" strokeWidth={2.5} />
+                <div className="text-xs font-extrabold uppercase tracking-widest text-ink/50">
+                  Как подключиться в Happ
+                </div>
+              </div>
+              <ol className="space-y-1 text-sm font-semibold text-ink/70">
+                <li>1. Скачай приложение <strong>Happ</strong> (iOS / Android)</li>
+                <li>2. Открой → «Добавить подписку»</li>
+                <li>3. Вставь ссылку выше и нажми «Сохранить»</li>
+                <li>4. Подключись к серверу одним нажатием</li>
+              </ol>
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="panel" style={{ background: 'var(--blue-100)' }}>
+          <div className="flex items-center gap-5 mb-5">
+            <LottieSticker name="lock" size={80} />
+            <div>
+              <div className="display text-2xl mb-1">VPN не подключён</div>
+              <p className="font-semibold text-ink/60 text-sm">
+                Выбери сервер — $4.99 спишется с баланса автоматически.
+              </p>
             </div>
           </div>
-        </>
-      ) : (
-        <div className="panel flex items-center gap-5" style={{ background: 'var(--blue-100)' }}>
-          <LottieSticker name="lock" size={80} />
-          <div>
-            <div className="display text-2xl mb-1">VPN не подключён</div>
-            <p className="font-semibold text-ink/60 text-sm">
-              Выбери сервер ниже — активация $4.99/мес списанием с баланса.
-            </p>
+
+          {/* Balance callout before pay */}
+          <div className="rounded-2xl px-5 py-4 border-2 border-ink flex items-center justify-between" style={{ background: 'var(--paper)' }}>
+            <span className="text-sm font-extrabold text-ink/60">Твой баланс</span>
+            <AnimatedBalance balance={user.balance} className="display text-2xl" />
           </div>
         </div>
       )}
@@ -103,7 +126,7 @@ export default async function VpnPage() {
       {/* Servers */}
       <div>
         <h2 className="display text-2xl md:text-3xl mb-1">
-          {active ? 'Сменить сервер' : 'Выбери сервер'}
+          {active ? 'Сервер' : 'Выбери сервер'}
         </h2>
         <p className="font-semibold text-ink/60 mb-5 text-sm">
           Ниже — серверы с самой низкой задержкой
@@ -123,7 +146,7 @@ export default async function VpnPage() {
               </div>
               <div className="flex items-center justify-between">
                 <span className="chip" style={{ background: 'var(--green-100)' }}>
-                  <Zap className="w-3 h-3" strokeWidth={3} /> ~{Math.floor(20 + Math.random() * 60)} мс
+                  <Zap className="w-3 h-3" strokeWidth={3} /> ~{s.ping} мс
                 </span>
                 <button className="pill pill-ink pill-sm">
                   <Shield className="w-4 h-4" strokeWidth={2.5} /> Выбрать

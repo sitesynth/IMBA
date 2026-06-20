@@ -41,6 +41,7 @@ export type VpnServer = {
   city: string
   country: string
   flag: string
+  ping: number
 }
 
 export type VirtualCard = {
