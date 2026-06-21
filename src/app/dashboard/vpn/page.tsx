@@ -158,27 +158,25 @@ export default async function VpnPage() {
             const vlessUri = vlessMap[s.city.toLowerCase()]
             return (
               <div key={s.id} className="panel" style={{ background: 'var(--paper)' }}>
-                <div className="flex items-center gap-3 mb-3">
+                <div className="flex items-center gap-3 mb-4">
                   <span className="text-3xl">{s.flag}</span>
-                  <div className="flex-1 min-w-0">
-                    <div className="display text-base">{s.city}</div>
-                    <div className="text-xs font-bold text-ink/50">{s.country}</div>
+                  <div>
+                    <div className="display text-lg leading-tight">{s.city}</div>
+                    <div className="text-xs font-bold text-ink/40">{s.country}</div>
                   </div>
-                  {active && vlessUri && (
-                    <div className="flex items-center gap-1.5 shrink-0">
-                      <span className="text-[10px] font-extrabold uppercase tracking-wider text-ink/30">v2box</span>
-                      <CopyButton text={vlessUri} />
-                    </div>
-                  )}
                 </div>
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between gap-2">
                   {s.ping ? (
                     <span className="chip" style={{ background: 'var(--green-100)' }}>
                       <Zap className="w-3 h-3" strokeWidth={3} /> ~{s.ping} мс
                     </span>
                   ) : <span />}
                   {active ? (
-                    <span className="text-xs font-bold text-ink/40">активен</span>
+                    vlessUri ? (
+                      <CopyButton text={vlessUri} label="v2box" className="pill pill-paper pill-sm text-xs" />
+                    ) : (
+                      <span className="text-xs font-bold text-ink/30">активен</span>
+                    )
                   ) : (
                     <form action={activateVpn}>
                       <input type="hidden" name="server_id" value={s.id} />
