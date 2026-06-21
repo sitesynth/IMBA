@@ -12,10 +12,16 @@ type AuthResponse = {
   name: string | null
 }
 
+function safeRedirect(path: string | null | undefined): string {
+  if (!path || !path.startsWith('/')) return '/dashboard'
+  return path
+}
+
 export async function signup(state: FormState, formData: FormData): Promise<FormState> {
   const name = (formData.get('name') as string)?.trim()
   const email = (formData.get('email') as string)?.trim()
   const password = formData.get('password') as string
+  const redirectTo = formData.get('redirectTo') as string | null
 
   const errors: NonNullable<FormState>['errors'] = {}
   if (!name || name.length < 2) errors.name = ['Имя должно быть не менее 2 символов']
@@ -39,12 +45,13 @@ export async function signup(state: FormState, formData: FormData): Promise<Form
     return { message: 'Не удалось зарегистрироваться. Сервер недоступен.' }
   }
 
-  redirect('/dashboard')
+  redirect(safeRedirect(redirectTo))
 }
 
 export async function login(state: FormState, formData: FormData): Promise<FormState> {
   const email = (formData.get('email') as string)?.trim()
   const password = formData.get('password') as string
+  const redirectTo = formData.get('redirectTo') as string | null
   if (!email || !password) return { message: 'Заполните все поля' }
 
   try {
@@ -61,7 +68,7 @@ export async function login(state: FormState, formData: FormData): Promise<FormS
     return { message: 'Не удалось войти. Сервер недоступен.' }
   }
 
-  redirect('/dashboard')
+  redirect(safeRedirect(redirectTo))
 }
 
 export async function logout() {

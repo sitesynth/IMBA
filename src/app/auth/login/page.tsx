@@ -18,7 +18,9 @@ export default function LoginPage() {
 
 function LoginForm() {
   const [state, action, pending] = useActionState(login, undefined)
-  const errorCode = useSearchParams().get('error') ?? undefined
+  const params = useSearchParams()
+  const errorCode = params.get('error') ?? undefined
+  const redirectTo = params.get('redirect') ?? ''
 
   return (
     <div className="flex items-center justify-center px-4 py-10">
@@ -39,6 +41,7 @@ function LoginForm() {
           <OrDivider />
 
           <form action={action} className="space-y-4">
+            {redirectTo && <input type="hidden" name="redirectTo" value={redirectTo} />}
             {state?.message && (
               <div className="border-2 border-ink rounded-2xl px-4 py-3 font-bold text-sm" style={{ background: '#FFD7D7' }}>
                 {state.message}

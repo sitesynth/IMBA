@@ -186,11 +186,7 @@ export async function sendPromoEmail(email: string, name: string, code: string, 
           <p style="margin:0;font-size:28px;font-weight:900;color:#1a1a1a;letter-spacing:4px;font-family:monospace">${code}</p>
         `)}
 
-        <p style="margin:0 0 22px;font-size:14px;color:#777;line-height:1.6">
-          Введи код в кабинете: главная страница → поле «Промокод» → нажми <strong>Применить</strong>.
-        </p>
-
-        ${pillButton(`${APP_URL}/dashboard`, 'Открыть кабинет →')}
+        ${pillButton(`${APP_URL}/promo/${code}`, 'Применить $' + amount + ' →', 'violet')}
 
         ${infoCard(`
           <p style="margin:0 0 8px;font-size:13px;font-weight:900;color:#1a1a1a">Что можно купить</p>
