@@ -108,7 +108,7 @@ export default async function VpnPage() {
               <div className="flex items-center gap-2 mb-3">
                 <Smartphone className="w-4 h-4 text-ink/50" strokeWidth={2.5} />
                 <div className="text-xs font-extrabold uppercase tracking-widest text-ink/50 flex-1">
-                  Happ — ссылка подписки
+                  Happ — подписка
                 </div>
                 <CopyButton text={active.server_key} />
               </div>
