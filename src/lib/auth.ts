@@ -128,7 +128,8 @@ export async function getCurrentUser(): Promise<UserProfile | null> {
   try {
     return await api.get<UserProfile>('/v1/me')
   } catch {
-    await clearApiToken()
+    // Cannot write cookies during Server Component render (Next.js 15+).
+    // The stale token will be cleared on the next server action (login/logout).
     return null
   }
 }
