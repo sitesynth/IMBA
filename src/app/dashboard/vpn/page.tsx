@@ -6,8 +6,33 @@ import { api, apiFetch, ApiError } from '@/lib/api'
 import { LottieSticker } from '@/components/LottieSticker'
 import { CopyButton } from '@/components/CopyButton'
 import { AnimatedBalance } from '@/components/AnimatedBalance'
-import { V2boxBlock } from '@/components/V2boxBlock'
 import type { VpnSubscription, VpnServer } from '@/lib/types'
+
+async function fetchVlessUris(subUrl: string): Promise<string[]> {
+  try {
+    const res = await fetch(subUrl, {
+      next: { revalidate: 300 },
+      headers: { 'User-Agent': 'v2rayNG/1.8.0' },
+    })
+    if (!res.ok) return []
+    const b64 = await res.text()
+    const decoded = Buffer.from(b64.trim(), 'base64').toString('utf-8')
+    return decoded.split('\n').map((l) => l.trim()).filter((l) => l.startsWith('vless://'))
+  } catch {
+    return []
+  }
+}
+
+function buildVlessMap(uris: string[]): Record<string, string> {
+  const map: Record<string, string> = {}
+  for (const uri of uris) {
+    const hash = decodeURIComponent(uri.split('#')[1] || '')
+    // fragment: "🇵🇹 Лиссабон" — strip leading emoji+spaces, lowercase city
+    const city = hash.replace(/^[\p{Emoji_Presentation}\p{Extended_Pictographic}\s]+/u, '').trim().toLowerCase()
+    if (city) map[city] = uri
+  }
+  return map
+}
 
 async function activateVpn(formData: FormData) {
   'use server'
@@ -35,6 +60,8 @@ export default async function VpnPage() {
   ])
 
   const active = vpns.find((v) => v.status === 'active')
+  const vlessUris = active?.server_key ? await fetchVlessUris(active.server_key) : []
+  const vlessMap = buildVlessMap(vlessUris)
 
   return (
     <div className="fade-up space-y-6">
@@ -77,32 +104,27 @@ export default async function VpnPage() {
           </div>
 
           {active.server_key && (
-            <>
-              {/* Happ block */}
-              <div className="panel" style={{ background: 'var(--paper)' }}>
-                <div className="flex items-center gap-2 mb-3">
-                  <Smartphone className="w-4 h-4 text-ink/50" strokeWidth={2.5} />
-                  <div className="text-xs font-extrabold uppercase tracking-widest text-ink/50 flex-1">
-                    Happ — ссылка подписки
-                  </div>
-                  <CopyButton text={active.server_key} />
+            /* Happ block */
+            <div className="panel" style={{ background: 'var(--paper)' }}>
+              <div className="flex items-center gap-2 mb-3">
+                <Smartphone className="w-4 h-4 text-ink/50" strokeWidth={2.5} />
+                <div className="text-xs font-extrabold uppercase tracking-widest text-ink/50 flex-1">
+                  Happ — ссылка подписки
                 </div>
-                <p className="text-sm font-mono break-all text-ink/70 select-all mb-3">
-                  {active.server_key}
-                </p>
-                <ol className="space-y-1 text-sm font-semibold text-ink/70 mb-3">
-                  <li>1. Скачай <strong>Happ</strong> (iOS / Android)</li>
-                  <li>2. Открой → «Добавить подписку» → вставь ссылку выше</li>
-                  <li>3. Подключись к серверу одним нажатием</li>
-                </ol>
-                <div className="rounded-xl px-3 py-2 text-xs font-bold" style={{ background: 'var(--yellow)', color: 'var(--ink)' }}>
-                  ⚠️ В настройках сервера в Happ обязательно отключи <strong>Mux</strong> — иначе VPN не будет работать.
-                </div>
+                <CopyButton text={active.server_key} />
               </div>
-
-              {/* v2box block */}
-              <V2boxBlock subUrl={active.server_key} />
-            </>
+              <p className="text-sm font-mono break-all text-ink/70 select-all mb-3">
+                {active.server_key}
+              </p>
+              <ol className="space-y-1 text-sm font-semibold text-ink/70 mb-3">
+                <li>1. Скачай <strong>Happ</strong> (iOS / Android)</li>
+                <li>2. Открой → «Добавить подписку» → вставь ссылку выше</li>
+                <li>3. Подключись к серверу одним нажатием</li>
+              </ol>
+              <div className="rounded-xl px-3 py-2 text-xs font-bold" style={{ background: 'var(--yellow)', color: 'var(--ink)' }}>
+                ⚠️ В настройках сервера в Happ обязательно отключи <strong>Mux</strong> — иначе VPN не будет работать.
+              </div>
+            </div>
           )}
         </>
       ) : (
@@ -128,34 +150,49 @@ export default async function VpnPage() {
       {/* Servers */}
       <div>
         <h2 className="display text-2xl md:text-3xl mb-1">
-          {active ? 'Сервер' : 'Выбери сервер'}
+          {active ? 'Серверы' : 'Выбери сервер'}
         </h2>
         <p className="font-semibold text-ink/60 mb-5 text-sm">
           Ниже — серверы с самой низкой задержкой
         </p>
 
         <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
-          {servers.map((s) => (
-            <form key={s.id} action={activateVpn} className="panel" style={{ background: 'var(--paper)' }}>
-              <input type="hidden" name="server_id" value={s.id} />
-              <input type="hidden" name="plan" value={active?.plan || 'pro'} />
-              <div className="flex items-center gap-3 mb-3">
-                <span className="text-3xl">{s.flag}</span>
-                <div>
-                  <div className="display text-base">{s.city}</div>
-                  <div className="text-xs font-bold text-ink/50">{s.country}</div>
+          {servers.map((s) => {
+            const vlessUri = vlessMap[s.city.toLowerCase()]
+            return (
+              <div key={s.id} className="panel" style={{ background: 'var(--paper)' }}>
+                <div className="flex items-center gap-3 mb-3">
+                  <span className="text-3xl">{s.flag}</span>
+                  <div className="flex-1 min-w-0">
+                    <div className="display text-base">{s.city}</div>
+                    <div className="text-xs font-bold text-ink/50">{s.country}</div>
+                  </div>
+                  {active && vlessUri && (
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      <span className="text-[10px] font-extrabold uppercase tracking-wider text-ink/30">v2box</span>
+                      <CopyButton text={vlessUri} />
+                    </div>
+                  )}
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="chip" style={{ background: 'var(--green-100)' }}>
+                    <Zap className="w-3 h-3" strokeWidth={3} /> ~{s.ping} мс
+                  </span>
+                  {active ? (
+                    <span className="text-xs font-bold text-ink/40">активен</span>
+                  ) : (
+                    <form action={activateVpn}>
+                      <input type="hidden" name="server_id" value={s.id} />
+                      <input type="hidden" name="plan" value="pro" />
+                      <button className="pill pill-ink pill-sm">
+                        <Shield className="w-4 h-4" strokeWidth={2.5} /> Выбрать
+                      </button>
+                    </form>
+                  )}
                 </div>
               </div>
-              <div className="flex items-center justify-between">
-                <span className="chip" style={{ background: 'var(--green-100)' }}>
-                  <Zap className="w-3 h-3" strokeWidth={3} /> ~{s.ping} мс
-                </span>
-                <button className="pill pill-ink pill-sm">
-                  <Shield className="w-4 h-4" strokeWidth={2.5} /> Выбрать
-                </button>
-              </div>
-            </form>
-          ))}
+            )
+          })}
         </div>
       </div>
     </div>

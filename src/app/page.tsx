@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { FireIcon } from '@/components/FireIcon'
 import { Marquee } from '@/components/Marquee'
 import { LottieSticker } from '@/components/LottieSticker'
 import { Logo } from '@/components/Logo'
@@ -26,10 +27,33 @@ export default function LandingPage() {
           <a href="#faq" className="hover:opacity-60 transition-opacity">Вопросы</a>
           <Link href="/blog" className="hover:opacity-60 transition-opacity">Блог</Link>
         </div>
-        <div className="flex items-center gap-1.5 md:gap-2.5">
-          <Link href="/auth/login" className="pill pill-paper pill-sm text-xs md:text-sm">Войти</Link>
-          <Link href="/auth/register" className="pill pill-ink pill-sm text-xs md:text-sm">Открыть IMBA</Link>
-        </div>
+        <Link href="/auth/register" className="pill pill-ink pill-sm imba-btn-pulse pac-btn flex items-center gap-2.5 px-4">
+          <svg width="38" height="22" viewBox="0 0 58 34" fill="none">
+            {/* dots stream: 5 total, last 2 outside viewBox, animate left into mouth */}
+            <g className="pac-dots">
+              <circle cx="35" cy="17" r="2.5" fill="#ffffff"/>
+              <circle cx="45" cy="17" r="2.5" fill="#ffffff"/>
+              <circle cx="55" cy="17" r="2.5" fill="#ffffff"/>
+              <circle cx="65" cy="17" r="2.5" fill="#ffffff"/>
+              <circle cx="75" cy="17" r="2.5" fill="#ffffff"/>
+            </g>
+            {/* static back arc: 60° CCW from upper-left→leftmost→lower-left */}
+            <path d="M 4.88,10 A 14 14 0 0 0 4.88,24"
+              stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round"/>
+            {/* top jaw = lip line + upper arc, one path — no junction gap */}
+            <path className="pac-jaw-top"
+              d="M 17,17 L 29.12,10 A 14 14 0 0 0 3,17"
+              stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+            {/* bottom jaw = lip line + lower arc, one path */}
+            <path className="pac-jaw-bottom"
+              d="M 17,17 L 29.12,24 A 14 14 0 0 1 3,17"
+              stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+            <circle cx="12" cy="10" r="2" fill="#ffffff"/>
+          </svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/>
+          </svg>
+        </Link>
       </nav>
 
       {/* Hero */}
@@ -83,7 +107,7 @@ export default function LandingPage() {
             зарубежных сервисов. Всё в одном приложении.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-            <Link href="/auth/register" className="pill pill-ink text-base">Начать бесплатно →</Link>
+            <Link href="/auth/register" className="pill pill-ink text-base imba-btn-pulse">IMBAНУТЬСЯ →</Link>
             <Link href="#services" className="pill pill-paper text-base">Как это работает</Link>
           </div>
         </div>
@@ -157,8 +181,8 @@ export default function LandingPage() {
           ].map((p) => (
             <div key={p.name} className="panel relative flex flex-col p-5 md:p-7" style={{ background: p.bg }}>
               {p.hot && (
-                <span className="chip bg-ink absolute -top-3.5 left-1/2 -translate-x-1/2" style={{ color: '#fff' }}>
-                  🔥 Популярный
+                <span className="chip bg-ink absolute -top-3.5 left-1/2 -translate-x-1/2 flex items-center gap-1" style={{ color: '#fff' }}>
+                  <FireIcon size={28} /> Популярный
                 </span>
               )}
               <div className="display text-lg md:text-xl mb-1 md:mb-2">{p.name}</div>
@@ -201,7 +225,7 @@ export default function LandingPage() {
         </div>
         <h2 className="display text-4xl md:text-6xl mb-4">Готов начать?</h2>
         <p className="font-semibold text-lg text-ink/70 mb-8">Регистрация за минуту. Без привязки карты.</p>
-        <Link href="/auth/register" className="pill pill-ink text-base">Открыть IMBA →</Link>
+        <Link href="/auth/register" className="pill pill-ink text-base imba-btn-pulse">IMBAНУТЬСЯ →</Link>
       </section>
 
       {/* Structured data */}
@@ -234,7 +258,7 @@ export default function LandingPage() {
         </div>
         <div className="px-5 md:px-8 pb-6 border-t border-ink/10 pt-4">
           <p className="text-xs text-ink/40 text-center leading-relaxed">
-            IMBA SRL · Reg. No. 3-102-942736 · Registered 25.08.2025 · Costa Rica, San José, Mata Redonda, Sabana Oeste, Avenida Doce Calle Noventa, ERP Lawyers Law Firm
+            IMBA SRL · Reg. No. 3-102-942736 · Registered 25.08.2025 · Costa Rica, San José, Mata Redonda, Sabana Oeste, Avenida Doce Calle Noventa
           </p>
         </div>
       </footer>

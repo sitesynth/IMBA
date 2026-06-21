@@ -230,3 +230,59 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink) !important
   .fade-up { animation: none; }
   html { scroll-behavior: auto; }
 }
+
+/* IMBAнуться CTA pulse animation */
+@keyframes imba-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(26,26,26,0.35); }
+  50% { box-shadow: 0 0 0 8px rgba(26,26,26,0); }
+}
+.imba-btn-pulse {
+  animation: imba-pulse 2s cubic-bezier(.4,0,.6,1) infinite;
+  position: relative;
+}
+
+/* Fire icon flicker animation */
+@keyframes fire-flicker {
+  0%, 100% { transform: scaleY(1) scaleX(1); filter: brightness(1); }
+  20%       { transform: scaleY(1.06) scaleX(0.97); filter: brightness(1.15); }
+  40%       { transform: scaleY(0.96) scaleX(1.03); filter: brightness(0.95); }
+  60%       { transform: scaleY(1.08) scaleX(0.96); filter: brightness(1.2); }
+  80%       { transform: scaleY(0.98) scaleX(1.02); filter: brightness(1.05); }
+}
+.fire-icon {
+  animation: fire-flicker 1.8s ease-in-out infinite;
+  transform-origin: center bottom;
+  display: inline-block;
+  line-height: 0;
+}
+
+/* Pac-Man dots: stream left on hover only */
+.pac-dots {
+  transform-box: view-box;
+}
+@keyframes pac-dots-flow {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-17.24%); }
+}
+.pac-btn:hover .pac-dots {
+  animation: pac-dots-flow 600ms linear infinite;
+}
+
+/* Pac-Man lips: only the lip lines rotate (body arc is static) */
+.pac-jaw-top,
+.pac-jaw-bottom {
+  transform-box: view-box;
+  transform-origin: 29.3% 50%; /* circle center: 17/58, 17/34 */
+}
+@keyframes pac-jaw-top {
+  100% { transform: rotate(30deg); }   /* upper lip swings down → mouth closes */
+}
+@keyframes pac-jaw-bottom {
+  100% { transform: rotate(-30deg); }  /* lower lip swings up → mouth closes */
+}
+.pac-btn:hover .pac-jaw-top {
+  animation: pac-jaw-top 175ms linear alternate infinite;
+}
+.pac-btn:hover .pac-jaw-bottom {
+  animation: pac-jaw-bottom 175ms linear alternate infinite;
+}

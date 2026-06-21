@@ -4,7 +4,7 @@ const resend = new Resend(process.env.RESEND_API_KEY)
 const FROM = 'IMBA <noreply@imba.live>'
 const APP_URL = process.env.APP_URL ?? 'https://imba.live'
 
-const FOOTER_ADDRESS = 'IMBA S.R.L. · Reg. No. 3-102-942736 · Costa Rica, San José, Mata Redonda, Sabana Oeste, 12th Avenue, 19th Street, ERP Lawyers Offices.'
+const FOOTER_ADDRESS = 'IMBA S.R.L. · Reg. No. 3-102-942736 · Costa Rica, San José, Mata Redonda, Sabana Oeste, 12th Avenue, 19th Street'
 
 function configured() {
   return Boolean(process.env.RESEND_API_KEY)

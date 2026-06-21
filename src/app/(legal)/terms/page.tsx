@@ -14,7 +14,7 @@ export default function TermsPage() {
       <p>
         Настоящее Пользовательское соглашение (далее — «Соглашение») является публичной офертой компании
         IMBA SRL (далее — «Лицензиар», «мы», «нас»), рег. номер 3-102-942736, адрес: Costa Rica, San José,
-        Mata Redonda, Sabana Oeste, Avenida Doce Calle Noventa, ERP Lawyers Law Firm, адресованной
+        Mata Redonda, Sabana Oeste, Avenida Doce Calle Noventa, адресованной
         неограниченному кругу лиц, регулирующей использование сервиса IMBA, доступного по адресу{' '}
         <a href="https://imba.live" className="text-blue font-bold hover:underline">https://imba.live</a>.
       </p>
@@ -121,7 +121,7 @@ export default function TermsPage() {
       <p>
         <strong>IMBA SRL</strong><br />
         Рег. номер: 3-102-942736<br />
-        Адрес: Costa Rica, San José, Mata Redonda, Sabana Oeste, Avenida Doce Calle Noventa, ERP Lawyers Law Firm<br />
+        Адрес: Costa Rica, San José, Mata Redonda, Sabana Oeste, Avenida Doce Calle Noventa<br />
         Email: <a href="mailto:support@imba.live" className="text-blue font-bold hover:underline">support@imba.live</a>
       </p>
 

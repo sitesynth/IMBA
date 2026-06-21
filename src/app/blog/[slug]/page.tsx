@@ -242,7 +242,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         </div>
         <div className="px-5 md:px-8 pb-6 border-t border-ink/10 pt-4">
           <p className="text-xs text-ink/40 text-center leading-relaxed">
-            IMBA SRL · Reg. No. 3-102-942736 · Registered 25.08.2025 · Costa Rica, San José, Mata Redonda, Sabana Oeste, Avenida Doce Calle Noventa, ERP Lawyers Law Firm
+            IMBA SRL · Reg. No. 3-102-942736 · Registered 25.08.2025 · Costa Rica, San José, Mata Redonda, Sabana Oeste, Avenida Doce Calle Noventa
           </p>
         </div>
       </footer>

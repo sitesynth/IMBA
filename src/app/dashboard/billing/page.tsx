@@ -1,3 +1,4 @@
+import { FireIcon } from '@/components/FireIcon'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { Plus, Check } from 'lucide-react'
@@ -163,10 +164,10 @@ export default async function BillingPage() {
               <div key={p.slug} className="panel relative flex flex-col p-5 md:p-7" style={{ background: p.bg }}>
                 {p.hot && (
                   <span
-                    className="chip absolute -top-3.5 left-1/2 -translate-x-1/2"
+                    className="chip absolute -top-3.5 left-1/2 -translate-x-1/2 flex items-center gap-1"
                     style={{ background: 'var(--ink)', color: '#fff' }}
                   >
-                    🔥 Популярный
+                    <FireIcon size={28} /> Популярный
                   </span>
                 )}
                 {isCurrent && (

@@ -68,7 +68,7 @@ const orgSchema = {
   foundingDate: '2025',
   description: 'eSIM для 190+ стран, VPN без логов и виртуальная Visa/Mastercard для граждан России.',
   contactPoint: { '@type': 'ContactPoint', email: 'support@imba.live', contactType: 'customer support', availableLanguage: ['Russian'] },
-  address: { '@type': 'PostalAddress', streetAddress: 'Mata Redonda, Sabana Oeste, Avenida Doce Calle Noventa, ERP Lawyers Law Firm', addressLocality: 'San José', addressCountry: 'CR' },
+  address: { '@type': 'PostalAddress', streetAddress: 'Mata Redonda, Sabana Oeste, Avenida Doce Calle Noventa', addressLocality: 'San José', addressCountry: 'CR' },
   identifier: { '@type': 'PropertyValue', name: 'Registro Nacional de Costa Rica', value: '3-102-942736' },
 }
 
