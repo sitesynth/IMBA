@@ -1,8 +1,8 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowRight, Wallet, Plus } from 'lucide-react'
+import { ArrowRight, Wallet, Plus, Tag } from 'lucide-react'
 import { getCurrentUser } from '@/lib/auth'
 import { api } from '@/lib/api-client'
 import { LottieSticker } from '@/components/LottieSticker'
@@ -16,6 +16,10 @@ export default function DashboardPage() {
   const [cards, setCards] = useState<VirtualCard[]>([])
   const [recentTx, setRecentTx] = useState<Transaction[]>([])
   const [loading, setLoading] = useState(true)
+  const [promoCode, setPromoCode] = useState('')
+  const [promoState, setPromoState] = useState<'idle' | 'loading' | 'ok' | 'error'>('idle')
+  const [promoMsg, setPromoMsg] = useState('')
+  const promoRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     async function load() {
@@ -60,6 +64,23 @@ export default function DashboardPage() {
   const activeVpn = vpns.find((v) => v.status === 'active')
   const card = cards[0]
 
+  async function redeemPromo() {
+    if (!promoCode.trim()) return
+    setPromoState('loading')
+    try {
+      const res = await api.post<{ credited: number; balance: number }>('/v1/me/promo/redeem', { code: promoCode.trim() })
+      setPromoState('ok')
+      setPromoMsg(`+$${res.credited.toFixed(2)} зачислено!`)
+      setPromoCode('')
+      setUser((u) => u ? { ...u, balance: res.balance } : u)
+    } catch (e: unknown) {
+      setPromoState('error')
+      const msg = (e as { message?: string })?.message || 'Неверный промокод'
+      setPromoMsg(msg)
+    }
+    setTimeout(() => setPromoState('idle'), 3000)
+  }
+
   const hour = new Date().getHours()
   const greeting = hour < 12 ? 'Доброе утро' : hour < 18 ? 'Добрый день' : 'Добрый вечер'
   const firstName = (safeUser.name || safeUser.email.split('@')[0]).split(' ')[0]
@@ -102,6 +123,31 @@ export default function DashboardPage() {
             Сменить план →
           </Link>
         </div>
+
+        {/* Promo code */}
+        <div className="flex gap-2 mt-4 relative z-10">
+          <div className="flex-1 flex items-center gap-2 px-3 py-2 rounded-2xl border-2 border-white/20 bg-white/10">
+            <Tag className="w-4 h-4 text-white/40 shrink-0" strokeWidth={2.5} />
+            <input
+              ref={promoRef}
+              value={promoCode}
+              onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+              onKeyDown={(e) => e.key === 'Enter' && redeemPromo()}
+              placeholder="Промокод"
+              className="bg-transparent text-white placeholder-white/30 font-extrabold text-sm w-full outline-none tracking-widest"
+            />
+          </div>
+          <button
+            onClick={redeemPromo}
+            disabled={promoState === 'loading'}
+            className="pill pill-yellow pill-sm shrink-0"
+          >
+            {promoState === 'loading' ? '...' : promoState === 'ok' ? promoMsg : promoState === 'error' ? '✕' : 'Применить'}
+          </button>
+        </div>
+        {promoState === 'error' && (
+          <p className="text-xs font-bold text-red-400 mt-1.5 relative z-10">{promoMsg}</p>
+        )}
       </div>
 
       {/* 3 service cards */}
