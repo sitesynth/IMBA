@@ -171,13 +171,11 @@ export default async function VpnPage() {
         </div>
       )}
 
-      {/* Servers */}
-      <div>
-        <h2 className="display text-2xl md:text-3xl mb-1">
-          {active ? 'Серверы' : 'Выбери сервер'}
-        </h2>
+      {/* Servers — only shown when no active sub (activation flow) */}
+      {!active && <div>
+        <h2 className="display text-2xl md:text-3xl mb-1">Выбери сервер</h2>
         <p className="font-semibold text-ink/60 mb-5 text-sm">
-          Ниже — серверы с самой низкой задержкой
+          После выбора VPN активируется автоматически
         </p>
 
         <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
@@ -193,25 +191,21 @@ export default async function VpnPage() {
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="chip" style={{ background: 'var(--green-100)' }}>
-                    <Zap className="w-3 h-3" strokeWidth={3} /> ~{s.ping} мс
+                    <Zap className="w-3 h-3" strokeWidth={3} /> {s.ping ? `~${s.ping} мс` : 'активен'}
                   </span>
-                  {active ? (
-                    <span className="text-xs font-bold text-ink/40">активен</span>
-                  ) : (
-                    <form action={activateVpn}>
+                  <form action={activateVpn}>
                       <input type="hidden" name="server_id" value={s.id} />
                       <input type="hidden" name="plan" value="pro" />
                       <button className="pill pill-ink pill-sm">
                         <Shield className="w-4 h-4" strokeWidth={2.5} /> Выбрать
                       </button>
                     </form>
-                  )}
                 </div>
               </div>
             )
           })}
         </div>
-      </div>
+      </div>}
     </div>
   )
 }
