@@ -1,12 +1,15 @@
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
-import { Shield, Zap, Smartphone, Wallet } from 'lucide-react'
+import { Zap, Smartphone, Wallet, Wifi } from 'lucide-react'
 import { getCurrentUser } from '@/lib/auth'
 import { api, apiFetch, ApiError } from '@/lib/api'
 import { LottieSticker } from '@/components/LottieSticker'
 import { CopyButton } from '@/components/CopyButton'
 import { AnimatedBalance } from '@/components/AnimatedBalance'
 import type { VpnSubscription, VpnServer } from '@/lib/types'
+
+const DEFAULT_SERVER_ID = 'c973f18c-36df-4926-b369-05ebc0604579'
+const VPN_PRICE = '$4.99'
 
 async function fetchVlessUris(subUrl: string): Promise<string[]> {
   try {
@@ -33,14 +36,12 @@ function buildVlessMap(uris: string[]): Record<string, string> {
   return map
 }
 
-async function activateVpn(formData: FormData) {
+async function activateVpn() {
   'use server'
-  const server_id = formData.get('server_id') as string
-  const plan = (formData.get('plan') as string) || 'pro'
   try {
     await apiFetch('/v1/me/vpn/activate', {
       method: 'POST',
-      body: JSON.stringify({ plan, server_id }),
+      body: JSON.stringify({ plan: 'pro', server_id: DEFAULT_SERVER_ID }),
     })
   } catch (e) {
     if (e instanceof ApiError) console.error('VPN activate failed:', e.message)
@@ -88,9 +89,7 @@ export default async function VpnPage() {
           <div className="panel" style={{ background: 'var(--blue-100)' }}>
             <div className="flex items-start justify-between gap-4">
               <div>
-                <div className="text-xs font-extrabold uppercase tracking-widest text-ink/50 mb-1">
-                  План
-                </div>
+                <div className="text-xs font-extrabold uppercase tracking-widest text-ink/50 mb-1">План</div>
                 <div className="display text-3xl capitalize">{active.plan}</div>
                 {active.expires_at && (
                   <div className="text-xs font-semibold text-ink/60 mt-2">
@@ -127,30 +126,35 @@ export default async function VpnPage() {
           )}
         </>
       ) : (
+        /* Not connected — single connect button */
         <div className="panel" style={{ background: 'var(--blue-100)' }}>
           <div className="flex items-center gap-5 mb-5">
             <LottieSticker name="lock" size={80} />
             <div>
               <div className="display text-2xl mb-1">VPN не подключён</div>
               <p className="font-semibold text-ink/60 text-sm">
-                Выбери сервер — $4.99 спишется с баланса автоматически.
+                5 локаций · VLESS+Reality · без логов
               </p>
             </div>
           </div>
-          <div className="rounded-2xl px-5 py-4 border-2 border-ink flex items-center justify-between" style={{ background: 'var(--paper)' }}>
+          <div className="rounded-2xl px-5 py-4 border-2 border-ink flex items-center justify-between mb-4" style={{ background: 'var(--paper)' }}>
             <span className="text-sm font-extrabold text-ink/60">Твой баланс</span>
             <AnimatedBalance balance={user.balance} className="display text-2xl" />
           </div>
+          <form action={activateVpn}>
+            <button className="pill pill-ink w-full justify-center text-base">
+              <Wifi className="w-5 h-5" strokeWidth={2.5} />
+              Подключить VPN — {VPN_PRICE}/мес
+            </button>
+          </form>
         </div>
       )}
 
       {/* Server cards — always shown */}
       <div>
-        <h2 className="display text-2xl md:text-3xl mb-1">
-          {active ? 'Серверы' : 'Выбери сервер'}
-        </h2>
+        <h2 className="display text-2xl md:text-3xl mb-1">Серверы</h2>
         <p className="font-semibold text-ink/60 mb-5 text-sm">
-          {active ? 'Активные серверы подписки' : 'После выбора VPN активируется автоматически'}
+          {active ? 'Входят в подписку' : '5 локаций включены в тариф'}
         </p>
 
         <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
@@ -171,20 +175,10 @@ export default async function VpnPage() {
                       <Zap className="w-3 h-3" strokeWidth={3} /> ~{s.ping} мс
                     </span>
                   ) : <span />}
-                  {active ? (
-                    vlessUri ? (
-                      <CopyButton text={vlessUri} label="v2box" className="pill pill-paper pill-sm text-xs" />
-                    ) : (
-                      <span className="text-xs font-bold text-ink/30">активен</span>
-                    )
+                  {active && vlessUri ? (
+                    <CopyButton text={vlessUri} label="v2box" className="pill pill-paper pill-sm text-xs" />
                   ) : (
-                    <form action={activateVpn}>
-                      <input type="hidden" name="server_id" value={s.id} />
-                      <input type="hidden" name="plan" value="pro" />
-                      <button className="pill pill-ink pill-sm">
-                        <Shield className="w-4 h-4" strokeWidth={2.5} /> Выбрать
-                      </button>
-                    </form>
+                    <span className="text-xs font-bold text-ink/20">—</span>
                   )}
                 </div>
               </div>
