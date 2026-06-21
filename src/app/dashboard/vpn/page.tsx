@@ -133,7 +133,7 @@ export default async function VpnPage() {
             <div>
               <div className="display text-2xl mb-1">VPN не подключён</div>
               <p className="font-semibold text-ink/60 text-sm">
-                5 локаций · VLESS+Reality · без логов
+                5 локаций · без лагов · без логов
               </p>
             </div>
           </div>
