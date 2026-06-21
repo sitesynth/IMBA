@@ -1,4 +1,4 @@
-const BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8100'
+const BASE = '/api'
 
 export class ApiError extends Error {
   status: number
