@@ -35,7 +35,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
       {/* Mobile top bar (above the row) */}
       <div className="md:hidden flex items-center justify-between rounded-xl px-4 py-3" style={{ background: 'var(--paper)' }}>
-        <Link href="/dashboard"><Logo size="sm" tone="blue" /></Link>
+        <Logo size="sm" tone="blue" href="/dashboard" />
         <div className="flex items-center gap-2">
           <span className="chip" style={{ background: 'var(--yellow)' }}><AnimatedBalance balance={user.balance} /></span>
           <form action={logout}>
@@ -54,7 +54,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
         >
           <div className="p-5 flex flex-col gap-1 flex-1">
             <div className="mb-6 px-1">
-              <Link href="/dashboard"><Logo size="md" tone="blue" /></Link>
+              <Logo size="md" tone="blue" href="/dashboard" />
             </div>
 
             <nav className="flex-1 space-y-1.5">

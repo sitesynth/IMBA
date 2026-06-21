@@ -21,7 +21,7 @@ export default function BlogPage() {
       {/* Nav */}
       <div className="rounded-xl overflow-hidden" style={{ background: 'var(--paper)' }}>
         <nav className="flex items-center justify-between px-4 md:px-8 py-3 md:py-4 max-w-7xl mx-auto">
-          <Link href="/"><Logo size="lg" /></Link>
+          <Logo size="lg" />
           <div className="hidden md:flex items-center gap-7 text-sm uppercase flex-1 justify-center" style={{ fontFamily: 'var(--font-display), Impact, sans-serif', fontWeight: 900, letterSpacing: '-0.01em' }}>
             <Link href="/#services" className="hover:opacity-60 transition-opacity">Сервисы</Link>
             <Link href="/#pricing" className="hover:opacity-60 transition-opacity">Тарифы</Link>
