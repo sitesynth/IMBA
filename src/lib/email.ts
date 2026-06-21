@@ -163,3 +163,53 @@ export async function sendPasswordResetEmail(email: string, name: string, token:
     }),
   })
 }
+
+export async function sendPromoEmail(email: string, name: string, code: string, amount: number) {
+  if (!configured()) return
+  const firstName = name.split(' ')[0]
+  await resend.emails.send({
+    from: FROM,
+    to: email,
+    subject: `${firstName}, тебе начислено $${amount} на IMBA 🎁`,
+    html: baseHtml({
+      ticker: '✦ ПОДАРОК ОТ IMBA ✦ eSIM · VPN · КАРТА ✦',
+      tickerColor: '#ffd731',
+      content: `
+        <p style="margin:0 0 6px;font-size:12px;font-weight:800;color:#999;text-transform:uppercase;letter-spacing:1.5px">Привет, ${firstName}!</p>
+        <h1 style="margin:0 0 18px;font-size:36px;font-weight:900;color:#1a1a1a;line-height:1.05;font-family:Impact,'Arial Black',sans-serif;letter-spacing:-1px">ТЕБЕ<br>НАЧИСЛЕНО<br><span style="color:#e6a800">$${amount}.00</span></h1>
+        <p style="margin:0 0 28px;font-size:15px;color:#555;line-height:1.65">
+          Активируй промокод в личном кабинете — деньги зачислятся на баланс мгновенно. Трать на eSIM, VPN и виртуальную карту.
+        </p>
+
+        ${infoCard(`
+          <p style="margin:0 0 10px;font-size:12px;font-weight:800;color:#999;text-transform:uppercase;letter-spacing:1px">Твой промокод</p>
+          <p style="margin:0;font-size:28px;font-weight:900;color:#1a1a1a;letter-spacing:4px;font-family:monospace">${code}</p>
+        `)}
+
+        <p style="margin:0 0 22px;font-size:14px;color:#777;line-height:1.6">
+          Введи код в кабинете: главная страница → поле «Промокод» → нажми <strong>Применить</strong>.
+        </p>
+
+        ${pillButton(`${APP_URL}/dashboard`, 'Открыть кабинет →')}
+
+        ${infoCard(`
+          <p style="margin:0 0 8px;font-size:13px;font-weight:900;color:#1a1a1a">Что можно купить</p>
+          <table cellpadding="0" cellspacing="0">
+            <tr><td style="padding:4px 0">
+              <span style="display:inline-block;background:#1a1a1a;color:#fffef9;font-size:10px;font-weight:900;padding:3px 9px;border-radius:100px;margin-right:10px">eSIM</span>
+              <span style="font-size:13px;color:#555">Интернет в 190+ странах</span>
+            </td></tr>
+            <tr><td style="padding:4px 0">
+              <span style="display:inline-block;background:#7c5fe6;color:#fffef9;font-size:10px;font-weight:900;padding:3px 9px;border-radius:100px;margin-right:10px">VPN</span>
+              <span style="font-size:13px;color:#555">Без логов · $4.99/мес</span>
+            </td></tr>
+            <tr><td style="padding:4px 0">
+              <span style="display:inline-block;background:#1a9e6e;color:#fffef9;font-size:10px;font-weight:900;padding:3px 9px;border-radius:100px;margin-right:10px">КАРТА</span>
+              <span style="font-size:13px;color:#555">Visa/Mastercard для оплаты везде</span>
+            </td></tr>
+          </table>
+        `)}
+      `,
+    }),
+  })
+}
