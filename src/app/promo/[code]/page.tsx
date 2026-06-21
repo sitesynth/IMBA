@@ -9,8 +9,9 @@ import { LottieSticker } from '@/components/LottieSticker'
 
 const APP_URL = process.env.APP_URL ?? 'https://imba.live'
 
-export default async function PromoLandingPage({ params }: { params: { code: string } }) {
-  const code = params.code.toUpperCase()
+export default async function PromoLandingPage({ params }: { params: Promise<{ code: string }> }) {
+  const { code: rawCode } = await params
+  const code = rawCode.toUpperCase()
   const user = await getCurrentUser()
 
   async function claimPromo(_formData: FormData) {
