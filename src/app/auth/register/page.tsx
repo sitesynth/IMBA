@@ -25,11 +25,10 @@ function RegisterForm() {
     <div className="flex items-center justify-center px-4 py-10">
       <div className="w-full max-w-sm fade-up">
         <div className="text-center mb-7">
-          <div className="flex justify-center mb-5"><Logo size="lg" /></div>
-          <div className="flex items-center justify-center gap-3 mb-1">
-            <LottieSticker name="smiley" size={80} />
-            <h1 className="display text-4xl" style={{ whiteSpace: 'nowrap', textWrap: 'nowrap' }}>Создать аккаунт</h1>
+          <div className="flex justify-center mb-4">
+            <LottieSticker name="keys" size={96} />
           </div>
+          <h1 className="display text-4xl mb-1">Создать аккаунт</h1>
           <p className="font-semibold text-ink/60">Бесплатно. Без привязки карты.</p>
         </div>
 
