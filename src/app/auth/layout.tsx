@@ -19,7 +19,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
       {/* Nav */}
       <div className="rounded-xl overflow-hidden" style={{ background: 'var(--paper)' }}>
         <nav className="flex items-center justify-between px-4 md:px-8 py-3 md:py-4 max-w-7xl mx-auto">
-          <Link href="/"><Logo size="lg" /></Link>
+          <Logo size="lg" />
           <div className="hidden md:flex items-center gap-7 text-sm uppercase flex-1 justify-center" style={{ fontFamily: 'var(--font-display), Impact, sans-serif', fontWeight: 900, letterSpacing: '-0.01em' }}>
             <Link href="/#services" className="hover:opacity-60 transition-opacity">Сервисы</Link>
             <Link href="/#pricing" className="hover:opacity-60 transition-opacity">Тарифы</Link>
@@ -50,7 +50,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         </div>
         <div className="px-5 md:px-8 pb-6 border-t border-ink/10 pt-4">
           <p className="text-xs text-ink/40 text-center leading-relaxed">
-            IMBA S.R.L. · Reg. No. 3-102-942736 · Costa Rica, San José, Mata Redonda, Sabana Oeste, twelfth avenue, ninetieth street, ERP Lawyers Law Firm offices
+            IMBA S.R.L. · Reg. No. 3-102-942736 · Costa Rica, San José, Mata Redonda, Sabana Oeste, 12th Avenue, 19th Street, ERP Lawyers Offices.
           </p>
         </div>
       </footer>

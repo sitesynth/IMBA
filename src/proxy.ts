@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-const publicPaths = ['/', '/auth/login', '/auth/register', '/terms', '/privacy-policy']
+const publicPaths = ['/', '/auth/login', '/auth/register', '/auth/forgot-password', '/auth/reset-password', '/terms', '/privacy-policy']
 const publicPrefixes = ['/blog', '/admin']
 
 export async function proxy(request: NextRequest) {

@@ -17,6 +17,7 @@ export async function GET() {
     sameSite: 'lax',
     path: '/',
     maxAge: 600,
+    domain: process.env.NODE_ENV === 'production' ? '.imba.live' : undefined,
   })
   return NextResponse.redirect(buildAuthUrl(state))
 }

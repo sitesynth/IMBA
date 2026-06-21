@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
-import { exchangeCodeForProfile, upsertGoogleUser } from '@/lib/google'
-import { createSession } from '@/lib/session'
+import { exchangeCodeForToken } from '@/lib/google'
+import { setApiToken } from '@/lib/api'
 
 const base = () => process.env.APP_URL ?? 'http://localhost:3100'
+const apiUrl = () => process.env.IMBA_API_URL ?? 'http://localhost:8100'
 
 export async function GET(request: NextRequest) {
   const url = new URL(request.url)
@@ -19,9 +20,15 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const profile = await exchangeCodeForProfile(code)
-    const userId = await upsertGoogleUser(profile)
-    await createSession(userId)
+    const accessToken = await exchangeCodeForToken(code)
+    const res = await fetch(`${apiUrl()}/v1/auth/google`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ access_token: accessToken }),
+    })
+    if (!res.ok) throw new Error('backend google auth failed')
+    const { token } = await res.json()
+    await setApiToken(token)
     return NextResponse.redirect(new URL('/dashboard', base()))
   } catch {
     return NextResponse.redirect(new URL('/auth/login?error=google_failed', base()))
