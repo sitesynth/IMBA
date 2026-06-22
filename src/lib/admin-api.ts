@@ -324,3 +324,34 @@ export function updateSubscription(subId: string, body: {
     body: JSON.stringify(body),
   })
 }
+
+export interface AdminVpnSub {
+  id: string
+  user_id: string
+  email?: string
+  name?: string
+  plan: string
+  server_id?: string
+  provider: 'remnawave' | 'mock' | 'unknown'
+  status: string
+  expires_at?: string
+  created_at?: string
+  has_key: boolean
+}
+
+export function getVpnSubs(params?: { status?: string; provider?: string; limit?: number }) {
+  const q = new URLSearchParams()
+  if (params?.status) q.set("status", params.status)
+  if (params?.provider) q.set("provider", params.provider)
+  if (params?.limit != null) q.set("limit", String(params.limit))
+  const qs = q.toString()
+  return adminReq<AdminVpnSub[]>(`/v1/admin/vpn${qs ? "?" + qs : ""}`)
+}
+
+export function recreateVpn(vpnId: string) {
+  return adminReq<{ id: string; provider: string; status: string }>(`/v1/admin/vpn/${vpnId}/recreate`, { method: "POST" })
+}
+
+export function revokeVpnAdmin(vpnId: string) {
+  return adminReq<{ id: string; status: string }>(`/v1/admin/vpn/${vpnId}/revoke`, { method: "POST" })
+}

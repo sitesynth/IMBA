@@ -26,12 +26,14 @@ async function fetchVlessUris(subUrl: string): Promise<string[]> {
   }
 }
 
+// Match VLESS URIs to servers by host IP — robust across city name translations
 function buildVlessMap(uris: string[]): Record<string, string> {
   const map: Record<string, string> = {}
   for (const uri of uris) {
-    const hash = decodeURIComponent(uri.split('#')[1] || '')
-    const city = hash.replace(/^[\p{Emoji_Presentation}\p{Extended_Pictographic}\s]+/u, '').trim().toLowerCase()
-    if (city) map[city] = uri
+    // vless://UUID@HOST:PORT?...#remark
+    const atPart = uri.split('@')[1] || ''
+    const host = atPart.split(':')[0] || atPart.split('?')[0]
+    if (host) map[host] = uri
   }
   return map
 }
@@ -68,7 +70,7 @@ export default async function VpnPage() {
       <div className="flex items-end justify-between gap-4 flex-wrap">
         <div>
           <h1 className="display text-4xl md:text-5xl mb-1">VPN</h1>
-          <p className="font-semibold text-ink/60">VLESS+Reality, без логов</p>
+          <p className="font-semibold text-ink/60">VPN на всех ваших устройствах без лагов и логов!</p>
         </div>
         <div className="flex items-center gap-3">
           {active && (
@@ -159,7 +161,7 @@ export default async function VpnPage() {
 
         <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
           {servers.map((s) => {
-            const vlessUri = vlessMap[s.city.toLowerCase()]
+            const vlessUri = s.host ? vlessMap[s.host] : undefined
             return (
               <div key={s.id} className="panel" style={{ background: 'var(--paper)' }}>
                 <div className="flex items-center gap-3 mb-4">

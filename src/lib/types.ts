@@ -6,6 +6,7 @@ export type UserProfile = {
   plan_slug: string | null
   plan_name: string | null
   language: string
+  currency: string
   created_at: string
 }
 
@@ -41,7 +42,9 @@ export type VpnServer = {
   city: string
   country: string
   flag: string
-  ping: number
+  host?: string
+  port?: number
+  ping?: number
 }
 
 export type VirtualCard = {

@@ -1,6 +1,18 @@
 import { redirect } from 'next/navigation'
+import { revalidatePath } from 'next/cache'
 import { Mail, User as UserIcon, Calendar, Globe } from 'lucide-react'
 import { getCurrentUser, logout } from '@/lib/auth'
+import { apiFetch } from '@/lib/api'
+import { CurrencySelector } from '@/components/CurrencySelector'
+
+async function updateCurrency(currency: string) {
+  'use server'
+  await apiFetch('/v1/me/settings', {
+    method: 'PATCH',
+    body: JSON.stringify({ currency }),
+  })
+  revalidatePath('/dashboard/settings')
+}
 
 export default async function SettingsPage() {
   const user = await getCurrentUser()
@@ -11,6 +23,14 @@ export default async function SettingsPage() {
       <div>
         <h1 className="display text-4xl md:text-5xl mb-1">Настройки</h1>
         <p className="font-semibold text-ink/60">Профиль, язык, безопасность</p>
+      </div>
+
+      <div className="panel" style={{ background: 'var(--paper)' }}>
+        <h2 className="display text-xl md:text-2xl mb-4">Валюта</h2>
+        <p className="font-semibold text-ink/60 text-sm mb-4">
+          В какой валюте отображать баланс и цены
+        </p>
+        <CurrencySelector current={user.currency ?? 'USD'} action={updateCurrency} />
       </div>
 
       <div className="panel" style={{ background: 'var(--paper)' }}>

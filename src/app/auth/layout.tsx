@@ -28,7 +28,10 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
           </div>
           <div className="flex items-center gap-1.5 md:gap-2.5">
             <Link href="/auth/login" className="pill pill-paper pill-sm text-xs md:text-sm">Войти</Link>
-            <Link href="/auth/register" className="pill pill-ink pill-sm text-xs md:text-sm">Зарегистрироваться</Link>
+            <Link href="/auth/register" className="pill pill-ink pill-sm text-[10px] md:text-sm">
+              <span className="sm:hidden">Регистрация</span>
+              <span className="hidden sm:inline">Зарегистрироваться</span>
+            </Link>
           </div>
         </nav>
       </div>
