@@ -5,6 +5,7 @@ import { Plus, Check } from 'lucide-react'
 import { getCurrentUser } from '@/lib/auth'
 import { api, apiFetch, ApiError } from '@/lib/api'
 import { LottieSticker } from '@/components/LottieSticker'
+import { formatMoney } from '@/lib/format'
 import type { BillingInfo } from '@/lib/types'
 
 async function topup(formData: FormData) {
@@ -42,14 +43,14 @@ const PLANS = [
   {
     slug: 'start',
     name: 'Старт',
-    price: 'Бесплатно',
+    priceUsd: 0,
     bg: 'var(--paper)',
     feats: ['1 eSIM профиль', 'VPN базовый', 'Без виртуальных карт'],
   },
   {
     slug: 'pro',
     name: 'Про',
-    price: '$9.99/мес',
+    priceUsd: 9.99,
     bg: 'var(--yellow)',
     hot: true,
     feats: ['3 eSIM профиля', 'VPN Pro (50+ серверов)', '1 виртуальная карта', 'Приоритетная поддержка'],
@@ -57,13 +58,13 @@ const PLANS = [
   {
     slug: 'business',
     name: 'Бизнес',
-    price: '$24.99/мес',
+    priceUsd: 24.99,
     bg: 'var(--violet-100)',
     feats: ['10 eSIM профилей', 'VPN безлимит', '5 виртуальных карт', 'API доступ'],
   },
 ]
 
-const QUICK_AMOUNTS = [10, 25, 50, 100, 250]
+const QUICK_AMOUNTS_USD = [10, 25, 50, 100, 250]
 
 export default async function BillingPage() {
   const user = await getCurrentUser()
@@ -72,6 +73,10 @@ export default async function BillingPage() {
   const billing = await api
     .get<BillingInfo>('/v1/me/billing')
     .catch(() => null as BillingInfo | null)
+
+  const rates = user.rates ?? { EUR: 0.92, RUB: 90 }
+  const cur = user.currency ?? 'USD'
+  const balanceUsd = billing?.balance ?? user.balance
 
   return (
     <div className="fade-up space-y-6">
@@ -87,8 +92,13 @@ export default async function BillingPage() {
             Текущий баланс
           </div>
           <div className="display text-5xl md:text-6xl mb-1" style={{ color: 'var(--yellow)' }}>
-            ${(billing?.balance ?? user.balance).toFixed(2)}
+            {formatMoney(balanceUsd, cur, rates)}
           </div>
+          {cur !== 'USD' && (
+            <div className="text-xs font-semibold opacity-40 mb-1">
+              ≈ ${balanceUsd.toFixed(2)} USD
+            </div>
+          )}
           <div className="text-sm font-semibold opacity-60 mb-5">Используется для покупок и подписок</div>
           <LottieSticker
             name="rocket"
@@ -104,7 +114,9 @@ export default async function BillingPage() {
           </div>
           <div className="display text-3xl mb-1">{billing?.plan_name || user.plan_name || 'Старт'}</div>
           <div className="font-bold text-sm text-ink/60 mb-3">
-            {billing?.plan_price ? `$${billing.plan_price}/мес` : 'Бесплатно'}
+            {billing?.plan_price
+              ? `${formatMoney(billing.plan_price, cur, rates)}/мес`
+              : 'Бесплатно'}
           </div>
           {billing?.subscription_expires && billing.plan_price && billing.plan_price > 0 && (
             <div className="text-xs font-semibold text-ink/60">
@@ -125,11 +137,11 @@ export default async function BillingPage() {
         </p>
 
         <div className="flex flex-wrap gap-2 mb-4">
-          {QUICK_AMOUNTS.map((a) => (
+          {QUICK_AMOUNTS_USD.map((a) => (
             <form key={a} action={topup}>
               <input type="hidden" name="amount" value={a} />
               <button className="pill pill-paper pill-sm">
-                <Plus className="w-3 h-3" strokeWidth={3} /> ${a}
+                <Plus className="w-3 h-3" strokeWidth={3} /> {formatMoney(a, cur, rates)}
               </button>
             </form>
           ))}
@@ -160,6 +172,9 @@ export default async function BillingPage() {
         <div className="grid md:grid-cols-3 gap-5">
           {PLANS.map((p) => {
             const isCurrent = (billing?.plan_slug || user.plan_slug) === p.slug
+            const priceLabel = p.priceUsd === 0
+              ? 'Бесплатно'
+              : `${formatMoney(p.priceUsd, cur, rates)}/мес`
             return (
               <div key={p.slug} className="panel relative flex flex-col p-5 md:p-7" style={{ background: p.bg }}>
                 {p.hot && (
@@ -179,7 +194,7 @@ export default async function BillingPage() {
                   </span>
                 )}
                 <div className="display text-xl mb-1">{p.name}</div>
-                <div className="display text-lg md:text-2xl mb-5 whitespace-nowrap">{p.price}</div>
+                <div className="display text-lg md:text-2xl mb-5 whitespace-nowrap">{priceLabel}</div>
                 <ul className="space-y-2 font-semibold text-sm mb-6 flex-1">
                   {p.feats.map((f) => (
                     <li key={f} className="flex items-start gap-2">

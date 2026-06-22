@@ -6,6 +6,7 @@ import { ArrowRight, Wallet, Plus, Tag } from 'lucide-react'
 import { getCurrentUser } from '@/lib/auth'
 import { api } from '@/lib/api-client'
 import { LottieSticker } from '@/components/LottieSticker'
+import { formatMoney, type FxRates } from '@/lib/format'
 import type { Esim, VpnSubscription, VirtualCard, Transaction, UserProfile } from '@/lib/types'
 
 export default function DashboardPage() {
@@ -59,6 +60,9 @@ export default function DashboardPage() {
     balance: typeof user.balance === 'number' ? user.balance : 0,
     plan_name: user.plan_name || 'План IMBA',
   }
+  const rates: FxRates = user.rates ?? { EUR: 0.92, RUB: 90 }
+  const cur = user.currency ?? 'USD'
+  const fmtBalance = formatMoney(safeUser.balance, cur, rates)
 
   const activeEsim = esims.find((e) => e.status === 'active')
   const activeVpn = vpns.find((v) => v.status === 'active')
@@ -94,7 +98,7 @@ export default function DashboardPage() {
           <p className="font-semibold text-ink/60">Вот что происходит с твоими сервисами</p>
         </div>
         <Link href="/dashboard/billing" className="pill pill-ink pill-sm">
-          <Wallet className="w-4 h-4" strokeWidth={2.5} /> ${safeUser.balance.toFixed(2)}
+          <Wallet className="w-4 h-4" strokeWidth={2.5} /> {fmtBalance}
         </Link>
       </div>
 
@@ -109,7 +113,7 @@ export default function DashboardPage() {
               {safeUser.plan_name}
             </div>
             <div className="display text-5xl md:text-6xl mb-1" style={{ color: 'var(--yellow)' }}>
-              ${safeUser.balance.toFixed(2)}
+              {fmtBalance}
             </div>
             <div className="text-sm font-semibold opacity-60">Доступный баланс</div>
           </div>

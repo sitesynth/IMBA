@@ -6,10 +6,11 @@ import { api, apiFetch, ApiError } from '@/lib/api'
 import { LottieSticker } from '@/components/LottieSticker'
 import { CopyButton } from '@/components/CopyButton'
 import { AnimatedBalance } from '@/components/AnimatedBalance'
+import { formatMoney } from '@/lib/format'
 import type { VpnSubscription, VpnServer } from '@/lib/types'
 
 const DEFAULT_SERVER_ID = 'c973f18c-36df-4926-b369-05ebc0604579'
-const VPN_PRICE = '$4.99'
+const VPN_PRICE_USD = 4.99
 
 async function fetchVlessUris(subUrl: string): Promise<string[]> {
   try {
@@ -65,6 +66,9 @@ export default async function VpnPage() {
   const vlessUris = active?.server_key ? await fetchVlessUris(active.server_key) : []
   const vlessMap = buildVlessMap(vlessUris)
 
+  const rates = user.rates ?? { EUR: 0.92, RUB: 90 }
+  const vpnPrice = formatMoney(VPN_PRICE_USD, user.currency, rates)
+
   return (
     <div className="fade-up space-y-6">
       <div className="flex items-end justify-between gap-4 flex-wrap">
@@ -80,7 +84,7 @@ export default async function VpnPage() {
           )}
           <span className="chip" style={{ background: 'var(--yellow)' }}>
             <Wallet className="w-3.5 h-3.5" strokeWidth={2.5} />
-            <AnimatedBalance balance={user.balance} />
+            <AnimatedBalance balance={user.balance} currency={user.currency} rates={rates} />
           </span>
         </div>
       </div>
@@ -146,7 +150,7 @@ export default async function VpnPage() {
           <form action={activateVpn}>
             <button className="pill pill-ink w-full justify-center text-base">
               <Wifi className="w-5 h-5" strokeWidth={2.5} />
-              Подключить VPN — {VPN_PRICE}/мес
+              Подключить VPN — {vpnPrice}/мес
             </button>
           </form>
         </div>

@@ -1,8 +1,22 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { formatMoney, type FxRates } from '@/lib/format'
 
-export function AnimatedBalance({ balance, className }: { balance: number; className?: string }) {
+const DEFAULT_RATES: FxRates = { EUR: 0.92, RUB: 90.0 }
+
+export function AnimatedBalance({
+  balance,
+  currency = 'USD',
+  rates,
+  className,
+}: {
+  balance: number
+  currency?: string
+  rates?: FxRates
+  className?: string
+}) {
+  const r = rates ?? DEFAULT_RATES
   const prevRef = useRef<number | null>(null)
   const [display, setDisplay] = useState(balance)
   const [animating, setAnimating] = useState(false)
@@ -17,7 +31,6 @@ export function AnimatedBalance({ balance, className }: { balance: number; class
       return
     }
 
-    // Animate from prev → balance
     setAnimating(true)
     const start = performance.now()
     const duration = 900
@@ -26,7 +39,6 @@ export function AnimatedBalance({ balance, className }: { balance: number; class
 
     function tick(now: number) {
       const t = Math.min((now - start) / duration, 1)
-      // ease-out cubic
       const eased = 1 - Math.pow(1 - t, 3)
       setDisplay(from + (to - from) * eased)
       if (t < 1) {
@@ -51,7 +63,7 @@ export function AnimatedBalance({ balance, className }: { balance: number; class
         fontVariantNumeric: 'tabular-nums',
       }}
     >
-      ${display.toFixed(2)}
+      {formatMoney(display, currency, r)}
     </span>
   )
 }

@@ -5,6 +5,7 @@ import { getCurrentUser, logout } from '@/lib/auth'
 import { Logo } from '@/components/Logo'
 import { Marquee } from '@/components/Marquee'
 import { AnimatedBalance } from '@/components/AnimatedBalance'
+import { formatMoney } from '@/lib/format'
 
 const navItems = [
   { href: '/dashboard', label: 'Обзор', icon: LayoutDashboard, color: 'var(--paper)' },
@@ -30,14 +31,14 @@ export default async function DashboardLayout({ children }: { children: React.Re
     <div className="min-h-screen flex flex-col gap-1.5" style={{ background: 'var(--ink)', padding: '5px' }}>
       <Marquee
         bg="var(--yellow)"
-        items={['ТВОЙ КАБИНЕТ IMBA', 'eSIM · VPN · КАРТА', 'БЕЗ ГРАНИЦ', 'БЕЗ ЛИШНИХ ВОПРОСОВ', `БАЛАНС $${user.balance.toFixed(2)}`]}
+        items={['ТВОЙ КАБИНЕТ IMBA', 'eSIM · VPN · КАРТА', 'БЕЗ ГРАНИЦ', 'БЕЗ ЛИШНИХ ВОПРОСОВ', `БАЛАНС ${formatMoney(user.balance, user.currency, user.rates ?? { EUR: 0.92, RUB: 90 })}`]}
       />
 
       {/* Mobile top bar (above the row) */}
       <div className="md:hidden flex items-center justify-between rounded-xl px-4 py-3" style={{ background: 'var(--paper)' }}>
         <Logo size="sm" tone="blue" href="/dashboard" />
         <div className="flex items-center gap-2">
-          <span className="chip" style={{ background: 'var(--yellow)' }}><AnimatedBalance balance={user.balance} /></span>
+          <span className="chip" style={{ background: 'var(--yellow)' }}><AnimatedBalance balance={user.balance} currency={user.currency} rates={user.rates} /></span>
           <form action={logout}>
             <button type="submit" className="pill pill-paper pill-sm" aria-label="Выйти">
               <LogOut className="w-4 h-4" strokeWidth={2.5} />
