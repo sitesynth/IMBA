@@ -147,12 +147,19 @@ export default async function VpnPage() {
             <span className="text-sm font-extrabold text-ink/60">Твой баланс</span>
             <AnimatedBalance balance={user.balance} className="display text-2xl" />
           </div>
-          <form action={activateVpn}>
-            <button className="pill pill-ink w-full justify-center text-base">
-              <Wifi className="w-5 h-5" strokeWidth={2.5} />
-              Подключить VPN — {vpnPrice}/мес
-            </button>
-          </form>
+          {user.balance >= VPN_PRICE_USD ? (
+            <form action={activateVpn}>
+              <button className="pill pill-ink w-full justify-center text-base">
+                <Wifi className="w-5 h-5" strokeWidth={2.5} />
+                Подключить VPN — {vpnPrice}/мес
+              </button>
+            </form>
+          ) : (
+            <a href="/dashboard/billing/topup?after=activate_vpn" className="pill pill-ink w-full justify-center text-base">
+              <Wallet className="w-5 h-5" strokeWidth={2.5} />
+              Пополнить и подключить VPN — {vpnPrice}/мес
+            </a>
+          )}
         </div>
       )}
 
