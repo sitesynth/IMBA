@@ -6,7 +6,7 @@ import { getCurrentUser } from '@/lib/auth'
 import { api, apiFetch, ApiError } from '@/lib/api'
 import { LottieSticker } from '@/components/LottieSticker'
 import { formatMoney } from '@/lib/format'
-import { PaymentTopup } from '@/components/PaymentTopup'
+import { ProviderSelector } from '@/components/ProviderSelector'
 import type { BillingInfo } from '@/lib/types'
 
 async function topup(formData: FormData) {
@@ -139,14 +139,8 @@ export default async function BillingPage() {
 
       {/* Real payment providers */}
       {providers.length > 0 && (
-        <div className="panel" style={{ background: 'var(--paper)' }}>
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="display text-xl md:text-2xl">Пополнить баланс</h2>
-          </div>
-          <p className="font-semibold text-ink/60 text-sm mb-5">
-            Мгновенное зачисление после подтверждения оплаты
-          </p>
-          <PaymentTopup providers={providers} createInvoice={createInvoice} />
+        <div className="panel" style={{ background: 'var(--cream)' }}>
+          <ProviderSelector providers={providers} createInvoice={createInvoice} />
         </div>
       )}
 
