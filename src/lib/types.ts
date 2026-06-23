@@ -70,6 +70,17 @@ export type Transaction = {
   created_at: string
 }
 
+export type PaymentProvider = {
+  name: string
+  display_name: string
+  icon: string
+  description: string
+  methods: string[]
+  speed: string
+  min_usd: number
+  max_usd: number
+}
+
 export type BillingInfo = {
   balance: number
   plan_slug: string | null

@@ -7,7 +7,7 @@ import { api, apiFetch, ApiError } from '@/lib/api'
 import { LottieSticker } from '@/components/LottieSticker'
 import { formatMoney } from '@/lib/format'
 import { ProviderSelector } from '@/components/ProviderSelector'
-import type { BillingInfo } from '@/lib/types'
+import type { BillingInfo, PaymentProvider } from '@/lib/types'
 
 async function topup(formData: FormData) {
   'use server'
@@ -82,7 +82,7 @@ export default async function BillingPage() {
 
   const [billing, providers] = await Promise.all([
     api.get<BillingInfo>('/v1/me/billing').catch(() => null as BillingInfo | null),
-    api.get<{ name: string; display_name: string }[]>('/v1/payments/providers').catch(() => []),
+    api.get<PaymentProvider[]>('/v1/payments/providers').catch(() => []),
   ])
 
   const rates = user.rates ?? { EUR: 0.92, RUB: 90 }

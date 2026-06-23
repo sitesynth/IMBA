@@ -1,62 +1,30 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { ExternalLink, Loader2 } from 'lucide-react'
-
-type Provider = { name: string; display_name: string }
-
-const PROVIDER_ICONS: Record<string, string> = {
-  cryptobot: '🪙',
-  stars: '⭐',
-  yookassa: '💳',
-}
-
-const QUICK_AMOUNTS = [10, 25, 50, 100]
+import { ExternalLink, Loader2, Plus } from 'lucide-react'
+import type { PaymentProvider } from '@/lib/types'
 
 export function PaymentTopup({
-  providers,
+  provider,
   createInvoice,
 }: {
-  providers: Provider[]
+  provider: PaymentProvider
   createInvoice: (provider: string, amount: number) => Promise<{ payment_url: string; payment_id: string }>
 }) {
-  const [selected, setSelected] = useState<string | null>(providers[0]?.name ?? null)
-  const [amount, setAmount] = useState<number>(25)
-  const [customAmount, setCustomAmount] = useState('')
+  const [amount, setAmount] = useState('')
   const [pending, startTransition] = useTransition()
   const [paymentUrl, setPaymentUrl] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
 
-  if (providers.length === 0) return null
+  const numAmount = parseFloat(amount)
+  const valid = !isNaN(numAmount) && numAmount >= provider.min_usd && numAmount <= provider.max_usd
 
-  const effectiveAmount = customAmount ? parseFloat(customAmount) : amount
-
-  function handleQuick(a: number) {
-    setAmount(a)
-    setCustomAmount('')
-    setPaymentUrl(null)
-    setError(null)
-    // Сразу платим по быстрой сумме
-    startTransition(async () => {
-      try {
-        const result = await createInvoice(selected || providers[0]?.name || '', a)
-        if (result.payment_url) {
-          setPaymentUrl(result.payment_url)
-          window.open(result.payment_url, '_blank')
-        }
-      } catch (e: unknown) {
-        setError((e as Error).message || 'Ошибка создания платежа')
-      }
-    })
-  }
-
-  function pay() {
-    if (!selected || effectiveAmount <= 0) return
+  function pay(a: number) {
     setError(null)
     setPaymentUrl(null)
     startTransition(async () => {
       try {
-        const result = await createInvoice(selected, effectiveAmount)
+        const result = await createInvoice(provider.name, a)
         if (result.payment_url) {
           setPaymentUrl(result.payment_url)
           window.open(result.payment_url, '_blank')
@@ -69,62 +37,41 @@ export function PaymentTopup({
 
   return (
     <div className="space-y-4">
-      {/* Provider selector */}
-      {providers.length > 1 && (
-        <div className="flex gap-2 flex-wrap">
-          {providers.map((p) => (
-            <button
-              key={p.name}
-              onClick={() => { setSelected(p.name); setPaymentUrl(null) }}
-              className={`pill pill-sm transition ${
-                selected === p.name ? 'pill-ink' : 'pill-paper'
-              }`}
-            >
-              {PROVIDER_ICONS[p.name] ?? '💰'} {p.display_name}
-            </button>
-          ))}
-        </div>
-      )}
-
-      {/* Quick amounts */}
-      <div className="flex flex-wrap gap-2">
-        {QUICK_AMOUNTS.map((a) => (
-          <button
-            key={a}
-            onClick={() => handleQuick(a)}
-            className={`pill pill-sm transition ${
-              !customAmount && amount === a ? 'pill-ink' : 'pill-paper'
-            }`}
-          >
-            ${a}
-          </button>
-        ))}
-      </div>
-
-      {/* Custom amount */}
       <div className="flex gap-2">
-        <input
-          type="number"
-          step="1"
-          min="1"
-          max="10000"
-          placeholder="Своя сумма USD"
-          value={customAmount}
-          onChange={(e) => { setCustomAmount(e.target.value); setPaymentUrl(null) }}
-          className="flex-1 px-4 py-3 rounded-2xl border-2 border-ink bg-paper font-extrabold text-sm"
-        />
+        <div className="relative flex-1">
+          <span className="absolute left-4 top-1/2 -translate-y-1/2 font-extrabold text-ink/40 text-sm pointer-events-none">
+            $
+          </span>
+          <input
+            type="number"
+            step="1"
+            min={provider.min_usd}
+            max={provider.max_usd}
+            placeholder={`${provider.min_usd} – ${provider.max_usd}`}
+            value={amount}
+            onChange={(e) => { setAmount(e.target.value); setPaymentUrl(null) }}
+            className="w-full pl-8 pr-4 py-3 rounded-2xl border-2 border-ink bg-paper font-extrabold text-sm"
+          />
+        </div>
         <button
-          onClick={pay}
-          disabled={pending || !selected || effectiveAmount <= 0}
+          onClick={() => valid && pay(numAmount)}
+          disabled={pending || !valid}
           className="pill pill-ink shrink-0"
         >
           {pending ? (
             <Loader2 className="w-4 h-4 animate-spin" />
           ) : (
-            <>{PROVIDER_ICONS[selected ?? ''] ?? '💰'} Оплатить ${effectiveAmount}</>
+            <>
+              <Plus className="w-4 h-4" strokeWidth={2.5} />
+              Пополнить
+            </>
           )}
         </button>
       </div>
+
+      <p className="text-xs font-semibold text-ink/40">
+        Лимиты: ${provider.min_usd} – ${provider.max_usd.toLocaleString('en')} · {provider.speed}
+      </p>
 
       {error && (
         <p className="text-sm font-bold text-red-600">{error}</p>
