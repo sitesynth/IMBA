@@ -79,7 +79,7 @@ export function PaymentTopup({
           ) : (
             <>
               <Plus className="w-4 h-4" strokeWidth={2.5} />
-              {valid ? `Пополнить ${sym}${numAmount}` : 'Пополнить'}
+              Пополнить
             </>
           )}
         </button>
