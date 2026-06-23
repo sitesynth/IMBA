@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowRight, Wallet, Plus, Tag } from 'lucide-react'
+import { ArrowRight, Wallet, Plus, Tag, Clock } from 'lucide-react'
 import { getCurrentUser } from '@/lib/auth'
 import { api } from '@/lib/api-client'
 import { LottieSticker } from '@/components/LottieSticker'
@@ -68,6 +68,9 @@ export default function DashboardPage() {
   const activeVpn = vpns.find((v) => v.status === 'active')
   const card = cards[0]
 
+  const planExpiresAt = user.plan_expires_at ? new Date(user.plan_expires_at) : null
+  const daysLeft = planExpiresAt ? Math.max(0, Math.ceil((planExpiresAt.getTime() - Date.now()) / 86400000)) : null
+
   async function redeemPromo() {
     if (!promoCode.trim()) return
     setPromoState('loading')
@@ -117,16 +120,24 @@ export default function DashboardPage() {
             </div>
             <div className="text-sm font-semibold opacity-60">Доступный баланс</div>
           </div>
-          <LottieSticker name="rocket" size={88} className="hidden md:block" />
+          <div className="flex flex-col items-end gap-3">
+            <LottieSticker name="rocket" size={88} className="hidden md:block" />
+            {daysLeft !== null && (
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-extrabold" style={{ background: daysLeft <= 1 ? 'var(--red, #ef4444)' : 'var(--yellow)', color: 'var(--ink)' }}>
+                <Clock className="w-3.5 h-3.5" strokeWidth={3} />
+                {daysLeft === 0 ? 'Истёк' : `${daysLeft} ${daysLeft === 1 ? 'день' : daysLeft < 5 ? 'дня' : 'дней'}`}
+              </span>
+            )}
+          </div>
         </div>
         <div className="flex flex-wrap gap-2 mt-5 relative z-10">
           <button
             onClick={() => promoRef.current?.focus()}
             className="pill pill-yellow pill-sm"
           >
-            🚀 Активировать Старт!
+            Активировать Старт <ArrowRight className="w-4 h-4" strokeWidth={2.5} />
           </button>
-          <Link href="/dashboard/billing" className="pill pill-paper pill-sm">
+          <Link href="/dashboard/billing/topup" className="pill pill-paper pill-sm">
             <Plus className="w-4 h-4" strokeWidth={2.5} /> Пополнить
           </Link>
         </div>
@@ -140,7 +151,7 @@ export default function DashboardPage() {
               value={promoCode}
               onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
               onKeyDown={(e) => e.key === 'Enter' && redeemPromo()}
-              placeholder="Промокод"
+              placeholder="Промокод из почты"
               className="bg-transparent text-white placeholder-white/30 font-extrabold text-sm w-full outline-none tracking-widest"
             />
           </div>

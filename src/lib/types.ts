@@ -5,6 +5,7 @@ export type UserProfile = {
   balance: number
   plan_slug: string | null
   plan_name: string | null
+  plan_expires_at: string | null
   language: string
   currency: string
   rates: { EUR: number; RUB: number }
