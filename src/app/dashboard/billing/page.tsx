@@ -150,15 +150,16 @@ export default async function BillingPage() {
         </div>
       )}
 
-      {/* Demo topup */}
-      <div className="panel">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="display text-xl md:text-2xl">Пополнить баланс</h2>
-          <span className="chip" style={{ background: 'var(--cream)' }}>Demo</span>
-        </div>
-        <p className="font-semibold text-ink/60 text-sm mb-5">
-          Demo-режим: мгновенное зачисление без оплаты. Для теста.
-        </p>
+      {/* Demo topup — only show if no real providers */}
+      {providers.length === 0 && (
+        <div className="panel">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="display text-xl md:text-2xl">Пополнить баланс</h2>
+            <span className="chip" style={{ background: 'var(--cream)' }}>Demo</span>
+          </div>
+          <p className="font-semibold text-ink/60 text-sm mb-5">
+            Demo-режим: мгновенное зачисление без оплаты. Для теста.
+          </p>
 
         <div className="flex flex-wrap gap-2 mb-4">
           {QUICK_AMOUNTS_USD.map((a) => (
@@ -187,6 +188,7 @@ export default async function BillingPage() {
           </button>
         </form>
       </div>
+      )}
 
       {/* Plans */}
       <div>
