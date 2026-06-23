@@ -6,7 +6,7 @@ import { getCurrentUser } from '@/lib/auth'
 import { api, apiFetch, ApiError } from '@/lib/api'
 import { LottieSticker } from '@/components/LottieSticker'
 import { formatMoney } from '@/lib/format'
-import { ProviderSelector } from '@/components/ProviderSelector'
+import { PaymentFlow } from '@/components/PaymentFlow'
 import type { BillingInfo, PaymentProvider } from '@/lib/types'
 
 async function topup(formData: FormData) {
@@ -140,7 +140,7 @@ export default async function BillingPage() {
       {/* Real payment providers */}
       {providers.length > 0 && (
         <div className="panel" style={{ background: 'var(--cream)' }}>
-          <ProviderSelector providers={providers} currency={cur} rates={rates} createInvoice={createInvoice} />
+          <PaymentFlow providers={providers} currency={cur} rates={rates} createInvoice={createInvoice} />
         </div>
       )}
 
