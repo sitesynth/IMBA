@@ -19,38 +19,25 @@ export function TopupFlow({
   rates?: FxRates
   createInvoice: (provider: string, amount: number) => Promise<{ payment_url: string; payment_id: string }>
 }) {
-  const [step, setStep] = useState<'provider' | 'amount'>('provider')
-  const [selected, setSelected] = useState<PaymentProvider | null>(null)
   const [rawAmount, setRawAmount] = useState('')
+  const [paying, setPaying] = useState<string | null>(null)
   const [paymentUrl, setPaymentUrl] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [, startTransition] = useTransition()
-  const [paying, setPaying] = useState(false)
 
   const sym = CURRENCY_SYMBOL[currency] ?? currency
   const numAmount = parseFloat(rawAmount)
+  const hasAmount = !isNaN(numAmount) && numAmount > 0
   const rateToUsd = currency === 'USD' ? 1 : (rates as Record<string, number>)[currency] ?? 1
   const amountUsd = currency === 'USD' ? numAmount : numAmount / rateToUsd
-  const minDisplay = selected ? convertAmount(selected.min_usd, currency, rates) : 0
-  const maxDisplay = selected ? convertAmount(selected.max_usd, currency, rates) : 0
-  const valid = selected !== null && numAmount >= minDisplay && numAmount <= maxDisplay
 
-  function selectProvider(p: PaymentProvider) {
-    setSelected(p)
-    setStep('amount')
-    setRawAmount('')
-    setPaymentUrl(null)
-    setError(null)
-  }
-
-  function pay() {
-    if (!valid || !selected) return
+  function pay(provider: PaymentProvider) {
     setError(null)
     setPaymentUrl(null)
-    setPaying(true)
+    setPaying(provider.name)
     startTransition(async () => {
       try {
-        const result = await createInvoice(selected.name, Math.round(amountUsd * 100) / 100)
+        const result = await createInvoice(provider.name, Math.round(amountUsd * 100) / 100)
         if (result.payment_url) {
           setPaymentUrl(result.payment_url)
           window.open(result.payment_url, '_blank')
@@ -58,99 +45,92 @@ export function TopupFlow({
       } catch (e: unknown) {
         setError((e as Error).message || 'Ошибка создания платежа')
       } finally {
-        setPaying(false)
+        setPaying(null)
       }
     })
   }
 
-  if (step === 'provider') {
-    return (
-      <div className="space-y-3">
-        {providers.map((p, i) => (
-          <button
-            key={p.name}
-            onClick={() => selectProvider(p)}
-            className="panel w-full text-left transition hover:shadow-md hover:scale-[1.01]"
-            style={{ background: CARD_COLORS[i % CARD_COLORS.length] }}
-          >
-            <div className="flex items-center gap-4">
-              <span className="text-4xl leading-none">{p.icon}</span>
-              <div className="flex-1 min-w-0">
-                <div className="display text-xl">{p.display_name}</div>
-                <div className="text-sm font-semibold text-ink/60">{p.description}</div>
-                <div className="flex flex-wrap gap-1 mt-2">
-                  {p.methods.map((m) => (
-                    <span key={m} className="inline-block px-2 py-0.5 rounded-lg text-xs font-bold bg-ink/10">{m}</span>
-                  ))}
-                </div>
-              </div>
-              <div className="flex flex-col items-end gap-1 shrink-0">
-                <div className="flex items-center gap-1 text-xs font-semibold text-ink/50">
-                  <Zap className="w-3 h-3" strokeWidth={3} />
-                  {p.speed}
-                </div>
-                <ArrowRight className="w-5 h-5 text-ink/40" strokeWidth={2} />
-              </div>
-            </div>
-          </button>
-        ))}
-      </div>
-    )
-  }
-
   return (
-    <div className="space-y-5">
-      <button onClick={() => setStep('provider')} className="pill pill-paper pill-sm">
-        ← {selected?.display_name}
-      </button>
-
-      <div
-        className="panel flex items-center gap-4"
-        style={{ background: CARD_COLORS[providers.indexOf(selected!) % CARD_COLORS.length] }}
-      >
-        <span className="text-3xl leading-none">{selected?.icon}</span>
-        <div>
-          <div className="display text-xl">{selected?.display_name}</div>
-          <div className="text-sm font-semibold text-ink/60">{selected?.description}</div>
-        </div>
-      </div>
-
+    <div className="space-y-8">
+      {/* Step 1 — amount */}
       <div>
-        <div className="text-xs font-extrabold uppercase tracking-widest text-ink/40 mb-2">Сумма</div>
+        <div className="text-xs font-extrabold uppercase tracking-widest text-ink/40 mb-2">
+          Сумма пополнения
+        </div>
         <div className="relative">
-          <span className="absolute left-4 top-1/2 -translate-y-1/2 font-extrabold text-ink/40 pointer-events-none">
+          <span className="absolute left-5 top-1/2 -translate-y-1/2 font-extrabold text-ink/40 text-2xl pointer-events-none">
             {sym}
           </span>
           <input
             type="number"
             step="1"
-            min={minDisplay}
-            max={maxDisplay}
-            placeholder={`${minDisplay} – ${maxDisplay}`}
+            min="1"
+            placeholder="0"
             value={rawAmount}
             autoFocus
             onChange={(e) => { setRawAmount(e.target.value); setPaymentUrl(null); setError(null) }}
-            className="w-full pl-8 pr-4 py-4 rounded-2xl border-2 border-ink bg-paper font-extrabold text-xl"
+            className="w-full pl-12 pr-5 py-5 rounded-3xl border-2 border-ink bg-paper font-extrabold text-3xl"
           />
         </div>
-        {currency !== 'USD' && numAmount > 0 && (
-          <p className="text-xs font-semibold text-ink/40 mt-1">≈ ${amountUsd.toFixed(2)} USD</p>
+        {currency !== 'USD' && hasAmount && (
+          <p className="text-sm font-semibold text-ink/40 mt-2">≈ ${amountUsd.toFixed(2)} USD</p>
         )}
-        <p className="text-xs font-semibold text-ink/40 mt-1">
-          Лимиты: {sym}{minDisplay} – {sym}{maxDisplay.toLocaleString()}
-        </p>
       </div>
 
-      <button
-        onClick={pay}
-        disabled={paying || !valid}
-        className="pill pill-ink w-full justify-center"
-      >
-        {paying
-          ? <Loader2 className="w-4 h-4 animate-spin" />
-          : `Оплатить ${valid ? `${sym}${rawAmount}` : ''}`
-        }
-      </button>
+      {/* Step 2 — providers, shown after amount entered */}
+      {hasAmount && (
+        <div className="fade-up">
+          <div className="text-xs font-extrabold uppercase tracking-widest text-ink/40 mb-3">
+            Способ оплаты
+          </div>
+          <div className="space-y-3">
+            {providers.map((p, i) => {
+              const minDisplay = convertAmount(p.min_usd, currency, rates)
+              const maxDisplay = convertAmount(p.max_usd, currency, rates)
+              const outOfRange = amountUsd < p.min_usd || amountUsd > p.max_usd
+              const isLoading = paying === p.name
+
+              return (
+                <button
+                  key={p.name}
+                  onClick={() => !outOfRange && pay(p)}
+                  disabled={outOfRange || paying !== null}
+                  className="panel w-full text-left transition hover:shadow-md hover:scale-[1.01] disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-none"
+                  style={{ background: outOfRange ? 'var(--paper)' : CARD_COLORS[i % CARD_COLORS.length] }}
+                >
+                  <div className="flex items-center gap-4">
+                    <span className="text-4xl leading-none">{p.icon}</span>
+                    <div className="flex-1 min-w-0">
+                      <div className="display text-xl">{p.display_name}</div>
+                      <div className="text-sm font-semibold text-ink/60">{p.description}</div>
+                      <div className="flex flex-wrap gap-1 mt-2">
+                        {p.methods.map((m) => (
+                          <span key={m} className="inline-block px-2 py-0.5 rounded-lg text-xs font-bold bg-ink/10">{m}</span>
+                        ))}
+                      </div>
+                      {outOfRange && (
+                        <p className="text-xs font-semibold text-ink/40 mt-2">
+                          Лимит: {sym}{minDisplay} – {sym}{maxDisplay.toLocaleString()}
+                        </p>
+                      )}
+                    </div>
+                    <div className="flex flex-col items-end gap-1 shrink-0">
+                      <div className="flex items-center gap-1 text-xs font-semibold text-ink/50">
+                        <Zap className="w-3 h-3" strokeWidth={3} />
+                        {p.speed}
+                      </div>
+                      {isLoading
+                        ? <Loader2 className="w-5 h-5 animate-spin" />
+                        : <ArrowRight className="w-5 h-5 text-ink/40" strokeWidth={2} />
+                      }
+                    </div>
+                  </div>
+                </button>
+              )
+            })}
+          </div>
+        </div>
+      )}
 
       {error && <p className="text-sm font-bold text-red-600">{error}</p>}
 
