@@ -120,11 +120,14 @@ export default function DashboardPage() {
           <LottieSticker name="rocket" size={88} className="hidden md:block" />
         </div>
         <div className="flex flex-wrap gap-2 mt-5 relative z-10">
-          <Link href="/dashboard/billing" className="pill pill-yellow pill-sm">
-            <Plus className="w-4 h-4" strokeWidth={2.5} /> Пополнить
-          </Link>
+          <button
+            onClick={() => promoRef.current?.focus()}
+            className="pill pill-yellow pill-sm"
+          >
+            🚀 Активировать Старт!
+          </button>
           <Link href="/dashboard/billing" className="pill pill-paper pill-sm">
-            Сменить план →
+            <Plus className="w-4 h-4" strokeWidth={2.5} /> Пополнить
           </Link>
         </div>
 
