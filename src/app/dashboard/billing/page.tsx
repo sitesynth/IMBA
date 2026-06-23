@@ -262,16 +262,10 @@ export default async function BillingPage() {
                     failed: 'var(--orange)',
                     expired: 'var(--cream)',
                   }
-                  // Format: take UUID part after provider prefix, show first 8 chars uppercase
-                  const uuidPart = p.payment_id.includes('_')
-                    ? p.payment_id.split('_').slice(1).join('').replace(/-/g, '')
-                    : p.payment_id.replace(/-/g, '')
-                  const orderNum = `#${uuidPart.slice(0, 8).toUpperCase()}`
-
                   return (
                     <tr key={p.payment_id} className="border-b border-ink/5 last:border-0">
                       <td className="px-5 py-3 font-mono font-bold text-sm text-ink/70 whitespace-nowrap">
-                        {orderNum}
+                        #{p.order_id}
                       </td>
                       <td className="px-5 py-3 font-semibold text-ink/60 whitespace-nowrap">
                         {new Date(p.created_at).toLocaleDateString('ru-RU', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}

@@ -84,6 +84,7 @@ export type PaymentProvider = {
 }
 
 export type PaymentRecord = {
+  order_id: number
   payment_id: string
   provider: string
   amount: number
