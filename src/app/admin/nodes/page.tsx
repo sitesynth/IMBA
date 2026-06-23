@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation'
 import { Server } from 'lucide-react'
 import { getCurrentUser } from '@/lib/auth'
 import { api } from '@/lib/api'
-import { NodeDiagnostics } from '@/components/NodeDiagnostics'
+import { NodeDiagnostics, DiagnosticData, AttackReport } from '@/components/NodeDiagnostics'
 
 const VPN_NODES = [
   { host: '31.70.101.181', city: '🇩🇪 Berlin' },
@@ -45,14 +45,8 @@ export default async function NodesPage() {
 
           <NodeDiagnostics
             host={node.host}
-            fetchDiagnostic={async (h) => {
-              const res = await api.get(`/v1/admin/nodes/${h}/diagnose`)
-              return res
-            }}
-            fetchReport={async (h) => {
-              const res = await api.get(`/v1/admin/nodes/${h}/report?hours=24`)
-              return res
-            }}
+            fetchDiagnostic={(h) => api.get<DiagnosticData>(`/v1/admin/nodes/${h}/diagnose`)}
+            fetchReport={(h, hours) => api.get<AttackReport>(`/v1/admin/nodes/${h}/report?hours=${hours}`)}
           />
         </div>
       ))}

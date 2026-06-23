@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { AlertCircle, CheckCircle2, Clock, TrendingUp } from 'lucide-react'
 
-type DiagnosticData = {
+export type DiagnosticData = {
   host: string
   health: string
   kernel: string | null
@@ -14,7 +14,7 @@ type DiagnosticData = {
   issues: string[]
 }
 
-type AttackReport = {
+export type AttackReport = {
   host: string
   hours: number
   total_drops: number
