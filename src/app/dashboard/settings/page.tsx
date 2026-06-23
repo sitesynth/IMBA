@@ -74,7 +74,7 @@ export default async function SettingsPage() {
           Если что-то не работает — мы рядом. Среднее время ответа — 12 минут.
         </p>
         <div className="flex flex-wrap gap-2">
-          <a href="mailto:support@imba.live" className="pill pill-ink pill-sm">
+          <a href="mailto:hello@imba.live" className="pill pill-ink pill-sm">
             Написать в поддержку
           </a>
           <a href="https://t.me/imbasupport" className="pill pill-paper pill-sm">

@@ -86,7 +86,7 @@ export default function TermsPage() {
       </ul>
       <p>
         Для оформления возврата необходимо обратиться в службу поддержки (
-        <a href="mailto:support@imba.live" className="text-blue font-bold hover:underline">support@imba.live</a>
+        <a href="mailto:hello@imba.live" className="text-blue font-bold hover:underline">hello@imba.live</a>
         ), указав номер заказа и причину отказа. Подробнее — на странице{' '}
         <a href="/refund" className="text-blue font-bold hover:underline">Возврат средств</a>.
       </p>
@@ -140,7 +140,7 @@ export default function TermsPage() {
         <strong>IMBA SRL</strong><br />
         Рег. номер: 3-102-942736<br />
         Адрес: Costa Rica, San José, Mata Redonda, Sabana Oeste, Avenida Doce Calle Noventa<br />
-        Email: <a href="mailto:support@imba.live" className="text-blue font-bold hover:underline">support@imba.live</a>
+        Email: <a href="mailto:hello@imba.live" className="text-blue font-bold hover:underline">hello@imba.live</a>
       </p>
 
       <style>{`
