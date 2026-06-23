@@ -4,11 +4,15 @@ import { api, apiFetch } from '@/lib/api'
 import { TopupFlow } from '@/components/TopupFlow'
 import type { PaymentProvider } from '@/lib/types'
 
+const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://imba.live'
+
 async function createInvoice(provider: string, amount_usd: number) {
   'use server'
+  const success_url = `${BASE_URL}/dashboard/billing/topup/result?status=success&provider=${provider}`
+  const fail_url = `${BASE_URL}/dashboard/billing/topup/result?status=failed&provider=${provider}`
   const result = await apiFetch<{ payment_id: string; payment_url: string }>(
     '/v1/payments/invoice',
-    { method: 'POST', body: JSON.stringify({ provider, amount_usd }) },
+    { method: 'POST', body: JSON.stringify({ provider, amount_usd, success_url, fail_url }) },
   )
   return { payment_id: result.payment_id, payment_url: result.payment_url }
 }
