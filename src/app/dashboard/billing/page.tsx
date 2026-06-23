@@ -6,7 +6,6 @@ import { getCurrentUser } from '@/lib/auth'
 import { api, apiFetch, ApiError } from '@/lib/api'
 import { LottieSticker } from '@/components/LottieSticker'
 import { formatMoney } from '@/lib/format'
-import { PaymentFlow } from '@/components/PaymentFlow'
 import type { BillingInfo, PaymentProvider, PaymentRecord } from '@/lib/types'
 
 async function topup(formData: FormData) {
@@ -67,14 +66,6 @@ const PLANS = [
 
 const QUICK_AMOUNTS_USD = [10, 25, 50, 100, 250]
 
-async function createInvoice(provider: string, amount_usd: number) {
-  'use server'
-  const result = await apiFetch<{ payment_id: string; payment_url: string; meta: Record<string, unknown> }>(
-    '/v1/payments/invoice',
-    { method: 'POST', body: JSON.stringify({ provider, amount_usd }) },
-  )
-  return { payment_id: result.payment_id, payment_url: result.payment_url }
-}
 
 export default async function BillingPage() {
   const user = await getCurrentUser()
@@ -138,11 +129,11 @@ export default async function BillingPage() {
         </div>
       </div>
 
-      {/* Real payment providers */}
+      {/* Topup button */}
       {providers.length > 0 && (
-        <div className="panel" style={{ background: 'var(--cream)' }}>
-          <PaymentFlow providers={providers} currency={cur} rates={rates} createInvoice={createInvoice} />
-        </div>
+        <a href="/dashboard/billing/topup" className="pill pill-ink inline-flex">
+          <Plus className="w-4 h-4" strokeWidth={2.5} /> Пополнить баланс
+        </a>
       )}
 
       {/* Demo topup — only show if no real providers */}
