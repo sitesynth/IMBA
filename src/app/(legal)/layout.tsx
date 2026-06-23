@@ -39,6 +39,7 @@ export default function LegalLayout({ children }: { children: React.ReactNode })
             <Link href="/blog" className="hover:opacity-60">Блог</Link>
             <Link href="/privacy-policy" className="hover:opacity-60">Конфиденциальность</Link>
             <Link href="/terms" className="hover:opacity-60">Условия</Link>
+            <Link href="/refund" className="hover:opacity-60">Возврат средств</Link>
           </div>
         </div>
         <div className="px-5 md:px-8 pb-6 border-t border-ink/10 pt-4">
