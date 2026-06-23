@@ -21,6 +21,7 @@ function AdminSidebar({ onClose }: { onClose?: () => void }) {
         { href: '/admin/users', label: 'Users' },
         { href: '/admin/vpn', label: 'VPN' },
         { href: '/admin/plans', label: 'Plans' },
+        { href: '/admin/nodes', label: 'Nodes' },
         { href: '/admin/transactions', label: 'Transactions' },
         { href: '/admin/support', label: 'Support' },
       ],
