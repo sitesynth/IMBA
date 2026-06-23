@@ -6,6 +6,7 @@ import { getCurrentUser } from '@/lib/auth'
 import { api, apiFetch, ApiError } from '@/lib/api'
 import { LottieSticker } from '@/components/LottieSticker'
 import { formatMoney } from '@/lib/format'
+import { PaymentTopup } from '@/components/PaymentTopup'
 import type { BillingInfo } from '@/lib/types'
 
 async function topup(formData: FormData) {
@@ -66,13 +67,23 @@ const PLANS = [
 
 const QUICK_AMOUNTS_USD = [10, 25, 50, 100, 250]
 
+async function createInvoice(provider: string, amount_usd: number) {
+  'use server'
+  const result = await apiFetch<{ payment_id: string; payment_url: string; meta: Record<string, unknown> }>(
+    '/v1/payments/invoice',
+    { method: 'POST', body: JSON.stringify({ provider, amount_usd }) },
+  )
+  return { payment_id: result.payment_id, payment_url: result.payment_url }
+}
+
 export default async function BillingPage() {
   const user = await getCurrentUser()
   if (!user) redirect('/auth/login')
 
-  const billing = await api
-    .get<BillingInfo>('/v1/me/billing')
-    .catch(() => null as BillingInfo | null)
+  const [billing, providers] = await Promise.all([
+    api.get<BillingInfo>('/v1/me/billing').catch(() => null as BillingInfo | null),
+    api.get<{ name: string; display_name: string }[]>('/v1/payments/providers').catch(() => []),
+  ])
 
   const rates = user.rates ?? { EUR: 0.92, RUB: 90 }
   const cur = user.currency ?? 'USD'
@@ -126,14 +137,27 @@ export default async function BillingPage() {
         </div>
       </div>
 
-      {/* Quick topup */}
+      {/* Real payment providers */}
+      {providers.length > 0 && (
+        <div className="panel" style={{ background: 'var(--paper)' }}>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="display text-xl md:text-2xl">Пополнить баланс</h2>
+          </div>
+          <p className="font-semibold text-ink/60 text-sm mb-5">
+            Мгновенное зачисление после подтверждения оплаты
+          </p>
+          <PaymentTopup providers={providers} createInvoice={createInvoice} />
+        </div>
+      )}
+
+      {/* Demo topup */}
       <div className="panel">
         <div className="flex items-center justify-between mb-4">
           <h2 className="display text-xl md:text-2xl">Пополнить баланс</h2>
           <span className="chip" style={{ background: 'var(--cream)' }}>Demo</span>
         </div>
         <p className="font-semibold text-ink/60 text-sm mb-5">
-          В demo-режиме пополнение мгновенное. Реальная оплата через крипту/перевод появится позже.
+          Demo-режим: мгновенное зачисление без оплаты. Для теста.
         </p>
 
         <div className="flex flex-wrap gap-2 mb-4">
