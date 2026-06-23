@@ -1,4 +1,5 @@
-export type FxRates = { EUR: number; RUB: number }
+export type { FxRates } from '@/lib/types'
+import type { FxRates } from '@/lib/types'
 
 const SYMBOLS: Record<string, string> = { USD: '$', EUR: '€', RUB: '₽' }
 

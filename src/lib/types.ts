@@ -70,6 +70,8 @@ export type Transaction = {
   created_at: string
 }
 
+export type FxRates = { EUR: number; RUB: number }
+
 export type PaymentProvider = {
   name: string
   display_name: string

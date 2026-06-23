@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { ArrowRight, Zap, CreditCard } from 'lucide-react'
 import { PaymentTopup } from './PaymentTopup'
-import type { PaymentProvider } from '@/lib/types'
+import type { PaymentProvider, FxRates } from '@/lib/types'
 
 const CARD_COLORS = [
   'var(--yellow-100)',
@@ -13,9 +13,13 @@ const CARD_COLORS = [
 
 export function ProviderSelector({
   providers,
+  currency = 'USD',
+  rates = { EUR: 0.92, RUB: 90 },
   createInvoice,
 }: {
   providers: PaymentProvider[]
+  currency?: string
+  rates?: FxRates
   createInvoice: (provider: string, amount: number) => Promise<{ payment_url: string; payment_id: string }>
 }) {
   const [selected, setSelected] = useState<string | null>(null)
@@ -100,6 +104,8 @@ export function ProviderSelector({
           {selectedProvider && (
             <PaymentTopup
               provider={selectedProvider}
+              currency={currency}
+              rates={rates}
               createInvoice={createInvoice}
             />
           )}

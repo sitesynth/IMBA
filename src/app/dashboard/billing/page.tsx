@@ -140,7 +140,7 @@ export default async function BillingPage() {
       {/* Real payment providers */}
       {providers.length > 0 && (
         <div className="panel" style={{ background: 'var(--cream)' }}>
-          <ProviderSelector providers={providers} createInvoice={createInvoice} />
+          <ProviderSelector providers={providers} currency={cur} rates={rates} createInvoice={createInvoice} />
         </div>
       )}
 
