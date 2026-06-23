@@ -254,7 +254,7 @@ export default function LandingPage() {
             <Link href="/blog" className="hover:opacity-60">Блог</Link>
             <Link href="/privacy-policy" className="hover:opacity-60">Конфиденциальность</Link>
             <Link href="/terms" className="hover:opacity-60">Условия</Link>
-            <Link href="/refund" className="hover:opacity-60">Возврат средств</Link>
+            <Link href="/refund" className="hover:opacity-60"><span className="sm:hidden">Возврат</span><span className="hidden sm:inline">Возврат средств</span></Link>
           </div>
         </div>
         <div className="px-5 md:px-8 pb-6 border-t border-ink/10 pt-4">
