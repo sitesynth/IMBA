@@ -7,7 +7,7 @@ import { api, apiFetch, ApiError } from '@/lib/api'
 import { LottieSticker } from '@/components/LottieSticker'
 import { formatMoney } from '@/lib/format'
 import { PaymentFlow } from '@/components/PaymentFlow'
-import type { BillingInfo, PaymentProvider } from '@/lib/types'
+import type { BillingInfo, PaymentProvider, PaymentRecord } from '@/lib/types'
 
 async function topup(formData: FormData) {
   'use server'
@@ -80,9 +80,10 @@ export default async function BillingPage() {
   const user = await getCurrentUser()
   if (!user) redirect('/auth/login')
 
-  const [billing, providers] = await Promise.all([
+  const [billing, providers, history] = await Promise.all([
     api.get<BillingInfo>('/v1/me/billing').catch(() => null as BillingInfo | null),
     api.get<PaymentProvider[]>('/v1/payments/providers').catch(() => []),
+    api.get<PaymentRecord[]>('/v1/payments/history').catch(() => []),
   ])
 
   const rates = user.rates ?? { EUR: 0.92, RUB: 90 }
@@ -239,6 +240,59 @@ export default async function BillingPage() {
           })}
         </div>
       </div>
+
+      {/* Payment history */}
+      {history.length > 0 && (
+        <div>
+          <h2 className="display text-2xl md:text-3xl mb-1">История платежей</h2>
+          <p className="font-semibold text-ink/60 mb-5 text-sm">Последние 20 транзакций</p>
+          <div className="panel p-0 overflow-hidden">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b-2 border-ink/10">
+                  <th className="text-left px-5 py-3 font-extrabold text-xs uppercase tracking-widest text-ink/40">Дата</th>
+                  <th className="text-left px-5 py-3 font-extrabold text-xs uppercase tracking-widest text-ink/40">Провайдер</th>
+                  <th className="text-right px-5 py-3 font-extrabold text-xs uppercase tracking-widest text-ink/40">Сумма</th>
+                  <th className="text-right px-5 py-3 font-extrabold text-xs uppercase tracking-widest text-ink/40">Статус</th>
+                </tr>
+              </thead>
+              <tbody>
+                {history.map((p) => {
+                  const STATUS_LABEL: Record<string, string> = {
+                    confirmed: 'Зачислено',
+                    pending: 'Ожидание',
+                    failed: 'Ошибка',
+                    expired: 'Истёк',
+                  }
+                  const STATUS_COLOR: Record<string, string> = {
+                    confirmed: 'var(--green)',
+                    pending: 'var(--yellow)',
+                    failed: 'var(--orange)',
+                    expired: 'var(--cream)',
+                  }
+                  return (
+                    <tr key={p.payment_id} className="border-b border-ink/5 last:border-0">
+                      <td className="px-5 py-3 font-semibold text-ink/60 whitespace-nowrap">
+                        {new Date(p.created_at).toLocaleDateString('ru-RU', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                      </td>
+                      <td className="px-5 py-3 font-bold capitalize">{p.provider}</td>
+                      <td className="px-5 py-3 font-extrabold text-right">{formatMoney(p.amount, cur, rates)}</td>
+                      <td className="px-5 py-3 text-right">
+                        <span
+                          className="chip text-xs"
+                          style={{ background: STATUS_COLOR[p.status] ?? 'var(--cream)' }}
+                        >
+                          {STATUS_LABEL[p.status] ?? p.status}
+                        </span>
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

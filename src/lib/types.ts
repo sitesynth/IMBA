@@ -83,6 +83,16 @@ export type PaymentProvider = {
   max_usd: number
 }
 
+export type PaymentRecord = {
+  payment_id: string
+  provider: string
+  amount: number
+  status: 'pending' | 'confirmed' | 'failed' | 'expired'
+  note: string | null
+  created_at: string
+  confirmed_at: string | null
+}
+
 export type BillingInfo = {
   balance: number
   plan_slug: string | null
