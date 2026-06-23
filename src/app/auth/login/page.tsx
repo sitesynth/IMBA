@@ -1,5 +1,4 @@
 import { Suspense } from 'react'
-import { Logo } from '@/components/Logo'
 import { LottieSticker } from '@/components/LottieSticker'
 import { LoginForm } from './LoginForm'
 
@@ -20,11 +19,10 @@ export default function LoginPage() {
     <div className="flex items-center justify-center px-4 py-10">
       <div className="w-full max-w-sm fade-up">
         <div className="text-center mb-7">
-          <div className="flex justify-center mb-5"><Logo size="lg" /></div>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 mb-1">
-            <LottieSticker name="approved" size={64} />
-            <h1 className="display text-3xl sm:text-4xl">С возвращением</h1>
+          <div className="flex justify-center mb-4">
+            <LottieSticker name="approved" size={88} />
           </div>
+          <h1 className="display text-3xl mb-1">С возвращением</h1>
           <p className="font-semibold text-ink/60">Войди в свой кабинет</p>
         </div>
 
