@@ -6,7 +6,9 @@ import type { PaymentProvider } from '@/lib/types'
 
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://imba.live'
 
-async function createInvoice(provider: string, amount_usd: number, after?: string) {
+// 'after' is the first arg so callers can use .bind(null, after) — Next.js 15 requires
+// Server Actions passed to Client Components to be serializable (no plain closures).
+async function createInvoice(after: string | undefined, provider: string, amount_usd: number) {
   'use server'
   const afterParam = after ? `&after=${after}` : ''
   const success_url = `${BASE_URL}/dashboard/billing/topup/result?status=success&provider=${provider}${afterParam}`
@@ -52,7 +54,7 @@ export default async function TopupPage({ searchParams }: Props) {
         providers={providers}
         currency={cur}
         rates={rates}
-        createInvoice={(provider, amount_usd) => createInvoice(provider, amount_usd, after)}
+        createInvoice={createInvoice.bind(null, after)}
       />
     </div>
   )
