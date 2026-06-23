@@ -36,6 +36,18 @@ export function PaymentTopup({
     setCustomAmount('')
     setPaymentUrl(null)
     setError(null)
+    // Сразу платим по быстрой сумме
+    startTransition(async () => {
+      try {
+        const result = await createInvoice(selected || providers[0]?.name || '', a)
+        if (result.payment_url) {
+          setPaymentUrl(result.payment_url)
+          window.open(result.payment_url, '_blank')
+        }
+      } catch (e: unknown) {
+        setError((e as Error).message || 'Ошибка создания платежа')
+      }
+    })
   }
 
   function pay() {
