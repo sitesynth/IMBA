@@ -125,7 +125,11 @@ export default function DashboardPage() {
             {daysLeft !== null && (
               <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-extrabold" style={{ background: daysLeft <= 1 ? 'var(--red, #ef4444)' : 'var(--yellow)', color: 'var(--ink)' }}>
                 <Clock className="w-3.5 h-3.5" strokeWidth={3} />
-                {daysLeft === 0 ? 'Истёк' : `${daysLeft} ${daysLeft === 1 ? 'день' : daysLeft < 5 ? 'дня' : 'дней'}`}
+                {daysLeft === 0
+                  ? 'Истёк'
+                  : daysLeft > 365
+                  ? `до ${planExpiresAt!.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short', year: 'numeric' })}`
+                  : `${daysLeft} ${daysLeft === 1 ? 'день' : daysLeft < 5 ? 'дня' : 'дней'}`}
               </span>
             )}
           </div>
@@ -215,7 +219,7 @@ export default function DashboardPage() {
           ) : (
             <>
               <div className="display text-xl mb-2">Включить VPN</div>
-              <p className="text-xs font-semibold text-ink/60">WireGuard, 50+ серверов, без логов</p>
+              <p className="text-xs font-semibold text-ink/60">VPN на каждый день, без лагов и логов</p>
             </>
           )}
         </Link>
