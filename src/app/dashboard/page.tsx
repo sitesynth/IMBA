@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowRight, Wallet, Plus, Tag, Clock } from 'lucide-react'
+import { ArrowRight, Wallet, Plus, Tag, Clock, Mail } from 'lucide-react'
 import { getCurrentUser } from '@/lib/auth'
 import { api } from '@/lib/api-client'
 import { LottieSticker } from '@/components/LottieSticker'
@@ -151,9 +151,12 @@ export default function DashboardPage() {
 
         {/* Trial hint — shown until VPN or eSIM is activated */}
         {vpns.length === 0 && esims.length === 0 && promoState !== 'ok' && (
-          <p className="text-xs font-semibold text-white/50 mt-4 mb-1 relative z-10">
-            ✉ Вам отправлено письмо с кодом активации — введите его ниже
-          </p>
+          <div className="flex items-center gap-2 mt-4 mb-1 relative z-10">
+            <Mail className="w-4 h-4 text-white/40 shrink-0" strokeWidth={2} />
+            <p className="text-xs font-semibold text-white/50">
+              Вам отправлено письмо с кодом активации — введите его ниже
+            </p>
+          </div>
         )}
 
         {/* Promo code */}
