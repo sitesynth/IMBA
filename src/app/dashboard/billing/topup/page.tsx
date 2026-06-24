@@ -8,14 +8,17 @@ const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://imba.live'
 
 // 'after' is the first arg so callers can use .bind(null, after) — Next.js 15 requires
 // Server Actions passed to Client Components to be serializable (no plain closures).
-async function createInvoice(after: string | undefined, provider: string, amount_usd: number) {
+async function createInvoice(after: string | undefined, provider: string, amount_usd: number, amount_rub?: number) {
   'use server'
   const afterParam = after ? `&after=${after}` : ''
   const success_url = `${BASE_URL}/dashboard/billing/topup/result?status=success&provider=${provider}${afterParam}`
   const fail_url = `${BASE_URL}/dashboard/billing/topup/result?status=failed&provider=${provider}`
+  const body = amount_rub !== undefined
+    ? { provider, amount_rub, success_url, fail_url }
+    : { provider, amount_usd, success_url, fail_url }
   const result = await apiFetch<{ payment_id: string; payment_url: string }>(
     '/v1/payments/invoice',
-    { method: 'POST', body: JSON.stringify({ provider, amount_usd, success_url, fail_url }) },
+    { method: 'POST', body: JSON.stringify(body) },
   )
   return { payment_id: result.payment_id, payment_url: result.payment_url }
 }
@@ -54,7 +57,7 @@ export default async function TopupPage({ searchParams }: Props) {
         providers={providers}
         currency={cur}
         rates={rates}
-        createInvoice={createInvoice.bind(null, after)}
+        createInvoice={createInvoice.bind(null, after) as (provider: string, amount_usd: number, amount_rub?: number) => Promise<{ payment_url: string; payment_id: string }>}
       />
     </div>
   )

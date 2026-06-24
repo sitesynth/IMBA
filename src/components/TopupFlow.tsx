@@ -17,7 +17,7 @@ export function TopupFlow({
   providers: PaymentProvider[]
   currency?: string
   rates?: FxRates
-  createInvoice: (provider: string, amount: number) => Promise<{ payment_url: string; payment_id: string }>
+  createInvoice: (provider: string, amount_usd: number, amount_rub?: number) => Promise<{ payment_url: string; payment_id: string }>
 }) {
   const [rawAmount, setRawAmount] = useState('')
   const [paying, setPaying] = useState<string | null>(null)
@@ -37,7 +37,8 @@ export function TopupFlow({
     setPaying(provider.name)
     startTransition(async () => {
       try {
-        const result = await createInvoice(provider.name, Math.round(amountUsd * 100) / 100)
+        const amountRub = currency === 'RUB' ? numAmount : undefined
+        const result = await createInvoice(provider.name, Math.round(amountUsd * 100) / 100, amountRub)
         if (result.payment_url) {
           setPaymentUrl(result.payment_url)
           window.open(result.payment_url, '_blank')
