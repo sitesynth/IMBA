@@ -143,15 +143,23 @@ export default function DashboardPage() {
           </div>
         </div>
         <div className="flex flex-wrap gap-2 mt-5 relative z-10">
-          <button
-            onClick={() => promoRef.current?.focus()}
-            className="pill pill-yellow pill-sm"
-          >
-            Активировать Старт <ArrowRight className="w-4 h-4" strokeWidth={2.5} />
-          </button>
-          <Link href="/dashboard/billing/topup" className="pill pill-paper pill-sm">
-            <Plus className="w-4 h-4" strokeWidth={2.5} /> Пополнить
-          </Link>
+          {safeUser.plan_name !== 'Про' && (
+            <button
+              onClick={() => promoRef.current?.focus()}
+              className="pill pill-yellow pill-sm"
+            >
+              Активировать Старт <ArrowRight className="w-4 h-4" strokeWidth={2.5} />
+            </button>
+          )}
+          {safeUser.plan_name === 'Про' ? (
+            <Link href="/dashboard/billing/topup" className="pill pill-paper pill-sm">
+              <Plus className="w-4 h-4" strokeWidth={2.5} /> Пополнить
+            </Link>
+          ) : (
+            <Link href="/dashboard/billing" className="pill pill-paper pill-sm">
+              Перейти на Про <ArrowRight className="w-4 h-4" strokeWidth={2.5} />
+            </Link>
+          )}
         </div>
 
         {/* Phone verification — shown until phone is verified or VPN is active */}
