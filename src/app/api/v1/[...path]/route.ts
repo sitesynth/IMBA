@@ -15,8 +15,14 @@ async function proxy(req: NextRequest, { params }: { params: Promise<{ path: str
   if (ct) headers.set('Content-Type', ct)
 
   const store = await cookies()
-  const token = store.get(TOKEN_COOKIE)?.value
-  if (token) headers.set('Authorization', `Bearer ${token}`)
+  const cookieToken = store.get(TOKEN_COOKIE)?.value
+  if (cookieToken) {
+    headers.set('Authorization', `Bearer ${cookieToken}`)
+  } else {
+    // Admin panel stores its token in localStorage and sends it as Authorization.
+    const incoming = req.headers.get('Authorization')
+    if (incoming) headers.set('Authorization', incoming)
+  }
 
   const res = await fetch(url.toString(), {
     method: req.method,

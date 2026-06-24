@@ -13,12 +13,18 @@ const nextConfig: NextConfig = {
     },
   },
   async rewrites() {
-    return [
-      {
-        source: "/api/:path*",
-        destination: `${API_ORIGIN}/:path*`,
-      },
-    ];
+    return {
+      // Dynamic route handlers (app/api/v1/[...path]) are step 7 in the routing
+      // chain; afterFiles rewrites are step 6 and would bypass them. Using
+      // fallback (step 8) ensures the route handler — which reads the httpOnly
+      // imba_token cookie and injects Authorization — runs first.
+      fallback: [
+        {
+          source: "/api/:path*",
+          destination: `${API_ORIGIN}/:path*`,
+        },
+      ],
+    };
   },
 };
 
