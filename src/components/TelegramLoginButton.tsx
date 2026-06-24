@@ -38,7 +38,7 @@ export function TelegramLoginButton({ label = 'Войти через Telegram' }
     script.setAttribute('data-request-access', 'write')
     ref.current.appendChild(script)
 
-    return () => { delete window.onTelegramAuth }
+    return () => { delete (window as { onTelegramAuth?: unknown }).onTelegramAuth }
   }, [router])
 
   return (
