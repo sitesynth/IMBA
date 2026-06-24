@@ -31,6 +31,27 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL('/auth/login', request.url))
   }
 
+  // For POST/RSC requests to protected routes, validate token against the API.
+  // redirect() in the dashboard layout crashes during RSC streaming (Next.js bug),
+  // so we catch invalid tokens here before the layout renders.
+  if (!isPublic && token && request.method === 'POST') {
+    const apiUrl = process.env.IMBA_API_URL
+    if (apiUrl) {
+      try {
+        const res = await fetch(`${apiUrl}/v1/me`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        if (!res.ok) {
+          const response = NextResponse.redirect(new URL('/auth/login', request.url))
+          response.cookies.delete('imba_token')
+          return response
+        }
+      } catch {
+        // API unreachable — let through, layout will handle
+      }
+    }
+  }
+
   // Only redirect root for authenticated users — NOT auth/* pages.
   // Redirecting /auth/login → /dashboard when token is stale creates an infinite loop
   // because the dashboard redirects back to /auth/login when /v1/me fails.
