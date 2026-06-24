@@ -6,6 +6,7 @@ export type UserProfile = {
   plan_slug: string | null
   plan_name: string | null
   plan_expires_at: string | null
+  phone_verified: boolean
   language: string
   currency: string
   rates: { EUR: number; RUB: number }

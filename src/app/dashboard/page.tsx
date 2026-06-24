@@ -2,12 +2,13 @@
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowRight, Wallet, Plus, Tag, Clock, Mail } from 'lucide-react'
+import { ArrowRight, Wallet, Plus, Tag, Clock } from 'lucide-react'
 import { getCurrentUser } from '@/lib/auth'
 import { api } from '@/lib/api-client'
 import { LottieSticker } from '@/components/LottieSticker'
 import { NotificationPanel } from '@/components/NotificationPanel'
 import { PinnedBanner } from '@/components/PinnedBanner'
+import { PhoneVerify } from '@/components/PhoneVerify'
 import { formatMoney, type FxRates } from '@/lib/format'
 import type { Esim, VpnSubscription, VirtualCard, Transaction, UserProfile } from '@/lib/types'
 
@@ -151,14 +152,9 @@ export default function DashboardPage() {
           </Link>
         </div>
 
-        {/* Trial hint — shown until VPN or eSIM is activated */}
-        {vpns.length === 0 && esims.length === 0 && promoState !== 'ok' && (
-          <div className="flex items-center gap-2 mt-4 mb-1 relative z-10">
-            <Mail className="w-4 h-4 text-white/40 shrink-0" strokeWidth={2} />
-            <p className="text-xs font-semibold text-white/50">
-              Вам отправлено письмо с кодом активации — введите его ниже
-            </p>
-          </div>
+        {/* Phone verification — shown until phone is verified or VPN is active */}
+        {!safeUser.phone_verified && vpns.length === 0 && (
+          <PhoneVerify onActivated={() => window.location.reload()} />
         )}
 
         {/* Promo code */}
