@@ -36,7 +36,7 @@ export default async function EsimPage() {
       <div className="flex items-end justify-between gap-4 flex-wrap">
         <div>
           <h1 className="display text-4xl md:text-5xl mb-1">Твои eSIM</h1>
-          <p className="font-semibold text-ink/60">Мобильный интернет в 190+ странах</p>
+          <p className="font-semibold text-ink/60">Глобальная eSIM — работает по всему миру</p>
         </div>
         <span className="chip" style={{ background: 'var(--violet-100)' }}>
           {esims.length} активных
@@ -112,7 +112,7 @@ export default async function EsimPage() {
           <div>
             <div className="display text-2xl mb-1">У тебя ещё нет eSIM</div>
             <p className="font-semibold text-ink/60 text-sm">
-              Выбери страну ниже — активация по QR за минуту.
+              Выбери пакет ниже — активация по QR за минуту.
             </p>
           </div>
         </div>
@@ -142,8 +142,10 @@ export default async function EsimPage() {
                     <form key={gb} action={buyEsim} className="flex items-center justify-between gap-2">
                       <input type="hidden" name="country" value={code} />
                       <input type="hidden" name="data_gb" value={gb} />
-                      <div className="text-sm font-extrabold">{gb} ГБ</div>
-                      <button className="pill pill-ink pill-sm">${price.toFixed(2)}</button>
+                      <div className="text-sm font-extrabold">
+                        {Number(gb) < 1 ? `${Math.round(Number(gb) * 1000)} МБ` : `${gb} ГБ`}
+                      </div>
+                      <button className="pill pill-ink pill-sm">${(price as number).toFixed(2)}</button>
                     </form>
                   ))}
                 </div>
