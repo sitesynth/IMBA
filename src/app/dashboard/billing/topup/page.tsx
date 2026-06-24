@@ -1,18 +1,23 @@
 import { redirect } from 'next/navigation'
+import { headers } from 'next/headers'
 import { getCurrentUser } from '@/lib/auth'
 import { api, apiFetch } from '@/lib/api'
 import { TopupFlow } from '@/components/TopupFlow'
 import type { PaymentProvider } from '@/lib/types'
 
-const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://imba.live'
-
 // 'after' is the first arg so callers can use .bind(null, after) — Next.js 15 requires
 // Server Actions passed to Client Components to be serializable (no plain closures).
 async function createInvoice(after: string | undefined, provider: string, amount_usd: number, amount_rub?: number) {
   'use server'
+  // Use the domain the user actually came from (x-real-host set by Bunny edge
+  // script). Without this, imba.run users get redirected to imba.live after
+  // payment and have to log in again.
+  const hdrs = await headers()
+  const host = hdrs.get('x-real-host') || hdrs.get('x-forwarded-host') || 'imba.live'
+  const baseUrl = `https://${host}`
   const afterParam = after ? `&after=${after}` : ''
-  const success_url = `${BASE_URL}/dashboard/billing/topup/result?status=success&provider=${provider}${afterParam}`
-  const fail_url = `${BASE_URL}/dashboard/billing/topup/result?status=failed&provider=${provider}`
+  const success_url = `${baseUrl}/dashboard/billing/topup/result?status=success&provider=${provider}${afterParam}`
+  const fail_url = `${baseUrl}/dashboard/billing/topup/result?status=failed&provider=${provider}`
   const body = amount_rub !== undefined
     ? { provider, amount_rub, success_url, fail_url }
     : { provider, amount_usd, success_url, fail_url }
