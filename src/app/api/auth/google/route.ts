@@ -4,7 +4,8 @@ import crypto from 'node:crypto'
 import { buildAuthUrl, googleConfigured } from '@/lib/google'
 
 export async function GET(request: NextRequest) {
-  const origin = `https://${(await headers()).get('host') ?? 'imba.live'}`
+  const h = await headers()
+  const origin = `https://${h.get('x-forwarded-host') ?? h.get('host') ?? 'imba.live'}`
 
   if (!googleConfigured()) {
     return NextResponse.redirect(new URL('/auth/login?error=google_not_configured', origin))

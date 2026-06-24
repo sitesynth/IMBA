@@ -6,7 +6,8 @@ import { setApiToken } from '@/lib/api'
 const apiUrl = () => process.env.IMBA_API_URL ?? 'http://localhost:8100'
 
 export async function GET(request: NextRequest) {
-  const origin = `https://${(await headers()).get('host') ?? 'imba.live'}`
+  const h = await headers()
+  const origin = `https://${h.get('x-forwarded-host') ?? h.get('host') ?? 'imba.live'}`
   const url = new URL(request.url)
   const code = url.searchParams.get('code')
   const state = url.searchParams.get('state')
