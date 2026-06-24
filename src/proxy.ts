@@ -31,10 +31,10 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL('/auth/login', request.url))
   }
 
-  // For POST/RSC requests to protected routes, validate token against the API.
-  // redirect() in the dashboard layout crashes during RSC streaming (Next.js bug),
+  // Validate token against the API for all protected routes.
+  // redirect() in Server Component layouts crashes during RSC render (Next.js bug),
   // so we catch invalid tokens here before the layout renders.
-  if (!isPublic && token && request.method === 'POST') {
+  if (!isPublic && token) {
     const apiUrl = process.env.IMBA_API_URL
     if (apiUrl) {
       try {
@@ -47,7 +47,7 @@ export async function proxy(request: NextRequest) {
           return response
         }
       } catch {
-        // API unreachable — let through, layout will handle
+        // API unreachable — layout fallback will handle
       }
     }
   }

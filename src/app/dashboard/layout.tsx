@@ -1,10 +1,10 @@
 import Link from 'next/link'
-import { redirect } from 'next/navigation'
 import { LayoutDashboard, Wifi, Shield, CreditCard, Wallet, Settings, LogOut } from 'lucide-react'
 import { getCurrentUser, logout } from '@/lib/auth'
 import { Logo } from '@/components/Logo'
 import { Marquee } from '@/components/Marquee'
 import { AnimatedBalance } from '@/components/AnimatedBalance'
+import { AuthRedirect } from '@/components/AuthRedirect'
 import { formatMoney } from '@/lib/format'
 
 const navItems = [
@@ -18,7 +18,7 @@ const navItems = [
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const user = await getCurrentUser()
-  if (!user) redirect('/auth/login')
+  if (!user) return <AuthRedirect to="/auth/login" />
 
   const initials = (user.name || user.email)
     .split(/\s+/)
