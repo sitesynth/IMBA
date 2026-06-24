@@ -6,6 +6,7 @@ import { ArrowRight, Wallet, Plus, Tag, Clock } from 'lucide-react'
 import { getCurrentUser } from '@/lib/auth'
 import { api } from '@/lib/api-client'
 import { LottieSticker } from '@/components/LottieSticker'
+import { NotificationPanel } from '@/components/NotificationPanel'
 import { formatMoney, type FxRates } from '@/lib/format'
 import type { Esim, VpnSubscription, VirtualCard, Transaction, UserProfile } from '@/lib/types'
 
@@ -104,6 +105,8 @@ export default function DashboardPage() {
           <Wallet className="w-4 h-4" strokeWidth={2.5} /> {fmtBalance}
         </Link>
       </div>
+
+      <NotificationPanel />
 
       {/* Hero — balance card */}
       <div
