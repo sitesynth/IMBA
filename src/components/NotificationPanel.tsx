@@ -25,7 +25,7 @@ export function NotificationPanel() {
   const [items, setItems] = useState<Notification[]>([])
 
   useEffect(() => {
-    api.get<Notification[]>('/v1/notifications?unread_only=true&limit=10')
+    api.get<Notification[]>('/v1/notifications/?unread_only=true&limit=10')
       .then(setItems)
       .catch(() => {})
   }, [])

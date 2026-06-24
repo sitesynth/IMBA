@@ -77,9 +77,9 @@ export default function DashboardPage() {
     if (!promoCode.trim()) return
     setPromoState('loading')
     try {
-      const res = await api.post<{ credited: number; balance: number }>('/v1/me/promo/redeem', { code: promoCode.trim() })
+      const res = await api.post<{ credited: number; balance: number; vpn_trial_days?: number }>('/v1/me/promo/redeem', { code: promoCode.trim() })
       setPromoState('ok')
-      setPromoMsg(`+$${res.credited.toFixed(2)} зачислено!`)
+      setPromoMsg(res.vpn_trial_days ? `VPN ${res.vpn_trial_days} дн + eSIM 500 МБ активированы!` : `+$${res.credited.toFixed(2)} зачислено!`)
       setPromoCode('')
       setUser((u) => u ? { ...u, balance: res.balance } : u)
     } catch (e: unknown) {
