@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
+import { getFingerprint } from '@/lib/fingerprint'
 
 declare global {
   interface Window {
@@ -14,10 +15,11 @@ export function TelegramLoginButton({ label = 'Войти через Telegram' }
 
   useEffect(() => {
     window.onTelegramAuth = async (user) => {
+      const fingerprint = await getFingerprint()
       const res = await fetch('/api/auth/telegram', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(user),
+        body: JSON.stringify({ ...user, fingerprint }),
       })
       if (res.ok) {
         router.push('/dashboard')

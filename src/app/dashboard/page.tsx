@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowRight, Wallet, Plus, Tag, Clock } from 'lucide-react'
+import { getFingerprint } from '@/lib/fingerprint'
 import { getCurrentUser } from '@/lib/auth'
 import { api } from '@/lib/api-client'
 import { LottieSticker } from '@/components/LottieSticker'
@@ -78,7 +79,8 @@ export default function DashboardPage() {
     if (!promoCode.trim()) return
     setPromoState('loading')
     try {
-      const res = await api.post<{ credited: number; balance: number; vpn_trial_days?: number }>('/v1/me/promo/redeem', { code: promoCode.trim() })
+      const fingerprint = await getFingerprint()
+      const res = await api.post<{ credited: number; balance: number; vpn_trial_days?: number }>('/v1/me/promo/redeem', { code: promoCode.trim(), fingerprint })
       setPromoState('ok')
       setPromoMsg(res.vpn_trial_days ? `VPN ${res.vpn_trial_days} дн + eSIM 500 МБ активированы!` : `+$${res.credited.toFixed(2)} зачислено!`)
       setPromoCode('')

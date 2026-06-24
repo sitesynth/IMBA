@@ -1,4 +1,4 @@
-const BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://138.2.134.17:8100"
+const BASE = '/api'
 const TOKEN_KEY = "imba_admin"
 
 export class AdminApiError extends Error {

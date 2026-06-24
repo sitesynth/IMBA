@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { Phone, ArrowRight } from 'lucide-react'
 import { api } from '@/lib/api-client'
+import { getFingerprint } from '@/lib/fingerprint'
 
 interface Props {
   onActivated: () => void
@@ -33,7 +34,8 @@ export function PhoneVerify({ onActivated }: Props) {
     setLoading(true)
     setError('')
     try {
-      const res = await api.post<{ ok: boolean; vpn_activated: boolean }>('/v1/me/phone/verify', { phone, code })
+      const fingerprint = await getFingerprint()
+      const res = await api.post<{ ok: boolean; vpn_activated: boolean }>('/v1/me/phone/verify', { phone, code, fingerprint })
       setStep('done')
       if (res.vpn_activated) setTimeout(onActivated, 1200)
     } catch (e: unknown) {
