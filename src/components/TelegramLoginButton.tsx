@@ -5,7 +5,7 @@ import { getFingerprint } from '@/lib/fingerprint'
 
 declare global {
   interface Window {
-    onTelegramAuth: (user: Record<string, unknown>) => void
+    onTelegramAuth?: (user: Record<string, unknown>) => void
   }
 }
 
