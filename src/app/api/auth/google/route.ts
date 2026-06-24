@@ -1,23 +1,22 @@
-import { NextResponse } from 'next/server'
-import { cookies } from 'next/headers'
+import { NextRequest, NextResponse } from 'next/server'
+import { cookies, headers } from 'next/headers'
 import crypto from 'node:crypto'
 import { buildAuthUrl, googleConfigured } from '@/lib/google'
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const origin = `https://${(await headers()).get('host') ?? 'imba.live'}`
+
   if (!googleConfigured()) {
-    return NextResponse.redirect(
-      new URL('/auth/login?error=google_not_configured', process.env.APP_URL ?? 'http://localhost:3100')
-    )
+    return NextResponse.redirect(new URL('/auth/login?error=google_not_configured', origin))
   }
   const state = crypto.randomUUID()
   const cookieStore = await cookies()
   cookieStore.set('g_state', state, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
+    secure: true,
     sameSite: 'lax',
     path: '/',
     maxAge: 600,
-    domain: process.env.NODE_ENV === 'production' ? '.imba.live' : undefined,
   })
-  return NextResponse.redirect(buildAuthUrl(state))
+  return NextResponse.redirect(buildAuthUrl(state, origin))
 }

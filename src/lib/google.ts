@@ -5,15 +5,15 @@ export function googleConfigured() {
   return Boolean(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET)
 }
 
-function redirectUri() {
-  const base = process.env.APP_URL ?? 'http://localhost:3100'
+export function redirectUri(origin?: string) {
+  const base = origin ?? process.env.APP_URL ?? 'http://localhost:3100'
   return `${base}/api/auth/google/callback`
 }
 
-export function buildAuthUrl(state: string) {
+export function buildAuthUrl(state: string, origin?: string) {
   const params = new URLSearchParams({
     client_id: process.env.GOOGLE_CLIENT_ID!,
-    redirect_uri: redirectUri(),
+    redirect_uri: redirectUri(origin),
     response_type: 'code',
     scope: 'openid email profile',
     state,
@@ -24,7 +24,7 @@ export function buildAuthUrl(state: string) {
 }
 
 /** Exchange OAuth code for Google access_token. */
-export async function exchangeCodeForToken(code: string): Promise<string> {
+export async function exchangeCodeForToken(code: string, origin?: string): Promise<string> {
   const res = await fetch(GOOGLE_TOKEN, {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -32,7 +32,7 @@ export async function exchangeCodeForToken(code: string): Promise<string> {
       code,
       client_id: process.env.GOOGLE_CLIENT_ID!,
       client_secret: process.env.GOOGLE_CLIENT_SECRET!,
-      redirect_uri: redirectUri(),
+      redirect_uri: redirectUri(origin),
       grant_type: 'authorization_code',
     }),
   })
