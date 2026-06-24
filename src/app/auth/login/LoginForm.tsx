@@ -4,6 +4,7 @@ import { useActionState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { login } from '@/lib/auth'
 import { GoogleButton, AuthError, OrDivider } from '@/components/GoogleButton'
+import { TelegramLoginButton } from '@/components/TelegramLoginButton'
 
 export function LoginForm() {
   const [state, action, pending] = useActionState(login, undefined)
@@ -15,6 +16,7 @@ export function LoginForm() {
     <div className="panel">
       <AuthError code={errorCode} />
       <GoogleButton />
+      <TelegramLoginButton />
       <OrDivider />
       <form action={action} className="space-y-4">
         {redirectTo && <input type="hidden" name="redirectTo" value={redirectTo} />}
