@@ -7,6 +7,7 @@ import { getCurrentUser } from '@/lib/auth'
 import { api } from '@/lib/api-client'
 import { LottieSticker } from '@/components/LottieSticker'
 import { NotificationPanel } from '@/components/NotificationPanel'
+import { PinnedBanner } from '@/components/PinnedBanner'
 import { formatMoney, type FxRates } from '@/lib/format'
 import type { Esim, VpnSubscription, VirtualCard, Transaction, UserProfile } from '@/lib/types'
 
@@ -106,6 +107,7 @@ export default function DashboardPage() {
         </Link>
       </div>
 
+      <PinnedBanner />
       <NotificationPanel />
 
       {/* Hero — balance card */}
