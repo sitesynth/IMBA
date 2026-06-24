@@ -6,7 +6,7 @@ const TOKEN_COOKIE = 'imba_token'
 
 async function proxy(req: NextRequest, { params }: { params: Promise<{ path: string[] }> }) {
   const { path } = await params
-  const target = `${BACKEND}/v1/${path.join('/')}`
+  const target = `${BACKEND}/v1/${path.join('/')}/`
   const url = new URL(target)
   req.nextUrl.searchParams.forEach((v, k) => url.searchParams.set(k, v))
 
