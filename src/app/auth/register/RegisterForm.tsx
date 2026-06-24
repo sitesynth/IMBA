@@ -4,6 +4,7 @@ import { useSearchParams } from 'next/navigation'
 import { signup } from '@/lib/auth'
 import { GoogleButton, AuthError, OrDivider } from '@/components/GoogleButton'
 import { TelegramLoginButton } from '@/components/TelegramLoginButton'
+import { VKLoginButton } from '@/components/VKLoginButton'
 
 export function RegisterForm() {
   const [state, action, pending] = useActionState(signup, undefined)
@@ -16,6 +17,7 @@ export function RegisterForm() {
       <AuthError code={errorCode} />
       <GoogleButton label="Регистрация через Google" />
       <TelegramLoginButton label="Регистрация через Telegram" />
+      <VKLoginButton label="Регистрация через VK" />
       <OrDivider />
       <form action={action} className="space-y-4">
         {redirectTo && <input type="hidden" name="redirectTo" value={redirectTo} />}
