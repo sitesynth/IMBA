@@ -24,7 +24,7 @@ function timeAgo(iso: string) {
 export function NotificationBell() {
   const [items, setItems] = useState<Notification[]>([])
   const [open, setOpen] = useState(false)
-  const [dropdownPos, setDropdownPos] = useState({ top: 0, right: 0 })
+  const [dropdownPos, setDropdownPos] = useState<{ top: number; left?: number; right?: number; dropW: number }>({ top: 0, right: 0, dropW: 320 })
   const addToast = useToast()
   const btnRef = useRef<HTMLButtonElement>(null)
   const dropRef = useRef<HTMLDivElement>(null)
@@ -49,10 +49,18 @@ export function NotificationBell() {
   function openDropdown() {
     if (btnRef.current) {
       const rect = btnRef.current.getBoundingClientRect()
-      setDropdownPos({
-        top: rect.bottom + 8,
-        right: window.innerWidth - rect.right,
-      })
+      const vw = window.innerWidth
+      const dropW = Math.min(320, vw - 16)
+      const inLeftHalf = (rect.left + rect.width / 2) < vw / 2
+      if (inLeftHalf) {
+        // open rightward — clamp so right edge stays on screen
+        const left = Math.min(rect.left, vw - dropW - 8)
+        setDropdownPos({ top: rect.bottom + 8, left: Math.max(8, left), dropW })
+      } else {
+        // open leftward — clamp so left edge stays on screen
+        const right = Math.max(8, vw - rect.right)
+        setDropdownPos({ top: rect.bottom + 8, right: Math.min(right, vw - dropW - 8), dropW })
+      }
     }
     setOpen(v => !v)
   }
@@ -85,10 +93,11 @@ export function NotificationBell() {
   const dropdown = open && typeof document !== 'undefined' ? createPortal(
     <div
       ref={dropRef}
-      className="fixed z-[9999] w-80 rounded-2xl shadow-2xl border-2 border-ink overflow-hidden"
+      className="fixed z-[9999] rounded-2xl shadow-2xl border-2 border-ink overflow-hidden"
       style={{
+        width: dropdownPos.dropW,
         top: dropdownPos.top,
-        right: dropdownPos.right,
+        ...(dropdownPos.left !== undefined ? { left: dropdownPos.left } : { right: dropdownPos.right }),
         background: 'var(--paper)',
         boxShadow: '4px 4px 0 #111',
       }}
