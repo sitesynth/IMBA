@@ -4,7 +4,6 @@ import { useActionState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { login } from '@/lib/auth'
 import { GoogleButton, AuthError, OrDivider } from '@/components/GoogleButton'
-import { TelegramLoginButton } from '@/components/TelegramLoginButton'
 import { VKLoginButton } from '@/components/VKLoginButton'
 
 export function LoginForm() {
@@ -17,7 +16,6 @@ export function LoginForm() {
     <div className="panel">
       <AuthError code={errorCode} />
       <GoogleButton />
-      <TelegramLoginButton />
       <VKLoginButton />
       <OrDivider />
       <form action={action} className="space-y-4">

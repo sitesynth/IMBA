@@ -9,7 +9,7 @@ import { api } from '@/lib/api-client'
 import { LottieSticker } from '@/components/LottieSticker'
 import { NotificationPanel } from '@/components/NotificationPanel'
 import { PinnedBanner } from '@/components/PinnedBanner'
-import { PhoneVerify } from '@/components/PhoneVerify'
+import { TelegramVerify } from '@/components/TelegramVerify'
 import { formatMoney, type FxRates } from '@/lib/format'
 import type { Esim, VpnSubscription, VirtualCard, Transaction, UserProfile } from '@/lib/types'
 
@@ -163,9 +163,9 @@ export default function DashboardPage() {
           )}
         </div>
 
-        {/* Phone verification — shown until phone is verified or VPN is active */}
+        {/* Telegram verification — shown until phone is verified or VPN is active */}
         {!safeUser.phone_verified && vpns.length === 0 && (
-          <PhoneVerify onActivated={() => window.location.reload()} />
+          <TelegramVerify onActivated={() => window.location.reload()} />
         )}
 
         {/* Promo code */}
