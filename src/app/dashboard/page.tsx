@@ -7,7 +7,6 @@ import { getFingerprint } from '@/lib/fingerprint'
 import { getCurrentUser } from '@/lib/auth'
 import { api } from '@/lib/api-client'
 import { LottieSticker } from '@/components/LottieSticker'
-import { NotificationPanel } from '@/components/NotificationPanel'
 import { PinnedBanner } from '@/components/PinnedBanner'
 import { TelegramVerify } from '@/components/TelegramVerify'
 import { formatMoney, type FxRates } from '@/lib/format'
@@ -112,7 +111,6 @@ export default function DashboardPage() {
       </div>
 
       <PinnedBanner />
-      <NotificationPanel />
 
       {/* Hero — balance card */}
       <div

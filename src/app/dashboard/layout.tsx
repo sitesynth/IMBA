@@ -5,6 +5,8 @@ import { getCurrentUser, logout } from '@/lib/auth'
 import { Logo } from '@/components/Logo'
 import { Marquee } from '@/components/Marquee'
 import { AnimatedBalance } from '@/components/AnimatedBalance'
+import { NotificationBell } from '@/components/NotificationBell'
+import { ToastProvider } from '@/components/ToastProvider'
 import { formatMoney } from '@/lib/format'
 
 const navItems = [
@@ -28,6 +30,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
     .toUpperCase()
 
   return (
+    <ToastProvider>
     <div className="min-h-screen flex flex-col gap-1.5" style={{ background: 'var(--ink)', padding: '5px' }}>
       <Marquee
         bg="var(--yellow)"
@@ -38,6 +41,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
       <div className="md:hidden flex items-center justify-between rounded-xl px-4 py-3" style={{ background: 'var(--paper)' }}>
         <Logo size="sm" tone="blue" href="/dashboard" />
         <div className="flex items-center gap-2">
+          <NotificationBell />
           <span className="chip" style={{ background: 'var(--yellow)' }}><AnimatedBalance balance={user.balance} currency={user.currency} rates={user.rates} /></span>
           <form action={logout}>
             <button type="submit" className="pill pill-paper pill-sm" aria-label="Выйти">
@@ -54,8 +58,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
           style={{ background: 'var(--paper)' }}
         >
           <div className="p-5 flex flex-col gap-1 flex-1">
-            <div className="mb-6 px-1">
+            <div className="mb-6 px-1 flex items-center justify-between">
               <Logo size="md" tone="blue" href="/dashboard" />
+              <NotificationBell />
             </div>
 
             <nav className="flex-1 space-y-1.5">
@@ -120,5 +125,6 @@ export default async function DashboardLayout({ children }: { children: React.Re
         ))}
       </nav>
     </div>
+    </ToastProvider>
   )
 }

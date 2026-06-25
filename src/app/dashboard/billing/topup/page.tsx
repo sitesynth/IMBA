@@ -21,11 +21,15 @@ async function createInvoice(after: string | undefined, provider: string, amount
   const body = amount_rub !== undefined
     ? { provider, amount_rub, success_url, fail_url }
     : { provider, amount_usd, success_url, fail_url }
-  const result = await apiFetch<{ payment_id: string; payment_url: string }>(
-    '/v1/payments/invoice',
-    { method: 'POST', body: JSON.stringify(body) },
-  )
-  return { payment_id: result.payment_id, payment_url: result.payment_url }
+  try {
+    const result = await apiFetch<{ payment_id: string; payment_url: string }>(
+      '/v1/payments/invoice',
+      { method: 'POST', body: JSON.stringify(body) },
+    )
+    return { payment_id: result.payment_id, payment_url: result.payment_url }
+  } catch (e) {
+    throw new Error(e instanceof Error ? e.message : 'Ошибка создания платежа')
+  }
 }
 
 interface Props {
