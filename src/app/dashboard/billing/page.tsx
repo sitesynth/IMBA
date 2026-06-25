@@ -190,20 +190,18 @@ export default async function BillingPage() {
             return (
               <div key={p.slug} className="panel relative flex flex-col p-5 md:p-7" style={{ background: p.bg }}>
                 {(p.hot && !isCurrent) && (
-                  <span
-                    className="chip absolute -top-3.5 left-1/2 -translate-x-1/2 flex items-center gap-1"
-                    style={{ background: 'var(--ink)', color: '#fff' }}
-                  >
-                    <FireIcon size={28} /> Популярный
-                  </span>
+                  <div className="flex justify-center mb-3">
+                    <span className="chip flex items-center gap-1" style={{ background: 'var(--ink)', color: '#fff' }}>
+                      <FireIcon size={28} /> Популярный
+                    </span>
+                  </div>
                 )}
                 {isCurrent && (
-                  <span
-                    className="chip absolute -top-3.5 left-1/2 -translate-x-1/2 flex items-center gap-1"
-                    style={{ background: 'var(--green)' }}
-                  >
-                    <Check className="w-3 h-3" strokeWidth={3} /> Активен
-                  </span>
+                  <div className="flex justify-center mb-3">
+                    <span className="chip flex items-center gap-1" style={{ background: 'var(--green)' }}>
+                      <Check className="w-3 h-3" strokeWidth={3} /> Активен
+                    </span>
+                  </div>
                 )}
                 <div className="display text-xl mb-1">{p.name}</div>
                 <div className="display text-lg md:text-2xl mb-5 whitespace-nowrap">{priceLabel}</div>
