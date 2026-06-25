@@ -55,7 +55,8 @@ export default function DashboardPage() {
       setLoading(false)
     }
     load()
-  }, [router])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   if (loading || !user) return <div className="p-8 text-center">Loading...</div>
 
