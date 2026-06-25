@@ -12,10 +12,14 @@ export async function GET(request: NextRequest) {
   const origin = `https://${host}`
 
   const code = request.nextUrl.searchParams.get('code')
-  const fp = request.nextUrl.searchParams.get('state') || null
+  const rawState = decodeURIComponent(request.nextUrl.searchParams.get('state') || '')
+  const [fp, mode] = rawState.split('__')
+
+  const isLink = mode === 'link'
 
   if (!code) {
-    return NextResponse.redirect(`${origin}/auth/login?error=vk_cancelled`)
+    const dest = isLink ? `${origin}/dashboard?error=vk_cancelled` : `${origin}/auth/login?error=vk_cancelled`
+    return NextResponse.redirect(dest)
   }
 
   const redirectUri = `${origin}/api/auth/vk/callback`
@@ -25,15 +29,39 @@ export async function GET(request: NextRequest) {
   ).catch(() => null)
 
   if (!tokenRes?.ok) {
-    return NextResponse.redirect(`${origin}/auth/login?error=vk_failed`)
+    const dest = isLink ? `${origin}/dashboard?error=vk_failed` : `${origin}/auth/login?error=vk_failed`
+    return NextResponse.redirect(dest)
   }
 
   const tokenData = await tokenRes.json()
   if (tokenData.error || !tokenData.user_id) {
-    return NextResponse.redirect(`${origin}/auth/login?error=vk_failed`)
+    const dest = isLink ? `${origin}/dashboard?error=vk_failed` : `${origin}/auth/login?error=vk_failed`
+    return NextResponse.redirect(dest)
   }
 
   const { access_token, user_id, first_name, last_name } = tokenData
+
+  // ── Link mode: bind VK to existing account, activate Start trial ──
+  if (isLink) {
+    const userToken = request.cookies.get('imba_token')?.value
+    if (!userToken) return NextResponse.redirect(`${origin}/auth/login`)
+
+    const linkRes = await fetch(`${apiUrl()}/v1/me/vk/link`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${userToken}` },
+      body: JSON.stringify({ vk_id: user_id, access_token, fingerprint: fp || null }),
+    }).catch(() => null)
+
+    if (!linkRes?.ok) {
+      const err = await linkRes?.json().catch(() => ({}))
+      const msg = encodeURIComponent(err?.detail || 'vk_link_failed')
+      return NextResponse.redirect(`${origin}/dashboard?error=${msg}`)
+    }
+
+    return NextResponse.redirect(`${origin}/dashboard?activated=vk`)
+  }
+
+  // ── Login/register mode ──
   const name = [first_name, last_name].filter(Boolean).join(' ') || `VK ${user_id}`
 
   const apiRes = await fetch(`${apiUrl()}/v1/auth/vk`, {

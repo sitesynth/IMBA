@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowRight, Wallet, Plus, Tag, Clock } from 'lucide-react'
 import { getFingerprint } from '@/lib/fingerprint'
@@ -8,12 +8,15 @@ import { getCurrentUser } from '@/lib/auth'
 import { api } from '@/lib/api-client'
 import { LottieSticker } from '@/components/LottieSticker'
 import { PinnedBanner } from '@/components/PinnedBanner'
-import { TelegramVerify } from '@/components/TelegramVerify'
+import { SocialVerify } from '@/components/SocialVerify'
 import { formatMoney, type FxRates } from '@/lib/format'
+import { useToast } from '@/components/ToastProvider'
 import type { Esim, VpnSubscription, VirtualCard, Transaction, UserProfile } from '@/lib/types'
 
 export default function DashboardPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const addToast = useToast()
   const [user, setUser] = useState<UserProfile | null>(null)
   const [esims, setEsims] = useState<Esim[]>([])
   const [vpns, setVpns] = useState<VpnSubscription[]>([])
@@ -24,6 +27,13 @@ export default function DashboardPage() {
   const [promoState, setPromoState] = useState<'idle' | 'loading' | 'ok' | 'error'>('idle')
   const [promoMsg, setPromoMsg] = useState('')
   const promoRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    const activated = searchParams.get('activated')
+    const error = searchParams.get('error')
+    if (activated === 'vk') addToast('VPN 7 дней + eSIM 500 МБ активированы через VK!', 'success')
+    if (error) addToast(decodeURIComponent(error), 'error')
+  }, [])
 
   useEffect(() => {
     async function load() {
@@ -161,9 +171,9 @@ export default function DashboardPage() {
           )}
         </div>
 
-        {/* Telegram verification — shown until phone is verified or VPN is active */}
+        {/* Social verification — shown until phone is verified or VPN is active */}
         {!safeUser.phone_verified && vpns.length === 0 && (
-          <TelegramVerify onActivated={() => window.location.reload()} />
+          <SocialVerify onActivated={() => window.location.reload()} />
         )}
 
         {/* Promo code */}
