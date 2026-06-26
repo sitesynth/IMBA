@@ -85,7 +85,7 @@ export function VKIDButton({ mode, onError, label = 'VK ID', className = 'pill p
     return (
       <div
         ref={overlayRef}
-        style={{ position: 'absolute', inset: 0, overflow: 'hidden', cursor: 'pointer', zIndex: 1 }}
+        style={{ position: 'absolute', inset: 0, overflow: 'hidden', cursor: 'pointer', zIndex: 1, opacity: 0 }}
       />
     )
   }
