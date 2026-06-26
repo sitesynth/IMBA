@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from 'react'
 import { Bell, BellRing, X } from 'lucide-react'
 import { createPortal } from 'react-dom'
 import { api } from '@/lib/api-client'
-import { useToast } from './ToastProvider'
 
 interface Notification {
   id: string
@@ -25,25 +24,33 @@ export function NotificationBell() {
   const [items, setItems] = useState<Notification[]>([])
   const [open, setOpen] = useState(false)
   const [dropdownPos, setDropdownPos] = useState<{ top: number; left?: number; right?: number; dropW: number }>({ top: 0, right: 0, dropW: 320 })
-  const addToast = useToast()
   const btnRef = useRef<HTMLButtonElement>(null)
   const dropRef = useRef<HTMLDivElement>(null)
-  const toastedRef = useRef(false)
+  const autoOpenedRef = useRef(false)
+  const autoCloseTimer = useRef<ReturnType<typeof setTimeout>>(undefined)
 
   useEffect(() => {
     api.get<Notification[]>('/v1/notifications/?unread_only=true&limit=10')
       .then(data => {
         setItems(data)
-        if (!toastedRef.current && data.length > 0) {
-          toastedRef.current = true
-          data.slice(0, 3).forEach((n, i) => {
-            setTimeout(() => {
-              addToast(n.title + (n.message ? ` — ${n.message}` : ''), 'info')
-            }, i * 700)
-          })
+        if (!autoOpenedRef.current && data.length > 0 && btnRef.current) {
+          autoOpenedRef.current = true
+          // Slightly delay to let layout settle
+          setTimeout(() => {
+            if (btnRef.current) {
+              const rect = btnRef.current.getBoundingClientRect()
+              const vw = window.innerWidth
+              const dropW = Math.min(320, vw - 16)
+              const right = Math.max(8, vw - rect.right)
+              setDropdownPos({ top: rect.bottom + 8, right: Math.min(right, vw - dropW - 8), dropW })
+            }
+            setOpen(true)
+            autoCloseTimer.current = setTimeout(() => setOpen(false), 10000)
+          }, 600)
         }
       })
       .catch(() => {})
+    return () => clearTimeout(autoCloseTimer.current)
   }, [])
 
   function openDropdown() {
