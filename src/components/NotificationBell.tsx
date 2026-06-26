@@ -4,6 +4,9 @@ import { Bell, BellRing, X } from 'lucide-react'
 import { createPortal } from 'react-dom'
 import { api } from '@/lib/api-client'
 
+// Module-level flag: only one instance auto-opens the dropdown
+let _autoOpenDone = false
+
 interface Notification {
   id: string
   title: string
@@ -26,15 +29,14 @@ export function NotificationBell() {
   const [dropdownPos, setDropdownPos] = useState<{ top: number; left?: number; right?: number; dropW: number }>({ top: 0, right: 0, dropW: 320 })
   const btnRef = useRef<HTMLButtonElement>(null)
   const dropRef = useRef<HTMLDivElement>(null)
-  const autoOpenedRef = useRef(false)
   const autoCloseTimer = useRef<ReturnType<typeof setTimeout>>(undefined)
 
   useEffect(() => {
     api.get<Notification[]>('/v1/notifications/?unread_only=true&limit=10')
       .then(data => {
         setItems(data)
-        if (!autoOpenedRef.current && data.length > 0 && btnRef.current) {
-          autoOpenedRef.current = true
+        if (!_autoOpenDone && data.length > 0 && btnRef.current) {
+          _autoOpenDone = true
           // Slightly delay to let layout settle
           setTimeout(() => {
             if (btnRef.current) {
