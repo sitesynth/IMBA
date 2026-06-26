@@ -154,7 +154,8 @@ export default function DashboardPage() {
           </div>
         </div>
         <div className="flex flex-wrap gap-2 mt-5 relative z-10">
-          {safeUser.plan_name !== 'Про' && (
+          {/* "Активировать Старт" — только если нет никакого плана */}
+          {!safeUser.plan_slug && (
             <button
               onClick={() => promoRef.current?.focus()}
               className="pill pill-yellow pill-sm"
@@ -162,7 +163,7 @@ export default function DashboardPage() {
               Активировать Старт <ArrowRight className="w-4 h-4" strokeWidth={2.5} />
             </button>
           )}
-          {safeUser.plan_name === 'Про' ? (
+          {safeUser.plan_slug === 'pro' ? (
             <Link href="/dashboard/billing/topup" className="pill pill-paper pill-sm">
               <Plus className="w-4 h-4" strokeWidth={2.5} /> Пополнить
             </Link>
@@ -173,16 +174,16 @@ export default function DashboardPage() {
           )}
         </div>
 
-        {/* Trial + promo unified block */}
-        {!safeUser.phone_verified && vpns.length === 0 && (
+        {/* Trial activation — только если нет активного плана */}
+        {!safeUser.plan_slug && !safeUser.trial_activated && (
           <TrialBlock
             onActivated={() => window.location.reload()}
             onPromoApplied={(msg) => addToast(msg, 'success')}
           />
         )}
 
-        {/* Promo only (after trial activated) */}
-        {(safeUser.phone_verified || vpns.length > 0) && (
+        {/* Promo — для всех у кого уже есть план или активирован триал */}
+        {(safeUser.plan_slug || safeUser.trial_activated) && (
           <PromoInputRow />
         )}
       </div>
