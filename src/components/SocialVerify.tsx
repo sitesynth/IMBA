@@ -5,7 +5,7 @@ import { getFingerprint } from '@/lib/fingerprint'
 import { VKIDButton } from './VKIDButton'
 
 const VK_GROUP_URL = 'https://vk.com/club239876488'
-const TG_BOT = 'imba_live_bot'
+const TG_CHANNEL_URL = 'https://t.me/imba_live'
 
 interface Props {
   onActivated: () => void
@@ -16,6 +16,9 @@ export function SocialVerify({ onActivated }: Props) {
   const [vkError, setVkError] = useState('')
   const [joinStep, setJoinStep] = useState(false)
   const [checking, setChecking] = useState(false)
+  const [tgStep, setTgStep] = useState<'idle' | 'subscribed'>('idle')
+  const [tgBotUrl, setTgBotUrl] = useState('')
+  const [tgLoading, setTgLoading] = useState(false)
 
   // Detect redirect back from VK OAuth with not_member status
   useEffect(() => {
@@ -113,7 +116,7 @@ export function SocialVerify({ onActivated }: Props) {
         />
 
         <a
-          href={`https://t.me/${TG_BOT}`}
+          href={TG_CHANNEL_URL}
           target="_blank"
           rel="noopener noreferrer"
           className="pill pill-sm"
@@ -122,7 +125,7 @@ export function SocialVerify({ onActivated }: Props) {
           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style={{ flexShrink: 0 }}>
             <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.31 14.42l-2.965-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.843.139z"/>
           </svg>
-          Telegram (скоро)
+          Telegram
         </a>
       </div>
 

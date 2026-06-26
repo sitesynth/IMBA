@@ -2,13 +2,12 @@
 import { useEffect, useRef, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowRight, Wallet, Plus, Tag, Clock } from 'lucide-react'
-import { getFingerprint } from '@/lib/fingerprint'
+import { ArrowRight, Wallet, Plus, Clock } from 'lucide-react'
 import { getCurrentUser } from '@/lib/auth'
 import { api } from '@/lib/api-client'
 import { LottieSticker } from '@/components/LottieSticker'
 import { PinnedBanner } from '@/components/PinnedBanner'
-import { SocialVerify } from '@/components/SocialVerify'
+import { TrialBlock, PromoInputRow } from '@/components/TrialBlock'
 import { formatMoney, type FxRates } from '@/lib/format'
 import { useToast } from '@/components/ToastProvider'
 import type { Esim, VpnSubscription, VirtualCard, Transaction, UserProfile } from '@/lib/types'
@@ -23,9 +22,6 @@ export default function DashboardPage() {
   const [cards, setCards] = useState<VirtualCard[]>([])
   const [recentTx, setRecentTx] = useState<Transaction[]>([])
   const [loading, setLoading] = useState(true)
-  const [promoCode, setPromoCode] = useState('')
-  const [promoState, setPromoState] = useState<'idle' | 'loading' | 'ok' | 'error'>('idle')
-  const [promoMsg, setPromoMsg] = useState('')
   const promoRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -88,24 +84,6 @@ export default function DashboardPage() {
 
   const planExpiresAt = user.plan_expires_at ? new Date(user.plan_expires_at) : null
   const daysLeft = planExpiresAt ? Math.max(0, Math.ceil((planExpiresAt.getTime() - Date.now()) / 86400000)) : null
-
-  async function redeemPromo() {
-    if (!promoCode.trim()) return
-    setPromoState('loading')
-    try {
-      const fingerprint = await getFingerprint()
-      const res = await api.post<{ credited: number; balance: number; vpn_trial_days?: number }>('/v1/me/promo/redeem', { code: promoCode.trim(), fingerprint })
-      setPromoState('ok')
-      setPromoMsg(res.vpn_trial_days ? `VPN ${res.vpn_trial_days} дн + eSIM 500 МБ активированы!` : `+$${res.credited.toFixed(2)} зачислено!`)
-      setPromoCode('')
-      setUser((u) => u ? { ...u, balance: res.balance } : u)
-    } catch (e: unknown) {
-      setPromoState('error')
-      const msg = (e as { message?: string })?.message || 'Неверный промокод'
-      setPromoMsg(msg)
-    }
-    setTimeout(() => setPromoState('idle'), 3000)
-  }
 
   const hour = new Date().getHours()
   const greeting = hour < 12 ? 'Доброе утро' : hour < 18 ? 'Добрый день' : 'Добрый вечер'
@@ -175,42 +153,17 @@ export default function DashboardPage() {
           )}
         </div>
 
-        {/* Trial banner — shown until trial activated */}
+        {/* Trial + promo unified block */}
         {!safeUser.phone_verified && vpns.length === 0 && (
-          <div className="mt-5 relative z-10">
-            <div className="text-xs font-extrabold uppercase tracking-widest mb-1" style={{ color: 'var(--yellow)' }}>
-              🌍 7 ДНЕЙ ВОКРУГ СВЕТА
-            </div>
-            <div className="text-sm font-semibold opacity-60 mb-1">
-              VPN + eSIM 500 МБ бесплатно — вступи в сообщество
-            </div>
-            <SocialVerify onActivated={() => window.location.reload()} />
-          </div>
+          <TrialBlock
+            onActivated={() => window.location.reload()}
+            onPromoApplied={(msg) => addToast(msg, 'success')}
+          />
         )}
 
-        {/* Promo code */}
-        <div className="flex gap-2 mt-2 relative z-10">
-          <div className="flex-1 flex items-center gap-2 px-3 py-2 rounded-2xl border-2 border-white/20 bg-white/10">
-            <Tag className="w-4 h-4 text-white/40 shrink-0" strokeWidth={2.5} />
-            <input
-              ref={promoRef}
-              value={promoCode}
-              onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
-              onKeyDown={(e) => e.key === 'Enter' && redeemPromo()}
-              placeholder="Промокод из почты"
-              className="bg-transparent text-white placeholder-white/30 font-extrabold text-sm w-full outline-none tracking-widest"
-            />
-          </div>
-          <button
-            onClick={redeemPromo}
-            disabled={promoState === 'loading'}
-            className="pill pill-yellow pill-sm shrink-0"
-          >
-            {promoState === 'loading' ? '...' : promoState === 'ok' ? promoMsg : promoState === 'error' ? '✕' : 'Применить'}
-          </button>
-        </div>
-        {promoState === 'error' && (
-          <p className="text-xs font-bold text-red-400 mt-1.5 relative z-10">{promoMsg}</p>
+        {/* Promo only (after trial activated) */}
+        {(safeUser.phone_verified || vpns.length > 0) && (
+          <PromoInputRow />
         )}
       </div>
 
