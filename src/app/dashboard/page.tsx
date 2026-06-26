@@ -23,7 +23,7 @@ export default function DashboardPage() {
   const [cards, setCards] = useState<VirtualCard[]>([])
   const [recentTx, setRecentTx] = useState<Transaction[]>([])
   const [loading, setLoading] = useState(true)
-  const promoRef = useRef<HTMLInputElement>(null)
+
 
   useEffect(() => {
     const activated = searchParams.get('activated')
@@ -154,15 +154,6 @@ export default function DashboardPage() {
           </div>
         </div>
         <div className="flex flex-wrap gap-2 mt-5 relative z-10">
-          {/* "Активировать Старт" — только если нет никакого плана */}
-          {!safeUser.plan_slug && (
-            <button
-              onClick={() => promoRef.current?.focus()}
-              className="pill pill-yellow pill-sm"
-            >
-              Активировать Старт <ArrowRight className="w-4 h-4" strokeWidth={2.5} />
-            </button>
-          )}
           {safeUser.plan_slug === 'pro' ? (
             <Link href="/dashboard/billing/topup" className="pill pill-paper pill-sm">
               <Plus className="w-4 h-4" strokeWidth={2.5} /> Пополнить
