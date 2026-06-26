@@ -153,9 +153,20 @@ export function NotificationBell() {
         aria-label="Уведомления"
       >
         {count > 0
-          ? <BellRing className="w-4 h-4" strokeWidth={2.5} />
+          ? <BellRing className="w-4 h-4" strokeWidth={2.5} style={{ animation: 'bell-ring 2.4s ease-in-out infinite' }} />
           : <Bell className="w-4 h-4 opacity-40" strokeWidth={2.5} />
         }
+        <style>{`
+          @keyframes bell-ring {
+            0%, 60%, 100% { transform: rotate(0deg); }
+            65%  { transform: rotate(10deg); }
+            70%  { transform: rotate(-9deg); }
+            75%  { transform: rotate(7deg); }
+            80%  { transform: rotate(-5deg); }
+            85%  { transform: rotate(3deg); }
+            90%  { transform: rotate(0deg); }
+          }
+        `}</style>
         {count > 0 && (
           <span
             className="absolute -top-1 -right-1 w-4 h-4 rounded-full text-[9px] font-black flex items-center justify-center text-white"
