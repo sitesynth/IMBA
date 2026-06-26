@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Tag } from 'lucide-react'
 import { VKIDButton } from './VKIDButton'
@@ -24,8 +24,6 @@ export function TrialBlock({ onActivated, onPromoApplied }: Props) {
   const [tgLoading, setTgLoading] = useState(false)
   const [vkError, setVkError] = useState('')
   const [vkChecking, setVkChecking] = useState(false)
-  const vkHiddenRef = useRef<HTMLDivElement>(null)
-  const vkUrlRef = useRef<string>('')
   const [promoCode, setPromoCode] = useState('')
   const [promoState, setPromoState] = useState<'idle' | 'loading' | 'ok' | 'error'>('idle')
   const [promoMsg, setPromoMsg] = useState('')
@@ -35,22 +33,8 @@ export function TrialBlock({ onActivated, onPromoApplied }: Props) {
     if (searchParams.get('activated') === 'trial') { onActivated() }
   }, [])
 
-  // Extract VK auth URL from SDK button as soon as it renders (before user clicks)
-  useEffect(() => {
-    const id = setInterval(() => {
-      const btn = vkHiddenRef.current?.querySelector<HTMLAnchorElement>('a[href]')
-      if (btn?.href) {
-        vkUrlRef.current = btn.href
-        clearInterval(id)
-      }
-    }, 150)
-    return () => clearInterval(id)
-  }, [])
-
-  function triggerVKLogin() {
-    if (!vkUrlRef.current) return
+  function onVKCardClick() {
     try { sessionStorage.setItem('vk_auth_mode', 'trial') } catch {}
-    window.location.href = vkUrlRef.current
   }
 
   async function selectTG() {
@@ -160,15 +144,9 @@ export function TrialBlock({ onActivated, onPromoApplied }: Props) {
       {/* VK + TG cards — clickable buttons */}
       <div className="flex gap-2 mb-3">
 
-        {/* Hidden off-screen SDK container — never visible, clicked programmatically */}
-        <div ref={vkHiddenRef} aria-hidden="true"
-          style={{ position: 'fixed', top: -9999, left: -9999, width: 160, height: 48, overflow: 'hidden' }}>
-          <VKIDButton mode="trial" onError={setVkError} />
-        </div>
-
-        {/* VK card — clean button, same style as TG */}
+        {/* VK card — SDK overlay covers entire card invisibly, real click goes through VK SDK */}
         <div style={vkPhase === 'join' ? btnActive : btnBase}
-          onClick={vkPhase === 'idle' ? triggerVKLogin : undefined}
+          onClick={vkPhase === 'idle' ? onVKCardClick : undefined}
           role={vkPhase === 'idle' ? 'button' : undefined}>
           <div className="flex items-center gap-2 mb-1">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="rgba(255,255,255,0.65)">
@@ -180,17 +158,21 @@ export function TrialBlock({ onActivated, onPromoApplied }: Props) {
           {vkPhase === 'join' ? (
             <div className="flex flex-col gap-1.5 mt-1">
               <a href={VK_GROUP_URL} target="_blank" rel="noopener noreferrer"
-                style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '6px 12px', borderRadius: 999, background: '#2787F5', color: '#fff', fontSize: 11, fontWeight: 800, textDecoration: 'none', width: 'fit-content' }}>
+                style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '6px 12px', borderRadius: 999, background: '#2787F5', color: '#fff', fontSize: 11, fontWeight: 800, textDecoration: 'none', width: 'fit-content', position: 'relative', zIndex: 2 }}>
                 Открыть группу →
               </a>
               <button onClick={recheckVK} disabled={vkChecking}
-                style={{ display: 'inline-flex', alignItems: 'center', padding: '6px 12px', borderRadius: 999, background: '#FFD731', color: '#111', fontSize: 11, fontWeight: 800, border: 'none', cursor: 'pointer', width: 'fit-content', opacity: vkChecking ? 0.5 : 1 }}>
+                style={{ display: 'inline-flex', alignItems: 'center', padding: '6px 12px', borderRadius: 999, background: '#FFD731', color: '#111', fontSize: 11, fontWeight: 800, border: 'none', cursor: 'pointer', width: 'fit-content', opacity: vkChecking ? 0.5 : 1, position: 'relative', zIndex: 2 }}>
                 {vkChecking ? 'Проверяем…' : 'Я вступил → Активировать'}
               </button>
-              {vkError && <p style={{ fontSize: 11, fontWeight: 700, color: '#f87171', margin: 0 }}>{vkError}</p>}
+              {vkError && <p style={{ fontSize: 11, fontWeight: 700, color: '#f87171', margin: 0, position: 'relative', zIndex: 2 }}>{vkError}</p>}
             </div>
           ) : (
-            <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.38)', margin: 0 }}>Вступай в сообщество IMBA</p>
+            <>
+              <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.38)', margin: 0 }}>Вступай в сообщество IMBA</p>
+              {/* Transparent VK SDK overlay covers whole card — user clicks here naturally */}
+              <VKIDButton mode="trial" overlay onError={setVkError} />
+            </>
           )}
         </div>
 
