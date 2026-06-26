@@ -103,7 +103,7 @@ export function SocialVerify({ onActivated }: Props) {
   return (
     <div className="mt-4 relative z-10">
       <p className="text-xs font-semibold text-white/50 mb-3">
-        Вступи в сообщество → получи 7 дней VPN + eSIM 500 МБ бесплатно
+        Вступи в VK-сообщество или Telegram-канал — и получи 7 дней VPN + eSIM 500 МБ
       </p>
 
       <div className="flex gap-2 flex-wrap items-center">

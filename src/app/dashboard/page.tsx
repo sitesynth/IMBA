@@ -175,9 +175,17 @@ export default function DashboardPage() {
           )}
         </div>
 
-        {/* Social verification — shown until phone is verified or VPN is active */}
+        {/* Trial banner — shown until trial activated */}
         {!safeUser.phone_verified && vpns.length === 0 && (
-          <SocialVerify onActivated={() => window.location.reload()} />
+          <div className="mt-5 relative z-10">
+            <div className="text-xs font-extrabold uppercase tracking-widest mb-1" style={{ color: 'var(--yellow)' }}>
+              🌍 7 ДНЕЙ ВОКРУГ СВЕТА
+            </div>
+            <div className="text-sm font-semibold opacity-60 mb-1">
+              VPN + eSIM 500 МБ бесплатно — вступи в сообщество
+            </div>
+            <SocialVerify onActivated={() => window.location.reload()} />
+          </div>
         )}
 
         {/* Promo code */}
