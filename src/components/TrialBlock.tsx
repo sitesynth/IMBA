@@ -23,6 +23,7 @@ export function TrialBlock({ onActivated, onPromoApplied }: Props) {
   const [tgPhase, setTgPhase] = useState<TGPhase>('idle')
   const [tgBotUrl, setTgBotUrl] = useState('')
   const [tgLoading, setTgLoading] = useState(false)
+  const [tgPolling, setTgPolling] = useState(false)
   const [vkError, setVkError] = useState('')
   const [vkChecking, setVkChecking] = useState(false)
   const [promoCode, setPromoCode] = useState('')
@@ -35,7 +36,7 @@ export function TrialBlock({ onActivated, onPromoApplied }: Props) {
   }, [])
 
   async function selectTG() {
-    if (tgPhase !== 'idle') { setTgPhase('idle'); return }
+    if (tgPhase !== 'idle') return
     setTgLoading(true)
     try {
       const res = await fetch('/api/v1/me/trial/tg-link', { method: 'POST', credentials: 'include' })
@@ -46,6 +47,25 @@ export function TrialBlock({ onActivated, onPromoApplied }: Props) {
     } finally {
       setTgLoading(false)
     }
+  }
+
+  function openBotAndPoll() {
+    window.open(tgBotUrl, '_blank')
+    setTgPolling(true)
+    const interval = setInterval(async () => {
+      try {
+        const res = await fetch('/api/v1/me', { credentials: 'include' })
+        if (!res.ok) return
+        const data = await res.json()
+        if (data.trial_activated) {
+          clearInterval(interval)
+          setTgPolling(false)
+          onActivated()
+        }
+      } catch {}
+    }, 3000)
+    // Stop polling after 10 minutes
+    setTimeout(() => { clearInterval(interval); setTgPolling(false) }, 600000)
   }
 
   async function recheckVK() {
@@ -171,15 +191,19 @@ export function TrialBlock({ onActivated, onPromoApplied }: Props) {
           {tgLoading ? (
             <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', margin: 0 }}>Генерируем ссылку…</p>
           ) : tgPhase === 'links' ? (
-            <div className="flex flex-col gap-1.5 mt-1" onClick={e => e.stopPropagation()}>
-              <a href={TG_CHANNEL_URL} target="_blank" rel="noopener noreferrer"
-                style={{ display: 'inline-flex', padding: '6px 12px', borderRadius: 999, background: '#2AABEE', color: '#fff', fontSize: 11, fontWeight: 800, textDecoration: 'none', width: 'fit-content' }}>
-                1. Подписаться на канал →
-              </a>
-              <a href={tgBotUrl} target="_blank" rel="noopener noreferrer"
-                style={{ display: 'inline-flex', padding: '6px 12px', borderRadius: 999, background: '#FFD731', color: '#111', fontSize: 11, fontWeight: 800, textDecoration: 'none', width: 'fit-content' }}>
-                2. Подтвердить в боте →
-              </a>
+            <div className="mt-1" onClick={e => e.stopPropagation()}>
+              <button onClick={openBotAndPoll} disabled={tgPolling}
+                style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '6px 14px', borderRadius: 999, background: '#2AABEE', color: '#fff', fontSize: 11, fontWeight: 800, border: 'none', cursor: tgPolling ? 'default' : 'pointer', width: 'fit-content', opacity: tgPolling ? 0.7 : 1 }}>
+                {tgPolling ? (
+                  <><span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: '#fff', animation: 'pulse 1s infinite' }} /> Ждём подтверждения…</>
+                ) : 'Открыть бота IMBA →'}
+              </button>
+              {tgPolling && (
+                <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)', margin: '4px 0 0', fontWeight: 600 }}>
+                  Подпишись на канал и нажми /start в боте
+                </p>
+              )}
+              <style>{`@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }`}</style>
             </div>
           ) : (
             <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.38)', margin: 0 }}>Подпишись на канал IMBA</p>
