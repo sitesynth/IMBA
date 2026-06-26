@@ -61,23 +61,35 @@ function VkCallbackContent() {
       const name = [data.user?.first_name, data.user?.last_name].filter(Boolean).join(' ')
 
       if (mode === 'trial') {
-        // Store token for re-check after group join
+        // VK ID SDK may return access_token at different paths depending on version
+        const accessToken: string = data.access_token || data.token || data.payload?.access_token || ''
+        const vkId: number = data.user?.id || data.user_id || data.payload?.user_id || 0
+        console.debug('[vk-trial] sdk data keys:', Object.keys(data || {}), 'vkId:', vkId, 'hasToken:', !!accessToken)
+
         try {
-          sessionStorage.setItem('vk_trial_token', data.access_token)
-          sessionStorage.setItem('vk_trial_id', String(data.user?.id))
+          sessionStorage.setItem('vk_trial_token', accessToken)
+          sessionStorage.setItem('vk_trial_id', String(vkId))
         } catch {}
+
+        if (!accessToken || !vkId) {
+          console.error('[vk-trial] missing token or vk_id from SDK', data)
+          router.replace('/dashboard?trial_vk=error&msg=' + encodeURIComponent('VK не вернул данные авторизации'))
+          return
+        }
+
         const res = await fetch('/api/v1/me/trial/activate-vk', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
-          body: JSON.stringify({ vk_id: data.user?.id, access_token: data.access_token, fingerprint }),
+          body: JSON.stringify({ vk_id: vkId, access_token: accessToken, fingerprint }),
         })
         if (res.status === 403) {
           // Not a group member yet — go to dashboard to show join prompt
           router.replace('/dashboard?trial_vk=join')
         } else if (!res.ok) {
           const e = await res.json().catch(() => ({}))
-          throw new Error(e.detail || 'Ошибка активации триала')
+          // Never send user to login page for trial errors — stay in dashboard
+          router.replace('/dashboard?trial_vk=error&msg=' + encodeURIComponent(e.detail || 'Ошибка активации'))
         } else {
           router.replace('/dashboard?activated=trial')
         }

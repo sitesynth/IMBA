@@ -30,6 +30,10 @@ export function TrialBlock({ onActivated, onPromoApplied }: Props) {
 
   useEffect(() => {
     if (searchParams.get('trial_vk') === 'join') { setVkPhase('join') }
+    if (searchParams.get('trial_vk') === 'error') {
+      const msg = searchParams.get('msg') || 'Ошибка VK авторизации'
+      setVkError(msg)
+    }
     if (searchParams.get('activated') === 'trial') { onActivated() }
   }, [])
 
@@ -197,6 +201,10 @@ export function TrialBlock({ onActivated, onPromoApplied }: Props) {
         </div>
 
       </div>
+
+      {vkError && vkPhase !== 'join' && (
+        <p style={{ fontSize: 12, fontWeight: 700, color: '#f87171', marginBottom: 8 }}>{vkError}</p>
+      )}
 
       {/* Promo */}
       <div className="flex gap-2">
