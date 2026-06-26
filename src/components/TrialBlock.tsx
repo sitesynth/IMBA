@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Tag } from 'lucide-react'
 import { VKIDButton } from './VKIDButton'
@@ -26,6 +26,7 @@ export function TrialBlock({ onActivated, onPromoApplied }: Props) {
   const [tgPolling, setTgPolling] = useState(false)
   const [vkError, setVkError] = useState('')
   const [vkChecking, setVkChecking] = useState(false)
+  const vkHiddenRef = useRef<HTMLDivElement>(null)
   const [promoCode, setPromoCode] = useState('')
   const [promoState, setPromoState] = useState<'idle' | 'loading' | 'ok' | 'error'>('idle')
   const [promoMsg, setPromoMsg] = useState('')
@@ -34,6 +35,18 @@ export function TrialBlock({ onActivated, onPromoApplied }: Props) {
     if (searchParams.get('trial_vk') === 'join') { setVkPhase('join') }
     if (searchParams.get('activated') === 'trial') { onActivated() }
   }, [])
+
+  function triggerVKLogin() {
+    function tryClick() {
+      // SDK button has no aria-hidden; our visual button does
+      const btn = vkHiddenRef.current?.querySelector<HTMLElement>(
+        'a[role="button"], button:not([aria-hidden="true"])'
+      )
+      if (btn) { btn.click() }
+      else { setTimeout(tryClick, 100) }
+    }
+    tryClick()
+  }
 
   async function selectTG() {
     if (tgPhase !== 'idle') return
@@ -150,8 +163,16 @@ export function TrialBlock({ onActivated, onPromoApplied }: Props) {
       {/* VK + TG cards — clickable buttons */}
       <div className="flex gap-2 mb-3">
 
-        {/* VK — SDK overlay covers the card invisibly, triggers VK auth on click */}
-        <div style={vkPhase === 'join' ? btnActive : btnBase}>
+        {/* Hidden off-screen SDK container — never visible, clicked programmatically */}
+        <div ref={vkHiddenRef} aria-hidden="true"
+          style={{ position: 'fixed', top: -9999, left: -9999, width: 160, height: 48, overflow: 'hidden' }}>
+          <VKIDButton mode="trial" onError={setVkError} />
+        </div>
+
+        {/* VK card — clean button, same style as TG */}
+        <div style={vkPhase === 'join' ? btnActive : btnBase}
+          onClick={vkPhase === 'idle' ? triggerVKLogin : undefined}
+          role={vkPhase === 'idle' ? 'button' : undefined}>
           <div className="flex items-center gap-2 mb-1">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="rgba(255,255,255,0.65)">
               <path d="M12.785 16.241s.288-.032.436-.194c.136-.148.132-.427.132-.427s-.02-1.304.587-1.496c.598-.19 1.365 1.26 2.179 1.815.615.422 1.08.33 1.08.33l2.17-.03s1.135-.07.597-.963c-.044-.073-.314-.661-1.616-1.869-1.364-1.265-1.181-1.06.462-3.248.999-1.33 1.398-2.142 1.273-2.49-.12-.332-.852-.244-.852-.244l-2.44.015s-.181-.025-.315.055c-.132.078-.216.26-.216.26s-.387 1.03-.903 1.905c-1.088 1.848-1.524 1.947-1.702 1.832-.414-.268-.31-1.074-.31-1.648 0-1.793.272-2.54-.529-2.733-.265-.064-.46-.106-1.138-.113-.87-.009-1.606.003-2.022.207-.277.135-.49.437-.36.454.16.021.525.098.718.362.248.341.24 1.107.24 1.107s.143 2.1-.333 2.372c-.326.18-.774-.187-1.733-1.863-.49-.847-.861-1.786-.861-1.786s-.071-.176-.201-.27c-.158-.115-.378-.151-.378-.151l-2.32.015s-.348.01-.476.161c-.114.135-.009.414-.009.414s1.816 4.25 3.872 6.391c1.886 1.965 4.026 1.836 4.026 1.836h.97z"/>
@@ -172,10 +193,7 @@ export function TrialBlock({ onActivated, onPromoApplied }: Props) {
               {vkError && <p style={{ fontSize: 11, fontWeight: 700, color: '#f87171', margin: 0 }}>{vkError}</p>}
             </div>
           ) : (
-            <>
-              <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.38)', margin: 0 }}>Вступай в сообщество IMBA</p>
-              <VKIDButton mode="trial" onError={setVkError} overlay />
-            </>
+            <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.38)', margin: 0 }}>Вступай в сообщество IMBA</p>
           )}
         </div>
 
