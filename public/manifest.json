@@ -1,0 +1,14 @@
+{
+  "name": "IMBA — eSIM, VPN и карта",
+  "short_name": "IMBA",
+  "description": "eSIM для 190+ стран, VPN без логов и виртуальная карта",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#111111",
+  "theme_color": "#111111",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "/favicon.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/favicon.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

@@ -8,6 +8,7 @@ import { api } from '@/lib/api-client'
 import { LottieSticker } from '@/components/LottieSticker'
 import { PinnedBanner } from '@/components/PinnedBanner'
 import { TrialBlock, PromoInputRow } from '@/components/TrialBlock'
+import { InstallPrompt } from '@/components/InstallPrompt'
 import { formatMoney, type FxRates } from '@/lib/format'
 import { useToast } from '@/components/ToastProvider'
 import type { Esim, VpnSubscription, VirtualCard, Transaction, UserProfile } from '@/lib/types'
@@ -103,6 +104,25 @@ export default function DashboardPage() {
       </div>
 
       <PinnedBanner />
+      <InstallPrompt />
+
+      {/* Trial expiry warning — shown 3 days before end */}
+      {safeUser.trial_activated && daysLeft !== null && daysLeft > 0 && daysLeft <= 3 && (
+        <div className="panel flex items-center justify-between gap-3 flex-wrap"
+          style={{ background: daysLeft <= 1 ? '#ef4444' : '#FFD731', color: '#111' }}>
+          <div className="flex items-center gap-2">
+            <Clock className="w-5 h-5 shrink-0" strokeWidth={3} />
+            <span className="font-extrabold text-sm">
+              {daysLeft === 1
+                ? 'Завтра заканчивается пробный период!'
+                : `Пробный период заканчивается через ${daysLeft} дня`}
+            </span>
+          </div>
+          <Link href="/dashboard/billing" className="pill pill-ink pill-sm shrink-0">
+            Продлить <ArrowRight className="w-4 h-4" strokeWidth={2.5} />
+          </Link>
+        </div>
+      )}
 
       {/* Hero — balance card */}
       <div
