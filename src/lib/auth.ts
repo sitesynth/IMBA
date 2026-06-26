@@ -30,22 +30,20 @@ export async function signup(state: FormState, formData: FormData): Promise<Form
   if (Object.keys(errors).length > 0) return { errors }
 
   try {
-    const res = await apiFetch<AuthResponse>('/v1/auth/register', {
+    await apiFetch<{ status: string; email: string }>('/v1/auth/register', {
       method: 'POST',
       body: JSON.stringify({ name, email, password }),
       skipAuth: true,
     })
-    await setApiToken(res.token)
-    sendWelcomeEmail(email, name).catch(() => null)
   } catch (e) {
     if (e instanceof ApiError) {
-      if (e.status === 409) return { errors: { email: ['Пользователь с таким email уже существует'] } }
+      if (e.status === 409) return { errors: { email: [e.message || 'Пользователь с таким email уже существует'] } }
       return { message: e.message }
     }
     return { message: 'Не удалось зарегистрироваться. Сервер недоступен.' }
   }
 
-  redirect(safeRedirect(redirectTo))
+  redirect('/auth/check-email?email=' + encodeURIComponent(email))
 }
 
 export async function login(state: FormState, formData: FormData): Promise<FormState> {
@@ -62,8 +60,9 @@ export async function login(state: FormState, formData: FormData): Promise<FormS
     })
     await setApiToken(res.token)
   } catch (e) {
-    if (e instanceof ApiError && e.status === 401) {
-      return { message: 'Неверный email или пароль' }
+    if (e instanceof ApiError) {
+      if (e.status === 401) return { message: 'Неверный email или пароль' }
+      if (e.status === 409) return { message: e.message }
     }
     return { message: 'Не удалось войти. Сервер недоступен.' }
   }

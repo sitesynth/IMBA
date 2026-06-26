@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useRef } from 'react'
+import { Suspense, useEffect, useRef } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { getFingerprint } from '@/lib/fingerprint'
 
@@ -10,6 +10,22 @@ declare global {
 }
 
 export default function VkCallbackPage() {
+  return (
+    <Suspense fallback={<Loader />}>
+      <VkCallbackContent />
+    </Suspense>
+  )
+}
+
+function Loader() {
+  return (
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', fontFamily: 'sans-serif', color: '#555' }}>
+      Авторизация через VK…
+    </div>
+  )
+}
+
+function VkCallbackContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const ran = useRef(false)
