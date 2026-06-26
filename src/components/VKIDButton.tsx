@@ -43,16 +43,19 @@ export function VKIDButton({ mode, onError, label = 'VK ID', className = 'pill p
 
       try { sessionStorage.setItem('vk_auth_mode', mode) } catch {}
 
-      // Make SDK-rendered button cover the full overlay invisibly; hide all surrounding SDK chrome
+      // Move SDK's clickable element to overlay root, remove all SDK chrome from DOM
       const apply = () => {
         if (!overlayRef.current) return
         const btn = overlayRef.current.querySelector<HTMLElement>('button, a, [role="button"]')
         if (btn) {
-          // Hide every SDK element except the actual clickable button
-          overlayRef.current.querySelectorAll<HTMLElement>('*').forEach(el => {
-            if (el !== btn) { el.style.visibility = 'hidden'; el.style.pointerEvents = 'none' }
+          // Detach btn from SDK wrapper and re-attach directly to overlay
+          overlayRef.current.appendChild(btn)
+          // Remove everything else (SDK text, wrappers, branding)
+          Array.from(overlayRef.current.childNodes).forEach(child => {
+            if (child !== btn) overlayRef.current!.removeChild(child)
           })
-          btn.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;opacity:0;visibility:visible;cursor:pointer;border:none;background:transparent;padding:0;margin:0'
+          // Stretch btn to fill the overlay transparently — click anywhere = VK auth
+          btn.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;border:none;background:transparent;padding:0;margin:0;display:block'
           if (!overlay) setReady(true)
         } else {
           setTimeout(apply, 100)
