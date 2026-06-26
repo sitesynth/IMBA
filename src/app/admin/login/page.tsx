@@ -55,7 +55,7 @@ export default function AdminLoginPage() {
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-8 w-full max-w-sm">
         <div className="text-center mb-8">
-          <div className="text-3xl font-black tracking-tight text-gray-900 mb-1">IMBA</div>
+          <img src="/imba-color.svg" alt="IMBA" className="h-10 mx-auto mb-2" />
           <div className="text-sm text-gray-500">Admin Panel</div>
         </div>
 
