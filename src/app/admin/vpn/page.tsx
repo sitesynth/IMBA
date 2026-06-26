@@ -79,7 +79,6 @@ export default function AdminVpnPage() {
     }
   }
 
-  const mockCount = subs.filter(s => s.provider === 'mock').length
   const remnaCount = subs.filter(s => s.provider === 'remnawave').length
   const activeCount = subs.filter(s => s.status === 'active').length
 
@@ -91,12 +90,11 @@ export default function AdminVpnPage() {
       </div>
 
       {/* Summary cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6">
         {[
           { label: 'Total', value: subs.length, color: 'bg-white' },
           { label: 'Active', value: activeCount, color: 'bg-white' },
           { label: 'Remnawave ✓', value: remnaCount, color: 'bg-green-50' },
-          { label: 'Mock/WG ⚠', value: mockCount, color: 'bg-red-50' },
         ].map(c => (
           <div key={c.label} className={`${c.color} rounded-lg border border-gray-200 p-4`}>
             <div className="text-2xl font-bold text-gray-900">{c.value}</div>
@@ -124,17 +122,7 @@ export default function AdminVpnPage() {
         >
           <option value="">All providers</option>
           <option value="remnawave">Remnawave</option>
-          <option value="mock">Mock / WireGuard</option>
-          <option value="unknown">Unknown</option>
         </select>
-        {mockCount > 0 && !filterProvider && (
-          <button
-            onClick={() => setFilterProvider('mock')}
-            className="text-sm bg-red-600 text-white rounded-lg px-4 py-2 font-semibold hover:bg-red-700 transition"
-          >
-            Show {mockCount} WG users to fix
-          </button>
-        )}
       </div>
 
       {loading && <div className="text-center py-12 text-gray-500">Loading...</div>}
