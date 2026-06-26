@@ -165,16 +165,16 @@ export default function DashboardPage() {
           )}
         </div>
 
-        {/* Trial activation — только если нет активного плана */}
-        {!safeUser.plan_slug && !safeUser.trial_activated && (
+        {/* Trial activation — show for free/start users who haven't activated trial */}
+        {(!safeUser.plan_slug || safeUser.plan_slug === 'start') && !safeUser.trial_activated && (
           <TrialBlock
             onActivated={() => window.location.reload()}
             onPromoApplied={(msg) => addToast(msg, 'success')}
           />
         )}
 
-        {/* Promo — для всех у кого уже есть план или активирован триал */}
-        {(safeUser.plan_slug || safeUser.trial_activated) && (
+        {/* Promo — for paid plan users or trial-activated users */}
+        {(safeUser.plan_slug && safeUser.plan_slug !== 'start' || safeUser.trial_activated) && (
           <PromoInputRow />
         )}
       </div>
