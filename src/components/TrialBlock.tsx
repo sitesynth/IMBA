@@ -25,6 +25,7 @@ export function TrialBlock({ onActivated, onPromoApplied }: Props) {
   const [vkError, setVkError] = useState('')
   const [vkChecking, setVkChecking] = useState(false)
   const vkHiddenRef = useRef<HTMLDivElement>(null)
+  const vkUrlRef = useRef<string>('')
   const [promoCode, setPromoCode] = useState('')
   const [promoState, setPromoState] = useState<'idle' | 'loading' | 'ok' | 'error'>('idle')
   const [promoMsg, setPromoMsg] = useState('')
@@ -34,16 +35,22 @@ export function TrialBlock({ onActivated, onPromoApplied }: Props) {
     if (searchParams.get('activated') === 'trial') { onActivated() }
   }, [])
 
+  // Extract VK auth URL from SDK button as soon as it renders (before user clicks)
+  useEffect(() => {
+    const id = setInterval(() => {
+      const btn = vkHiddenRef.current?.querySelector<HTMLAnchorElement>('a[href]')
+      if (btn?.href) {
+        vkUrlRef.current = btn.href
+        clearInterval(id)
+      }
+    }, 150)
+    return () => clearInterval(id)
+  }, [])
+
   function triggerVKLogin() {
-    function tryClick() {
-      // SDK button has no aria-hidden; our visual button does
-      const btn = vkHiddenRef.current?.querySelector<HTMLElement>(
-        'a[role="button"], button:not([aria-hidden="true"])'
-      )
-      if (btn) { btn.click() }
-      else { setTimeout(tryClick, 100) }
-    }
-    tryClick()
+    if (!vkUrlRef.current) return
+    try { sessionStorage.setItem('vk_auth_mode', 'trial') } catch {}
+    window.location.href = vkUrlRef.current
   }
 
   async function selectTG() {
