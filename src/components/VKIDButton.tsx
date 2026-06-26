@@ -13,9 +13,11 @@ interface Props {
   onError?: (msg: string) => void
   label?: string
   className?: string
+  /** Render as invisible full-parent overlay — no visual button. Parent must be position:relative. */
+  overlay?: boolean
 }
 
-export function VKIDButton({ mode, onError, label = 'VK ID', className = 'pill pill-sm' }: Props) {
+export function VKIDButton({ mode, onError, label = 'VK ID', className = 'pill pill-sm', overlay = false }: Props) {
   const overlayRef = useRef<HTMLDivElement>(null)
   const [ready, setReady] = useState(false)
   const mounted = useRef(false)
@@ -69,6 +71,16 @@ export function VKIDButton({ mode, onError, label = 'VK ID', className = 'pill p
   }, [mode])
 
   if (!VK_APP_ID) return null
+
+  // Overlay mode: invisible SDK button covers the entire parent (parent must be position:relative)
+  if (overlay) {
+    return (
+      <div
+        ref={overlayRef}
+        style={{ position: 'absolute', inset: 0, overflow: 'hidden', cursor: 'pointer', zIndex: 1 }}
+      />
+    )
+  }
 
   return (
     <div style={{ position: 'relative', display: 'inline-flex' }}>

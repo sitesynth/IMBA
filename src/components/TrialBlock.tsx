@@ -8,7 +8,6 @@ import { getFingerprint } from '@/lib/fingerprint'
 const VK_GROUP_URL = 'https://vk.com/club239876488'
 const TG_CHANNEL_URL = 'https://t.me/imba_live'
 
-type Method = 'vk' | 'tg' | null
 type VKPhase = 'idle' | 'join'
 type TGPhase = 'idle' | 'links'
 
@@ -20,7 +19,6 @@ interface Props {
 export function TrialBlock({ onActivated, onPromoApplied }: Props) {
   const searchParams = useSearchParams()
 
-  const [method, setMethod] = useState<Method>(null)
   const [vkPhase, setVkPhase] = useState<VKPhase>('idle')
   const [tgPhase, setTgPhase] = useState<TGPhase>('idle')
   const [tgBotUrl, setTgBotUrl] = useState('')
@@ -32,21 +30,12 @@ export function TrialBlock({ onActivated, onPromoApplied }: Props) {
   const [promoMsg, setPromoMsg] = useState('')
 
   useEffect(() => {
-    if (searchParams.get('trial_vk') === 'join') { setMethod('vk'); setVkPhase('join') }
+    if (searchParams.get('trial_vk') === 'join') { setVkPhase('join') }
     if (searchParams.get('activated') === 'trial') { onActivated() }
   }, [])
 
-  async function selectVK() {
-    if (method === 'vk') { setMethod(null); return }
-    setMethod('vk')
-    setVkPhase('idle')
-    setVkError('')
-  }
-
   async function selectTG() {
-    if (method === 'tg') { setMethod(null); return }
-    setMethod('tg')
-    setTgPhase('idle')
+    if (tgPhase !== 'idle') { setTgPhase('idle'); return }
     setTgLoading(true)
     try {
       const res = await fetch('/api/v1/me/trial/tg-link', { method: 'POST', credentials: 'include' })
@@ -54,7 +43,9 @@ export function TrialBlock({ onActivated, onPromoApplied }: Props) {
       const data = await res.json()
       setTgBotUrl(data.bot_url)
       setTgPhase('links')
-    } finally { setTgLoading(false) }
+    } finally {
+      setTgLoading(false)
+    }
   }
 
   async function recheckVK() {
@@ -102,6 +93,8 @@ export function TrialBlock({ onActivated, onPromoApplied }: Props) {
     textAlign: 'left' as const,
     transition: 'all 0.12s',
     boxShadow: 'none',
+    position: 'relative',
+    overflow: 'hidden',
   }
 
   const btnActive: React.CSSProperties = {
@@ -111,20 +104,7 @@ export function TrialBlock({ onActivated, onPromoApplied }: Props) {
     boxShadow: '3px 3px 0 #FFD731',
   }
 
-  const btnDimmed: React.CSSProperties = {
-    ...btnBase,
-    opacity: 0.3,
-    pointerEvents: 'none',
-  }
-
-  function cardStyle(m: 'vk' | 'tg'): React.CSSProperties {
-    if (method === m) return btnActive
-    if (method !== null) return btnDimmed
-    return btnBase
-  }
-
-  const iconColor = (m: 'vk' | 'tg') => method === m ? '#FFD731' : 'rgba(255,255,255,0.65)'
-  const labelColor = (m: 'vk' | 'tg') => method === m ? '#FFD731' : 'rgba(255,255,255,0.85)'
+  const tgActive = tgPhase !== 'idle'
 
   return (
     <div className="relative z-10" style={{ marginTop: 20 }}>
@@ -147,66 +127,62 @@ export function TrialBlock({ onActivated, onPromoApplied }: Props) {
         Выбери ВКонтакте или Telegram, подпишись на наши соцсети и активируй IMBA Старт: VPN и eSIM 500 МБ на 7 дней!
       </p>
 
-      {/* VK + TG cards — these ARE the buttons */}
+      {/* VK + TG cards — clickable buttons */}
       <div className="flex gap-2 mb-3">
 
-        {/* VK */}
-        <div style={cardStyle('vk')} onClick={selectVK} role="button">
+        {/* VK — SDK overlay covers the whole card invisibly */}
+        <div style={vkPhase === 'join' ? btnActive : btnBase}>
           <div className="flex items-center gap-2 mb-1">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill={iconColor('vk')}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="rgba(255,255,255,0.65)">
               <path d="M12.785 16.241s.288-.032.436-.194c.136-.148.132-.427.132-.427s-.02-1.304.587-1.496c.598-.19 1.365 1.26 2.179 1.815.615.422 1.08.33 1.08.33l2.17-.03s1.135-.07.597-.963c-.044-.073-.314-.661-1.616-1.869-1.364-1.265-1.181-1.06.462-3.248.999-1.33 1.398-2.142 1.273-2.49-.12-.332-.852-.244-.852-.244l-2.44.015s-.181-.025-.315.055c-.132.078-.216.26-.216.26s-.387 1.03-.903 1.905c-1.088 1.848-1.524 1.947-1.702 1.832-.414-.268-.31-1.074-.31-1.648 0-1.793.272-2.54-.529-2.733-.265-.064-.46-.106-1.138-.113-.87-.009-1.606.003-2.022.207-.277.135-.49.437-.36.454.16.021.525.098.718.362.248.341.24 1.107.24 1.107s.143 2.1-.333 2.372c-.326.18-.774-.187-1.733-1.863-.49-.847-.861-1.786-.861-1.786s-.071-.176-.201-.27c-.158-.115-.378-.151-.378-.151l-2.32.015s-.348.01-.476.161c-.114.135-.009.414-.009.414s1.816 4.25 3.872 6.391c1.886 1.965 4.026 1.836 4.026 1.836h.97z"/>
             </svg>
-            <span style={{ fontSize: 13, fontWeight: 800, color: labelColor('vk') }}>ВКонтакте</span>
+            <span style={{ fontSize: 13, fontWeight: 800, color: 'rgba(255,255,255,0.85)' }}>ВКонтакте</span>
           </div>
 
-          {method === 'vk' ? (
-            vkPhase === 'idle' ? (
-              <div onClick={e => e.stopPropagation()}>
-                <VKIDButton mode="trial" onError={(m) => setVkError(m)} />
-                {vkError && <p style={{ fontSize: 11, fontWeight: 700, color: '#f87171', marginTop: 6 }}>{vkError}</p>}
-              </div>
-            ) : (
-              <div className="flex flex-col gap-1.5 mt-1" onClick={e => e.stopPropagation()}>
-                <a href={VK_GROUP_URL} target="_blank" rel="noopener noreferrer"
-                  style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '6px 12px', borderRadius: 999, background: '#2787F5', color: '#fff', fontSize: 11, fontWeight: 800, textDecoration: 'none', width: 'fit-content' }}>
-                  Открыть группу →
-                </a>
-                <button onClick={recheckVK} disabled={vkChecking}
-                  style={{ display: 'inline-flex', alignItems: 'center', padding: '6px 12px', borderRadius: 999, background: '#FFD731', color: '#111', fontSize: 11, fontWeight: 800, border: 'none', cursor: 'pointer', width: 'fit-content', opacity: vkChecking ? 0.5 : 1 }}>
-                  {vkChecking ? 'Проверяем…' : 'Я вступил → Активировать'}
-                </button>
-                {vkError && <p style={{ fontSize: 11, fontWeight: 700, color: '#f87171', margin: 0 }}>{vkError}</p>}
-              </div>
-            )
+          {vkPhase === 'join' ? (
+            /* After VK OAuth redirect back — show group + activate */
+            <div className="flex flex-col gap-1.5 mt-1">
+              <a href={VK_GROUP_URL} target="_blank" rel="noopener noreferrer"
+                style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '6px 12px', borderRadius: 999, background: '#2787F5', color: '#fff', fontSize: 11, fontWeight: 800, textDecoration: 'none', width: 'fit-content', position: 'relative', zIndex: 2 }}>
+                Открыть группу →
+              </a>
+              <button onClick={recheckVK} disabled={vkChecking}
+                style={{ display: 'inline-flex', alignItems: 'center', padding: '6px 12px', borderRadius: 999, background: '#FFD731', color: '#111', fontSize: 11, fontWeight: 800, border: 'none', cursor: 'pointer', width: 'fit-content', opacity: vkChecking ? 0.5 : 1, position: 'relative', zIndex: 2 }}>
+                {vkChecking ? 'Проверяем…' : 'Я вступил → Активировать'}
+              </button>
+              {vkError && <p style={{ fontSize: 11, fontWeight: 700, color: '#f87171', margin: 0 }}>{vkError}</p>}
+            </div>
           ) : (
-            <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.38)', margin: 0 }}>Вступай в сообщество IMBA</p>
+            /* Default — subtitle + invisible SDK overlay on top */
+            <>
+              <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.38)', margin: 0 }}>Вступай в сообщество IMBA</p>
+              <VKIDButton mode="trial" onError={(m) => setVkError(m)} overlay />
+            </>
           )}
         </div>
 
         {/* TG */}
-        <div style={cardStyle('tg')} onClick={selectTG} role="button">
+        <div style={tgActive ? btnActive : btnBase} onClick={selectTG} role="button">
           <div className="flex items-center gap-2 mb-1">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill={iconColor('tg')}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill={tgActive ? '#FFD731' : 'rgba(255,255,255,0.65)'}>
               <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.31 14.42l-2.965-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.843.139z"/>
             </svg>
-            <span style={{ fontSize: 13, fontWeight: 800, color: labelColor('tg') }}>Telegram</span>
+            <span style={{ fontSize: 13, fontWeight: 800, color: tgActive ? '#FFD731' : 'rgba(255,255,255,0.85)' }}>Telegram</span>
           </div>
 
-          {method === 'tg' ? (
-            tgLoading ? (
-              <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', margin: 0 }}>Генерируем ссылку…</p>
-            ) : tgPhase === 'links' ? (
-              <div className="flex flex-col gap-1.5 mt-1" onClick={e => e.stopPropagation()}>
-                <a href={TG_CHANNEL_URL} target="_blank" rel="noopener noreferrer"
-                  style={{ display: 'inline-flex', padding: '6px 12px', borderRadius: 999, background: '#2AABEE', color: '#fff', fontSize: 11, fontWeight: 800, textDecoration: 'none', width: 'fit-content' }}>
-                  1. Подписаться на канал →
-                </a>
-                <a href={tgBotUrl} target="_blank" rel="noopener noreferrer"
-                  style={{ display: 'inline-flex', padding: '6px 12px', borderRadius: 999, background: '#FFD731', color: '#111', fontSize: 11, fontWeight: 800, textDecoration: 'none', width: 'fit-content' }}>
-                  2. Подтвердить в боте →
-                </a>
-              </div>
-            ) : null
+          {tgLoading ? (
+            <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', margin: 0 }}>Генерируем ссылку…</p>
+          ) : tgPhase === 'links' ? (
+            <div className="flex flex-col gap-1.5 mt-1" onClick={e => e.stopPropagation()}>
+              <a href={TG_CHANNEL_URL} target="_blank" rel="noopener noreferrer"
+                style={{ display: 'inline-flex', padding: '6px 12px', borderRadius: 999, background: '#2AABEE', color: '#fff', fontSize: 11, fontWeight: 800, textDecoration: 'none', width: 'fit-content' }}>
+                1. Подписаться на канал →
+              </a>
+              <a href={tgBotUrl} target="_blank" rel="noopener noreferrer"
+                style={{ display: 'inline-flex', padding: '6px 12px', borderRadius: 999, background: '#FFD731', color: '#111', fontSize: 11, fontWeight: 800, textDecoration: 'none', width: 'fit-content' }}>
+                2. Подтвердить в боте →
+              </a>
+            </div>
           ) : (
             <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.38)', margin: 0 }}>Подпишись на канал IMBA</p>
           )}
