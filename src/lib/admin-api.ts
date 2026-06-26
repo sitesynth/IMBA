@@ -1,4 +1,4 @@
-const BASE = '/api'
+const BASE = process.env.NEXT_PUBLIC_API_URL ?? 'https://api.imba.live'
 const TOKEN_KEY = "imba_admin"
 
 export class AdminApiError extends Error {
