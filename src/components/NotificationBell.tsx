@@ -113,11 +113,16 @@ export function NotificationBell() {
     >
       <div className="flex items-center justify-between px-4 py-3 border-b-2 border-ink/10">
         <span className="font-extrabold text-sm">Уведомления</span>
-        {count > 1 && (
-          <button onClick={dismissAll} className="text-xs font-bold text-ink/40 hover:text-ink transition-colors">
-            Прочитать все
+        <div className="flex items-center gap-3">
+          {count > 1 && (
+            <button onClick={dismissAll} className="text-xs font-bold text-ink/40 hover:text-ink transition-colors">
+              Прочитать все
+            </button>
+          )}
+          <button onClick={() => setOpen(false)} className="opacity-30 hover:opacity-80 transition-opacity">
+            <X className="w-4 h-4" strokeWidth={2.5} />
           </button>
-        )}
+        </div>
       </div>
       {count === 0 ? (
         <p className="px-4 py-8 text-center text-sm font-semibold text-ink/30">Нет новых уведомлений</p>
