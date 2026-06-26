@@ -24,7 +24,7 @@ async function getReport(host: string) {
 
 export default async function NodesPage() {
   const user = await getCurrentUser()
-  if (!user || !user.email?.endsWith('@imba.live')) redirect('/dashboard')
+  if (!user) redirect('/dashboard')
 
   return (
     <div className="fade-up space-y-6">
