@@ -33,7 +33,7 @@ export default function DashboardPage() {
     const error = searchParams.get('error')
     const promoError = searchParams.get('promo_error')
     const promoClaimed = searchParams.get('promo')
-    if (activated === 'vk') addToast('VPN 7 дней + eSIM 500 МБ активированы через VK!', 'success')
+    if (activated === 'vk' || activated === 'trial') addToast('VPN 7 дней + eSIM 500 МБ активированы!', 'success')
     if (error) addToast(decodeURIComponent(error), 'error')
     if (promoError) addToast(decodeURIComponent(promoError), 'error')
     if (promoClaimed === 'claimed') addToast('Промокод успешно применён!', 'success')

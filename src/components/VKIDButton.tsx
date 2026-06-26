@@ -8,7 +8,7 @@ declare global {
 }
 
 interface Props {
-  mode: 'login' | 'link'
+  mode: 'login' | 'link' | 'trial'
   onSuccess?: () => void
   onError?: (msg: string) => void
   label?: string

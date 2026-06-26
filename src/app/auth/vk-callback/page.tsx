@@ -60,7 +60,28 @@ function VkCallbackContent() {
       const fingerprint = await getFingerprint()
       const name = [data.user?.first_name, data.user?.last_name].filter(Boolean).join(' ')
 
-      if (mode === 'link') {
+      if (mode === 'trial') {
+        // Store token for re-check after group join
+        try {
+          sessionStorage.setItem('vk_trial_token', data.access_token)
+          sessionStorage.setItem('vk_trial_id', String(data.user?.id))
+        } catch {}
+        const res = await fetch('/api/v1/me/trial/activate-vk', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ vk_id: data.user?.id, access_token: data.access_token, fingerprint }),
+        })
+        if (res.status === 403) {
+          // Not a group member yet — go to dashboard to show join prompt
+          router.replace('/dashboard?trial_vk=join')
+        } else if (!res.ok) {
+          const e = await res.json().catch(() => ({}))
+          throw new Error(e.detail || 'Ошибка активации триала')
+        } else {
+          router.replace('/dashboard?activated=trial')
+        }
+      } else if (mode === 'link') {
         const res = await fetch('/api/v1/me/vk/link', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
