@@ -31,8 +31,12 @@ export default function DashboardPage() {
   useEffect(() => {
     const activated = searchParams.get('activated')
     const error = searchParams.get('error')
+    const promoError = searchParams.get('promo_error')
+    const promoClaimed = searchParams.get('promo')
     if (activated === 'vk') addToast('VPN 7 дней + eSIM 500 МБ активированы через VK!', 'success')
     if (error) addToast(decodeURIComponent(error), 'error')
+    if (promoError) addToast(decodeURIComponent(promoError), 'error')
+    if (promoClaimed === 'claimed') addToast('Промокод успешно применён!', 'success')
   }, [])
 
   useEffect(() => {
