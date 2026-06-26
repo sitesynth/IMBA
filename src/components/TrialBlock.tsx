@@ -21,9 +21,7 @@ export function TrialBlock({ onActivated, onPromoApplied }: Props) {
 
   const [vkPhase, setVkPhase] = useState<VKPhase>('idle')
   const [tgPhase, setTgPhase] = useState<TGPhase>('idle')
-  const [tgBotUrl, setTgBotUrl] = useState('')
   const [tgLoading, setTgLoading] = useState(false)
-  const [tgPolling, setTgPolling] = useState(false)
   const [vkError, setVkError] = useState('')
   const [vkChecking, setVkChecking] = useState(false)
   const vkHiddenRef = useRef<HTMLDivElement>(null)
@@ -55,30 +53,22 @@ export function TrialBlock({ onActivated, onPromoApplied }: Props) {
       const res = await fetch('/api/v1/me/trial/tg-link', { method: 'POST', credentials: 'include' })
       if (!res.ok) return
       const data = await res.json()
-      setTgBotUrl(data.bot_url)
+      // Open bot immediately — no extra button click needed
+      window.open(data.bot_url, '_blank')
       setTgPhase('links')
+      // Poll until bot activates trial
+      const interval = setInterval(async () => {
+        try {
+          const r = await fetch('/api/v1/me', { credentials: 'include' })
+          if (!r.ok) return
+          const u = await r.json()
+          if (u.trial_activated) { clearInterval(interval); onActivated() }
+        } catch {}
+      }, 3000)
+      setTimeout(() => clearInterval(interval), 600000)
     } finally {
       setTgLoading(false)
     }
-  }
-
-  function openBotAndPoll() {
-    window.open(tgBotUrl, '_blank')
-    setTgPolling(true)
-    const interval = setInterval(async () => {
-      try {
-        const res = await fetch('/api/v1/me', { credentials: 'include' })
-        if (!res.ok) return
-        const data = await res.json()
-        if (data.trial_activated) {
-          clearInterval(interval)
-          setTgPolling(false)
-          onActivated()
-        }
-      } catch {}
-    }, 3000)
-    // Stop polling after 10 minutes
-    setTimeout(() => { clearInterval(interval); setTgPolling(false) }, 600000)
   }
 
   async function recheckVK() {
@@ -207,22 +197,11 @@ export function TrialBlock({ onActivated, onPromoApplied }: Props) {
           </div>
 
           {tgLoading ? (
-            <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', margin: 0 }}>Генерируем ссылку…</p>
+            <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', margin: 0 }}>Открываем бота…</p>
           ) : tgPhase === 'links' ? (
-            <div className="mt-1" onClick={e => e.stopPropagation()}>
-              <button onClick={openBotAndPoll} disabled={tgPolling}
-                style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '6px 14px', borderRadius: 999, background: '#2AABEE', color: '#fff', fontSize: 11, fontWeight: 800, border: 'none', cursor: tgPolling ? 'default' : 'pointer', width: 'fit-content', opacity: tgPolling ? 0.7 : 1 }}>
-                {tgPolling ? (
-                  <><span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: '#fff', animation: 'pulse 1s infinite' }} /> Ждём подтверждения…</>
-                ) : 'Открыть бота IMBA →'}
-              </button>
-              {tgPolling && (
-                <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)', margin: '4px 0 0', fontWeight: 600 }}>
-                  Подпишись на канал и нажми /start в боте
-                </p>
-              )}
-              <style>{`@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }`}</style>
-            </div>
+            <p style={{ fontSize: 12, color: '#FFD731', fontWeight: 700, margin: 0 }}>
+              Подпишись на канал в боте — триал придёт автоматически ✓
+            </p>
           ) : (
             <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.38)', margin: 0 }}>Подпишись на канал IMBA</p>
           )}
