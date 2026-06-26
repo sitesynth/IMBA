@@ -4,13 +4,16 @@ import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { Logo } from '@/components/Logo'
 import { LottieSticker } from '@/components/LottieSticker'
-import { Mail } from 'lucide-react'
+import { Mail, Send } from 'lucide-react'
+
+const TG_BOT = process.env.NEXT_PUBLIC_TG_BOT_USERNAME || 'imba_live_bot'
 
 function CheckEmailContent() {
   const searchParams = useSearchParams()
   const email = searchParams.get('email') ?? ''
   const [sent, setSent] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [tgLoading, setTgLoading] = useState(false)
 
   async function resend() {
     if (!email || loading) return
@@ -24,6 +27,22 @@ function CheckEmailContent() {
       setSent(true)
     } finally {
       setLoading(false)
+    }
+  }
+
+  async function openTelegram() {
+    if (!email || tgLoading) return
+    setTgLoading(true)
+    try {
+      const res = await fetch('/api/v1/auth/tg-verify-link', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      })
+      const data = await res.json()
+      if (data.url) window.open(data.url, '_blank')
+    } finally {
+      setTgLoading(false)
     }
   }
 
@@ -64,6 +83,16 @@ function CheckEmailContent() {
             </p>
           </div>
         </div>
+
+        <button
+          onClick={openTelegram}
+          disabled={tgLoading}
+          className="pill pill-sm w-full justify-center mb-3 disabled:opacity-50"
+          style={{ background: '#2AABEE', color: '#fff', border: '2px solid #111' }}
+        >
+          <Send className="w-4 h-4" strokeWidth={2.5} />
+          {tgLoading ? 'Открываем…' : 'Подтвердить через Telegram'}
+        </button>
 
         {sent ? (
           <p className="text-sm font-bold text-green-600 mb-4">Письмо отправлено повторно ✓</p>
