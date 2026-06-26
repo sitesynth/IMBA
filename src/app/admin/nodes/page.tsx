@@ -1,8 +1,10 @@
-import { redirect } from 'next/navigation'
+'use client'
+import { useState } from 'react'
 import { Server } from 'lucide-react'
-import { getCurrentUser } from '@/lib/auth'
-import { api } from '@/lib/api'
 import { NodeDiagnostics, DiagnosticData, AttackReport } from '@/components/NodeDiagnostics'
+import { getAdminToken } from '@/lib/admin-api'
+
+const API = process.env.NEXT_PUBLIC_API_URL ?? 'https://api.imba.live'
 
 const VPN_NODES = [
   { host: '31.70.101.181', city: '🇩🇪 Berlin' },
@@ -10,43 +12,37 @@ const VPN_NODES = [
   { host: '209.151.155.228', city: '🇺🇸 New York' },
 ]
 
-async function getDiagnostic(host: string) {
-  'use server'
-  const data = await api.get(`/v1/admin/nodes/${host}/diagnose`)
-  return data
+async function adminFetch<T>(path: string): Promise<T> {
+  const token = getAdminToken()
+  const res = await fetch(`${API}${path}`, {
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+  })
+  if (!res.ok) throw new Error(`HTTP ${res.status}`)
+  return res.json()
 }
 
-async function getReport(host: string) {
-  'use server'
-  const data = await api.get(`/v1/admin/nodes/${host}/report?hours=24`)
-  return data
-}
-
-export default async function NodesPage() {
-  const user = await getCurrentUser()
-  if (!user) redirect('/dashboard')
-
+export default function NodesPage() {
   return (
-    <div className="fade-up space-y-6">
+    <div className="space-y-6">
       <div>
-        <h1 className="display text-4xl md:text-5xl mb-1">VPN Nodes</h1>
-        <p className="font-semibold text-ink/60">node-accelerator diagnostics & security</p>
+        <h1 className="text-3xl font-bold text-gray-900 mb-1">VPN Nodes</h1>
+        <p className="text-sm text-gray-500">Node diagnostics &amp; security</p>
       </div>
 
       {VPN_NODES.map((node) => (
-        <div key={node.host} className="panel" style={{ background: 'var(--paper)' }}>
+        <div key={node.host} className="bg-white rounded-lg border border-gray-200 p-6">
           <div className="flex items-center gap-3 mb-6">
-            <Server className="w-6 h-6" strokeWidth={2} />
+            <Server className="w-6 h-6 text-gray-600" strokeWidth={2} />
             <div>
-              <h2 className="display text-2xl">{node.city}</h2>
-              <p className="text-xs font-mono font-bold text-ink/50">{node.host}</p>
+              <h2 className="text-xl font-bold text-gray-900">{node.city}</h2>
+              <p className="text-xs font-mono text-gray-400">{node.host}</p>
             </div>
           </div>
 
           <NodeDiagnostics
             host={node.host}
-            fetchDiagnostic={(h) => api.get<DiagnosticData>(`/v1/admin/nodes/${h}/diagnose`)}
-            fetchReport={(h, hours) => api.get<AttackReport>(`/v1/admin/nodes/${h}/report?hours=${hours}`)}
+            fetchDiagnostic={(h) => adminFetch<DiagnosticData>(`/v1/admin/nodes/${h}/diagnose`)}
+            fetchReport={(h, hours) => adminFetch<AttackReport>(`/v1/admin/nodes/${h}/report?hours=${hours}`)}
           />
         </div>
       ))}
