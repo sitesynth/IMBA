@@ -6,6 +6,9 @@ import { VKIDButton } from './VKIDButton'
 import { getFingerprint } from '@/lib/fingerprint'
 
 
+const VK_GROUP_URL = 'https://vk.com/club239876488'
+
+type VKPhase = 'idle' | 'join'
 type TGPhase = 'idle' | 'links'
 
 interface Props {
@@ -16,6 +19,8 @@ interface Props {
 export function TrialBlock({ onActivated, onPromoApplied }: Props) {
   const searchParams = useSearchParams()
 
+  const [vkPhase, setVkPhase] = useState<VKPhase>('idle')
+  const [vkPolling, setVkPolling] = useState(false)
   const [tgPhase, setTgPhase] = useState<TGPhase>('idle')
   const [tgLoading, setTgLoading] = useState(false)
   const [vkError, setVkError] = useState('')
@@ -24,12 +29,38 @@ export function TrialBlock({ onActivated, onPromoApplied }: Props) {
   const [promoMsg, setPromoMsg] = useState('')
 
   useEffect(() => {
+    if (searchParams.get('trial_vk') === 'join') { setVkPhase('join'); startVkPolling() }
     if (searchParams.get('trial_vk') === 'error') {
       const msg = searchParams.get('msg') || 'Ошибка VK авторизации'
       setVkError(msg)
     }
     if (searchParams.get('activated') === 'trial') { onActivated() }
   }, [])
+
+  function startVkPolling() {
+    setVkPolling(true)
+    setVkError('')
+    window.open(VK_GROUP_URL, '_blank')
+
+    const doCheck = async () => {
+      let token = '', vkId = ''
+      try { token = sessionStorage.getItem('vk_trial_token') || ''; vkId = sessionStorage.getItem('vk_trial_id') || '' } catch {}
+      if (!token || !vkId) return false
+      const fp = await getFingerprint()
+      const res = await fetch('/api/v1/me/trial/activate-vk', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include',
+        body: JSON.stringify({ vk_id: Number(vkId), access_token: token, fingerprint: fp }),
+      })
+      if (res.ok) { onActivated(); return true }
+      return false
+    }
+
+    const interval = setInterval(async () => {
+      const done = await doCheck()
+      if (done) { clearInterval(interval); setVkPolling(false) }
+    }, 3000)
+    setTimeout(() => { clearInterval(interval); setVkPolling(false) }, 300000)
+  }
 
   async function selectTG() {
     if (tgPhase !== 'idle') return
@@ -119,17 +150,27 @@ export function TrialBlock({ onActivated, onPromoApplied }: Props) {
       {/* VK + TG cards — clickable buttons */}
       <div className="flex gap-2 mb-3">
 
-        {/* VK card — SDK overlay covers entire card invisibly, real click goes through VK SDK */}
+        {/* VK card */}
         <div className="trial-card select-none active:scale-[0.97] active:brightness-75"
-          style={btnBase} role="button">
+          style={vkPhase === 'join' ? btnActive : btnBase}
+          role={vkPhase === 'idle' ? 'button' : undefined}>
           <div className="flex items-center gap-2 mb-1">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="rgba(255,255,255,0.65)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill={vkPhase === 'join' ? '#FFD731' : 'rgba(255,255,255,0.65)'}>
               <path d="M12.785 16.241s.288-.032.436-.194c.136-.148.132-.427.132-.427s-.02-1.304.587-1.496c.598-.19 1.365 1.26 2.179 1.815.615.422 1.08.33 1.08.33l2.17-.03s1.135-.07.597-.963c-.044-.073-.314-.661-1.616-1.869-1.364-1.265-1.181-1.06.462-3.248.999-1.33 1.398-2.142 1.273-2.49-.12-.332-.852-.244-.852-.244l-2.44.015s-.181-.025-.315.055c-.132.078-.216.26-.216.26s-.387 1.03-.903 1.905c-1.088 1.848-1.524 1.947-1.702 1.832-.414-.268-.31-1.074-.31-1.648 0-1.793.272-2.54-.529-2.733-.265-.064-.46-.106-1.138-.113-.87-.009-1.606.003-2.022.207-.277.135-.49.437-.36.454.16.021.525.098.718.362.248.341.24 1.107.24 1.107s.143 2.1-.333 2.372c-.326.18-.774-.187-1.733-1.863-.49-.847-.861-1.786-.861-1.786s-.071-.176-.201-.27c-.158-.115-.378-.151-.378-.151l-2.32.015s-.348.01-.476.161c-.114.135-.009.414-.009.414s1.816 4.25 3.872 6.391c1.886 1.965 4.026 1.836 4.026 1.836h.97z"/>
             </svg>
-            <span style={{ fontSize: 13, fontWeight: 800, color: 'rgba(255,255,255,0.85)' }}>ВКонтакте</span>
+            <span style={{ fontSize: 13, fontWeight: 800, color: vkPhase === 'join' ? '#FFD731' : 'rgba(255,255,255,0.85)' }}>ВКонтакте</span>
           </div>
-          <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.38)', margin: 0 }}>Вступи — мы подпишем тебя сами ✓</p>
-          <VKIDButton mode="trial" overlay onError={setVkError} />
+
+          {vkPhase === 'join' ? (
+            <p style={{ fontSize: 12, color: '#FFD731', fontWeight: 700, margin: 0 }}>
+              {vkPolling ? 'Вступи в группу — триал придёт автоматически ✓' : 'Авторизация пройдена — вступи в группу'}
+            </p>
+          ) : (
+            <>
+              <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.38)', margin: 0 }}>Вступи в сообщество IMBA</p>
+              <VKIDButton mode="trial" overlay onError={setVkError} />
+            </>
+          )}
         </div>
 
         {/* TG */}

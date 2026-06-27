@@ -10,24 +10,6 @@ declare global {
   interface Window { VKIDSDK: any }
 }
 
-/**
- * Call VK classic API from the browser via JSONP.
- * VK ID tokens are bound to the issuing IP (the browser), so group-join
- * MUST run client-side. JSONP (<script> injection) also sidesteps CORS.
- */
-function vkJsonp(method: string, params: Record<string, string>): Promise<any> {
-  return new Promise((resolve) => {
-    const cb = 'vkcb_' + Math.random().toString(36).slice(2)
-    const qs = new URLSearchParams({ ...params, v: '5.131', callback: cb }).toString()
-    const script = document.createElement('script')
-    const cleanup = () => { try { delete (window as any)[cb] } catch {}; script.remove() }
-    ;(window as any)[cb] = (data: any) => { resolve(data); cleanup() }
-    script.onerror = () => { resolve(null); cleanup() }
-    script.src = `https://api.vk.com/method/${method}?${qs}`
-    document.head.appendChild(script)
-  })
-}
-
 export default function VkCallbackPage() {
   return (
     <Suspense fallback={<Loader />}>
@@ -85,48 +67,30 @@ function VkCallbackContent() {
         const vkId: number = data.user?.id || data.user_id || data.payload?.user_id || 0
         console.debug('[vk-trial] sdk data keys:', Object.keys(data || {}), 'vkId:', vkId, 'hasToken:', !!accessToken)
 
-        try {
-          sessionStorage.setItem('vk_trial_token', accessToken)
-          sessionStorage.setItem('vk_trial_id', String(vkId))
-        } catch {}
-
         if (!accessToken || !vkId) {
           console.error('[vk-trial] missing token or vk_id from SDK', data)
           router.replace('/dashboard?trial_vk=error&msg=' + encodeURIComponent('VK не вернул данные авторизации'))
           return
         }
 
-        // Join the IMBA group from the browser — the VK token is IP-bound to
-        // the browser, and server-side member checks are denied (error 203),
-        // so both join and verification must happen client-side via JSONP.
-        const joinRes = await vkJsonp('groups.join', { group_id: VK_GROUP_ID, access_token: accessToken })
-        console.debug('[vk-trial] groups.join', joinRes)
-        let joined = joinRes?.response === 1
-        if (!joined) {
-          // Already a member or a join hiccup — confirm with the user's own token.
-          const memRes = await vkJsonp('groups.isMember', { group_id: VK_GROUP_ID, user_id: String(vkId), access_token: accessToken })
-          console.debug('[vk-trial] isMember', memRes)
-          joined = memRes?.response === 1
-        }
-        if (!joined) {
-          router.replace('/dashboard?trial_vk=error&msg=' + encodeURIComponent('Не удалось вступить в сообщество. Попробуй ещё раз или Telegram.'))
-          return
-        }
+        // Save credentials for polling from dashboard
+        try {
+          sessionStorage.setItem('vk_trial_token', accessToken)
+          sessionStorage.setItem('vk_trial_id', String(vkId))
+        } catch {}
 
+        // Try immediate activation (user might already be a member)
         const res = await fetch('/api/v1/me/trial/activate-vk', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
-          body: JSON.stringify({ vk_id: vkId, access_token: accessToken, fingerprint, vk_joined: true }),
+          body: JSON.stringify({ vk_id: vkId, access_token: accessToken, fingerprint }),
         })
-        if (res.status === 403) {
-          router.replace('/dashboard?trial_vk=error&msg=' + encodeURIComponent('Не удалось активировать триал. Попробуй Telegram.'))
-        } else if (!res.ok) {
-          const e = await res.json().catch(() => ({}))
-          // Never send user to login page for trial errors — stay in dashboard
-          router.replace('/dashboard?trial_vk=error&msg=' + encodeURIComponent(e.detail || 'Ошибка активации'))
-        } else {
+        if (res.ok) {
           router.replace('/dashboard?activated=trial')
+        } else {
+          // Not a member yet — redirect to dashboard with join prompt
+          router.replace('/dashboard?trial_vk=join')
         }
       } else if (mode === 'link') {
         const res = await fetch('/api/v1/me/vk/link', {
