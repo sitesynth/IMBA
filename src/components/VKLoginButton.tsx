@@ -9,7 +9,6 @@ export function VKLoginButton({ label = 'Войти через VK ID' }: { label
       mode="login"
       className="pill pill-paper w-full justify-center"
       label={label}
-      onSuccess={() => router.push('/dashboard')}
       onError={(msg) => console.error('VK login error:', msg)}
     />
   )
