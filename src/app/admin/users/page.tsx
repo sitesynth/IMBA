@@ -52,7 +52,7 @@ function UserRow({ u, onRefresh, selected, onSelect }: { u: AdminUser; onRefresh
     setDeleteError('')
     try {
       await deleteUser(u.user_id, deletePassword)
-      onRefresh()
+      await onRefresh()
     } catch (e) {
       setDeleteError((e as Error).message || 'Ошибка удаления')
       setDeleting(false)
