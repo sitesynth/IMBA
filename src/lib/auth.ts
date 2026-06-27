@@ -31,8 +31,9 @@ export async function signup(state: FormState, formData: FormData): Promise<Form
   if (Object.keys(errors).length > 0) return { errors }
 
   try {
-    const host = (await headers()).get('host') ?? ''
-    const frontend_url = `https://${host}`
+    const hdrs = await headers()
+    const host = hdrs.get('x-forwarded-host') ?? hdrs.get('host') ?? ''
+    const frontend_url = host ? `https://${host}` : undefined
     await apiFetch<{ status: string; email: string }>('/v1/auth/register', {
       method: 'POST',
       body: JSON.stringify({ name, email, password, frontend_url }),

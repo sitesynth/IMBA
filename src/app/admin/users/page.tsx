@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { ChevronDown, ChevronUp } from 'lucide-react'
 import { getUsers, getUser, addBalance, toggleUser, deleteUser, AdminUser, AdminUserDetail } from '@/lib/admin-api'
 
-function UserRow({ u, onRefresh, selected, onSelect }: { u: AdminUser; onRefresh: () => void; selected: boolean; onSelect: (e: React.MouseEvent) => void }) {
+function UserRow({ u, onRefresh, onDeleted, selected, onSelect }: { u: AdminUser; onRefresh: () => void; onDeleted: (id: string) => void; selected: boolean; onSelect: (e: React.MouseEvent) => void }) {
   const [open, setOpen] = useState(false)
   const [detail, setDetail] = useState<AdminUserDetail | null>(null)
   const [loadingDetail, setLoadingDetail] = useState(false)
@@ -52,7 +52,7 @@ function UserRow({ u, onRefresh, selected, onSelect }: { u: AdminUser; onRefresh
     setDeleteError('')
     try {
       await deleteUser(u.user_id, deletePassword)
-      await onRefresh()
+      onDeleted(u.user_id)
     } catch (e) {
       setDeleteError((e as Error).message || 'Ошибка удаления')
       setDeleting(false)
@@ -368,6 +368,7 @@ export default function AdminUsers() {
                 key={u.user_id}
                 u={u}
                 onRefresh={load}
+                onDeleted={(id) => setUsers(prev => prev.filter(x => x.user_id !== id))}
                 selected={selected.has(u.user_id)}
                 onSelect={(e) => toggleSelect(u.user_id, e)}
               />
