@@ -85,6 +85,14 @@ export function VKIDButton({ mode, onError, label = 'VK ID', className = 'pill p
     return (
       <div
         ref={overlayRef}
+        onClick={(e) => {
+          // Fallback: if apply() didn't stretch the SDK btn to fill overlay,
+          // delegate click manually. Skip if target is already a child (btn found & works).
+          if (e.target === e.currentTarget) {
+            const btn = overlayRef.current?.querySelector<HTMLElement>('button, a, [role="button"]')
+            btn?.click()
+          }
+        }}
         style={{ position: 'absolute', inset: 0, overflow: 'hidden', cursor: 'pointer', zIndex: 1, opacity: 0 }}
       />
     )
