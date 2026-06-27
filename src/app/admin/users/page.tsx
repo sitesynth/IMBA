@@ -142,7 +142,7 @@ function UserRow({ u, onRefresh, selected, onSelect }: { u: AdminUser; onRefresh
                         <div>
                           <div className="text-xs font-semibold text-gray-500 uppercase mb-1">VPN ({detail.vpns.length})</div>
                           {detail.vpns.map(v => (
-                            <div key={v.subscription_id} className="text-xs text-gray-600">{v.status} · expires {new Date(v.expires_at).toLocaleDateString()}</div>
+                            <div key={v.vpn_id} className="text-xs text-gray-600">{v.status} · expires {new Date(v.expires_at).toLocaleDateString()}</div>
                           ))}
                         </div>
                       )}
@@ -150,7 +150,7 @@ function UserRow({ u, onRefresh, selected, onSelect }: { u: AdminUser; onRefresh
                         <div>
                           <div className="text-xs font-semibold text-gray-500 uppercase mb-1">Cards ({detail.cards.length})</div>
                           {detail.cards.map(c => (
-                            <div key={c.card_id} className="text-xs text-gray-600">{c.masked_number} · {c.status}</div>
+                            <div key={c.card_id} className="text-xs text-gray-600">*{c.last4} · {c.status}</div>
                           ))}
                         </div>
                       )}
