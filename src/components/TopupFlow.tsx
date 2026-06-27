@@ -7,7 +7,6 @@ import type { PaymentProvider, FxRates } from '@/lib/types'
 
 const CURRENCY_SYMBOL: Record<string, string> = { USD: '$', EUR: '€', RUB: '₽' }
 const CARD_COLORS = ['var(--yellow-100)', 'var(--violet-100)', 'var(--cream)']
-const PRESETS = [100, 300, 500, 1000]
 const PAD = ['1','2','3','4','5','6','7','8','9','','0','⌫']
 
 export function TopupFlow({
@@ -97,19 +96,6 @@ export function TopupFlow({
           <span className="font-extrabold text-4xl" style={{ minWidth: 60, textAlign: 'center' }}>
             {rawAmount || <span className="text-ink/20">0</span>}
           </span>
-        </div>
-
-        <div className="grid grid-cols-4 gap-2">
-          {PRESETS.map(p => (
-            <button
-              key={p}
-              onClick={() => { setRawAmount(String(p)); setPaymentUrl(null); setError(null) }}
-              className="rounded-2xl py-2.5 text-sm font-extrabold border-2 border-ink transition active:scale-95"
-              style={{ background: rawAmount === String(p) ? 'var(--ink)' : 'var(--paper)', color: rawAmount === String(p) ? 'var(--paper)' : undefined }}
-            >
-              {sym}{p}
-            </button>
-          ))}
         </div>
 
         <div className="grid grid-cols-3 gap-2">
