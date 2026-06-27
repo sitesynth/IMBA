@@ -149,7 +149,8 @@ export function TrialBlock({ onActivated, onPromoApplied }: Props) {
       <div className="flex gap-2 mb-3">
 
         {/* VK card — SDK overlay covers entire card invisibly, real click goes through VK SDK */}
-        <div style={vkPhase === 'join' ? btnActive : btnBase}
+        <div className="select-none active:scale-[0.97] active:brightness-75"
+          style={vkPhase === 'join' ? btnActive : btnBase}
           onClick={vkPhase === 'idle' ? onVKCardClick : undefined}
           role={vkPhase === 'idle' ? 'button' : undefined}>
           <div className="flex items-center gap-2 mb-1">
@@ -181,7 +182,8 @@ export function TrialBlock({ onActivated, onPromoApplied }: Props) {
         </div>
 
         {/* TG */}
-        <div style={tgActive ? btnActive : btnBase} onClick={selectTG} role="button">
+        <div className="select-none active:scale-[0.97] active:brightness-75"
+          style={tgActive ? btnActive : btnBase} onClick={selectTG} role="button">
           <div className="flex items-center gap-2 mb-1">
             <svg width="16" height="16" viewBox="0 0 24 24" fill={tgActive ? '#FFD731' : 'rgba(255,255,255,0.65)'}>
               <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.31 14.42l-2.965-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.843.139z"/>
