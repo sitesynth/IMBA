@@ -1,7 +1,8 @@
 'use server'
+import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { ApiError, api, apiFetch, clearApiToken, hasApiToken, setApiToken } from './api'
-import { sendWelcomeEmail, sendPasswordResetEmail } from './email'
+import { sendWelcomeEmail } from './email'
 import type { UserProfile } from './types'
 import type { FormState } from './definitions'
 
@@ -82,17 +83,14 @@ export async function forgotPassword(_: FormState, formData: FormData): Promise<
 
   try {
     const apiUrl = process.env.IMBA_API_URL ?? 'http://localhost:8100'
-    const res = await fetch(`${apiUrl}/v1/auth/forgot-password`, {
+    const hdrs = await headers()
+    const host = hdrs.get('x-forwarded-host') ?? hdrs.get('host') ?? ''
+    const frontend_url = host ? `https://${host}` : undefined
+    await fetch(`${apiUrl}/v1/auth/forgot-password`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email }),
+      body: JSON.stringify({ email, frontend_url }),
     })
-    if (res.ok) {
-      const data = await res.json()
-      if (data.token) {
-        await sendPasswordResetEmail(data.email, data.name, data.token).catch(() => null)
-      }
-    }
   } catch {
     // Always show success to prevent email enumeration
   }
