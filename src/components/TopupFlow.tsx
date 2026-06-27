@@ -68,7 +68,6 @@ export function TopupFlow({
             min="1"
             placeholder="0"
             value={rawAmount}
-            autoFocus
             onChange={(e) => { setRawAmount(e.target.value); setPaymentUrl(null); setError(null) }}
             className="w-full pl-12 pr-5 py-5 rounded-3xl border-2 border-ink bg-paper font-extrabold text-3xl"
           />
