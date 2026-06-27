@@ -1,4 +1,5 @@
 'use server'
+import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { ApiError, api, apiFetch, clearApiToken, hasApiToken, setApiToken } from './api'
 import { sendWelcomeEmail, sendPasswordResetEmail } from './email'
@@ -30,9 +31,11 @@ export async function signup(state: FormState, formData: FormData): Promise<Form
   if (Object.keys(errors).length > 0) return { errors }
 
   try {
+    const host = (await headers()).get('host') ?? ''
+    const frontend_url = `https://${host}`
     await apiFetch<{ status: string; email: string }>('/v1/auth/register', {
       method: 'POST',
-      body: JSON.stringify({ name, email, password }),
+      body: JSON.stringify({ name, email, password, frontend_url }),
       skipAuth: true,
     })
   } catch (e) {

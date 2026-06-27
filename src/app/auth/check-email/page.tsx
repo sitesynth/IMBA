@@ -19,7 +19,7 @@ function CheckEmailContent() {
       await fetch('/api/v1/auth/resend-verify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, frontend_url: window.location.origin }),
       })
       setSent(true)
     } finally {
