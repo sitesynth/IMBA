@@ -72,7 +72,7 @@ function VkCallbackContent() {
         redirectUrl: window.location.origin + '/api/auth/vkid',
         responseMode: VKID.ConfigResponseMode.Redirect,
         source: VKID.ConfigSource.LOWCODE,
-        scope: 'groups',
+        scope: '',
       })
 
       const data = await VKID.Auth.exchangeCode(code!, device_id!)
