@@ -1,0 +1,25 @@
+services:
+  api:
+    image: imba-api:latest
+    container_name: imba-api-new
+    restart: unless-stopped
+    ports:
+      - "8100:8100"
+    volumes:
+      - ./imba-api/data:/app/data
+    env_file: .env.prod
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8100/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  bot:
+    image: imba-bot:latest
+    container_name: imba-bot
+    restart: unless-stopped
+    depends_on:
+      - api
+    volumes:
+      - ./imba-api/data:/app/data
+    env_file: .env.prod
