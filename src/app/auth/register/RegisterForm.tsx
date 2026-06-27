@@ -1,5 +1,5 @@
 'use client'
-import { useActionState } from 'react'
+import { useActionState, useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { signup } from '@/lib/auth'
 import { GoogleButton, AuthError, OrDivider } from '@/components/GoogleButton'
@@ -9,6 +9,8 @@ export function RegisterForm() {
   const params = useSearchParams()
   const errorCode = params.get('error') ?? undefined
   const redirectTo = params.get('redirect') ?? ''
+  const [origin, setOrigin] = useState('')
+  useEffect(() => { setOrigin(window.location.origin) }, [])
 
   return (
     <div className="panel">
@@ -17,6 +19,7 @@ export function RegisterForm() {
       <OrDivider />
       <form action={action} className="space-y-4">
         {redirectTo && <input type="hidden" name="redirectTo" value={redirectTo} />}
+        {origin && <input type="hidden" name="frontend_url" value={origin} />}
         {state?.message && (
           <div className="border-2 border-ink rounded-2xl px-4 py-3 font-bold text-sm" style={{ background: '#FFD7D7' }}>
             {state.message}
