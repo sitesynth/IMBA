@@ -7,7 +7,7 @@ import type { PaymentProvider, FxRates } from '@/lib/types'
 
 const CURRENCY_SYMBOL: Record<string, string> = { USD: '$', EUR: '€', RUB: '₽' }
 const CARD_COLORS = ['var(--yellow-100)', 'var(--violet-100)', 'var(--cream)']
-const PAD = ['1','2','3','4','5','6','7','8','9','','0','⌫']
+const PAD = ['1','2','3','4','5','6','7','8','9','→','0','⌫']
 
 export function TopupFlow({
   providers,
@@ -36,7 +36,7 @@ export function TopupFlow({
     setPaymentUrl(null)
     setError(null)
     if (key === '⌫') { setRawAmount(prev => prev.slice(0, -1)); return }
-    if (!key) return
+    if (key === '→') { document.getElementById('pay-methods')?.scrollIntoView({ behavior: 'smooth' }); return }
     setRawAmount(prev => {
       const next = prev + key
       if (next.length > 7) return prev
@@ -105,7 +105,7 @@ export function TopupFlow({
               onClick={() => handlePad(key)}
               disabled={!key}
               className="rounded-2xl py-4 text-xl font-extrabold border-2 border-ink transition active:scale-95 disabled:border-transparent disabled:cursor-default flex items-center justify-center"
-              style={{ background: key === '⌫' ? 'var(--paper)' : key ? 'var(--cream)' : 'transparent' }}
+              style={{ background: key === '→' ? 'var(--ink)' : key === '⌫' ? 'var(--paper)' : 'var(--cream)', color: key === '→' ? 'var(--paper)' : undefined }}
             >
               {key === '⌫' ? <Delete className="w-5 h-5" strokeWidth={2.5} /> : key}
             </button>
@@ -115,7 +115,7 @@ export function TopupFlow({
 
       {/* Providers — shown after amount entered */}
       {hasAmount && (
-        <div className="fade-up">
+        <div id="pay-methods" className="fade-up">
           <div className="text-xs font-extrabold uppercase tracking-widest text-ink/40 mb-3">
             Способ оплаты
           </div>
