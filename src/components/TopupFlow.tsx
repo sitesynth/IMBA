@@ -1,12 +1,14 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { ArrowRight, Zap, Loader2, ExternalLink } from 'lucide-react'
+import { ArrowRight, Zap, Loader2, ExternalLink, Delete } from 'lucide-react'
 import { convertAmount } from '@/lib/format'
 import type { PaymentProvider, FxRates } from '@/lib/types'
 
 const CURRENCY_SYMBOL: Record<string, string> = { USD: '$', EUR: '€', RUB: '₽' }
 const CARD_COLORS = ['var(--yellow-100)', 'var(--violet-100)', 'var(--cream)']
+const PRESETS = [100, 300, 500, 1000]
+const PAD = ['1','2','3','4','5','6','7','8','9','','0','⌫']
 
 export function TopupFlow({
   providers,
@@ -31,6 +33,19 @@ export function TopupFlow({
   const rateToUsd = currency === 'USD' ? 1 : (rates as Record<string, number>)[currency] ?? 1
   const amountUsd = currency === 'USD' ? numAmount : numAmount / rateToUsd
 
+  function handlePad(key: string) {
+    setPaymentUrl(null)
+    setError(null)
+    if (key === '⌫') { setRawAmount(prev => prev.slice(0, -1)); return }
+    if (!key) return
+    setRawAmount(prev => {
+      const next = prev + key
+      if (next.length > 7) return prev
+      if (next.length > 1 && next.startsWith('0')) return prev
+      return next
+    })
+  }
+
   function pay(provider: PaymentProvider) {
     setError(null)
     setPaymentUrl(null)
@@ -52,32 +67,52 @@ export function TopupFlow({
   }
 
   return (
-    <div className="space-y-8">
-      {/* Step 1 — amount */}
-      <div>
-        <div className="text-xs font-extrabold uppercase tracking-widest text-ink/40 mb-2">
-          Сумма пополнения
-        </div>
-        <div className="relative">
-          <span className="absolute left-5 top-1/2 -translate-y-1/2 font-extrabold text-ink/40 text-2xl pointer-events-none">
-            {sym}
-          </span>
-          <input
-            type="number"
-            step="1"
-            min="1"
-            placeholder="0"
-            value={rawAmount}
-            onChange={(e) => { setRawAmount(e.target.value); setPaymentUrl(null); setError(null) }}
-            className="w-full pl-12 pr-5 py-5 rounded-3xl border-2 border-ink bg-paper font-extrabold text-3xl"
-          />
-        </div>
-        {currency !== 'USD' && hasAmount && (
-          <p className="text-sm font-semibold text-ink/40 mt-2">≈ ${amountUsd.toFixed(2)} USD</p>
-        )}
+    <div className="space-y-6">
+      {/* Amount display */}
+      <div
+        className="rounded-3xl border-2 border-ink flex items-center justify-center py-6"
+        style={{ background: 'var(--paper)', minHeight: 88 }}
+      >
+        <span className="font-extrabold text-ink/30 text-3xl mr-1">{sym}</span>
+        <span className="font-extrabold text-4xl" style={{ minWidth: 60, textAlign: 'center' }}>
+          {rawAmount || <span className="text-ink/20">0</span>}
+        </span>
       </div>
 
-      {/* Step 2 — providers, shown after amount entered */}
+      {currency !== 'USD' && hasAmount && (
+        <p className="text-sm font-semibold text-ink/40 -mt-2">≈ ${amountUsd.toFixed(2)} USD</p>
+      )}
+
+      {/* Quick presets */}
+      <div className="grid grid-cols-4 gap-2">
+        {PRESETS.map(p => (
+          <button
+            key={p}
+            onClick={() => { setRawAmount(String(p)); setPaymentUrl(null); setError(null) }}
+            className="rounded-2xl py-2.5 text-sm font-extrabold border-2 border-ink transition hover:bg-ink hover:text-paper"
+            style={{ background: rawAmount === String(p) ? 'var(--ink)' : 'var(--paper)', color: rawAmount === String(p) ? 'var(--paper)' : undefined }}
+          >
+            {sym}{p}
+          </button>
+        ))}
+      </div>
+
+      {/* Numpad */}
+      <div className="grid grid-cols-3 gap-2">
+        {PAD.map((key, i) => (
+          <button
+            key={i}
+            onClick={() => handlePad(key)}
+            disabled={!key}
+            className="rounded-2xl py-4 text-xl font-extrabold border-2 border-ink transition active:scale-95 disabled:border-transparent disabled:cursor-default flex items-center justify-center"
+            style={{ background: key === '⌫' ? 'var(--paper)' : key ? 'var(--cream)' : 'transparent' }}
+          >
+            {key === '⌫' ? <Delete className="w-5 h-5" strokeWidth={2.5} /> : key}
+          </button>
+        ))}
+      </div>
+
+      {/* Providers — shown after amount entered */}
       {hasAmount && (
         <div className="fade-up">
           <div className="text-xs font-extrabold uppercase tracking-widest text-ink/40 mb-3">
