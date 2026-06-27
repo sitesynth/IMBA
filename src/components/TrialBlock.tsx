@@ -23,7 +23,7 @@ export function TrialBlock({ onActivated, onPromoApplied }: Props) {
   const [tgPhase, setTgPhase] = useState<TGPhase>('idle')
   const [tgLoading, setTgLoading] = useState(false)
   const [vkError, setVkError] = useState('')
-  const [vkChecking, setVkChecking] = useState(false)
+  const [vkPolling, setVkPolling] = useState(false)
   const [promoCode, setPromoCode] = useState('')
   const [promoState, setPromoState] = useState<'idle' | 'loading' | 'ok' | 'error'>('idle')
   const [promoMsg, setPromoMsg] = useState('')
@@ -66,22 +66,29 @@ export function TrialBlock({ onActivated, onPromoApplied }: Props) {
     }
   }
 
-  async function recheckVK() {
-    setVkChecking(true); setVkError('')
-    try {
+  function openGroupAndPoll() {
+    window.open(VK_GROUP_URL, '_blank')
+    setVkPolling(true)
+    setVkError('')
+
+    const doCheck = async () => {
       let token = '', vkId = ''
       try { token = sessionStorage.getItem('vk_trial_token') || ''; vkId = sessionStorage.getItem('vk_trial_id') || '' } catch {}
-      if (!token || !vkId) { setVkError('Авторизуйся через VK ещё раз'); return }
+      if (!token || !vkId) return false
       const fp = await getFingerprint()
       const res = await fetch('/api/v1/me/trial/activate-vk', {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include',
         body: JSON.stringify({ vk_id: Number(vkId), access_token: token, fingerprint: fp }),
       })
-      if (res.status === 403) { setVkError('Ещё не вступил. Вступи в группу и попробуй снова.'); return }
-      if (!res.ok) { const e = await res.json().catch(() => ({})); setVkError(e.detail || 'Ошибка'); return }
-      try { sessionStorage.removeItem('vk_trial_token'); sessionStorage.removeItem('vk_trial_id') } catch {}
-      onActivated()
-    } finally { setVkChecking(false) }
+      if (res.ok) { onActivated(); return true }
+      return false
+    }
+
+    const interval = setInterval(async () => {
+      const done = await doCheck()
+      if (done) { clearInterval(interval); setVkPolling(false) }
+    }, 3000)
+    setTimeout(() => { clearInterval(interval); setVkPolling(false) }, 300000)
   }
 
   async function redeemPromo() {
@@ -162,17 +169,16 @@ export function TrialBlock({ onActivated, onPromoApplied }: Props) {
           </div>
 
           {vkPhase === 'join' ? (
-            <div className="flex flex-col gap-1.5 mt-1">
-              <a href={VK_GROUP_URL} target="_blank" rel="noopener noreferrer"
-                style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '6px 12px', borderRadius: 999, background: '#2787F5', color: '#fff', fontSize: 11, fontWeight: 800, textDecoration: 'none', width: 'fit-content', position: 'relative', zIndex: 2 }}>
-                Открыть группу →
-              </a>
-              <button onClick={recheckVK} disabled={vkChecking}
-                style={{ display: 'inline-flex', alignItems: 'center', padding: '6px 12px', borderRadius: 999, background: '#FFD731', color: '#111', fontSize: 11, fontWeight: 800, border: 'none', cursor: 'pointer', width: 'fit-content', opacity: vkChecking ? 0.5 : 1, position: 'relative', zIndex: 2 }}>
-                {vkChecking ? 'Проверяем…' : 'Я вступил → Активировать'}
+            vkPolling ? (
+              <p style={{ fontSize: 12, color: '#FFD731', fontWeight: 700, margin: 0 }}>
+                Вступи в группу — триал придёт автоматически ✓
+              </p>
+            ) : (
+              <button onClick={openGroupAndPoll}
+                style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '6px 12px', borderRadius: 999, background: '#2787F5', color: '#fff', fontSize: 11, fontWeight: 800, border: 'none', cursor: 'pointer', width: 'fit-content', position: 'relative', zIndex: 2 }}>
+                Вступить в сообщество →
               </button>
-              {vkError && <p style={{ fontSize: 11, fontWeight: 700, color: '#f87171', margin: 0, position: 'relative', zIndex: 2 }}>{vkError}</p>}
-            </div>
+            )
           ) : (
             <>
               <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.38)', margin: 0 }}>Вступай в сообщество IMBA</p>
