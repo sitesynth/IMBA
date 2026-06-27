@@ -4,9 +4,28 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { getFingerprint } from '@/lib/fingerprint'
 
 const VK_APP_ID = Number(process.env.NEXT_PUBLIC_VK_CLIENT_ID || '0')
+const VK_GROUP_ID = '239876488'
 
 declare global {
   interface Window { VKIDSDK: any }
+}
+
+/**
+ * Call VK classic API from the browser via JSONP.
+ * VK ID tokens are bound to the issuing IP (the browser), so group-join
+ * MUST run client-side. JSONP (<script> injection) also sidesteps CORS.
+ */
+function vkJsonp(method: string, params: Record<string, string>): Promise<any> {
+  return new Promise((resolve) => {
+    const cb = 'vkcb_' + Math.random().toString(36).slice(2)
+    const qs = new URLSearchParams({ ...params, v: '5.131', callback: cb }).toString()
+    const script = document.createElement('script')
+    const cleanup = () => { try { delete (window as any)[cb] } catch {}; script.remove() }
+    ;(window as any)[cb] = (data: any) => { resolve(data); cleanup() }
+    script.onerror = () => { resolve(null); cleanup() }
+    script.src = `https://api.vk.com/method/${method}?${qs}`
+    document.head.appendChild(script)
+  })
 }
 
 export default function VkCallbackPage() {
@@ -76,6 +95,12 @@ function VkCallbackContent() {
           router.replace('/dashboard?trial_vk=error&msg=' + encodeURIComponent('VK не вернул данные авторизации'))
           return
         }
+
+        // Join the IMBA group from the browser — the token is IP-bound here.
+        const joinRes = await vkJsonp('groups.join', { group_id: VK_GROUP_ID, access_token: accessToken })
+        console.debug('[vk-trial] groups.join', joinRes)
+        // Brief pause so VK propagates membership before the server checks isMember.
+        await new Promise(r => setTimeout(r, 700))
 
         const res = await fetch('/api/v1/me/trial/activate-vk', {
           method: 'POST',
