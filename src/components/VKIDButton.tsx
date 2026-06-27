@@ -27,18 +27,22 @@ async function redirectToVK(mode: string) {
     sessionStorage.setItem('vk_code_verifier', verifier)
   } catch {}
 
+  const redirectUri = window.location.origin + '/api/auth/vkid'
   const params = new URLSearchParams({
+    v: '2.6.5',
+    sdk_type: 'vkid',
+    app_id: String(VK_APP_ID),
     client_id: String(VK_APP_ID),
-    redirect_uri: window.location.origin + '/api/auth/vkid',
+    redirect_uri: redirectUri,
     response_type: 'code',
     state,
     scope: '',
     device_id: deviceId,
     code_challenge: challenge,
-    code_challenge_method: 'S256',
+    code_challenge_method: 's256',
   })
 
-  window.location.href = `https://id.vk.com/oauth2/auth?${params}`
+  window.location.href = `https://id.vk.ru/authorize?${params}`
 }
 
 interface Props {

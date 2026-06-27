@@ -49,7 +49,7 @@ function VkCallbackContent() {
       const fingerprint = await getFingerprint()
       const redirectUri = window.location.origin + '/api/auth/vkid'
 
-      const resp = await fetch('https://id.vk.com/oauth2/auth', {
+      const resp = await fetch('https://id.vk.ru/oauth2/auth', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({
