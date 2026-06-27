@@ -167,6 +167,13 @@ export function toggleUser(id: string) {
   })
 }
 
+export function deleteUser(id: string, password: string) {
+  return adminReq<{ ok: boolean; deleted_email: string }>(`/v1/admin/users/${id}`, {
+    method: "DELETE",
+    body: JSON.stringify({ password }),
+  })
+}
+
 export function getTransactions(params?: { limit?: number; offset?: number }) {
   const q = new URLSearchParams()
   if (params?.limit != null) q.set("limit", String(params.limit))
