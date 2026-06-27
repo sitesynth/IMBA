@@ -62,15 +62,18 @@ function VkCallbackContent() {
         body: new URLSearchParams({ code: code! }),
       })
 
-      if (!resp.ok) throw new Error('VK token exchange failed: ' + resp.status)
-      const data = await resp.json()
-      if (data.error) throw new Error(data.error_description || data.error)
+      const rawText = await resp.text()
+      console.log('[vk-exchange] status:', resp.status, 'body:', rawText.slice(0, 500))
+      if (!resp.ok) throw new Error(`VK exchange ${resp.status}: ${rawText.slice(0, 200)}`)
+      let data: any = {}
+      try { data = JSON.parse(rawText) } catch { throw new Error('VK response not JSON: ' + rawText.slice(0, 200)) }
+      if (data.error) throw new Error(`VK error: ${data.error} — ${data.error_description || ''}`)
 
-      const accessToken: string = data.access_token || ''
-      const vkId: number = data.user?.id || 0
+      const accessToken: string = data.access_token || data.token || ''
+      const vkId: number = data.user?.id || data.user_id || 0
       const name = [data.user?.first_name, data.user?.last_name].filter(Boolean).join(' ')
 
-      if (!accessToken || !vkId) throw new Error('VK не вернул данные авторизации')
+      if (!accessToken || !vkId) throw new Error(`VK нет токена: keys=${Object.keys(data).join(',')}`)
 
       if (mode === 'trial') {
         try {
