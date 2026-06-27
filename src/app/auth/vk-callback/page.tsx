@@ -4,11 +4,6 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { getFingerprint } from '@/lib/fingerprint'
 
 const VK_APP_ID = Number(process.env.NEXT_PUBLIC_VK_CLIENT_ID || '0')
-const VK_GROUP_ID = '239876488'
-
-declare global {
-  interface Window { VKIDSDK: any }
-}
 
 export default function VkCallbackPage() {
   return (
@@ -44,42 +39,45 @@ function VkCallbackContent() {
     }
 
     let mode = 'login'
-    try { mode = sessionStorage.getItem('vk_auth_mode') || 'login' } catch {}
+    let codeVerifier = ''
+    try {
+      mode = sessionStorage.getItem('vk_auth_mode') || 'login'
+      codeVerifier = sessionStorage.getItem('vk_code_verifier') || ''
+    } catch {}
 
     async function doExchange() {
-      const VKID = window.VKIDSDK
+      const fingerprint = await getFingerprint()
+      const redirectUri = window.location.origin + '/api/auth/vkid'
 
-      VKID.Config.init({
-        app: VK_APP_ID,
-        redirectUrl: window.location.origin + '/api/auth/vkid',
-        responseMode: VKID.ConfigResponseMode.Redirect,
-        source: VKID.ConfigSource.LOWCODE,
-        scope: '',
+      const resp = await fetch('https://id.vk.com/oauth2/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+          grant_type: 'authorization_code',
+          client_id: String(VK_APP_ID),
+          device_id: device_id!,
+          redirect_uri: redirectUri,
+          code: code!,
+          code_verifier: codeVerifier,
+        }),
       })
 
-      const data = await VKID.Auth.exchangeCode(code!, device_id!)
-      const fingerprint = await getFingerprint()
+      if (!resp.ok) throw new Error('VK token exchange failed: ' + resp.status)
+      const data = await resp.json()
+      if (data.error) throw new Error(data.error_description || data.error)
+
+      const accessToken: string = data.access_token || ''
+      const vkId: number = data.user?.id || 0
       const name = [data.user?.first_name, data.user?.last_name].filter(Boolean).join(' ')
 
+      if (!accessToken || !vkId) throw new Error('VK не вернул данные авторизации')
+
       if (mode === 'trial') {
-        // VK ID SDK may return access_token at different paths depending on version
-        const accessToken: string = data.access_token || data.token || data.payload?.access_token || ''
-        const vkId: number = data.user?.id || data.user_id || data.payload?.user_id || 0
-        console.debug('[vk-trial] sdk data keys:', Object.keys(data || {}), 'vkId:', vkId, 'hasToken:', !!accessToken)
-
-        if (!accessToken || !vkId) {
-          console.error('[vk-trial] missing token or vk_id from SDK', data)
-          router.replace('/dashboard?trial_vk=error&msg=' + encodeURIComponent('VK не вернул данные авторизации'))
-          return
-        }
-
-        // Save credentials for polling from dashboard
         try {
           sessionStorage.setItem('vk_trial_token', accessToken)
           sessionStorage.setItem('vk_trial_id', String(vkId))
         } catch {}
 
-        // Try immediate activation (user might already be a member)
         const res = await fetch('/api/v1/me/trial/activate-vk', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -89,26 +87,27 @@ function VkCallbackContent() {
         if (res.ok) {
           router.replace('/dashboard?activated=trial')
         } else {
-          // Not a member yet — redirect to dashboard with join prompt
           router.replace('/dashboard?trial_vk=join')
         }
+
       } else if (mode === 'link') {
         const res = await fetch('/api/v1/me/vk/link', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
-          body: JSON.stringify({ vk_id: data.user?.id, access_token: data.access_token, fingerprint }),
+          body: JSON.stringify({ vk_id: vkId, access_token: accessToken, fingerprint }),
         })
         if (!res.ok) {
           const e = await res.json().catch(() => ({}))
           throw new Error(e.detail || 'Ошибка привязки VK')
         }
         router.replace('/dashboard')
+
       } else {
         const res = await fetch('/api/auth/vkid', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ vk_id: data.user?.id, access_token: data.access_token, name, fingerprint }),
+          body: JSON.stringify({ vk_id: vkId, access_token: accessToken, name, fingerprint }),
         })
         if (!res.ok) {
           const e = await res.json().catch(() => ({}))
@@ -118,21 +117,14 @@ function VkCallbackContent() {
       }
     }
 
-    function run() {
-      doExchange().catch(err => {
-        router.replace('/auth/login?error=' + encodeURIComponent(err.message || 'vk_failed'))
-      })
-    }
-
-    if (window.VKIDSDK) {
-      run()
-    } else {
-      const script = document.createElement('script')
-      script.src = 'https://unpkg.com/@vkid/sdk@latest/dist-sdk/umd/index.js'
-      script.onload = run
-      script.onerror = () => router.replace('/auth/login?error=vk_sdk_failed')
-      document.head.appendChild(script)
-    }
+    doExchange().catch(err => {
+      const msg = err.message || 'vk_failed'
+      if (mode === 'trial') {
+        router.replace('/dashboard?trial_vk=error&msg=' + encodeURIComponent(msg))
+      } else {
+        router.replace('/auth/login?error=' + encodeURIComponent(msg))
+      }
+    })
   }, [])
 
   return (
