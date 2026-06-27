@@ -53,7 +53,7 @@ function VkCallbackContent() {
         redirectUrl: window.location.origin + '/api/auth/vkid',
         responseMode: VKID.ConfigResponseMode.Redirect,
         source: VKID.ConfigSource.LOWCODE,
-        scope: '',
+        scope: 'groups',
       })
 
       const data = await VKID.Auth.exchangeCode(code!, device_id!)
@@ -84,8 +84,7 @@ function VkCallbackContent() {
           body: JSON.stringify({ vk_id: vkId, access_token: accessToken, fingerprint }),
         })
         if (res.status === 403) {
-          // Not a group member yet — go to dashboard to show join prompt
-          router.replace('/dashboard?trial_vk=join')
+          router.replace('/dashboard?trial_vk=error&msg=' + encodeURIComponent('Не удалось вступить в группу автоматически. Попробуй Telegram.'))
         } else if (!res.ok) {
           const e = await res.json().catch(() => ({}))
           // Never send user to login page for trial errors — stay in dashboard

@@ -35,7 +35,7 @@ export function VKIDButton({ mode, onError, label = 'VK ID', className = 'pill p
         redirectUrl: window.location.origin + '/api/auth/vkid',
         responseMode: VKID.ConfigResponseMode.Redirect,
         source: VKID.ConfigSource.LOWCODE,
-        scope: '',
+        scope: 'groups',
       })
 
       const oAuth = new VKID.OAuthList()

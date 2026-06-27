@@ -5,10 +5,7 @@ import { Tag } from 'lucide-react'
 import { VKIDButton } from './VKIDButton'
 import { getFingerprint } from '@/lib/fingerprint'
 
-const VK_GROUP_URL = 'https://vk.com/club239876488'
-const TG_CHANNEL_URL = 'https://t.me/imba_live'
 
-type VKPhase = 'idle' | 'join'
 type TGPhase = 'idle' | 'links'
 
 interface Props {
@@ -19,27 +16,20 @@ interface Props {
 export function TrialBlock({ onActivated, onPromoApplied }: Props) {
   const searchParams = useSearchParams()
 
-  const [vkPhase, setVkPhase] = useState<VKPhase>('idle')
   const [tgPhase, setTgPhase] = useState<TGPhase>('idle')
   const [tgLoading, setTgLoading] = useState(false)
   const [vkError, setVkError] = useState('')
-  const [vkPolling, setVkPolling] = useState(false)
   const [promoCode, setPromoCode] = useState('')
   const [promoState, setPromoState] = useState<'idle' | 'loading' | 'ok' | 'error'>('idle')
   const [promoMsg, setPromoMsg] = useState('')
 
   useEffect(() => {
-    if (searchParams.get('trial_vk') === 'join') { setVkPhase('join') }
     if (searchParams.get('trial_vk') === 'error') {
       const msg = searchParams.get('msg') || 'Ошибка VK авторизации'
       setVkError(msg)
     }
     if (searchParams.get('activated') === 'trial') { onActivated() }
   }, [])
-
-  function onVKCardClick() {
-    try { sessionStorage.setItem('vk_auth_mode', 'trial') } catch {}
-  }
 
   async function selectTG() {
     if (tgPhase !== 'idle') return
@@ -48,10 +38,8 @@ export function TrialBlock({ onActivated, onPromoApplied }: Props) {
       const res = await fetch('/api/v1/me/trial/tg-link', { method: 'POST', credentials: 'include' })
       if (!res.ok) return
       const data = await res.json()
-      // Open bot immediately — no extra button click needed
       window.open(data.bot_url, '_blank')
       setTgPhase('links')
-      // Poll until bot activates trial
       const interval = setInterval(async () => {
         try {
           const r = await fetch('/api/v1/me', { credentials: 'include' })
@@ -64,31 +52,6 @@ export function TrialBlock({ onActivated, onPromoApplied }: Props) {
     } finally {
       setTgLoading(false)
     }
-  }
-
-  function openGroupAndPoll() {
-    window.open(VK_GROUP_URL, '_blank')
-    setVkPolling(true)
-    setVkError('')
-
-    const doCheck = async () => {
-      let token = '', vkId = ''
-      try { token = sessionStorage.getItem('vk_trial_token') || ''; vkId = sessionStorage.getItem('vk_trial_id') || '' } catch {}
-      if (!token || !vkId) return false
-      const fp = await getFingerprint()
-      const res = await fetch('/api/v1/me/trial/activate-vk', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include',
-        body: JSON.stringify({ vk_id: Number(vkId), access_token: token, fingerprint: fp }),
-      })
-      if (res.ok) { onActivated(); return true }
-      return false
-    }
-
-    const interval = setInterval(async () => {
-      const done = await doCheck()
-      if (done) { clearInterval(interval); setVkPolling(false) }
-    }, 3000)
-    setTimeout(() => { clearInterval(interval); setVkPolling(false) }, 300000)
   }
 
   async function redeemPromo() {
@@ -158,34 +121,15 @@ export function TrialBlock({ onActivated, onPromoApplied }: Props) {
 
         {/* VK card — SDK overlay covers entire card invisibly, real click goes through VK SDK */}
         <div className="trial-card select-none active:scale-[0.97] active:brightness-75"
-          style={vkPhase === 'join' ? btnActive : btnBase}
-          onClick={vkPhase === 'idle' ? onVKCardClick : undefined}
-          role={vkPhase === 'idle' ? 'button' : undefined}>
+          style={btnBase} role="button">
           <div className="flex items-center gap-2 mb-1">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="rgba(255,255,255,0.65)">
               <path d="M12.785 16.241s.288-.032.436-.194c.136-.148.132-.427.132-.427s-.02-1.304.587-1.496c.598-.19 1.365 1.26 2.179 1.815.615.422 1.08.33 1.08.33l2.17-.03s1.135-.07.597-.963c-.044-.073-.314-.661-1.616-1.869-1.364-1.265-1.181-1.06.462-3.248.999-1.33 1.398-2.142 1.273-2.49-.12-.332-.852-.244-.852-.244l-2.44.015s-.181-.025-.315.055c-.132.078-.216.26-.216.26s-.387 1.03-.903 1.905c-1.088 1.848-1.524 1.947-1.702 1.832-.414-.268-.31-1.074-.31-1.648 0-1.793.272-2.54-.529-2.733-.265-.064-.46-.106-1.138-.113-.87-.009-1.606.003-2.022.207-.277.135-.49.437-.36.454.16.021.525.098.718.362.248.341.24 1.107.24 1.107s.143 2.1-.333 2.372c-.326.18-.774-.187-1.733-1.863-.49-.847-.861-1.786-.861-1.786s-.071-.176-.201-.27c-.158-.115-.378-.151-.378-.151l-2.32.015s-.348.01-.476.161c-.114.135-.009.414-.009.414s1.816 4.25 3.872 6.391c1.886 1.965 4.026 1.836 4.026 1.836h.97z"/>
             </svg>
             <span style={{ fontSize: 13, fontWeight: 800, color: 'rgba(255,255,255,0.85)' }}>ВКонтакте</span>
           </div>
-
-          {vkPhase === 'join' ? (
-            vkPolling ? (
-              <p style={{ fontSize: 12, color: '#FFD731', fontWeight: 700, margin: 0 }}>
-                Вступи в группу — триал придёт автоматически ✓
-              </p>
-            ) : (
-              <button onClick={openGroupAndPoll}
-                style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '6px 12px', borderRadius: 999, background: '#2787F5', color: '#fff', fontSize: 11, fontWeight: 800, border: 'none', cursor: 'pointer', width: 'fit-content', position: 'relative', zIndex: 2 }}>
-                Вступить в сообщество →
-              </button>
-            )
-          ) : (
-            <>
-              <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.38)', margin: 0 }}>Вступай в сообщество IMBA</p>
-              {/* Transparent VK SDK overlay covers whole card — user clicks here naturally */}
-              <VKIDButton mode="trial" overlay onError={setVkError} />
-            </>
-          )}
+          <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.38)', margin: 0 }}>Вступи — мы подпишем тебя сами ✓</p>
+          <VKIDButton mode="trial" overlay onError={setVkError} />
         </div>
 
         {/* TG */}
@@ -211,7 +155,7 @@ export function TrialBlock({ onActivated, onPromoApplied }: Props) {
 
       </div>
 
-      {vkError && vkPhase !== 'join' && (
+      {vkError && (
         <p style={{ fontSize: 12, fontWeight: 700, color: '#f87171', marginBottom: 8 }}>{vkError}</p>
       )}
 
