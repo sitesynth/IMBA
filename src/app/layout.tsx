@@ -25,7 +25,7 @@ const word = Archivo_Black({
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.imba.live'),
-  title: 'IMBA — eSIM, VPN и виртуальная карта для граждан России',
+  title: 'IMBA COMBO: eSIM, VPN и виртуальная карта',
   description: 'eSIM для 190+ стран, VPN без логов (VLESS Reality и WireGuard) и виртуальная Visa/Mastercard для оплаты Netflix, Spotify, ChatGPT и других зарубежных сервисов. Всё в одном кабинете.',
   alternates: { canonical: 'https://www.imba.live' },
   icons: {
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     apple: '/favicon.png',
   },
   openGraph: {
-    title: 'IMBA — eSIM, VPN и виртуальная карта для граждан России',
+    title: 'IMBA COMBO: eSIM, VPN и виртуальная карта',
     description: 'eSIM для 190+ стран, VPN без логов и виртуальная Visa/Mastercard. Без границ.',
     siteName: 'IMBA',
     locale: 'ru_RU',
@@ -51,7 +51,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'IMBA — eSIM, VPN и виртуальная карта для граждан России',
+    title: 'IMBA COMBO: eSIM, VPN и виртуальная карта',
     description: 'eSIM для 190+ стран, VPN без логов и виртуальная Visa/Mastercard.',
     images: ['https://www.imba.live/og-image.png'],
   },
