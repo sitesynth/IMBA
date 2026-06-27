@@ -63,17 +63,26 @@ function VkCallbackContent() {
       })
 
       const rawText = await resp.text()
-      console.log('[vk-exchange] status:', resp.status, 'body:', rawText.slice(0, 500))
       if (!resp.ok) throw new Error(`VK exchange ${resp.status}: ${rawText.slice(0, 200)}`)
       let data: any = {}
       try { data = JSON.parse(rawText) } catch { throw new Error('VK response not JSON: ' + rawText.slice(0, 200)) }
       if (data.error) throw new Error(`VK error: ${data.error} — ${data.error_description || ''}`)
 
-      const accessToken: string = data.access_token || data.token || ''
-      const vkId: number = data.user?.id || data.user_id || 0
-      const name = [data.user?.first_name, data.user?.last_name].filter(Boolean).join(' ')
+      const accessToken: string = data.access_token || ''
+      if (!accessToken) throw new Error(`VK нет access_token: keys=${Object.keys(data).join(',')}`)
 
-      if (!accessToken || !vkId) throw new Error(`VK нет токена: keys=${Object.keys(data).join(',')}`)
+      // Fetch user info separately (token response doesn't include user object)
+      const userInfoParams = new URLSearchParams({ client_id: String(VK_APP_ID) })
+      const userInfoResp = await fetch(`https://id.vk.ru/oauth2/user_info?${userInfoParams}`, {
+        method: 'POST',
+        body: new URLSearchParams({ access_token: accessToken }),
+      })
+      const userInfo = await userInfoResp.json()
+      const user = userInfo.user || userInfo
+      const vkId: number = user.id || user.user_id || 0
+      const name = [user.first_name, user.last_name].filter(Boolean).join(' ')
+
+      if (!vkId) throw new Error(`VK нет user_id: ${JSON.stringify(userInfo).slice(0, 200)}`)
 
       if (mode === 'trial') {
         try {
