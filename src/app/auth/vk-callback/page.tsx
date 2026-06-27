@@ -49,17 +49,17 @@ function VkCallbackContent() {
       const fingerprint = await getFingerprint()
       const redirectUri = window.location.origin + '/api/auth/vkid'
 
-      const resp = await fetch('https://id.vk.ru/oauth2/auth', {
+      // SDK format: params in query string, only code in POST body
+      const exchangeParams = new URLSearchParams({
+        grant_type: 'authorization_code',
+        client_id: String(VK_APP_ID),
+        device_id: device_id!,
+        redirect_uri: redirectUri,
+        code_verifier: codeVerifier,
+      })
+      const resp = await fetch(`https://id.vk.ru/oauth2/auth?${exchangeParams}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({
-          grant_type: 'authorization_code',
-          client_id: String(VK_APP_ID),
-          device_id: device_id!,
-          redirect_uri: redirectUri,
-          code: code!,
-          code_verifier: codeVerifier,
-        }),
+        body: new URLSearchParams({ code: code! }),
       })
 
       if (!resp.ok) throw new Error('VK token exchange failed: ' + resp.status)
