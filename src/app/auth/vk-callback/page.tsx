@@ -96,20 +96,31 @@ function VkCallbackContent() {
           return
         }
 
-        // Join the IMBA group from the browser — the token is IP-bound here.
+        // Join the IMBA group from the browser — the VK token is IP-bound to
+        // the browser, and server-side member checks are denied (error 203),
+        // so both join and verification must happen client-side via JSONP.
         const joinRes = await vkJsonp('groups.join', { group_id: VK_GROUP_ID, access_token: accessToken })
         console.debug('[vk-trial] groups.join', joinRes)
-        // Brief pause so VK propagates membership before the server checks isMember.
-        await new Promise(r => setTimeout(r, 700))
+        let joined = joinRes?.response === 1
+        if (!joined) {
+          // Already a member or a join hiccup — confirm with the user's own token.
+          const memRes = await vkJsonp('groups.isMember', { group_id: VK_GROUP_ID, user_id: String(vkId), access_token: accessToken })
+          console.debug('[vk-trial] isMember', memRes)
+          joined = memRes?.response === 1
+        }
+        if (!joined) {
+          router.replace('/dashboard?trial_vk=error&msg=' + encodeURIComponent('Не удалось вступить в сообщество. Попробуй ещё раз или Telegram.'))
+          return
+        }
 
         const res = await fetch('/api/v1/me/trial/activate-vk', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
-          body: JSON.stringify({ vk_id: vkId, access_token: accessToken, fingerprint }),
+          body: JSON.stringify({ vk_id: vkId, access_token: accessToken, fingerprint, vk_joined: true }),
         })
         if (res.status === 403) {
-          router.replace('/dashboard?trial_vk=error&msg=' + encodeURIComponent('Не удалось вступить в группу автоматически. Попробуй Telegram.'))
+          router.replace('/dashboard?trial_vk=error&msg=' + encodeURIComponent('Не удалось активировать триал. Попробуй Telegram.'))
         } else if (!res.ok) {
           const e = await res.json().catch(() => ({}))
           // Never send user to login page for trial errors — stay in dashboard
