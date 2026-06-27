@@ -68,48 +68,63 @@ export function TopupFlow({
 
   return (
     <div className="space-y-6">
-      {/* Amount display */}
-      <div
-        className="rounded-3xl border-2 border-ink flex items-center justify-center py-6"
-        style={{ background: 'var(--paper)', minHeight: 88 }}
-      >
-        <span className="font-extrabold text-ink/30 text-3xl mr-1">{sym}</span>
-        <span className="font-extrabold text-4xl" style={{ minWidth: 60, textAlign: 'center' }}>
-          {rawAmount || <span className="text-ink/20">0</span>}
-        </span>
+      {/* Desktop: regular input */}
+      <div className="hidden md:block">
+        <div className="text-xs font-extrabold uppercase tracking-widest text-ink/40 mb-2">
+          Сумма пополнения
+        </div>
+        <div className="relative">
+          <span className="absolute left-5 top-1/2 -translate-y-1/2 font-extrabold text-ink/40 text-2xl pointer-events-none">{sym}</span>
+          <input
+            type="number"
+            step="1"
+            min="1"
+            placeholder="0"
+            value={rawAmount}
+            onChange={(e) => { setRawAmount(e.target.value); setPaymentUrl(null); setError(null) }}
+            className="w-full pl-12 pr-5 py-5 rounded-3xl border-2 border-ink bg-paper font-extrabold text-3xl"
+          />
+        </div>
       </div>
 
-      {currency !== 'USD' && hasAmount && (
-        <p className="text-sm font-semibold text-ink/40 -mt-2">≈ ${amountUsd.toFixed(2)} USD</p>
-      )}
+      {/* Mobile: amount display + presets + numpad */}
+      <div className="md:hidden space-y-4">
+        <div
+          className="rounded-3xl border-2 border-ink flex items-center justify-center py-6"
+          style={{ background: 'var(--paper)', minHeight: 88 }}
+        >
+          <span className="font-extrabold text-ink/30 text-3xl mr-1">{sym}</span>
+          <span className="font-extrabold text-4xl" style={{ minWidth: 60, textAlign: 'center' }}>
+            {rawAmount || <span className="text-ink/20">0</span>}
+          </span>
+        </div>
 
-      {/* Quick presets */}
-      <div className="grid grid-cols-4 gap-2">
-        {PRESETS.map(p => (
-          <button
-            key={p}
-            onClick={() => { setRawAmount(String(p)); setPaymentUrl(null); setError(null) }}
-            className="rounded-2xl py-2.5 text-sm font-extrabold border-2 border-ink transition hover:bg-ink hover:text-paper"
-            style={{ background: rawAmount === String(p) ? 'var(--ink)' : 'var(--paper)', color: rawAmount === String(p) ? 'var(--paper)' : undefined }}
-          >
-            {sym}{p}
-          </button>
-        ))}
-      </div>
+        <div className="grid grid-cols-4 gap-2">
+          {PRESETS.map(p => (
+            <button
+              key={p}
+              onClick={() => { setRawAmount(String(p)); setPaymentUrl(null); setError(null) }}
+              className="rounded-2xl py-2.5 text-sm font-extrabold border-2 border-ink transition active:scale-95"
+              style={{ background: rawAmount === String(p) ? 'var(--ink)' : 'var(--paper)', color: rawAmount === String(p) ? 'var(--paper)' : undefined }}
+            >
+              {sym}{p}
+            </button>
+          ))}
+        </div>
 
-      {/* Numpad */}
-      <div className="grid grid-cols-3 gap-2">
-        {PAD.map((key, i) => (
-          <button
-            key={i}
-            onClick={() => handlePad(key)}
-            disabled={!key}
-            className="rounded-2xl py-4 text-xl font-extrabold border-2 border-ink transition active:scale-95 disabled:border-transparent disabled:cursor-default flex items-center justify-center"
-            style={{ background: key === '⌫' ? 'var(--paper)' : key ? 'var(--cream)' : 'transparent' }}
-          >
-            {key === '⌫' ? <Delete className="w-5 h-5" strokeWidth={2.5} /> : key}
-          </button>
-        ))}
+        <div className="grid grid-cols-3 gap-2">
+          {PAD.map((key, i) => (
+            <button
+              key={i}
+              onClick={() => handlePad(key)}
+              disabled={!key}
+              className="rounded-2xl py-4 text-xl font-extrabold border-2 border-ink transition active:scale-95 disabled:border-transparent disabled:cursor-default flex items-center justify-center"
+              style={{ background: key === '⌫' ? 'var(--paper)' : key ? 'var(--cream)' : 'transparent' }}
+            >
+              {key === '⌫' ? <Delete className="w-5 h-5" strokeWidth={2.5} /> : key}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Providers — shown after amount entered */}
