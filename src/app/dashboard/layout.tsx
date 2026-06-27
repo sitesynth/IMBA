@@ -43,6 +43,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
         <div className="flex items-center gap-2">
           <NotificationBell />
           <span className="chip" style={{ background: 'var(--yellow)' }}><AnimatedBalance balance={user.balance} currency={user.currency} rates={user.rates} /></span>
+          <Link href="/dashboard/settings" className="pill pill-paper pill-sm" aria-label="Настройки">
+            <Settings className="w-4 h-4" strokeWidth={2.5} />
+          </Link>
           <form action={logout}>
             <button type="submit" className="pill pill-paper pill-sm" aria-label="Выйти">
               <LogOut className="w-4 h-4" strokeWidth={2.5} />
