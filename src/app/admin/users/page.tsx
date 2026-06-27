@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { ChevronDown, ChevronUp } from 'lucide-react'
-import { getUsers, getUserDetail, addBalance, toggleUser, deleteUser, AdminUser, AdminUserDetail } from '@/lib/admin-api'
+import { getUsers, getUser, addBalance, toggleUser, deleteUser, AdminUser, AdminUserDetail } from '@/lib/admin-api'
 
 function UserRow({ u, onRefresh, selected, onSelect }: { u: AdminUser; onRefresh: () => void; selected: boolean; onSelect: (e: React.MouseEvent) => void }) {
   const [open, setOpen] = useState(false)
@@ -25,7 +25,7 @@ function UserRow({ u, onRefresh, selected, onSelect }: { u: AdminUser; onRefresh
       setOpen(true)
       if (!detail) {
         setLoadingDetail(true)
-        try { setDetail(await getUserDetail(u.user_id)) } catch {}
+        try { setDetail(await getUser(u.user_id)) } catch {}
         finally { setLoadingDetail(false) }
       }
     } else {
