@@ -126,6 +126,7 @@ export function TrialBlock({ onActivated, onPromoApplied }: Props) {
 
   return (
     <div className="relative z-10" style={{ marginTop: 20 }}>
+      <style>{`.trial-card:hover { border-color: rgba(255,255,255,0.35) !important; }`}</style>
 
       {/* Heading */}
       <div className="flex items-center gap-2 mb-2">
@@ -149,7 +150,7 @@ export function TrialBlock({ onActivated, onPromoApplied }: Props) {
       <div className="flex gap-2 mb-3">
 
         {/* VK card — SDK overlay covers entire card invisibly, real click goes through VK SDK */}
-        <div className="select-none active:scale-[0.97] active:brightness-75"
+        <div className="trial-card select-none active:scale-[0.97] active:brightness-75"
           style={vkPhase === 'join' ? btnActive : btnBase}
           onClick={vkPhase === 'idle' ? onVKCardClick : undefined}
           role={vkPhase === 'idle' ? 'button' : undefined}>
@@ -182,7 +183,7 @@ export function TrialBlock({ onActivated, onPromoApplied }: Props) {
         </div>
 
         {/* TG */}
-        <div className="select-none active:scale-[0.97] active:brightness-75"
+        <div className="trial-card select-none active:scale-[0.97] active:brightness-75"
           style={tgActive ? btnActive : btnBase} onClick={selectTG} role="button">
           <div className="flex items-center gap-2 mb-1">
             <svg width="16" height="16" viewBox="0 0 24 24" fill={tgActive ? '#FFD731' : 'rgba(255,255,255,0.65)'}>
