@@ -1,12 +1,12 @@
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
-import { Zap, Smartphone, Wallet, Wifi } from 'lucide-react'
+import { Wallet, Wifi } from 'lucide-react'
 import { getCurrentUser } from '@/lib/auth'
 import { api, apiFetch, ApiError } from '@/lib/api'
 import { LottieSticker } from '@/components/LottieSticker'
-import { CopyButton } from '@/components/CopyButton'
 import { AnimatedBalance } from '@/components/AnimatedBalance'
 import { formatMoney } from '@/lib/format'
+import { VpnServersPanel } from '@/components/VpnServersPanel'
 import type { VpnSubscription, VpnServer } from '@/lib/types'
 
 const DEFAULT_SERVER_ID = 'c973f18c-36df-4926-b369-05ebc0604579'
@@ -107,29 +107,12 @@ export default async function VpnPage() {
             </div>
           </div>
 
-          {/* Happ subscription */}
-          {active.server_key && (
-            <div className="panel" style={{ background: 'var(--paper)' }}>
-              <div className="flex items-center gap-2 mb-3">
-                <Smartphone className="w-4 h-4 text-ink/50" strokeWidth={2.5} />
-                <div className="text-xs font-extrabold uppercase tracking-widest text-ink/50 flex-1">
-                  Happ — подписка
-                </div>
-                <CopyButton text={active.server_key} />
-              </div>
-              <p className="text-sm font-mono break-all text-ink/70 select-all mb-3">
-                {active.server_key}
-              </p>
-              <ol className="space-y-1 text-sm font-semibold text-ink/70 mb-3">
-                <li>1. Скачай <strong>Happ</strong> (iOS / Android)</li>
-                <li>2. Открой → «Добавить подписку» → вставь ссылку выше</li>
-                <li>3. Подключись к серверу одним нажатием</li>
-              </ol>
-              <div className="rounded-xl px-3 py-2 text-xs font-bold" style={{ background: 'var(--yellow)', color: 'var(--ink)' }}>
-                ⚠️ В настройках сервера в Happ обязательно отключи <strong>Mux</strong> — иначе VPN не будет работать.
-              </div>
-            </div>
-          )}
+          <VpnServersPanel
+            servers={servers}
+            vlessMap={vlessMap}
+            serverKey={active.server_key}
+            hasActive={true}
+          />
         </>
       ) : (
         /* Not connected — single connect button */
@@ -163,42 +146,15 @@ export default async function VpnPage() {
         </div>
       )}
 
-      {/* Server cards — always shown */}
-      <div>
-        <h2 className="display text-2xl md:text-3xl mb-1">Серверы</h2>
-        <p className="font-semibold text-ink/60 mb-5 text-sm">
-          {active ? 'Входят в подписку' : '5 локаций включены в тариф'}
-        </p>
-
-        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
-          {servers.map((s) => {
-            const vlessUri = s.host ? vlessMap[s.host] : undefined
-            return (
-              <div key={s.id} className="panel" style={{ background: 'var(--paper)' }}>
-                <div className="flex items-center gap-3 mb-4">
-                  <span className="text-3xl">{s.flag}</span>
-                  <div>
-                    <div className="display text-lg leading-tight">{s.city}</div>
-                    <div className="text-xs font-bold text-ink/40">{s.country}</div>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between gap-2">
-                  {s.ping ? (
-                    <span className="chip" style={{ background: 'var(--green-100)' }}>
-                      <Zap className="w-3 h-3" strokeWidth={3} /> ~{s.ping} мс
-                    </span>
-                  ) : <span />}
-                  {active && vlessUri ? (
-                    <CopyButton text={vlessUri} label="v2box" className="pill pill-paper pill-sm text-xs" />
-                  ) : (
-                    <span className="text-xs font-bold text-ink/20">—</span>
-                  )}
-                </div>
-              </div>
-            )
-          })}
-        </div>
-      </div>
+      {/* Server cards — shown only when not active (active state handled by VpnServersPanel above) */}
+      {!active && (
+        <VpnServersPanel
+          servers={servers}
+          vlessMap={vlessMap}
+          serverKey={null}
+          hasActive={false}
+        />
+      )}
     </div>
   )
 }
