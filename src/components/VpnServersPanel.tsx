@@ -311,7 +311,27 @@ export function VpnServersPanel({ servers, vlessMap, serverKey, hasActive }: Pro
             }}
           >
             <div className="flex items-center gap-3 mb-4">
-              <span className="text-3xl">🛡️</span>
+              <svg width="36" height="36" viewBox="0 0 36 36" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
+                {/* Handles */}
+                <line x1="5" y1="3" x2="18" y2="19" strokeWidth="2.5"/>
+                <line x1="31" y1="3" x2="18" y2="19" strokeWidth="2.5"/>
+                {/* Pivot */}
+                <circle cx="18" cy="19" r="2.5" fill="currentColor" stroke="none"/>
+                {/* Jaws */}
+                <line x1="18" y1="19" x2="11" y2="28" strokeWidth="2.5"/>
+                <line x1="18" y1="19" x2="25" y2="28" strokeWidth="2.5"/>
+                {/* Wire — left segment */}
+                <line x1="2" y1="24" x2="10" y2="24" strokeWidth="2"/>
+                {/* Barb left */}
+                <line x1="5" y1="22" x2="7" y2="26" strokeWidth="1.5"/>
+                {/* Wire — right segment */}
+                <line x1="26" y1="24" x2="34" y2="24" strokeWidth="2"/>
+                {/* Barb right */}
+                <line x1="29" y1="22" x2="31" y2="26" strokeWidth="1.5"/>
+                {/* Cut sparks */}
+                <line x1="16" y1="22" x2="14" y2="20" strokeWidth="1.5"/>
+                <line x1="20" y1="22" x2="22" y2="20" strokeWidth="1.5"/>
+              </svg>
               <div>
                 <div className="display text-lg leading-tight">WhiteList Unblocker</div>
                 <div className="text-xs font-bold text-ink/40">Lisbon · Tele2 / МТС</div>
