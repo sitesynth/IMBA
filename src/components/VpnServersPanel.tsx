@@ -12,7 +12,7 @@ const WDTT_LINK = `wdtt://${WDTT_SERVER}:56000:56001:9000:${WDTT_PASSWORD}:${WDT
 const MAC_CMD = `sudo ./client-darwin-arm64 -server ${WDTT_SERVER}:56000 -wg-port 56001 -password ${WDTT_PASSWORD} -hash ${WDTT_VK_HASH}`
 
 const URLS = {
-  ipa:     'https://github.com/anton48/vk-turn-proxy-ios/releases/download/v1.0-build163/VKTurnProxy.ipa',
+  testflight: 'https://testflight.apple.com/join/ANm6cmDv',
   apk:     'https://github.com/SpaceNeuroX/proxy-turn-vk-android/releases/download/v1.2.5/app-universal-release.apk',
   win:     'https://github.com/IGOR7276/proxy-turn-vk-windows/releases/download/v2.1.3/wdtt.exe',
   macArm:  'https://github.com/cacggghp/vk-turn-proxy/releases/download/v1.8.3/client-darwin-arm64',
@@ -72,11 +72,10 @@ function WdttInstructions({ platform }: { platform: Platform }) {
       <li className="flex items-start gap-2">
         <span className="font-extrabold text-ink/30 w-4 shrink-0">1.</span>
         <div>
-          Скачай <strong>VK Turn Proxy</strong> для iOS:
-          <a href={URLS.ipa} className="flex items-center gap-1.5 mt-1.5 pill pill-ink pill-sm w-fit text-xs">
-            <Download className="w-3.5 h-3.5" strokeWidth={2.5} /> Скачать IPA
+          Установи <strong>VK Turn Proxy</strong> через TestFlight:
+          <a href={URLS.testflight} className="flex items-center gap-1.5 mt-1.5 pill pill-ink pill-sm w-fit text-xs">
+            <Download className="w-3.5 h-3.5" strokeWidth={2.5} /> Открыть в TestFlight
           </a>
-          <p className="text-xs text-ink/40 mt-1">Установи через Sideloadly или AltStore</p>
         </div>
       </li>
       <li className="flex items-start gap-2">
