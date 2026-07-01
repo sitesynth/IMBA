@@ -10,6 +10,7 @@ const WDTT_VK_HASH = 'WFNnNWAeRPkesAmtYkf40YIh-Zo-jJe_TfNeZ7jrCv8'
 const WDTT_SERVER = '38.19.201.176'
 const WDTT_LINK = `wdtt://${WDTT_SERVER}:56000:56001:9000:${WDTT_PASSWORD}:${WDTT_VK_HASH}`
 const VK_PROXY_IPA = 'https://github.com/anton48/vk-turn-proxy-ios/releases/download/v1.0-build163/VKTurnProxy.ipa'
+const QWDTT_APK = 'https://github.com/SpaceNeuroX/proxy-turn-vk-android/releases/download/v1.2.5/app-universal-release.apk'
 
 interface Props {
   servers: VpnServer[]
@@ -20,6 +21,7 @@ interface Props {
 
 export function VpnServersPanel({ servers, vlessMap, serverKey, hasActive }: Props) {
   const [selectedPanel, setSelectedPanel] = useState<'happ' | 'wdtt'>('happ')
+  const [wdttOs, setWdttOs] = useState<'ios' | 'android'>('android')
 
   const lisbonPing = servers.find(
     (s) => s.city?.toLowerCase().includes('lisbon') || s.country?.toLowerCase().includes('portugal')
@@ -51,43 +53,95 @@ export function VpnServersPanel({ servers, vlessMap, serverKey, hasActive }: Pro
             </>
           ) : (
             <>
-              <div className="flex items-center gap-2 mb-3">
+              <div className="flex items-center gap-2 mb-4">
                 <Smartphone className="w-4 h-4 text-ink/50" strokeWidth={2.5} />
                 <div className="text-xs font-extrabold uppercase tracking-widest text-ink/50 flex-1">
                   WhiteList Unblocker — инструкция
                 </div>
+                {/* OS tabs */}
+                <div className="flex rounded-xl overflow-hidden border-2 border-ink/10 text-xs font-extrabold">
+                  <button
+                    onClick={() => setWdttOs('android')}
+                    className="px-3 py-1 transition-colors"
+                    style={{ background: wdttOs === 'android' ? 'var(--ink)' : 'transparent', color: wdttOs === 'android' ? 'var(--paper)' : 'var(--ink)' }}
+                  >
+                    Android
+                  </button>
+                  <button
+                    onClick={() => setWdttOs('ios')}
+                    className="px-3 py-1 transition-colors"
+                    style={{ background: wdttOs === 'ios' ? 'var(--ink)' : 'transparent', color: wdttOs === 'ios' ? 'var(--paper)' : 'var(--ink)' }}
+                  >
+                    iOS
+                  </button>
+                </div>
               </div>
-              <ol className="space-y-3 text-sm font-semibold text-ink/70 mb-4">
-                <li className="flex items-start gap-2">
-                  <span className="font-extrabold text-ink/30 w-4 shrink-0">1.</span>
-                  <div>
-                    Скачай приложение <strong>VK Turn Proxy</strong> для iOS:
-                    <a
-                      href={VK_PROXY_IPA}
-                      className="flex items-center gap-1.5 mt-1.5 pill pill-ink pill-sm w-fit text-xs"
-                    >
-                      <Download className="w-3.5 h-3.5" strokeWidth={2.5} />
-                      Скачать IPA
-                    </a>
-                    <p className="text-xs text-ink/40 mt-1">Установи через Sideloadly или AltStore</p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="font-extrabold text-ink/30 w-4 shrink-0">2.</span>
-                  <div className="flex-1">
-                    <div className="mb-1">В приложении: Settings → Server mode → <strong>SRTP-WRAP-A</strong></div>
-                    <div className="mb-1">Затем нажми внизу <strong>«Import from connection link»</strong> и вставь:</div>
-                    <div className="flex items-center gap-2 mt-2 rounded-xl px-3 py-2" style={{ background: 'var(--blue-100)' }}>
-                      <p className="text-xs font-mono break-all text-ink/70 flex-1 select-all">{WDTT_LINK}</p>
-                      <CopyButton text={WDTT_LINK} />
+
+              {wdttOs === 'android' ? (
+                <ol className="space-y-3 text-sm font-semibold text-ink/70 mb-4">
+                  <li className="flex items-start gap-2">
+                    <span className="font-extrabold text-ink/30 w-4 shrink-0">1.</span>
+                    <div>
+                      Скачай <strong>qWDTT</strong> для Android:
+                      <a
+                        href={QWDTT_APK}
+                        className="flex items-center gap-1.5 mt-1.5 pill pill-ink pill-sm w-fit text-xs"
+                      >
+                        <Download className="w-3.5 h-3.5" strokeWidth={2.5} />
+                        Скачать APK (universal)
+                      </a>
+                      <p className="text-xs text-ink/40 mt-1">Разреши установку из неизвестных источников</p>
                     </div>
-                  </div>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="font-extrabold text-ink/30 w-4 shrink-0">3.</span>
-                  <span>Нажми <strong>Connect</strong> — работает на всех операторах РФ включая Tele2</span>
-                </li>
-              </ol>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="font-extrabold text-ink/30 w-4 shrink-0">2.</span>
+                    <div className="flex-1">
+                      <div className="mb-1">В приложении нажми <strong>«Импорт ссылки»</strong> и вставь:</div>
+                      <div className="flex items-center gap-2 mt-2 rounded-xl px-3 py-2" style={{ background: 'var(--blue-100)' }}>
+                        <p className="text-xs font-mono break-all text-ink/70 flex-1 select-all">{WDTT_LINK}</p>
+                        <CopyButton text={WDTT_LINK} />
+                      </div>
+                    </div>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="font-extrabold text-ink/30 w-4 shrink-0">3.</span>
+                    <span>Нажми <strong>Подключить</strong> — работает на всех операторах РФ включая Tele2</span>
+                  </li>
+                </ol>
+              ) : (
+                <ol className="space-y-3 text-sm font-semibold text-ink/70 mb-4">
+                  <li className="flex items-start gap-2">
+                    <span className="font-extrabold text-ink/30 w-4 shrink-0">1.</span>
+                    <div>
+                      Скачай <strong>VK Turn Proxy</strong> для iOS:
+                      <a
+                        href={VK_PROXY_IPA}
+                        className="flex items-center gap-1.5 mt-1.5 pill pill-ink pill-sm w-fit text-xs"
+                      >
+                        <Download className="w-3.5 h-3.5" strokeWidth={2.5} />
+                        Скачать IPA
+                      </a>
+                      <p className="text-xs text-ink/40 mt-1">Установи через Sideloadly или AltStore</p>
+                    </div>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="font-extrabold text-ink/30 w-4 shrink-0">2.</span>
+                    <div className="flex-1">
+                      <div className="mb-1">Settings → Server mode → <strong>SRTP-WRAP-A</strong></div>
+                      <div className="mb-1">Нажми <strong>«Import from connection link»</strong> и вставь:</div>
+                      <div className="flex items-center gap-2 mt-2 rounded-xl px-3 py-2" style={{ background: 'var(--blue-100)' }}>
+                        <p className="text-xs font-mono break-all text-ink/70 flex-1 select-all">{WDTT_LINK}</p>
+                        <CopyButton text={WDTT_LINK} />
+                      </div>
+                    </div>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="font-extrabold text-ink/30 w-4 shrink-0">3.</span>
+                    <span>Нажми <strong>Connect</strong> — работает на всех операторах РФ включая Tele2</span>
+                  </li>
+                </ol>
+              )}
+
               <div className="rounded-xl px-3 py-2 text-xs font-bold" style={{ background: 'var(--green-100)', color: 'var(--ink)' }}>
                 ✓ Трафик идёт через VK — оператор видит звонок ВКонтакте, не VPN
               </div>
