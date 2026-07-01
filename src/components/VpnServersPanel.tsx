@@ -197,9 +197,11 @@ export function VpnServersPanel({ servers, vlessMap, serverKey, hasActive }: Pro
   const [selectedPanel, setSelectedPanel] = useState<'happ' | 'wdtt'>('happ')
   const [platform, setPlatform] = useState<Platform>('android')
 
-  const lisbonPing = servers.find(
-    (s) => s.city?.toLowerCase().includes('lisbon') || s.country?.toLowerCase().includes('portugal')
-  )?.ping
+  const lisbonPing = servers.find((s) => {
+    const city = s.city?.toLowerCase() ?? ''
+    const country = s.country?.toLowerCase() ?? ''
+    return city.includes('lisbon') || city.includes('лиссабон') || country.includes('portugal') || country === 'pt'
+  })?.ping
 
   return (
     <>
