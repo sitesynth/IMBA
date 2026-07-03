@@ -68,16 +68,23 @@ function UserRow({ u, onRefresh, onDeleted, selected, onSelect }: { u: AdminUser
         <td className="px-4 py-3" onClick={onSelect}>
           <input type="checkbox" checked={selected} onChange={() => {}} />
         </td>
-        <td className="px-4 py-3 text-sm text-gray-900">{u.email}</td>
+        <td className="px-4 py-3 text-sm text-gray-900">
+          <div>{u.email}</div>
+          {u.telegram_id && <div className="text-xs text-blue-500">TG: {u.telegram_id}</div>}
+          {u.vk_id && <div className="text-xs text-indigo-500">VK: {u.vk_id}</div>}
+        </td>
         <td className="px-4 py-3 text-sm text-gray-700">{u.name || '—'}</td>
         <td className="px-4 py-3 text-sm text-gray-700">{u.plan || '—'}</td>
         <td className="px-4 py-3 text-sm text-gray-900 font-mono">${u.balance?.toFixed(2)}</td>
+        <td className="px-4 py-3 text-sm font-mono text-green-700">${(u.total_paid ?? 0).toFixed(2)}</td>
+        <td className="px-4 py-3 text-xs text-gray-500">{u.source || '—'}</td>
+        <td className="px-4 py-3 text-xs text-gray-500">{u.city || '—'}</td>
         <td className="px-4 py-3 text-sm">
           {u.is_active
             ? <span className="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">Active</span>
             : <span className="px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">Blocked</span>}
         </td>
-        <td className="px-4 py-3 text-sm text-gray-700">{new Date(u.created_at).toLocaleDateString()}</td>
+        <td className="px-4 py-3 text-sm text-gray-700">{new Date(u.created_at).toLocaleDateString('ru')}</td>
         <td className="px-4 py-3 text-sm text-gray-400">
           {open ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
         </td>
@@ -85,7 +92,7 @@ function UserRow({ u, onRefresh, onDeleted, selected, onSelect }: { u: AdminUser
 
       {open && (
         <tr>
-          <td colSpan={7} className="px-0 py-0 border-b border-blue-100">
+          <td colSpan={11} className="px-0 py-0 border-b border-blue-100">
             <div className="bg-blue-50 px-6 py-5 space-y-5">
               {loadingDetail ? (
                 <p className="text-sm text-gray-500">Loading...</p>
@@ -236,6 +243,8 @@ export default function AdminUsers() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [search, setSearch] = useState('')
+  const [statusFilter, setStatusFilter] = useState('')
+  const [sourceFilter, setSourceFilter] = useState('')
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [bulkModal, setBulkModal] = useState(false)
   const [bulkDeleteModal, setBulkDeleteModal] = useState(false)
@@ -248,7 +257,7 @@ export default function AdminUsers() {
   async function load() {
     setLoading(true)
     try {
-      const data = await getUsers({ search: search || undefined, limit: 200 })
+      const data = await getUsers({ search: search || undefined, status: statusFilter || undefined, source: sourceFilter || undefined, limit: 200 })
       setUsers(data)
     } catch (e) {
       setError((e as Error).message)
@@ -303,9 +312,7 @@ export default function AdminUsers() {
     } finally { setSaving(false) }
   }
 
-  const filtered = users.filter(u =>
-    !search || u.email.toLowerCase().includes(search.toLowerCase()) || (u.name || '').toLowerCase().includes(search.toLowerCase())
-  )
+  const filtered = users
 
   return (
     <div className="max-w-6xl">
@@ -329,15 +336,28 @@ export default function AdminUsers() {
         )}
       </div>
 
-      <div className="flex gap-3 mb-4">
+      <div className="flex flex-wrap gap-3 mb-4">
         <input
           value={search}
           onChange={e => setSearch(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && load()}
-          placeholder="Search by email or name..."
-          className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          placeholder="Email, name, Telegram ID..."
+          className="flex-1 min-w-[180px] border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
-        <button onClick={load} className="px-4 py-2 bg-gray-100 rounded-lg text-sm text-gray-700 hover:bg-gray-200">
+        <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)}
+          className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option value="">All statuses</option>
+          <option value="active">Active</option>
+          <option value="blocked">Blocked</option>
+        </select>
+        <select value={sourceFilter} onChange={e => setSourceFilter(e.target.value)}
+          className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option value="">All sources</option>
+          <option value="vk">VK</option>
+          <option value="google">Google</option>
+          <option value="email">Email</option>
+        </select>
+        <button onClick={load} className="px-4 py-2 bg-gray-900 text-white rounded-lg text-sm font-medium hover:bg-gray-800">
           Search
         </button>
       </div>
@@ -351,10 +371,13 @@ export default function AdminUsers() {
               <th className="px-4 py-3 text-left">
                 <input type="checkbox" checked={selected.size === filtered.length && filtered.length > 0} onChange={toggleAll} />
               </th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700">Email</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700">Email / Contact</th>
               <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700">Name</th>
               <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700">Plan</th>
               <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700">Balance</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700">Total paid</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700">Source</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700">City</th>
               <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700">Status</th>
               <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700">Created</th>
               <th className="px-4 py-3"></th>
@@ -362,7 +385,7 @@ export default function AdminUsers() {
           </thead>
           <tbody className="divide-y divide-gray-200">
             {loading ? (
-              <tr><td colSpan={8} className="px-4 py-8 text-center text-gray-500">Loading...</td></tr>
+              <tr><td colSpan={11} className="px-4 py-8 text-center text-gray-500">Loading...</td></tr>
             ) : filtered.map((u) => (
               <UserRow
                 key={u.user_id}

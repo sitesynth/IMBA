@@ -43,15 +43,26 @@ export interface Stats {
   active_esims: number
   active_vpns: number
   active_cards: number
+  revenue_rub: { total: number; count: number; avg_check: number }
+  revenue_usd: { total: number; count: number; avg_check: number }
+  registrations_by_day: { date: string; count: number }[]
+  same_day_conversions: number
+  conversion_pct: number
+  revenue_by_day: { date: string; amount: number }[]
 }
 
 export interface AdminUser {
   user_id: string
   email: string
   name: string
+  telegram_id?: string
+  vk_id?: string
   balance: number
+  total_paid: number
   is_active: boolean
   plan?: string
+  source?: string
+  city?: string
   created_at: string
 }
 
@@ -66,10 +77,13 @@ export interface AdminUserDetail extends AdminUser {
 export interface Transaction {
   payment_id: string
   email?: string
+  name?: string
   amount: number
   currency: string
   status: string
+  provider?: string
   created_at: string
+  confirmed_at?: string
   note?: string
 }
 
@@ -140,10 +154,11 @@ export function getStats() {
   return adminReq<Stats>("/v1/admin/stats")
 }
 
-export function getUsers(params?: { search?: string; status?: string; limit?: number; offset?: number }) {
+export function getUsers(params?: { search?: string; status?: string; source?: string; limit?: number; offset?: number }) {
   const q = new URLSearchParams()
   if (params?.search) q.set("search", params.search)
   if (params?.status) q.set("status", params.status)
+  if (params?.source) q.set("source", params.source)
   if (params?.limit != null) q.set("limit", String(params.limit))
   if (params?.offset != null) q.set("offset", String(params.offset))
   const qs = q.toString()
@@ -174,10 +189,13 @@ export function deleteUser(id: string, password: string) {
   })
 }
 
-export function getTransactions(params?: { limit?: number; offset?: number }) {
+export function getTransactions(params?: { limit?: number; offset?: number; status?: string; currency?: string; provider?: string }) {
   const q = new URLSearchParams()
   if (params?.limit != null) q.set("limit", String(params.limit))
   if (params?.offset != null) q.set("offset", String(params.offset))
+  if (params?.status) q.set("status", params.status)
+  if (params?.currency) q.set("currency", params.currency)
+  if (params?.provider) q.set("provider", params.provider)
   const qs = q.toString()
   return adminReq<Transaction[]>(`/v1/admin/transactions${qs ? "?" + qs : ""}`)
 }
