@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowRight, Wallet, Plus, Clock } from 'lucide-react'
-import { getCurrentUser } from '@/lib/auth'
 import { api } from '@/lib/api-client'
 import { LottieSticker } from '@/components/LottieSticker'
 import { PinnedBanner } from '@/components/PinnedBanner'
@@ -38,19 +37,18 @@ export default function DashboardPage() {
 
   useEffect(() => {
     async function load() {
-      const currentUser = await getCurrentUser()
-      if (!currentUser) {
-        router.push('/auth/login')
-        return
-      }
-      setUser(currentUser)
-
-      const [esimData, vpnData, cardData] = await Promise.all([
+      const [currentUser, esimData, vpnData, cardData] = await Promise.all([
+        api.get<UserProfile>('/v1/me').catch(() => null),
         api.get<Esim[]>('/v1/me/esims').catch(() => [] as Esim[]),
         api.get<VpnSubscription[]>('/v1/me/vpn').catch(() => [] as VpnSubscription[]),
         api.get<VirtualCard[]>('/v1/me/cards').catch(() => [] as VirtualCard[]),
       ])
 
+      if (!currentUser) {
+        router.push('/auth/login')
+        return
+      }
+      setUser(currentUser)
       setEsims(esimData)
       setVpns(vpnData)
       setCards(cardData)
