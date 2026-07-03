@@ -4,6 +4,7 @@ import { useActionState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { login } from '@/lib/auth'
 import { GoogleButton, AuthError, OrDivider } from '@/components/GoogleButton'
+import { VKLoginButton } from '@/components/VKLoginButton'
 
 export function LoginForm() {
   const [state, action, pending] = useActionState(login, undefined)
@@ -14,7 +15,10 @@ export function LoginForm() {
   return (
     <div className="panel">
       <AuthError code={errorCode} />
-      <GoogleButton />
+      <div className="space-y-2.5">
+        <GoogleButton />
+        <VKLoginButton />
+      </div>
       <OrDivider />
       <form action={action} className="space-y-4">
         {redirectTo && <input type="hidden" name="redirectTo" value={redirectTo} />}
