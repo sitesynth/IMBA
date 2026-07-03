@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { headers } from 'next/headers'
 import { Unbounded, Manrope, Archivo_Black } from 'next/font/google'
 import './globals.css'
 
@@ -23,38 +24,49 @@ const word = Archivo_Black({
   display: 'swap',
 })
 
-export const metadata: Metadata = {
-  metadataBase: new URL('https://www.imba.live'),
-  title: 'IMBA COMBO — eSIM, VPN и виртуальная карта. Интернет без границ.',
-  description: 'eSIM для 190+ стран, VPN без логов (VLESS Reality и WireGuard) и виртуальная Visa/Mastercard для оплаты Netflix, Spotify, ChatGPT и других зарубежных сервисов. Всё в одном кабинете.',
-  alternates: { canonical: 'https://www.imba.live' },
-  icons: {
-    icon: '/favicon.ico',
-    shortcut: '/favicon.ico',
-    apple: '/favicon.png',
-  },
-  openGraph: {
-    title: 'IMBA COMBO — eSIM, VPN и виртуальная карта. Интернет без границ.',
-    description: 'eSIM для 190+ стран, VPN без логов и виртуальная Visa/Mastercard. Интернет без границ.',
-    siteName: 'IMBA',
-    locale: 'ru_RU',
-    type: 'website',
-    url: 'https://www.imba.live',
-    images: [
-      {
-        url: 'https://www.imba.live/og-image.png',
-        width: 1200,
-        height: 630,
-        alt: 'IMBA COMBO — eSIM, VPN и виртуальная карта. Интернет без границ.',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'IMBA COMBO — eSIM, VPN и виртуальная карта. Интернет без границ.',
-    description: 'eSIM для 190+ стран, VPN без логов и виртуальная Visa/Mastercard. Интернет без границ.',
-    images: ['https://www.imba.live/og-image.png'],
-  },
+const TITLE = 'IMBA COMBO — eSIM, VPN и виртуальная карта. Интернет без границ.'
+const DESCRIPTION = 'eSIM для 190+ стран, VPN без логов (VLESS Reality и WireGuard) и виртуальная Visa/Mastercard для оплаты Netflix, Spotify, ChatGPT и других зарубежных сервисов. Всё в одном кабинете.'
+const DESCRIPTION_SHORT = 'eSIM для 190+ стран, VPN без логов и виртуальная Visa/Mastercard. Интернет без границ.'
+
+export async function generateMetadata(): Promise<Metadata> {
+  const hdrs = await headers()
+  const host = hdrs.get('host') ?? 'www.imba.live'
+  const proto = host.includes('localhost') ? 'http' : 'https'
+  const base = `${proto}://${host}`
+
+  return {
+    metadataBase: new URL(base),
+    title: TITLE,
+    description: DESCRIPTION,
+    alternates: { canonical: base },
+    icons: {
+      icon: '/favicon.ico',
+      shortcut: '/favicon.ico',
+      apple: '/favicon.png',
+    },
+    openGraph: {
+      title: TITLE,
+      description: DESCRIPTION_SHORT,
+      siteName: 'IMBA',
+      locale: 'ru_RU',
+      type: 'website',
+      url: base,
+      images: [
+        {
+          url: `${base}/og-image.png`,
+          width: 1200,
+          height: 630,
+          alt: TITLE,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: TITLE,
+      description: DESCRIPTION_SHORT,
+      images: [`${base}/og-image.png`],
+    },
+  }
 }
 
 const orgSchema = {
