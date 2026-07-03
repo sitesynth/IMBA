@@ -27,7 +27,6 @@ const word = Archivo_Black({
 const TITLE = 'IMBA COMBO — eSIM, VPN и виртуальная карта.'
 const DESCRIPTION = 'eSIM для 190+ стран, VPN без логов и виртуальная Visa/Mastercard для оплаты Netflix, Spotify, ChatGPT и других сервисов. Всё в одном приложении.'
 const DESCRIPTION_SHORT = 'eSIM для 190+ стран, VPN без логов и виртуальная Visa/Mastercard. Интернет без границ.'
-const OG_IMAGE = 'https://www.imba.live/og-image.png'
 
 export async function generateMetadata(): Promise<Metadata> {
   const hdrs = await headers()
@@ -55,7 +54,7 @@ export async function generateMetadata(): Promise<Metadata> {
       url: base,
       images: [
         {
-          url: OG_IMAGE,
+          url: `${base}/og-image.png`,
           width: 1200,
           height: 630,
           alt: TITLE,
@@ -66,7 +65,7 @@ export async function generateMetadata(): Promise<Metadata> {
       card: 'summary_large_image',
       title: TITLE,
       description: DESCRIPTION_SHORT,
-      images: [OG_IMAGE],
+      images: [`${base}/og-image.png`],
     },
   }
 }
