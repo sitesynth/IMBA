@@ -98,7 +98,7 @@ export default function LandingPage() {
         {/* Subhead + CTA below blob */}
         <div className="text-center mt-10 fade-up">
           {/* Visually hidden H1 for SEO — visual heading is the animated logo above */}
-          <h1 className="sr-only">eSIM, VPN и виртуальная карта для граждан России — IMBA</h1>
+          <h1 className="sr-only">IMBA COMBO — eSIM, VPN и виртуальная карта. Интернет без границ.</h1>
           <h2 className="display text-4xl md:text-6xl mb-5">
             Твой интернет.<br />Без границ.
           </h2>

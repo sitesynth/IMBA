@@ -5,8 +5,8 @@ import { Marquee } from '@/components/Marquee'
 import { posts } from '@/lib/posts'
 
 export const metadata: Metadata = {
-  title: 'Блог об eSIM, VPN и виртуальных картах для россиян — IMBA',
-  description: 'Гайды, разборы протоколов и практические советы по VPN, eSIM и виртуальным картам для граждан России.',
+  title: 'Блог IMBA — eSIM, VPN и виртуальные карты. Интернет без границ.',
+  description: 'Гайды, разборы протоколов и практические советы по VPN, eSIM и виртуальным картам. Интернет без границ с IMBA.',
   alternates: { canonical: 'https://www.imba.live/blog' },
 }
 

@@ -25,7 +25,7 @@ const word = Archivo_Black({
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.imba.live'),
-  title: 'IMBA COMBO: eSIM, VPN и виртуальная карта',
+  title: 'IMBA COMBO — eSIM, VPN и виртуальная карта. Интернет без границ.',
   description: 'eSIM для 190+ стран, VPN без логов (VLESS Reality и WireGuard) и виртуальная Visa/Mastercard для оплаты Netflix, Spotify, ChatGPT и других зарубежных сервисов. Всё в одном кабинете.',
   alternates: { canonical: 'https://www.imba.live' },
   icons: {
@@ -34,8 +34,8 @@ export const metadata: Metadata = {
     apple: '/favicon.png',
   },
   openGraph: {
-    title: 'IMBA COMBO: eSIM, VPN и виртуальная карта',
-    description: 'eSIM для 190+ стран, VPN без логов и виртуальная Visa/Mastercard. Без границ.',
+    title: 'IMBA COMBO — eSIM, VPN и виртуальная карта. Интернет без границ.',
+    description: 'eSIM для 190+ стран, VPN без логов и виртуальная Visa/Mastercard. Интернет без границ.',
     siteName: 'IMBA',
     locale: 'ru_RU',
     type: 'website',
@@ -45,14 +45,14 @@ export const metadata: Metadata = {
         url: 'https://www.imba.live/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'IMBA — eSIM, VPN и виртуальная карта',
+        alt: 'IMBA COMBO — eSIM, VPN и виртуальная карта. Интернет без границ.',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'IMBA COMBO: eSIM, VPN и виртуальная карта',
-    description: 'eSIM для 190+ стран, VPN без логов и виртуальная Visa/Mastercard.',
+    title: 'IMBA COMBO — eSIM, VPN и виртуальная карта. Интернет без границ.',
+    description: 'eSIM для 190+ стран, VPN без логов и виртуальная Visa/Mastercard. Интернет без границ.',
     images: ['https://www.imba.live/og-image.png'],
   },
 }
@@ -66,7 +66,7 @@ const orgSchema = {
   url: 'https://www.imba.live',
   logo: { '@type': 'ImageObject', url: 'https://www.imba.live/favicon.png', width: 512, height: 512 },
   foundingDate: '2025',
-  description: 'eSIM для 190+ стран, VPN без логов и виртуальная Visa/Mastercard для граждан России.',
+  description: 'eSIM для 190+ стран, VPN без логов и виртуальная Visa/Mastercard. Интернет без границ.',
   contactPoint: { '@type': 'ContactPoint', email: 'hello@imba.live', contactType: 'customer support', availableLanguage: ['Russian'] },
   address: { '@type': 'PostalAddress', streetAddress: 'Mata Redonda, Sabana Oeste, Avenida Doce Calle Noventa', addressLocality: 'San José', addressCountry: 'CR' },
   identifier: { '@type': 'PropertyValue', name: 'Registro Nacional de Costa Rica', value: '3-102-942736' },
@@ -78,7 +78,7 @@ const websiteSchema = {
   '@id': 'https://www.imba.live/#website',
   name: 'IMBA',
   url: 'https://www.imba.live',
-  description: 'eSIM, VPN и виртуальная карта для граждан России',
+  description: 'IMBA COMBO — eSIM, VPN и виртуальная карта. Интернет без границ.',
   inLanguage: 'ru',
   publisher: { '@id': 'https://www.imba.live/#organization' },
 }
