@@ -54,7 +54,7 @@ export async function generateMetadata(): Promise<Metadata> {
       url: base,
       images: [
         {
-          url: `${base}/og-image.png`,
+          url: 'https://www.imba.live/og-image.png',
           width: 1200,
           height: 630,
           alt: TITLE,
@@ -65,7 +65,7 @@ export async function generateMetadata(): Promise<Metadata> {
       card: 'summary_large_image',
       title: TITLE,
       description: DESCRIPTION_SHORT,
-      images: [`${base}/og-image.png`],
+      images: ['https://www.imba.live/og-image.png'],
     },
   }
 }
