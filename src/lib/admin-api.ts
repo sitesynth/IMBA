@@ -20,7 +20,7 @@ export function clearAdminToken(): void {
   localStorage.removeItem(TOKEN_KEY)
 }
 
-async function adminReq<T>(path: string, options: RequestInit = {}): Promise<T> {
+export async function adminReq<T>(path: string, options: RequestInit = {}): Promise<T> {
   const token = getAdminToken()
   const headers: Record<string, string> = {
     "Content-Type": "application/json",

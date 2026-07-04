@@ -23,6 +23,7 @@ function AdminSidebar({ onClose }: { onClose?: () => void }) {
         { href: '/admin/vpn', label: 'VPN' },
         { href: '/admin/plans', label: 'Plans' },
         { href: '/admin/nodes', label: 'Nodes' },
+        { href: '/admin/payments', label: 'Payments' },
         { href: '/admin/transactions', label: 'Transactions' },
         { href: '/admin/support', label: 'Support' },
       ],
