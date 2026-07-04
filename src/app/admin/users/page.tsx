@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { ChevronDown, ChevronUp } from 'lucide-react'
 import { getUsers, getUser, addBalance, toggleUser, deleteUser, AdminUser, AdminUserDetail } from '@/lib/admin-api'
 
-function UserRow({ u, onRefresh, onDeleted, selected, onSelect }: { u: AdminUser; onRefresh: () => void; onDeleted: (id: string) => void; selected: boolean; onSelect: (e: React.MouseEvent) => void }) {
+function UserRow({ u, index, onRefresh, onDeleted, selected, onSelect }: { u: AdminUser; index: number; onRefresh: () => void; onDeleted: (id: string) => void; selected: boolean; onSelect: (e: React.MouseEvent) => void }) {
   const [open, setOpen] = useState(false)
   const [detail, setDetail] = useState<AdminUserDetail | null>(null)
   const [loadingDetail, setLoadingDetail] = useState(false)
@@ -68,6 +68,7 @@ function UserRow({ u, onRefresh, onDeleted, selected, onSelect }: { u: AdminUser
         <td className="px-4 py-3" onClick={onSelect}>
           <input type="checkbox" checked={selected} onChange={() => {}} />
         </td>
+        <td className="px-4 py-3 text-sm text-gray-400 tabular-nums">{index + 1}</td>
         <td className="px-4 py-3 text-sm text-gray-900">
           <div>{u.email}</div>
           {u.telegram_id && <div className="text-xs text-blue-500">TG: {u.telegram_id}</div>}
@@ -92,7 +93,7 @@ function UserRow({ u, onRefresh, onDeleted, selected, onSelect }: { u: AdminUser
 
       {open && (
         <tr>
-          <td colSpan={11} className="px-0 py-0 border-b border-blue-100">
+          <td colSpan={12} className="px-0 py-0 border-b border-blue-100">
             <div className="bg-blue-50 px-6 py-5 space-y-5">
               {loadingDetail ? (
                 <p className="text-sm text-gray-500">Loading...</p>
@@ -371,6 +372,7 @@ export default function AdminUsers() {
               <th className="px-4 py-3 text-left">
                 <input type="checkbox" checked={selected.size === filtered.length && filtered.length > 0} onChange={toggleAll} />
               </th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700">#</th>
               <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700">Email / Contact</th>
               <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700">Name</th>
               <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700">Plan</th>
@@ -385,11 +387,12 @@ export default function AdminUsers() {
           </thead>
           <tbody className="divide-y divide-gray-200">
             {loading ? (
-              <tr><td colSpan={11} className="px-4 py-8 text-center text-gray-500">Loading...</td></tr>
-            ) : filtered.map((u) => (
+              <tr><td colSpan={12} className="px-4 py-8 text-center text-gray-500">Loading...</td></tr>
+            ) : filtered.map((u, i) => (
               <UserRow
                 key={u.user_id}
                 u={u}
+                index={i}
                 onRefresh={load}
                 onDeleted={(id) => setUsers(prev => prev.filter(x => x.user_id !== id))}
                 selected={selected.has(u.user_id)}
