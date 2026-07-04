@@ -86,10 +86,9 @@ export default function AdminTransactions() {
           className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
           <option value="">All providers</option>
           <option value="enot">Enot</option>
-          <option value="heleket">Heleket</option>
           <option value="yookassa">YooKassa</option>
-          <option value="stripe">Stripe</option>
-          <option value="admin">Admin</option>
+          <option value="cryptobot">CryptoBot</option>
+          <option value="stars">Telegram Stars</option>
         </select>
         <button onClick={load} className="px-4 py-2 bg-gray-900 text-white rounded-lg text-sm font-medium hover:bg-gray-800">
           Apply
