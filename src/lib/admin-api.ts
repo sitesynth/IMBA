@@ -380,3 +380,56 @@ export function recreateVpn(vpnId: string) {
 export function revokeVpnAdmin(vpnId: string) {
   return adminReq<{ id: string; status: string }>(`/v1/admin/vpn/${vpnId}/revoke`, { method: "POST" })
 }
+
+// ---------------------------------------------------------------------------
+// Analytics
+// ---------------------------------------------------------------------------
+
+export interface GscSummary {
+  clicks: number; impressions: number; ctr: number; position: number
+}
+
+export interface GscRow {
+  query?: string; page?: string; clicks: number; impressions: number; ctr: number; position: number
+}
+
+export interface GscDateRow { date: string; clicks: number; impressions: number }
+
+export interface GscData {
+  summary: GscSummary
+  top_queries: GscRow[]
+  top_pages: GscRow[]
+  by_date: GscDateRow[]
+  site_url: string
+  days: number
+  cached: boolean
+}
+
+export interface MetricaSummary {
+  visits: number; pageviews: number; users: number; bounce_rate: number
+}
+
+export interface MetricaDateRow { date: string; visits: number; pageviews: number }
+export interface MetricaPageRow { page: string; visits: number; pageviews: number }
+export interface MetricaSourceRow { source: string; visits: number }
+
+export interface MetricaData {
+  summary: MetricaSummary
+  by_date: MetricaDateRow[]
+  top_pages: MetricaPageRow[]
+  sources: MetricaSourceRow[]
+  days: number
+  cached: boolean
+}
+
+export function getGscStats(days = 28) {
+  return adminReq<GscData>(`/v1/admin/analytics/gsc?days=${days}`)
+}
+
+export function getMetricaStats(days = 28) {
+  return adminReq<MetricaData>(`/v1/admin/analytics/metrica?days=${days}`)
+}
+
+export function clearAnalyticsCache() {
+  return adminReq<{ ok: boolean }>("/v1/admin/analytics/cache/clear", { method: "POST" })
+}

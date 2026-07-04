@@ -13,6 +13,7 @@ function AdminSidebar({ onClose }: { onClose?: () => void }) {
       items: [
         { href: '/admin', label: 'Dashboard' },
         { href: '/admin/stats', label: 'Statistics' },
+        { href: '/admin/analytics', label: 'Analytics' },
       ],
     },
     {
