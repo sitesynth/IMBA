@@ -4,17 +4,17 @@ import { Server } from 'lucide-react'
 import { NodeDiagnostics, DiagnosticData, AttackReport } from '@/components/NodeDiagnostics'
 import { getAdminToken } from '@/lib/admin-api'
 
-const API = process.env.NEXT_PUBLIC_API_URL ?? 'https://api.imba.live'
-
 const VPN_NODES = [
   { host: '31.70.101.181', city: '🇩🇪 Berlin' },
   { host: '38.19.201.176', city: '🇵🇹 Lisbon' },
   { host: '209.151.155.228', city: '🇺🇸 New York' },
 ]
 
+// Route through the Next.js proxy (/api/v1/…) to avoid CORS and inject auth
 async function adminFetch<T>(path: string): Promise<T> {
   const token = getAdminToken()
-  const res = await fetch(`${API}${path}`, {
+  const proxyPath = path.replace(/^\/v1\//, '/api/v1/')
+  const res = await fetch(proxyPath, {
     headers: token ? { Authorization: `Bearer ${token}` } : {},
   })
   if (!res.ok) throw new Error(`HTTP ${res.status}`)
