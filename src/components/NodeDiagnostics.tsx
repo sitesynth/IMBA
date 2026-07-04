@@ -78,8 +78,8 @@ export function NodeDiagnostics({
 
   return (
     <div className="space-y-4">
-      {/* Tabs */}
-      <div className="flex gap-2">
+      {/* Tabs + Refresh in one row */}
+      <div className="flex items-center gap-2">
         <button
           onClick={() => setActiveTab('health')}
           className={`pill pill-sm ${activeTab === 'health' ? 'pill-ink' : 'pill-paper'}`}
@@ -91,6 +91,14 @@ export function NodeDiagnostics({
           className={`pill pill-sm ${activeTab === 'attacks' ? 'pill-ink' : 'pill-paper'}`}
         >
           🔥 Attacks
+        </button>
+        <div className="w-px h-5 bg-gray-200 mx-1" />
+        <button
+          onClick={activeTab === 'health' ? loadDiagnostic : loadReport}
+          disabled={loading}
+          className="pill pill-ink pill-sm"
+        >
+          {loading ? '⏳' : '🔄'} Refresh
         </button>
       </div>
 
@@ -104,13 +112,9 @@ export function NodeDiagnostics({
       {/* Health Tab */}
       {activeTab === 'health' && (
         <div className="space-y-4">
-          <button
-            onClick={loadDiagnostic}
-            disabled={loading}
-            className="pill pill-ink pill-sm"
-          >
-            {loading ? '⏳ Loading...' : '🔄 Refresh'}
-          </button>
+          {!diag && !loading && (
+            <p className="text-xs text-gray-400">Нажми Refresh для диагностики</p>
+          )}
 
           {diag && (
             <>
@@ -202,13 +206,9 @@ export function NodeDiagnostics({
       {/* Attacks Tab */}
       {activeTab === 'attacks' && (
         <div className="space-y-4">
-          <button
-            onClick={loadReport}
-            disabled={loading}
-            className="pill pill-ink pill-sm"
-          >
-            {loading ? '⏳ Loading...' : '🔄 Refresh'}
-          </button>
+          {!report && !loading && (
+            <p className="text-xs text-gray-400">Нажми Refresh для загрузки отчёта</p>
+          )}
 
           {report && (
             <>
