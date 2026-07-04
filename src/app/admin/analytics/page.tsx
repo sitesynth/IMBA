@@ -103,7 +103,11 @@ export default function AdminAnalytics() {
           <div className="bg-red-50 border border-red-200 rounded-lg px-4 py-3 text-sm text-red-700">
             {gscError.includes('not configured')
               ? <>Нужно добавить env vars: <code className="font-mono">GOOGLE_SERVICE_ACCOUNT_JSON</code> и <code className="font-mono">GSC_SITE_URL</code></>
-              : gscError}
+              : gscError.includes('sufficient permission') || gscError.includes('forbidden')
+              ? <>Сервисный аккаунт не добавлен в Search Console → Настройки → Пользователи → Добавить <code className="font-mono">imba-55@imba-500110.iam.gserviceaccount.com</code> (роль: Ограниченный)</>
+              : gscError.includes('SERVICE_DISABLED') || gscError.includes('accessNotConfigured')
+              ? <>Search Console API отключён в Google Cloud — включи его в консоли</>
+              : <>{gscError.replace(/^GSC (query|token) error:\s*/, '').slice(0, 300)}</>}
           </div>
         ) : gsc ? (
           <>
