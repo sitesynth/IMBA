@@ -81,13 +81,13 @@ export function NodeDiagnostics({
       {/* Tabs + Refresh in one row */}
       <div className="flex items-center gap-2">
         <button
-          onClick={() => setActiveTab('health')}
+          onClick={() => { setActiveTab('health'); setError(null) }}
           className={`pill pill-sm ${activeTab === 'health' ? 'pill-ink' : 'pill-paper'}`}
         >
           🩺 Health
         </button>
         <button
-          onClick={() => setActiveTab('attacks')}
+          onClick={() => { setActiveTab('attacks'); setError(null) }}
           className={`pill pill-sm ${activeTab === 'attacks' ? 'pill-ink' : 'pill-paper'}`}
         >
           🔥 Attacks
@@ -104,8 +104,8 @@ export function NodeDiagnostics({
 
       {/* Error */}
       {error && (
-        <div className="panel" style={{ background: 'var(--red)' }}>
-          <p className="text-sm font-bold text-white">{error}</p>
+        <div className="rounded-xl border border-red-300 bg-red-50 px-4 py-3">
+          <p className="text-sm font-semibold text-red-700">{error}</p>
         </div>
       )}
 
