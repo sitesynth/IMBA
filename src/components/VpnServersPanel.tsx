@@ -18,6 +18,9 @@ const URLS = {
   macArm:  'https://github.com/cacggghp/vk-turn-proxy/releases/download/v1.8.3/client-darwin-arm64',
   macX64:  'https://github.com/cacggghp/vk-turn-proxy/releases/download/v1.8.3/client-darwin-amd64',
   linux:   'https://github.com/luminescq/PWDTT/releases/download/v1.2/pwdtt-linux-amd64',
+  happAndroid: '/downloads/happ/android',
+  happIos:     '/downloads/happ/ios',
+  happGuide:   '/blog/happ-setup',
 }
 
 type Platform = 'android' | 'ios' | 'windows' | 'macos' | 'linux'
@@ -213,19 +216,51 @@ export function VpnServersPanel({ servers, vlessMap, serverKey, hasActive }: Pro
               <div className="flex items-center gap-2 mb-3">
                 <Smartphone className="w-4 h-4 text-ink/50" strokeWidth={2.5} />
                 <div className="text-xs font-extrabold uppercase tracking-widest text-ink/50 flex-1">
-                  Happ — подписка
+                  Happ — ссылка подписки
                 </div>
                 <CopyButton text={serverKey} />
               </div>
-              <p className="text-sm font-mono break-all text-ink/70 select-all mb-3">{serverKey}</p>
-              <ol className="space-y-1 text-sm font-semibold text-ink/70 mb-3">
-                <li>1. Скачай <strong>Happ</strong> (iOS / Android)</li>
-                <li>2. Открой → «Добавить подписку» → вставь ссылку выше</li>
-                <li>3. Подключись к серверу одним нажатием</li>
+              <p className="text-sm font-mono break-all text-ink/70 select-all mb-4">{serverKey}</p>
+
+              <ol className="space-y-4 text-sm font-semibold text-ink/70 mb-4">
+                <li className="flex items-start gap-2">
+                  <span className="font-extrabold text-ink/30 w-4 shrink-0">1.</span>
+                  <div>
+                    <div className="mb-2">Скачай <strong>Happ</strong> на телефон:</div>
+                    <div className="flex gap-2 flex-wrap">
+                      <a href={URLS.happAndroid} className="flex items-center gap-1.5 pill pill-ink pill-sm w-fit text-xs">
+                        <Download className="w-3.5 h-3.5" strokeWidth={2.5} /> Android APK
+                      </a>
+                      <a href={URLS.happIos} className="flex items-center gap-1.5 pill pill-paper pill-sm w-fit text-xs border-2 border-ink/20">
+                        <Download className="w-3.5 h-3.5" strokeWidth={2.5} /> iOS (App Store)
+                      </a>
+                    </div>
+                    <p className="text-xs text-ink/40 mt-1.5">
+                      В российских App Store и Google Play нет — нужна зарубежная учётная запись или APK.{' '}
+                      <a href={URLS.happGuide} className="underline text-ink/60">Подробная инструкция →</a>
+                    </p>
+                  </div>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="font-extrabold text-ink/30 w-4 shrink-0">2.</span>
+                  <div>Открой Happ → нажми <strong>«+»</strong> → <strong>«Добавить подписку»</strong> → вставь ссылку выше</div>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="font-extrabold text-ink/30 w-4 shrink-0">3.</span>
+                  <div>Зайди в настройки сервера → найди <strong>Mux</strong> → <strong>выключи</strong></div>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="font-extrabold text-ink/30 w-4 shrink-0">4.</span>
+                  <div>Нажми <strong>Подключить</strong> — готово!</div>
+                </li>
               </ol>
-              <div className="rounded-xl px-3 py-2 text-xs font-bold" style={{ background: 'var(--yellow)', color: 'var(--ink)' }}>
-                ⚠️ В настройках сервера в Happ обязательно отключи <strong>Mux</strong> — иначе VPN не будет работать.
+
+              <div className="rounded-xl px-3 py-2 text-xs font-bold mb-3" style={{ background: 'var(--yellow)', color: 'var(--ink)' }}>
+                ⚠️ Mux <strong>обязательно</strong> отключить в настройках сервера — иначе VPN не работает.
               </div>
+              <a href={URLS.happGuide} className="flex items-center gap-1.5 text-xs font-bold text-ink/50 hover:text-ink transition-colors">
+                <Link className="w-3.5 h-3.5" strokeWidth={2.5} /> Полная инструкция по настройке Happ
+              </a>
             </>
           ) : (
             <>
