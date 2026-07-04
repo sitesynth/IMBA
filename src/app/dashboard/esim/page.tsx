@@ -4,6 +4,7 @@ import { QrCode, RefreshCw } from 'lucide-react'
 import { getCurrentUser } from '@/lib/auth'
 import { api, apiFetch, ApiError } from '@/lib/api'
 import { LottieSticker } from '@/components/LottieSticker'
+import { EsimShop } from '@/components/EsimShop'
 import type { Esim, EsimCatalog } from '@/lib/types'
 
 async function buyEsim(formData: FormData) {
@@ -120,39 +121,8 @@ export default async function EsimPage() {
 
       <div>
         <h2 className="display text-2xl md:text-3xl mb-1">Купить eSIM</h2>
-        <p className="font-semibold text-ink/60 mb-5 text-sm">Списание происходит с баланса IMBA</p>
-
-        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
-          {Object.entries(catalog).map(([code, info]) => {
-            const cheapest = Math.min(...Object.values(info.prices))
-            return (
-              <details key={code} className="panel group" style={{ background: 'var(--paper)' }}>
-                <summary className="flex items-center justify-between cursor-pointer list-none">
-                  <div className="flex items-center gap-3">
-                    <span className="text-3xl">{info.flag}</span>
-                    <div>
-                      <div className="display text-base">{info.country}</div>
-                      <div className="text-xs font-bold text-ink/50">от ${cheapest.toFixed(2)}</div>
-                    </div>
-                  </div>
-                  <span className="text-xl font-black transition-transform group-open:rotate-45">+</span>
-                </summary>
-                <div className="mt-4 pt-4 border-t-2 border-cream space-y-2">
-                  {Object.entries(info.prices).map(([gb, price]) => (
-                    <form key={gb} action={buyEsim} className="flex items-center justify-between gap-2">
-                      <input type="hidden" name="country" value={code} />
-                      <input type="hidden" name="data_gb" value={gb} />
-                      <div className="text-sm font-extrabold">
-                        {Number(gb) < 1 ? `${Math.round(Number(gb) * 1000)} МБ` : `${gb} ГБ`}
-                      </div>
-                      <button className="pill pill-ink pill-sm">${(price as number).toFixed(2)}</button>
-                    </form>
-                  ))}
-                </div>
-              </details>
-            )
-          })}
-        </div>
+        <p className="font-semibold text-ink/60 mb-5 text-sm">Списание с баланса IMBA · {Object.keys(catalog).length} стран</p>
+        <EsimShop catalog={catalog} buyEsim={buyEsim} />
       </div>
     </div>
   )
