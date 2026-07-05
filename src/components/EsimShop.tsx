@@ -1,20 +1,10 @@
 'use client'
 
-import { useState, useMemo } from 'react'
-import { Search, X, Globe } from 'lucide-react'
+import { useState, useMemo, useRef, useEffect } from 'react'
+import { Search, X, ChevronRight } from 'lucide-react'
 import type { EsimCatalog } from '@/lib/types'
 
-const REGIONS: Record<string, string[]> = {
-  'СНГ':              ['AM','AZ','GE','KZ','KG','TJ','TM','UZ','UA','MD','BY'],
-  'Азия':             ['CN','JP','KR','TW','HK','MO','IN','PK','BD','LK','NP','TH','VN','ID','MY','PH','SG','MM','KH','LA','BN','MN'],
-  'Ближний Восток':   ['TR','AE','IL','SA','QA','KW','BH','OM','JO','LB','IQ'],
-  'Африка':           ['EG','ZA','MA','TN','DZ','NG','KE','GH','TZ','UG','ET','SN','CI'],
-  'Европа':           ['DE','FR','IT','ES','GB','PT','GR','CY','AT','CH','NL','BE','SE','NO','DK','FI','PL','CZ','HU','RO','BG','HR','RS','SK','SI','LT','LV','EE','IE','IS','LU','MT','AL','BA','ME','MK'],
-  'Америка':          ['US','CA','MX','BR','AR','CL','CO','PE','EC','CR','DO','GT','PA','CU'],
-  'Океания':          ['AU','NZ','FJ','PG'],
-}
-
-const POPULAR = ['TR','TH','AE','EG','DE','JP','CN','US','SG','GE','AM','KZ','IL','IN','ID','GB','FR']
+const POPULAR = ['TR','TH','AE','EG','DE','JP','CN','US','SG','GE','AM','KZ','IL','IN','ID','GB','FR','IT','ES','KR']
 
 interface Props {
   catalog: EsimCatalog
@@ -22,94 +12,168 @@ interface Props {
 }
 
 export function EsimShop({ catalog, buyEsim }: Props) {
-  const [search, setSearch]     = useState('')
-  const [region, setRegion]     = useState('Все')
+  const [query, setQuery]       = useState('')
   const [selected, setSelected] = useState<string | null>(null)
+  const [open, setOpen]         = useState(false)
+  const inputRef = useRef<HTMLInputElement>(null)
+  const dropRef  = useRef<HTMLDivElement>(null)
 
-  const regionCodes = region === 'Все' ? null : REGIONS[region]
+  // Close dropdown on outside click
+  useEffect(() => {
+    function onDown(e: MouseEvent) {
+      if (
+        dropRef.current && !dropRef.current.contains(e.target as Node) &&
+        inputRef.current && !inputRef.current.contains(e.target as Node)
+      ) setOpen(false)
+    }
+    document.addEventListener('mousedown', onDown)
+    return () => document.removeEventListener('mousedown', onDown)
+  }, [])
 
-  const filtered = useMemo(() => {
-    return Object.entries(catalog).filter(([code, info]) => {
-      // Hide countries without a proper name (just ISO code) or generic globe flag
-      if (info.flag === '🌐' || info.country === code) return false
-      if (regionCodes && !regionCodes.includes(code)) return false
-      if (search) {
-        const q = search.toLowerCase()
-        return info.country.toLowerCase().includes(q) || code.toLowerCase().includes(q)
-      }
-      return true
-    })
-  }, [catalog, search, region, regionCodes])
+  const results = useMemo(() => {
+    if (!query.trim()) return []
+    const q = query.toLowerCase()
+    return Object.entries(catalog)
+      .filter(([code, info]) =>
+        info.flag !== '🌐' &&
+        info.country !== code &&
+        (info.country.toLowerCase().includes(q) || code.toLowerCase() === q)
+      )
+      .slice(0, 8)
+  }, [catalog, query])
 
+  const popular = POPULAR.filter(c => catalog[c] && catalog[c].flag !== '🌐')
   const selectedInfo = selected ? catalog[selected] : null
 
-  function selectCountry(code: string) {
-    setSelected(prev => prev === code ? null : code)
+  function pick(code: string) {
+    setSelected(code)
+    setQuery('')
+    setOpen(false)
+  }
+
+  function clear() {
+    setSelected(null)
+    setQuery('')
+    inputRef.current?.focus()
   }
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
 
-      {/* Search */}
+      {/* ── Combobox ─────────────────────────────────────────── */}
       <div className="relative">
-        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-ink/40" strokeWidth={2.5} />
-        <input
-          type="text"
-          placeholder="Найти страну..."
-          value={search}
-          onChange={e => { setSearch(e.target.value); setRegion('Все') }}
-          className="w-full pl-10 pr-10 py-3 rounded-2xl border-2 border-ink/10 bg-paper font-semibold text-sm focus:outline-none focus:border-ink/30 transition-colors"
-        />
-        {search && (
-          <button
-            onClick={() => setSearch('')}
-            className="absolute right-3 top-1/2 -translate-y-1/2 p-0.5 text-ink/30 hover:text-ink transition-colors"
+        <div
+          className="flex items-center gap-3 rounded-2xl border-2 transition-colors px-4 py-3"
+          style={{ borderColor: open || query ? 'var(--ink)' : 'var(--ink)', background: 'var(--paper)' }}
+        >
+          {selectedInfo ? (
+            <span className="text-2xl leading-none">{selectedInfo.flag}</span>
+          ) : (
+            <Search className="w-5 h-5 text-ink/40 shrink-0" strokeWidth={2.5} />
+          )}
+
+          {selectedInfo ? (
+            <span className="flex-1 font-extrabold text-base">{selectedInfo.country}</span>
+          ) : (
+            <input
+              ref={inputRef}
+              type="text"
+              placeholder="Введи страну назначения..."
+              value={query}
+              onChange={e => { setQuery(e.target.value); setOpen(true) }}
+              onFocus={() => setOpen(true)}
+              className="flex-1 bg-transparent font-semibold text-base focus:outline-none placeholder:text-ink/30"
+            />
+          )}
+
+          {(query || selected) && (
+            <button onClick={clear} className="text-ink/30 hover:text-ink transition-colors">
+              <X className="w-5 h-5" />
+            </button>
+          )}
+        </div>
+
+        {/* Dropdown */}
+        {open && results.length > 0 && (
+          <div
+            ref={dropRef}
+            className="absolute left-0 right-0 top-full mt-2 rounded-2xl border-2 border-ink/10 shadow-xl z-50 overflow-hidden"
+            style={{ background: 'var(--paper)' }}
           >
-            <X className="w-4 h-4" />
-          </button>
+            {results.map(([code, info]) => (
+              <button
+                key={code}
+                onMouseDown={() => pick(code)}
+                className="w-full flex items-center gap-3 px-4 py-3 hover:bg-ink/5 transition-colors text-left border-b border-ink/5 last:border-0"
+              >
+                <span className="text-2xl">{info.flag}</span>
+                <span className="font-extrabold text-sm">{info.country}</span>
+                <span className="ml-auto text-xs font-bold text-ink/40">
+                  от ${Math.min(...Object.values(info.prices)).toFixed(2)}
+                </span>
+              </button>
+            ))}
+          </div>
         )}
       </div>
 
-      {/* Region tabs — hidden during search */}
-      {!search && (
-        <div className="flex gap-1.5 flex-wrap">
-          {['Все', ...Object.keys(REGIONS)].map(r => (
-            <button
-              key={r}
-              onClick={() => { setRegion(r); setSelected(null) }}
-              className="px-3 py-1.5 rounded-xl text-xs font-extrabold transition-colors"
-              style={{
-                background: region === r ? 'var(--ink)' : 'var(--cream)',
-                color:      region === r ? 'var(--paper)' : 'var(--ink)',
-              }}
-            >
-              {r}
-            </button>
-          ))}
+      {/* ── Packages ─────────────────────────────────────────── */}
+      {selected && selectedInfo && (
+        <div className="panel" style={{ background: 'var(--violet-100)' }}>
+          <p className="text-xs font-extrabold uppercase tracking-widest text-ink/40 mb-4">
+            Пакеты данных — {selectedInfo.country}
+          </p>
+          <div className="space-y-2">
+            {Object.entries(selectedInfo.prices).map(([gb, price]) => {
+              const gbNum = Number(gb)
+              const label = gbNum < 1 ? `${Math.round(gbNum * 1000)} МБ` : `${gbNum} ГБ`
+              const perGb = gbNum >= 1 ? `$${(price / gbNum).toFixed(2)}/ГБ` : ''
+              return (
+                <form
+                  key={gb}
+                  action={buyEsim}
+                  className="flex items-center gap-3 px-4 py-3 rounded-xl bg-paper hover:bg-ink/5 transition-colors cursor-pointer"
+                >
+                  <input type="hidden" name="country"  value={selected} />
+                  <input type="hidden" name="data_gb"  value={gb} />
+                  <div className="flex-1">
+                    <div className="font-extrabold text-sm">{label}</div>
+                    {perGb && <div className="text-xs font-bold text-ink/40">{perGb}</div>}
+                  </div>
+                  <span className="font-extrabold text-sm">${price.toFixed(2)}</span>
+                  <button type="submit" className="pill pill-ink pill-sm">
+                    Купить
+                  </button>
+                </form>
+              )
+            })}
+          </div>
         </div>
       )}
 
-      {/* Popular chips — main screen only */}
-      {region === 'Все' && !search && (
+      {/* ── Popular ──────────────────────────────────────────── */}
+      {!selected && (
         <div>
-          <p className="text-xs font-extrabold uppercase tracking-widest text-ink/40 mb-2">Популярные</p>
-          <div className="flex gap-2 flex-wrap">
-            {POPULAR.filter(c => catalog[c]).map(code => {
+          <p className="text-xs font-extrabold uppercase tracking-widest text-ink/40 mb-3">
+            Популярные направления
+          </p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+            {popular.map(code => {
               const info = catalog[code]
-              const isActive = selected === code
+              if (!info) return null
+              const cheapest = Math.min(...Object.values(info.prices))
               return (
                 <button
                   key={code}
-                  onClick={() => selectCountry(code)}
-                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl border-2 text-sm font-bold transition-all"
-                  style={{
-                    background:  isActive ? 'var(--ink)' : 'var(--paper)',
-                    color:       isActive ? 'var(--paper)' : 'var(--ink)',
-                    borderColor: isActive ? 'var(--ink)' : 'transparent',
-                  }}
+                  onClick={() => pick(code)}
+                  className="flex items-center gap-3 px-4 py-3 rounded-2xl border-2 border-transparent hover:border-ink/10 transition-all text-left"
+                  style={{ background: 'var(--paper)' }}
                 >
-                  <span>{info.flag}</span>
-                  <span>{info.country}</span>
+                  <span className="text-2xl shrink-0">{info.flag}</span>
+                  <div className="min-w-0">
+                    <div className="font-extrabold text-sm truncate">{info.country}</div>
+                    <div className="text-xs font-bold text-ink/40">от ${cheapest.toFixed(2)}</div>
+                  </div>
                 </button>
               )
             })}
@@ -117,83 +181,6 @@ export function EsimShop({ catalog, buyEsim }: Props) {
         </div>
       )}
 
-      {/* Package panel — shown when a country is selected */}
-      {selected && selectedInfo && (
-        <div className="panel" style={{ background: 'var(--violet-100)' }}>
-          <div className="flex items-center gap-3 mb-5">
-            <span className="text-4xl">{selectedInfo.flag}</span>
-            <div className="flex-1">
-              <div className="display text-2xl">{selectedInfo.country}</div>
-              <div className="text-xs font-bold text-ink/50">Выбери объём данных</div>
-            </div>
-            <button
-              onClick={() => setSelected(null)}
-              className="p-1.5 rounded-xl text-ink/30 hover:text-ink hover:bg-ink/5 transition-colors"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
-          <div className="space-y-2">
-            {Object.entries(selectedInfo.prices).map(([gb, price]) => (
-              <form key={gb} action={buyEsim} className="flex items-center justify-between gap-3 px-4 py-3 rounded-xl bg-paper border-2 border-transparent hover:border-ink/10 transition-colors">
-                <input type="hidden" name="country" value={selected} />
-                <input type="hidden" name="data_gb"  value={gb} />
-                <div>
-                  <div className="font-extrabold text-sm">
-                    {Number(gb) < 1 ? `${Math.round(Number(gb) * 1000)} МБ` : `${Number(gb)} ГБ`}
-                  </div>
-                  <div className="text-xs font-bold text-ink/40">
-                    {Number(gb) >= 1 ? `~$${(price / Number(gb)).toFixed(2)}/ГБ` : ''}
-                  </div>
-                </div>
-                <button className="pill pill-ink pill-sm">
-                  ${price.toFixed(2)}
-                </button>
-              </form>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Country grid */}
-      <div>
-        {filtered.length === 0 ? (
-          <div className="text-center py-12 text-ink/40">
-            <Globe className="w-10 h-10 mx-auto mb-3 opacity-30" strokeWidth={1.5} />
-            <p className="font-bold">Страна не найдена</p>
-          </div>
-        ) : (
-          <>
-            <p className="text-xs font-extrabold uppercase tracking-widest text-ink/40 mb-3">
-              {search ? `Результаты: ${filtered.length}` : region === 'Все' ? 'Все страны' : region}
-            </p>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
-              {filtered.map(([code, info]) => {
-                const cheapest = Math.min(...Object.values(info.prices))
-                const isActive  = selected === code
-                return (
-                  <button
-                    key={code}
-                    onClick={() => selectCountry(code)}
-                    className="text-left rounded-2xl px-3 py-3 border-2 transition-all hover:scale-[1.02]"
-                    style={{
-                      background:  isActive ? 'var(--ink)'   : 'var(--paper)',
-                      color:       isActive ? 'var(--paper)' : 'var(--ink)',
-                      borderColor: isActive ? 'var(--ink)'   : 'transparent',
-                    }}
-                  >
-                    <div className="text-2xl mb-1">{info.flag}</div>
-                    <div className="font-extrabold text-xs leading-tight">{info.country}</div>
-                    <div className="text-xs font-bold mt-1" style={{ opacity: 0.5 }}>
-                      от ${cheapest.toFixed(2)}
-                    </div>
-                  </button>
-                )
-              })}
-            </div>
-          </>
-        )}
-      </div>
     </div>
   )
 }
