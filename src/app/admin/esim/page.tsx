@@ -28,14 +28,30 @@ interface EsimOrder {
   qr_code: string
   activation_code: string
 }
+interface HistoryItem {
+  id: string
+  user_email: string
+  country: string
+  label: string | null
+  iccid: string
+  data_gb: number
+  used_gb: number
+  status: string
+  expires_at: string | null
+  created_at: string | null
+  provider: string
+}
 
 const STATUS_LABEL: Record<string, { text: string; cls: string }> = {
-  '1': { text: 'Активна', cls: 'bg-green-100 text-green-700' },
-  '2': { text: 'Использована', cls: 'bg-gray-100 text-gray-500' },
-  '3': { text: 'Истекла', cls: 'bg-red-100 text-red-600' },
-  'GOT_RESOURCE': { text: 'Выдана', cls: 'bg-blue-100 text-blue-700' },
-  'RELEASED': { text: 'Активирована', cls: 'bg-green-100 text-green-700' },
-  'DELETED': { text: 'Удалена', cls: 'bg-red-100 text-red-600' },
+  '1':            { text: 'Активна',      cls: 'bg-green-100 text-green-700' },
+  '2':            { text: 'Использована', cls: 'bg-gray-100 text-gray-500' },
+  '3':            { text: 'Истекла',      cls: 'bg-red-100 text-red-600' },
+  'active':       { text: 'Активна',      cls: 'bg-green-100 text-green-700' },
+  'expired':      { text: 'Истекла',      cls: 'bg-red-100 text-red-600' },
+  'pending':      { text: 'Ожидает',      cls: 'bg-yellow-100 text-yellow-700' },
+  'GOT_RESOURCE': { text: 'Выдана',       cls: 'bg-blue-100 text-blue-700' },
+  'RELEASED':     { text: 'Активирована', cls: 'bg-green-100 text-green-700' },
+  'DELETED':      { text: 'Удалена',      cls: 'bg-red-100 text-red-600' },
 }
 
 function statusBadge(status: string) {
@@ -44,7 +60,7 @@ function statusBadge(status: string) {
 }
 
 export default function EsimAdminPage() {
-  const [tab, setTab] = useState<'packages' | 'orders'>('packages')
+  const [tab, setTab] = useState<'packages' | 'orders' | 'history'>('packages')
   const [balance, setBalance] = useState<number | null>(null)
   const [locations, setLocations] = useState<Location[]>([])
   const [country, setCountry] = useState('')
@@ -52,6 +68,9 @@ export default function EsimAdminPage() {
   const [orders, setOrders] = useState<EsimOrder[]>([])
   const [ordersTotal, setOrdersTotal] = useState(0)
   const [ordersPage, setOrdersPage] = useState(1)
+  const [history, setHistory] = useState<HistoryItem[]>([])
+  const [historyTotal, setHistoryTotal] = useState(0)
+  const [historyPage, setHistoryPage] = useState(1)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [selectedQr, setSelectedQr] = useState<EsimOrder | null>(null)
@@ -90,10 +109,24 @@ export default function EsimAdminPage() {
     finally { setLoading(false) }
   }, [])
 
+  const loadHistory = useCallback(async (page = 1) => {
+    setLoading(true); setError('')
+    try {
+      const r = await adminReq<{ items: HistoryItem[]; total: number; page: number }>(
+        `/v1/admin/esim/history?page=${page}&page_size=30`
+      )
+      setHistory(r.items)
+      setHistoryTotal(r.total)
+      setHistoryPage(page)
+    } catch (e) { setError((e as Error).message) }
+    finally { setLoading(false) }
+  }, [])
+
   useEffect(() => {
     if (tab === 'packages') loadPackages()
-    else loadOrders()
-  }, [tab, loadPackages, loadOrders])
+    else if (tab === 'orders') loadOrders()
+    else loadHistory()
+  }, [tab, loadPackages, loadOrders, loadHistory])
 
   const margin = (p: Package) =>
     p.retail_price_usd > 0
@@ -117,12 +150,20 @@ export default function EsimAdminPage() {
               </div>
             </div>
           )}
+          <a
+            href="https://esimaccess.com/recharge"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-4 py-2 rounded-xl bg-gray-900 text-white text-sm font-medium hover:bg-gray-700 transition whitespace-nowrap"
+          >
+            + Пополнить
+          </a>
         </div>
       </div>
 
       {/* Tabs */}
       <div className="flex gap-1 bg-gray-100 p-1 rounded-xl w-fit">
-        {(['packages', 'orders'] as const).map(t => (
+        {(['packages', 'orders', 'history'] as const).map(t => (
           <button
             key={t}
             onClick={() => setTab(t)}
@@ -130,7 +171,9 @@ export default function EsimAdminPage() {
               tab === t ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
             }`}
           >
-            {t === 'packages' ? 'Пакеты' : `Выданные SIM ${ordersTotal > 0 ? `(${ordersTotal})` : ''}`}
+            {t === 'packages' ? 'Пакеты' :
+             t === 'orders' ? `У провайдера${ordersTotal > 0 ? ` (${ordersTotal})` : ''}` :
+             `История${historyTotal > 0 ? ` (${historyTotal})` : ''}`}
           </button>
         ))}
       </div>
@@ -145,7 +188,6 @@ export default function EsimAdminPage() {
       {/* PACKAGES TAB */}
       {tab === 'packages' && (
         <div className="space-y-4">
-          {/* Filters */}
           <div className="flex gap-3 items-center flex-wrap">
             <select
               value={country}
@@ -167,7 +209,6 @@ export default function EsimAdminPage() {
             <span className="text-sm text-gray-400">{packages.length} пакетов</span>
           </div>
 
-          {/* Package table */}
           <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
@@ -214,7 +255,7 @@ export default function EsimAdminPage() {
         </div>
       )}
 
-      {/* ORDERS TAB */}
+      {/* ORDERS TAB (eSIM Access provider list) */}
       {tab === 'orders' && (
         <div className="space-y-4">
           <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
@@ -262,7 +303,6 @@ export default function EsimAdminPage() {
             </div>
           </div>
 
-          {/* Pagination */}
           {ordersTotal > 20 && (
             <div className="flex gap-2 justify-end">
               <button
@@ -276,6 +316,69 @@ export default function EsimAdminPage() {
               <button
                 onClick={() => loadOrders(ordersPage + 1)}
                 disabled={ordersPage >= Math.ceil(ordersTotal / 20) || loading}
+                className="px-3 py-1.5 rounded-lg border border-gray-200 text-sm text-gray-600 hover:bg-gray-50 disabled:opacity-40"
+              >→</button>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* HISTORY TAB (our DB) */}
+      {tab === 'history' && (
+        <div className="space-y-4">
+          <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-gray-100 bg-gray-50 text-xs text-gray-500 uppercase tracking-wide">
+                    <th className="text-left px-4 py-3">Дата</th>
+                    <th className="text-left px-4 py-3">Пользователь</th>
+                    <th className="text-left px-4 py-3">Страна</th>
+                    <th className="text-right px-4 py-3">Данные</th>
+                    <th className="text-right px-4 py-3">Использовано</th>
+                    <th className="text-left px-4 py-3">Статус</th>
+                    <th className="text-left px-4 py-3">Истекает</th>
+                    <th className="text-left px-4 py-3">Провайдер</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-50">
+                  {history.map(h => (
+                    <tr key={h.id} className="hover:bg-gray-50 transition">
+                      <td className="px-4 py-3 text-xs text-gray-400 whitespace-nowrap">
+                        {h.created_at ? new Date(h.created_at).toLocaleString('ru', { day: '2-digit', month: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit' }) : '—'}
+                      </td>
+                      <td className="px-4 py-3 text-gray-700 max-w-[180px] truncate text-xs">{h.user_email}</td>
+                      <td className="px-4 py-3 font-mono text-gray-600 text-xs">{h.country}</td>
+                      <td className="px-4 py-3 text-right font-mono text-gray-900">{h.data_gb} GB</td>
+                      <td className="px-4 py-3 text-right text-gray-500">{h.used_gb} GB</td>
+                      <td className="px-4 py-3">{statusBadge(h.status)}</td>
+                      <td className="px-4 py-3 text-xs text-gray-400">
+                        {h.expires_at ? new Date(h.expires_at).toLocaleDateString('ru') : '—'}
+                      </td>
+                      <td className="px-4 py-3 text-xs text-gray-400">{h.provider}</td>
+                    </tr>
+                  ))}
+                  {!loading && history.length === 0 && (
+                    <tr><td colSpan={8} className="px-4 py-8 text-center text-gray-400 text-sm">Нет покупок</td></tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {historyTotal > 30 && (
+            <div className="flex gap-2 justify-end">
+              <button
+                onClick={() => loadHistory(historyPage - 1)}
+                disabled={historyPage <= 1 || loading}
+                className="px-3 py-1.5 rounded-lg border border-gray-200 text-sm text-gray-600 hover:bg-gray-50 disabled:opacity-40"
+              >←</button>
+              <span className="px-3 py-1.5 text-sm text-gray-500">
+                {historyPage} / {Math.ceil(historyTotal / 30)}
+              </span>
+              <button
+                onClick={() => loadHistory(historyPage + 1)}
+                disabled={historyPage >= Math.ceil(historyTotal / 30) || loading}
                 className="px-3 py-1.5 rounded-lg border border-gray-200 text-sm text-gray-600 hover:bg-gray-50 disabled:opacity-40"
               >→</button>
             </div>
