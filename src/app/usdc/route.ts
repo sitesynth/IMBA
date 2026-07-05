@@ -18,7 +18,7 @@ export async function GET() {
     if(btn){btn.addEventListener('click',function(e){
       e.preventDefault();
       document.cookie='usdc_ok=1; path=/; max-age=31536000; SameSite=Lax';
-      window.location.href='/admin';
+      var b=document.getElementById('cookieBlock');if(b)b.style.display='none';
     });}
   });
 })();
