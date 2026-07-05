@@ -1,24 +1,28 @@
 'use client'
 
-import { useState, useMemo, useRef, useEffect } from 'react'
-import { Search, X, ChevronRight } from 'lucide-react'
+import { useState, useMemo, useRef, useEffect, useTransition } from 'react'
+import { Search, X, Loader2, CheckCircle2, AlertCircle } from 'lucide-react'
 import type { EsimCatalog } from '@/lib/types'
 
 const POPULAR = ['TR','TH','AE','EG','DE','JP','CN','US','SG','GE','AM','KZ','IL','IN','ID','GB','FR','IT','ES','KR']
 
 interface Props {
   catalog: EsimCatalog
-  buyEsim: (formData: FormData) => Promise<void>
+  userBalance: number
 }
 
-export function EsimShop({ catalog, buyEsim }: Props) {
+type BuyState = 'idle' | 'loading' | 'ok' | 'error'
+
+export function EsimShop({ catalog, userBalance }: Props) {
   const [query, setQuery]       = useState('')
   const [selected, setSelected] = useState<string | null>(null)
   const [open, setOpen]         = useState(false)
+  const [buyState, setBuyState] = useState<Record<string, BuyState>>({})
+  const [buyError, setBuyError] = useState<Record<string, string>>({})
+  const [, startTransition]     = useTransition()
   const inputRef = useRef<HTMLInputElement>(null)
   const dropRef  = useRef<HTMLDivElement>(null)
 
-  // Close dropdown on outside click
   useEffect(() => {
     function onDown(e: MouseEvent) {
       if (
@@ -54,7 +58,36 @@ export function EsimShop({ catalog, buyEsim }: Props) {
   function clear() {
     setSelected(null)
     setQuery('')
+    setBuyState({})
+    setBuyError({})
     inputRef.current?.focus()
+  }
+
+  async function buy(country: string, data_gb: number, key: string) {
+    setBuyState(s => ({ ...s, [key]: 'loading' }))
+    setBuyError(s => ({ ...s, [key]: '' }))
+    try {
+      const res = await fetch('/api/v1/me/esims', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ country, data_gb, label: '' }),
+      })
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        const msg = data?.detail || (res.status === 402 ? 'Недостаточно средств' : `Ошибка ${res.status}`)
+        setBuyState(s => ({ ...s, [key]: 'error' }))
+        setBuyError(s => ({ ...s, [key]: msg }))
+        return
+      }
+      setBuyState(s => ({ ...s, [key]: 'ok' }))
+      // Auto-reset after 3s, then reload to show new eSIM
+      setTimeout(() => {
+        startTransition(() => { window.location.reload() })
+      }, 1500)
+    } catch {
+      setBuyState(s => ({ ...s, [key]: 'error' }))
+      setBuyError(s => ({ ...s, [key]: 'Нет соединения' }))
+    }
   }
 
   return (
@@ -62,15 +95,10 @@ export function EsimShop({ catalog, buyEsim }: Props) {
 
       {/* ── Combobox ─────────────────────────────────────────── */}
       <div className="relative">
-        <div
-          className="flex items-center gap-3 rounded-2xl border-2 transition-colors px-4 py-3"
-          style={{ borderColor: open || query ? 'var(--ink)' : 'var(--ink)', background: 'var(--paper)' }}
-        >
-          {selectedInfo ? (
-            <span className="text-2xl leading-none">{selectedInfo.flag}</span>
-          ) : (
-            <Search className="w-5 h-5 text-ink/40 shrink-0" strokeWidth={2.5} />
-          )}
+        <div className="flex items-center gap-3 rounded-2xl border-2 border-ink px-4 py-3" style={{ background: 'var(--paper)' }}>
+          {selectedInfo
+            ? <span className="text-2xl leading-none">{selectedInfo.flag}</span>
+            : <Search className="w-5 h-5 text-ink/40 shrink-0" strokeWidth={2.5} />}
 
           {selectedInfo ? (
             <span className="flex-1 font-extrabold text-base">{selectedInfo.country}</span>
@@ -93,7 +121,6 @@ export function EsimShop({ catalog, buyEsim }: Props) {
           )}
         </div>
 
-        {/* Dropdown */}
         {open && results.length > 0 && (
           <div
             ref={dropRef}
@@ -128,26 +155,47 @@ export function EsimShop({ catalog, buyEsim }: Props) {
               const gbNum = Number(gb)
               const label = gbNum < 1 ? `${Math.round(gbNum * 1000)} МБ` : `${gbNum} ГБ`
               const perGb = gbNum >= 1 ? `$${(price / gbNum).toFixed(2)}/ГБ` : ''
+              const key = `${selected}-${gb}`
+              const state = buyState[key] ?? 'idle'
+              const err   = buyError[key] ?? ''
+              const noFunds = price > userBalance
+
               return (
-                <form
+                <div
                   key={gb}
-                  action={buyEsim}
-                  className="flex items-center gap-3 px-4 py-3 rounded-xl bg-paper hover:bg-ink/5 transition-colors cursor-pointer"
+                  className="flex items-center gap-3 px-4 py-3 rounded-xl bg-paper transition-colors"
                 >
-                  <input type="hidden" name="country"  value={selected} />
-                  <input type="hidden" name="data_gb"  value={gb} />
                   <div className="flex-1">
                     <div className="font-extrabold text-sm">{label}</div>
                     {perGb && <div className="text-xs font-bold text-ink/40">{perGb}</div>}
+                    {err && <div className="text-xs font-bold text-red-500 mt-0.5">{err}</div>}
                   </div>
-                  <span className="font-extrabold text-sm">${price.toFixed(2)}</span>
-                  <button type="submit" className="pill pill-ink pill-sm">
-                    Купить
+                  <span className={`font-extrabold text-sm ${noFunds ? 'text-ink/30' : ''}`}>
+                    ${price.toFixed(2)}
+                  </span>
+                  <button
+                    onClick={() => buy(selected, gbNum, key)}
+                    disabled={state === 'loading' || state === 'ok' || noFunds}
+                    title={noFunds ? `Пополни баланс (нужно $${price.toFixed(2)})` : ''}
+                    className="pill pill-ink pill-sm disabled:opacity-40 min-w-[80px] justify-center"
+                  >
+                    {state === 'loading' && <Loader2 className="w-4 h-4 animate-spin" />}
+                    {state === 'ok'      && <CheckCircle2 className="w-4 h-4" />}
+                    {state === 'error'   && <AlertCircle className="w-4 h-4" />}
+                    {state === 'idle'    && (noFunds ? 'Мало' : 'Купить')}
+                    {state === 'loading' && 'Покупаем…'}
+                    {state === 'ok'      && 'Куплено!'}
+                    {state === 'error'   && 'Ошибка'}
                   </button>
-                </form>
+                </div>
               )
             })}
           </div>
+          {userBalance < Math.min(...Object.values(selectedInfo.prices)) && (
+            <p className="text-xs font-bold text-ink/40 mt-3 text-center">
+              Баланс ${userBalance.toFixed(2)} — пополни чтобы купить
+            </p>
+          )}
         </div>
       )}
 

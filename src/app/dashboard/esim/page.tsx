@@ -1,27 +1,10 @@
 import { redirect } from 'next/navigation'
-import { revalidatePath } from 'next/cache'
 import { QrCode, RefreshCw } from 'lucide-react'
 import { getCurrentUser } from '@/lib/auth'
-import { api, apiFetch, ApiError } from '@/lib/api'
+import { api } from '@/lib/api'
 import { LottieSticker } from '@/components/LottieSticker'
 import { EsimShop } from '@/components/EsimShop'
 import type { Esim, EsimCatalog } from '@/lib/types'
-
-async function buyEsim(formData: FormData) {
-  'use server'
-  const country = formData.get('country') as string
-  const data_gb = Number(formData.get('data_gb'))
-  try {
-    await apiFetch('/v1/me/esims', {
-      method: 'POST',
-      body: JSON.stringify({ country, data_gb, label: '' }),
-    })
-  } catch (e) {
-    if (e instanceof ApiError) console.error('eSIM purchase failed:', e.message)
-  }
-  revalidatePath('/dashboard/esim')
-  revalidatePath('/dashboard')
-}
 
 export default async function EsimPage() {
   const user = await getCurrentUser()
@@ -122,7 +105,7 @@ export default async function EsimPage() {
       <div>
         <h2 className="display text-2xl md:text-3xl mb-1">Купить eSIM</h2>
         <p className="font-semibold text-ink/60 mb-5 text-sm">Списание с баланса IMBA · {Object.keys(catalog).length} стран</p>
-        <EsimShop catalog={catalog} buyEsim={buyEsim} />
+        <EsimShop catalog={catalog} userBalance={(user as any).balance ?? 0} />
       </div>
     </div>
   )
