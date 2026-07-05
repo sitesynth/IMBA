@@ -113,7 +113,7 @@ export default async function CardPage() {
   if (!user) redirect('/auth/login')
 
   const cards     = await api.get<VirtualCard[]>('/v1/me/cards').catch(() => [] as VirtualCard[])
-  const cardSlots = (user as any).card_slots as number ?? 1
+  const cardSlots = Math.max((user as any).card_slots as number ?? 0, 1)
   const canIssueMore = cards.filter(c => c.status !== 'expired').length < cardSlots
 
   const txs: Transaction[] = cards[0]
