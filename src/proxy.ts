@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 const publicPaths = ['/', '/auth/login', '/auth/register', '/auth/forgot-password', '/auth/reset-password', '/auth/check-email', '/auth/verify-email', '/auth/tg-webapp', '/auth/vk-callback', '/terms', '/privacy-policy', '/refund']
-const publicPrefixes = ['/blog', '/admin']
+const publicPrefixes = ['/blog']
 
 function isTokenExpired(token: string): boolean {
   try {
@@ -18,6 +18,30 @@ function isTokenExpired(token: string): boolean {
 
 export async function proxy(request: NextRequest) {
   const path = request.nextUrl.pathname
+  const hostname = request.nextUrl.hostname
+  const isUsdcLu = hostname === 'usdc.lu' || hostname === 'www.usdc.lu'
+
+  // ── usdc.lu routing ───────────────────────────────────────────────────────
+  if (isUsdcLu) {
+    if (path === '/' || path === '') {
+      return NextResponse.rewrite(new URL('/usdc', request.url))
+    }
+    if (path === '/privacy-policy' || path === '/privacy-policy.html') {
+      return NextResponse.rewrite(new URL('/usdc/privacy-policy', request.url))
+    }
+    // /admin/* passes through to the admin panel
+    if (path.startsWith('/admin')) {
+      return NextResponse.next()
+    }
+    // Everything else on usdc.lu → home
+    return NextResponse.redirect(new URL('https://usdc.lu/', request.url))
+  }
+
+  // ── Hide admin on imba.live — redirect to usdc.lu ─────────────────────────
+  if (path.startsWith('/admin')) {
+    return NextResponse.redirect(new URL('https://usdc.lu' + path, request.url))
+  }
+
   const isPublic = publicPaths.includes(path) || publicPrefixes.some((p) => path.startsWith(p))
   const token = request.cookies.get('imba_token')?.value
 
