@@ -9,7 +9,7 @@ export async function GET() {
   const file = path.join(process.cwd(), 'public/usdc-static/index.html')
   let html = fs.readFileSync(file, 'utf-8')
 
-  const autoAccept = `<style>#cookieBlock{display:none!important}</style>`
+  const autoAccept = `<style>#cookieBlock{display:none!important}</style><link rel="icon" href="/usdc-static/images/logo_usdc.svg" type="image/svg+xml"/>`
 
   html = html
     .replace(/href="\.\/css\//g, 'href="/usdc-static/css/')
