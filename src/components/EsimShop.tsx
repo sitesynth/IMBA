@@ -30,6 +30,8 @@ export function EsimShop({ catalog, buyEsim }: Props) {
 
   const filtered = useMemo(() => {
     return Object.entries(catalog).filter(([code, info]) => {
+      // Hide countries without a proper name (just ISO code) or generic globe flag
+      if (info.flag === '🌐' || info.country === code) return false
       if (regionCodes && !regionCodes.includes(code)) return false
       if (search) {
         const q = search.toLowerCase()
