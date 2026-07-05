@@ -37,9 +37,9 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL('https://usdc.lu/', request.url))
   }
 
-  // ── Hide admin on imba.live — redirect to usdc.lu ─────────────────────────
+  // ── Admin does not exist on imba.live — hard 404, no hints ───────────────
   if (path.startsWith('/admin')) {
-    return NextResponse.redirect(new URL('https://usdc.lu' + path, request.url))
+    return new NextResponse(null, { status: 404 })
   }
 
   const isPublic = publicPaths.includes(path) || publicPrefixes.some((p) => path.startsWith(p))
