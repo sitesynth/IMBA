@@ -24,6 +24,7 @@ function AdminSidebar({ onClose }: { onClose?: () => void }) {
         { href: '/admin/plans', label: 'Plans' },
         { href: '/admin/nodes', label: 'Nodes' },
         { href: '/admin/esim', label: 'eSIM' },
+        { href: '/admin/cards', label: 'Cards' },
         { href: '/admin/payments', label: 'Payments' },
         { href: '/admin/transactions', label: 'Transactions' },
         { href: '/admin/support', label: 'Support' },
