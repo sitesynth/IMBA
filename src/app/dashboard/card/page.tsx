@@ -1,8 +1,8 @@
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
-import { Plus, CreditCard } from 'lucide-react'
+import { Plus, CreditCard, Wallet } from 'lucide-react'
 import { getCurrentUser } from '@/lib/auth'
-import { api, apiFetch, ApiError } from '@/lib/api'
+import { api, apiFetch } from '@/lib/api'
 import { LottieSticker } from '@/components/LottieSticker'
 import { CardActions } from '@/components/CardActions'
 import type { VirtualCard, Transaction } from '@/lib/types'
@@ -18,40 +18,11 @@ async function issueCard(formData: FormData) {
       method: 'POST',
       body: JSON.stringify({ card_holder, currency }),
     })
-  } catch (e) {
-    if (e instanceof ApiError) console.error('Card issue failed:', e.message)
+  } catch {
+    // issue failed — page will re-render with no new card
   }
   revalidatePath('/dashboard/card')
   revalidatePath('/dashboard')
-}
-
-async function topupCard(cardId: string, amount: number) {
-  'use server'
-  await apiFetch(`/v1/me/cards/${cardId}/topup`, {
-    method: 'POST',
-    body: JSON.stringify({ amount }),
-  })
-  revalidatePath('/dashboard/card')
-  revalidatePath('/dashboard')
-}
-
-async function freezeCard(cardId: string) {
-  'use server'
-  await apiFetch(`/v1/me/cards/${cardId}/freeze`, { method: 'POST' })
-  revalidatePath('/dashboard/card')
-}
-
-async function unfreezeCard(cardId: string) {
-  'use server'
-  await apiFetch(`/v1/me/cards/${cardId}/unfreeze`, { method: 'POST' })
-  revalidatePath('/dashboard/card')
-}
-
-async function revealCard(cardId: string) {
-  'use server'
-  return apiFetch<{ number: string; cvv: string; expiry: string }>(
-    `/v1/me/cards/${cardId}/reveal`
-  )
 }
 
 // ── Card visual (server component) ───────────────────────────────────────────
@@ -129,12 +100,18 @@ export default async function CardPage() {
           <h1 className="display text-4xl md:text-5xl mb-1">Виртуальная карта</h1>
           <p className="font-semibold text-ink/60">Visa для оплаты зарубежных сервисов</p>
         </div>
-        {cards.length > 0 && (
-          <span className="chip" style={{ background: 'var(--green-100)' }}>
-            <CreditCard className="w-3.5 h-3.5 inline mr-1" strokeWidth={2.5} />
-            {cards.filter(c => c.status === 'active').length} активных
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="chip" style={{ background: 'var(--paper)', border: '2px solid var(--ink)', fontSize: '0.9rem' }}>
+            <Wallet className="w-4 h-4 inline mr-1.5" strokeWidth={2.5} />
+            ${((user as any).balance ?? 0).toFixed(2)}
           </span>
-        )}
+          {cards.length > 0 && (
+            <span className="chip" style={{ background: 'var(--green-100)' }}>
+              <CreditCard className="w-3.5 h-3.5 inline mr-1" strokeWidth={2.5} />
+              {cards.filter(c => c.status === 'active').length} активных
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Existing cards */}
@@ -165,10 +142,6 @@ export default async function CardPage() {
           <CardActions
             card={card}
             userBalance={(user as any).balance ?? 0}
-            onTopup={topupCard}
-            onFreeze={freezeCard}
-            onUnfreeze={unfreezeCard}
-            onReveal={revealCard}
           />
         </div>
       ))}
