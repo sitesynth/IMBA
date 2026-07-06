@@ -405,7 +405,7 @@ export function VpnServersPanel({ servers, vlessMap, serverKey, hasActive }: Pro
                       <Zap className="w-3 h-3 shrink-0" strokeWidth={3} /> ~{s.ping} мс
                     </span>
                   ) : (
-                    <span className="chip whitespace-nowrap" style={{ background: 'var(--ink)', opacity: 0.2, color: 'var(--paper)' }}>
+                    <span className="chip whitespace-nowrap" style={{ background: '#d0d0d0' }}>
                       <Moon className="w-3 h-3 shrink-0" strokeWidth={2.5} /> -/-
                     </span>
                   )}
