@@ -18,9 +18,21 @@ const URLS = {
   macArm:  'https://github.com/cacggghp/vk-turn-proxy/releases/download/v1.8.3/client-darwin-arm64',
   macX64:  'https://github.com/cacggghp/vk-turn-proxy/releases/download/v1.8.3/client-darwin-amd64',
   linux:   'https://github.com/luminescq/PWDTT/releases/download/v1.2/pwdtt-linux-amd64',
-  happAndroid: '/downloads/happ/android',
-  happIos:     '/downloads/happ/ios',
-  happGuide:   '/blog/happ-setup',
+  // Happ — прямые ссылки с GitHub Releases (/latest/ всегда актуальная версия)
+  happStable:      'https://github.com/Happ-proxy/happ-android/releases/latest/download/Happ.apk',
+  happBeta:        'https://github.com/Happ-proxy/happ-android/releases/latest/download/Happ_beta.apk',
+  happMirror:      'https://files-hub.com/download/android/latest?arch=universal',
+  happIosStore:    'https://apps.apple.com/us/app/happ-proxy-utility/id6504287215',
+  happIosTF:       'https://testflight.apple.com/join/XMls6Ckd',
+  happWinX64:      'https://github.com/Happ-proxy/happ-desktop/releases/latest/download/setup-Happ.x64.exe',
+  happWinMirror:   'https://files-hub.com/download/windows/latest?arch=x64',
+  happMac:         'https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.macOS.universal.dmg',
+  happMacStore:    'https://apps.apple.com/us/app/happ-proxy-utility/id6504287215?platform=mac',
+  happMacMirror:   'https://files-hub.com/download/macos/latest?arch=universal',
+  happLinuxDeb:    'https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.x64.deb',
+  happLinuxDebArm: 'https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.arm64.deb',
+  happLinuxRpm:    'https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.x64.rpm',
+  happGuide:       '/blog/happ-setup',
 }
 
 type Platform = 'android' | 'ios' | 'windows' | 'macos' | 'linux'
@@ -225,19 +237,85 @@ export function VpnServersPanel({ servers, vlessMap, serverKey, hasActive }: Pro
               <ol className="space-y-4 text-sm font-semibold text-ink/70 mb-4">
                 <li className="flex items-start gap-2">
                   <span className="font-extrabold text-ink/30 w-4 shrink-0">1.</span>
-                  <div>
-                    <div className="mb-2">Скачай <strong>Happ</strong> на телефон:</div>
-                    <div className="flex gap-2 flex-wrap">
-                      <a href={URLS.happAndroid} className="flex items-center gap-1.5 pill pill-ink pill-sm w-fit text-xs">
-                        <Download className="w-3.5 h-3.5" strokeWidth={2.5} /> Android APK
-                      </a>
-                      <a href={URLS.happIos} className="flex items-center gap-1.5 pill pill-paper pill-sm w-fit text-xs border-2 border-ink/20">
-                        <Download className="w-3.5 h-3.5" strokeWidth={2.5} /> iOS (App Store)
-                      </a>
+                  <div className="flex-1">
+                    <div className="mb-3">Скачай <strong>Happ</strong>:</div>
+
+                    {/* Android */}
+                    <div className="mb-3">
+                      <div className="text-xs font-extrabold uppercase tracking-widest text-ink/40 mb-1.5">Android</div>
+                      <div className="flex gap-2 flex-wrap">
+                        <a href={URLS.happStable} className="flex items-center gap-1.5 pill pill-ink pill-sm w-fit text-xs">
+                          <Download className="w-3.5 h-3.5" strokeWidth={2.5} /> APK Stable
+                        </a>
+                        <a href={URLS.happBeta} className="flex items-center gap-1.5 pill pill-paper pill-sm w-fit text-xs border-2 border-ink/20">
+                          <Download className="w-3.5 h-3.5" strokeWidth={2.5} /> APK Beta
+                        </a>
+                        <a href={URLS.happMirror} className="flex items-center gap-1.5 pill pill-paper pill-sm w-fit text-xs border-2 border-ink/20">
+                          <Download className="w-3.5 h-3.5" strokeWidth={2.5} /> Зеркало
+                        </a>
+                      </div>
                     </div>
-                    <p className="text-xs text-ink/40 mt-1.5">
-                      В российских App Store и Google Play нет — нужна зарубежная учётная запись или APK.{' '}
-                      <a href={URLS.happGuide} className="underline text-ink/60">Подробная инструкция →</a>
+
+                    {/* iOS */}
+                    <div className="mb-3">
+                      <div className="text-xs font-extrabold uppercase tracking-widest text-ink/40 mb-1.5">iOS</div>
+                      <div className="flex gap-2 flex-wrap">
+                        <a href={URLS.happIosStore} className="flex items-center gap-1.5 pill pill-ink pill-sm w-fit text-xs">
+                          <Download className="w-3.5 h-3.5" strokeWidth={2.5} /> App Store
+                        </a>
+                        <a href={URLS.happIosTF} className="flex items-center gap-1.5 pill pill-paper pill-sm w-fit text-xs border-2 border-ink/20">
+                          <Download className="w-3.5 h-3.5" strokeWidth={2.5} /> TestFlight (Beta)
+                        </a>
+                      </div>
+                    </div>
+
+                    {/* Windows */}
+                    <div className="mb-3">
+                      <div className="text-xs font-extrabold uppercase tracking-widest text-ink/40 mb-1.5">Windows</div>
+                      <div className="flex gap-2 flex-wrap">
+                        <a href={URLS.happWinX64} className="flex items-center gap-1.5 pill pill-ink pill-sm w-fit text-xs">
+                          <Download className="w-3.5 h-3.5" strokeWidth={2.5} /> Setup x64 .exe
+                        </a>
+                        <a href={URLS.happWinMirror} className="flex items-center gap-1.5 pill pill-paper pill-sm w-fit text-xs border-2 border-ink/20">
+                          <Download className="w-3.5 h-3.5" strokeWidth={2.5} /> Зеркало
+                        </a>
+                      </div>
+                    </div>
+
+                    {/* macOS */}
+                    <div className="mb-3">
+                      <div className="text-xs font-extrabold uppercase tracking-widest text-ink/40 mb-1.5">macOS</div>
+                      <div className="flex gap-2 flex-wrap">
+                        <a href={URLS.happMac} className="flex items-center gap-1.5 pill pill-ink pill-sm w-fit text-xs">
+                          <Download className="w-3.5 h-3.5" strokeWidth={2.5} /> .dmg (Universal)
+                        </a>
+                        <a href={URLS.happMacStore} className="flex items-center gap-1.5 pill pill-paper pill-sm w-fit text-xs border-2 border-ink/20">
+                          <Download className="w-3.5 h-3.5" strokeWidth={2.5} /> Mac App Store
+                        </a>
+                        <a href={URLS.happMacMirror} className="flex items-center gap-1.5 pill pill-paper pill-sm w-fit text-xs border-2 border-ink/20">
+                          <Download className="w-3.5 h-3.5" strokeWidth={2.5} /> Зеркало
+                        </a>
+                      </div>
+                    </div>
+
+                    {/* Linux */}
+                    <div className="mb-2">
+                      <div className="text-xs font-extrabold uppercase tracking-widest text-ink/40 mb-1.5">Linux</div>
+                      <div className="flex gap-2 flex-wrap">
+                        <a href={URLS.happLinuxDeb} className="flex items-center gap-1.5 pill pill-ink pill-sm w-fit text-xs">
+                          <Download className="w-3.5 h-3.5" strokeWidth={2.5} /> .deb x64
+                        </a>
+                        <a href={URLS.happLinuxDebArm} className="flex items-center gap-1.5 pill pill-paper pill-sm w-fit text-xs border-2 border-ink/20">
+                          <Download className="w-3.5 h-3.5" strokeWidth={2.5} /> .deb arm64
+                        </a>
+                        <a href={URLS.happLinuxRpm} className="flex items-center gap-1.5 pill pill-paper pill-sm w-fit text-xs border-2 border-ink/20">
+                          <Download className="w-3.5 h-3.5" strokeWidth={2.5} /> .rpm x64
+                        </a>
+                      </div>
+                    </div>
+
+                    <p className="text-xs text-ink/40 mt-2">
+                      В RU App Store и Google Play нет — используй APK или зарубежный аккаунт.
                     </p>
                   </div>
                 </li>
