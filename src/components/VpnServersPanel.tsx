@@ -404,7 +404,11 @@ export function VpnServersPanel({ servers, vlessMap, serverKey, hasActive }: Pro
                     <span className="chip whitespace-nowrap" style={{ background: 'var(--green-100)' }}>
                       <Zap className="w-3 h-3 shrink-0" strokeWidth={3} /> ~{s.ping} мс
                     </span>
-                  ) : <span />}
+                  ) : (
+                    <span className="pill pill-sm whitespace-nowrap" style={{ background: 'var(--ink)', opacity: 0.25, color: 'var(--paper)', pointerEvents: 'none' }}>
+                      Профилактика
+                    </span>
+                  )}
                   {hasActive && vlessUri ? (
                     <CopyButton text={vlessUri} label="v2box" className="pill pill-paper pill-sm text-xs" />
                   ) : (
