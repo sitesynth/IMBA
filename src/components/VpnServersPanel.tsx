@@ -440,14 +440,14 @@ export function VpnServersPanel({ servers, vlessMap, serverKey, hasActive }: Pro
                 <div className="text-xs font-bold text-ink/40">Lisbon · Tele2 / МТС</div>
               </div>
             </div>
-            <div className="flex items-center justify-between gap-2">
-              {lisbonPing ? (
-                <span className="chip" style={{ background: 'var(--green-100)' }}>
-                  <Zap className="w-3 h-3" strokeWidth={3} /> ~{lisbonPing} мс
+            <div className="flex items-center gap-2">
+              {lisbonPing && (
+                <span className="chip text-xs whitespace-nowrap" style={{ background: 'var(--green-100)' }}>
+                  <Zap className="w-3 h-3 shrink-0" strokeWidth={3} /> ~{lisbonPing} мс
                 </span>
-              ) : <span />}
-              <span className="chip text-xs" style={{ background: 'var(--yellow)' }}>
-                <Link className="w-3 h-3" strokeWidth={2.5} /> VK TURN
+              )}
+              <span className="chip text-xs whitespace-nowrap" style={{ background: 'var(--yellow)' }}>
+                <Link className="w-3 h-3 shrink-0" strokeWidth={2.5} /> VK TURN
               </span>
             </div>
           </button>
