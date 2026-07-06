@@ -220,11 +220,44 @@ export function VpnServersPanel({ servers, vlessMap, serverKey, hasActive }: Pro
 
   return (
     <>
-      {/* Happ / WDTT instruction panel */}
-      {hasActive && serverKey && (
+      {/* WDTT panel — always visible when selected (no subscription required) */}
+      {selectedPanel === 'wdtt' && (
         <div className="panel" style={{ background: 'var(--paper)' }}>
-          {selectedPanel === 'happ' ? (
-            <>
+          <div className="flex items-center gap-2 mb-4">
+            <Smartphone className="w-4 h-4 text-ink/50" strokeWidth={2.5} />
+            <div className="text-xs font-extrabold uppercase tracking-widest text-ink/50 flex-1">
+              WhiteList Unblocker — инструкция
+            </div>
+          </div>
+
+          {/* Platform tabs */}
+          <div className="flex gap-1.5 flex-wrap mb-4">
+            {PLATFORMS.map((p) => (
+              <button
+                key={p.id}
+                onClick={() => setPlatform(p.id)}
+                className="px-3 py-1 rounded-lg text-xs font-extrabold transition-colors"
+                style={{
+                  background: platform === p.id ? 'var(--ink)' : 'var(--blue-100)',
+                  color: platform === p.id ? 'var(--paper)' : 'var(--ink)',
+                }}
+              >
+                {p.label}
+              </button>
+            ))}
+          </div>
+
+          <WdttInstructions platform={platform} />
+
+          <div className="rounded-xl px-3 py-2 text-xs font-bold" style={{ background: 'var(--green-100)', color: 'var(--ink)' }}>
+            ✓ Трафик идёт через VK — оператор видит звонок ВКонтакте, не VPN
+          </div>
+        </div>
+      )}
+
+      {/* Happ instruction panel — only when subscribed */}
+      {hasActive && serverKey && selectedPanel === 'happ' && (
+        <div className="panel" style={{ background: 'var(--paper)' }}>
               <div className="flex items-center gap-2 mb-3">
                 <Smartphone className="w-4 h-4 text-ink/50" strokeWidth={2.5} />
                 <div className="text-xs font-extrabold uppercase tracking-widest text-ink/50 flex-1">
@@ -339,40 +372,6 @@ export function VpnServersPanel({ servers, vlessMap, serverKey, hasActive }: Pro
               <a href={URLS.happGuide} className="flex items-center gap-1.5 text-xs font-bold text-ink/50 hover:text-ink transition-colors">
                 <Link className="w-3.5 h-3.5" strokeWidth={2.5} /> Полная инструкция по настройке Happ
               </a>
-            </>
-          ) : (
-            <>
-              <div className="flex items-center gap-2 mb-4">
-                <Smartphone className="w-4 h-4 text-ink/50" strokeWidth={2.5} />
-                <div className="text-xs font-extrabold uppercase tracking-widest text-ink/50 flex-1">
-                  WhiteList Unblocker — инструкция
-                </div>
-              </div>
-
-              {/* Platform tabs */}
-              <div className="flex gap-1.5 flex-wrap mb-4">
-                {PLATFORMS.map((p) => (
-                  <button
-                    key={p.id}
-                    onClick={() => setPlatform(p.id)}
-                    className="px-3 py-1 rounded-lg text-xs font-extrabold transition-colors"
-                    style={{
-                      background: platform === p.id ? 'var(--ink)' : 'var(--blue-100)',
-                      color: platform === p.id ? 'var(--paper)' : 'var(--ink)',
-                    }}
-                  >
-                    {p.label}
-                  </button>
-                ))}
-              </div>
-
-              <WdttInstructions platform={platform} />
-
-              <div className="rounded-xl px-3 py-2 text-xs font-bold" style={{ background: 'var(--green-100)', color: 'var(--ink)' }}>
-                ✓ Трафик идёт через VK — оператор видит звонок ВКонтакте, не VPN
-              </div>
-            </>
-          )}
         </div>
       )}
 
@@ -419,7 +418,7 @@ export function VpnServersPanel({ servers, vlessMap, serverKey, hasActive }: Pro
           {/* WhiteList Unblocker special card */}
           <button
             onClick={() => setSelectedPanel('wdtt')}
-            className="panel text-left transition-all"
+            className="panel text-left transition-all cursor-pointer active:scale-[0.97] active:opacity-80"
             style={{
               background: selectedPanel === 'wdtt' ? 'var(--blue-100)' : 'var(--paper)',
               outline: selectedPanel === 'wdtt' ? '2px solid var(--ink)' : 'none',
