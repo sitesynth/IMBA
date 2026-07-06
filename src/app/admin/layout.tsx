@@ -13,7 +13,8 @@ function AdminSidebar({ onClose }: { onClose?: () => void }) {
       items: [
         { href: '/admin', label: 'Dashboard' },
         { href: '/admin/stats', label: 'Statistics' },
-        { href: '/admin/analytics', label: 'Analytics' },
+        { href: '/admin/analytics', label: 'Traffic' },
+        { href: '/admin/nodes', label: 'VPN Nodes' },
       ],
     },
     {
@@ -22,7 +23,6 @@ function AdminSidebar({ onClose }: { onClose?: () => void }) {
         { href: '/admin/users', label: 'Users' },
         { href: '/admin/vpn', label: 'VPN' },
         { href: '/admin/plans', label: 'Plans' },
-        { href: '/admin/nodes', label: 'Nodes' },
         { href: '/admin/esim', label: 'eSIM' },
         { href: '/admin/cards', label: 'Cards' },
         { href: '/admin/payments', label: 'Payments' },

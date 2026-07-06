@@ -150,8 +150,8 @@ export interface Payment {
   note?: string
 }
 
-export function getStats() {
-  return adminReq<Stats>("/v1/admin/stats")
+export function getStats(days = 30) {
+  return adminReq<Stats>(`/v1/admin/stats?days=${days}`)
 }
 
 export function getUsers(params?: { search?: string; status?: string; source?: string; limit?: number; offset?: number }) {
