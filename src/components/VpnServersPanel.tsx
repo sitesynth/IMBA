@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Zap, Smartphone, Download, Link, Terminal } from 'lucide-react'
+import { Zap, Smartphone, Download, Link, Terminal, Moon } from 'lucide-react'
 import { CopyButton } from '@/components/CopyButton'
 import type { VpnServer } from '@/lib/types'
 
@@ -405,8 +405,8 @@ export function VpnServersPanel({ servers, vlessMap, serverKey, hasActive }: Pro
                       <Zap className="w-3 h-3 shrink-0" strokeWidth={3} /> ~{s.ping} мс
                     </span>
                   ) : (
-                    <span className="pill pill-sm whitespace-nowrap" style={{ background: 'var(--ink)', opacity: 0.25, color: 'var(--paper)', pointerEvents: 'none' }}>
-                      Отдыхает
+                    <span className="chip whitespace-nowrap" style={{ background: 'var(--ink)', opacity: 0.2, color: 'var(--paper)' }}>
+                      <Moon className="w-3 h-3 shrink-0" strokeWidth={2.5} /> -/-
                     </span>
                   )}
                   {hasActive && vlessUri ? (
