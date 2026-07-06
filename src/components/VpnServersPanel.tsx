@@ -445,7 +445,7 @@ export function VpnServersPanel({ servers, vlessMap, serverKey, hasActive }: Pro
                   <Zap className="w-3 h-3 shrink-0" strokeWidth={3} /> ~{lisbonPing} мс
                 </span>
               )}
-              <span className="chip text-xs whitespace-nowrap" style={{ background: 'var(--yellow)' }}>
+              <span className="pill pill-yellow pill-sm whitespace-nowrap">
                 <Link className="w-3 h-3 shrink-0" strokeWidth={2.5} /> VK TURN
               </span>
             </div>
