@@ -399,10 +399,10 @@ export function VpnServersPanel({ servers, vlessMap, serverKey, hasActive }: Pro
                     <div className="text-xs font-bold text-ink/40">{s.country}</div>
                   </div>
                 </div>
-                <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2">
                   {s.ping ? (
-                    <span className="chip" style={{ background: 'var(--green-100)' }}>
-                      <Zap className="w-3 h-3" strokeWidth={3} /> ~{s.ping} мс
+                    <span className="chip whitespace-nowrap" style={{ background: 'var(--green-100)' }}>
+                      <Zap className="w-3 h-3 shrink-0" strokeWidth={3} /> ~{s.ping} мс
                     </span>
                   ) : <span />}
                   {hasActive && vlessUri ? (
@@ -427,8 +427,7 @@ export function VpnServersPanel({ servers, vlessMap, serverKey, hasActive }: Pro
             style={{
               background: hasActive && selectedPanel === 'wdtt' ? 'var(--blue-100)' : 'var(--paper)',
               outline: hasActive && selectedPanel === 'wdtt' ? '2px solid var(--ink)' : 'none',
-              boxShadow: !hasActive ? '4px 4px 0px 0px rgba(0,0,0,0.08)' : undefined,
-              opacity: !hasActive ? 0.6 : 1,
+              opacity: !hasActive ? 0.5 : 1,
             }}
           >
             <div className="flex items-center gap-3 mb-4">
