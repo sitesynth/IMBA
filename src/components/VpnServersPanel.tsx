@@ -450,7 +450,7 @@ export function VpnServersPanel({ servers, vlessMap, serverKey, hasActive }: Pro
                 </span>
               )}
               <span className="pill pill-yellow pill-sm whitespace-nowrap">
-                <Link className="w-3 h-3 shrink-0" strokeWidth={2.5} /> VK TURN
+                <Link className="w-3 h-3 shrink-0" strokeWidth={2.5} /> vkturn
               </span>
             </div>
           </button>
