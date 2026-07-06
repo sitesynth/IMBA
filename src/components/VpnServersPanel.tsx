@@ -406,7 +406,7 @@ export function VpnServersPanel({ servers, vlessMap, serverKey, hasActive }: Pro
                     </span>
                   ) : (
                     <span className="pill pill-sm whitespace-nowrap" style={{ background: 'var(--ink)', opacity: 0.25, color: 'var(--paper)', pointerEvents: 'none' }}>
-                      Профилактика
+                      Отдыхает
                     </span>
                   )}
                   {hasActive && vlessUri ? (
