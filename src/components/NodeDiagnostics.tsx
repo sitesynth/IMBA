@@ -1,17 +1,22 @@
 'use client'
 
 import { useState } from 'react'
-import { AlertCircle, CheckCircle2, Clock, TrendingUp } from 'lucide-react'
+import { AlertCircle, CheckCircle2, TrendingUp } from 'lucide-react'
 
 export type DiagnosticData = {
   host: string
   health: string
+  issues: string[]
+  traffic_used_gb: number
+  traffic_limit_gb: number | null
+  inbounds: string[]
+  last_status_change: string | null
+  // legacy fields
   kernel: string | null
   bbr_enabled: boolean
   tcp_ecn: string | null
   conntrack_usage: { current: number; max: number } | null
   tcp_retransmits: number | null
-  issues: string[]
 }
 
 export type AttackReport = {
@@ -149,52 +154,50 @@ export function NodeDiagnostics({
                 </div>
               )}
 
-              {/* Specs */}
+              {/* Stats */}
               <div className="grid md:grid-cols-2 gap-3">
-                {diag.kernel && (
-                  <div className="panel" style={{ background: 'var(--paper)' }}>
-                    <p className="text-xs font-bold text-ink/60 mb-1">Kernel</p>
-                    <p className="text-sm font-mono font-bold truncate">{diag.kernel}</p>
-                  </div>
-                )}
-
+                {/* Traffic */}
                 <div className="panel" style={{ background: 'var(--paper)' }}>
-                  <p className="text-xs font-bold text-ink/60 mb-1">BBR</p>
-                  <p className="text-sm font-bold">
-                    {diag.bbr_enabled ? '✅ Enabled' : '❌ Disabled'}
-                  </p>
+                  <p className="text-xs font-bold text-ink/60 mb-2">Трафик</p>
+                  {diag.traffic_limit_gb ? (
+                    <>
+                      <div className="mb-1 flex justify-between text-xs font-bold">
+                        <span>{diag.traffic_used_gb} / {diag.traffic_limit_gb} GB</span>
+                        <span className="text-ink/40">
+                          {Math.round((diag.traffic_used_gb / diag.traffic_limit_gb) * 100)}%
+                        </span>
+                      </div>
+                      <div className="h-2 bg-ink/20 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-ink"
+                          style={{ width: `${Math.min((diag.traffic_used_gb / diag.traffic_limit_gb) * 100, 100)}%` }}
+                        />
+                      </div>
+                    </>
+                  ) : (
+                    <p className="text-sm font-bold">{diag.traffic_used_gb} GB использовано</p>
+                  )}
                 </div>
 
-                {diag.conntrack_usage && (
+                {/* Inbounds */}
+                {diag.inbounds.length > 0 && (
                   <div className="panel" style={{ background: 'var(--paper)' }}>
-                    <p className="text-xs font-bold text-ink/60 mb-2">Conntrack</p>
-                    <div className="mb-1 flex justify-between text-xs font-bold">
-                      <span>
-                        {diag.conntrack_usage.current} / {diag.conntrack_usage.max}
-                      </span>
-                      <span className="text-ink/40">
-                        {Math.round(
-                          (diag.conntrack_usage.current / diag.conntrack_usage.max) * 100,
-                        )}%
-                      </span>
-                    </div>
-                    <div
-                      className="h-2 bg-ink/20 rounded-full overflow-hidden"
-                    >
-                      <div
-                        className="h-full bg-ink"
-                        style={{
-                          width: `${(diag.conntrack_usage.current / diag.conntrack_usage.max) * 100}%`,
-                        }}
-                      />
+                    <p className="text-xs font-bold text-ink/60 mb-2">Inbounds</p>
+                    <div className="flex flex-wrap gap-1">
+                      {diag.inbounds.map((ib) => (
+                        <span key={ib} className="pill pill-sm pill-paper text-xs">{ib}</span>
+                      ))}
                     </div>
                   </div>
                 )}
 
-                {diag.tcp_retransmits !== null && (
-                  <div className="panel" style={{ background: 'var(--paper)' }}>
-                    <p className="text-xs font-bold text-ink/60 mb-1">TCP Retransmits</p>
-                    <p className="text-sm font-bold">{diag.tcp_retransmits}</p>
+                {/* Last status change */}
+                {diag.last_status_change && (
+                  <div className="panel md:col-span-2" style={{ background: 'var(--paper)' }}>
+                    <p className="text-xs font-bold text-ink/60 mb-1">Последнее изменение</p>
+                    <p className="text-xs font-mono font-bold">
+                      {new Date(diag.last_status_change).toLocaleString('ru-RU')}
+                    </p>
                   </div>
                 )}
               </div>
