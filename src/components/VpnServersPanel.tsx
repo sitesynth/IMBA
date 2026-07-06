@@ -220,8 +220,8 @@ export function VpnServersPanel({ servers, vlessMap, serverKey, hasActive }: Pro
 
   return (
     <>
-      {/* WDTT panel — always visible when selected (no subscription required) */}
-      {selectedPanel === 'wdtt' && (
+      {/* WDTT panel — only when subscribed */}
+      {hasActive && serverKey && selectedPanel === 'wdtt' && (
         <div className="panel" style={{ background: 'var(--paper)' }}>
           <div className="flex items-center gap-2 mb-4">
             <Smartphone className="w-4 h-4 text-ink/50" strokeWidth={2.5} />
@@ -417,11 +417,18 @@ export function VpnServersPanel({ servers, vlessMap, serverKey, hasActive }: Pro
 
           {/* WhiteList Unblocker special card */}
           <button
-            onClick={() => setSelectedPanel('wdtt')}
-            className="panel text-left transition-all cursor-pointer active:scale-[0.97] active:opacity-80"
+            onClick={hasActive ? () => setSelectedPanel('wdtt') : undefined}
+            className={[
+              'panel text-left transition-all',
+              hasActive
+                ? 'cursor-pointer active:scale-[0.97] active:opacity-80'
+                : 'cursor-default pointer-events-none',
+            ].join(' ')}
             style={{
-              background: selectedPanel === 'wdtt' ? 'var(--blue-100)' : 'var(--paper)',
-              outline: selectedPanel === 'wdtt' ? '2px solid var(--ink)' : 'none',
+              background: hasActive && selectedPanel === 'wdtt' ? 'var(--blue-100)' : 'var(--paper)',
+              outline: hasActive && selectedPanel === 'wdtt' ? '2px solid var(--ink)' : 'none',
+              boxShadow: !hasActive ? '4px 4px 0px 0px rgba(0,0,0,0.08)' : undefined,
+              opacity: !hasActive ? 0.6 : 1,
             }}
           >
             <div className="flex items-center gap-3 mb-4">
