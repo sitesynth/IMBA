@@ -74,8 +74,11 @@ export default function EsimAdminPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [selectedQr, setSelectedQr] = useState<EsimOrder | null>(null)
+  const [markup, setMarkup] = useState<string>('1.5')
+  const [markupSaving, setMarkupSaving] = useState(false)
+  const [markupSaved, setMarkupSaved] = useState(false)
 
-  // Load balance + locations once
+  // Load balance + locations + settings once
   useEffect(() => {
     adminReq<{ balance_usd: number }>('/v1/admin/esim/balance')
       .then(r => setBalance(r.balance_usd))
@@ -83,7 +86,23 @@ export default function EsimAdminPage() {
     adminReq<{ locations: Location[] }>('/v1/admin/esim/locations')
       .then(r => setLocations(r.locations.sort((a, b) => a.name.localeCompare(b.name))))
       .catch(() => {})
+    adminReq<Record<string, string>>('/v1/admin/settings')
+      .then(s => setMarkup(s.esim_markup ?? '1.5'))
+      .catch(() => {})
   }, [])
+
+  async function saveMarkup() {
+    const val = parseFloat(markup)
+    if (isNaN(val) || val < 1) return
+    setMarkupSaving(true)
+    try {
+      await adminReq('/v1/admin/settings', { method: 'PATCH', body: JSON.stringify({ esim_markup: markup }), headers: { 'Content-Type': 'application/json' } })
+      setMarkupSaved(true)
+      setTimeout(() => setMarkupSaved(false), 2000)
+    } finally {
+      setMarkupSaving(false)
+    }
+  }
 
   const loadPackages = useCallback(async () => {
     setLoading(true); setError('')
@@ -141,7 +160,32 @@ export default function EsimAdminPage() {
           <h1 className="text-3xl font-bold text-gray-900 mb-1">eSIM Access</h1>
           <p className="text-sm text-gray-500">Управление пакетами и выданными SIM-картами</p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 flex-wrap">
+          {/* Markup setting */}
+          <div className="bg-white border border-gray-200 rounded-xl px-4 py-2">
+            <div className="text-xs text-gray-400 mb-1">Наценка (×)</div>
+            <div className="flex items-center gap-2">
+              <input
+                type="number"
+                step="0.05"
+                min="1"
+                value={markup}
+                onChange={e => setMarkup(e.target.value)}
+                className="w-20 text-sm font-bold border border-gray-200 rounded-lg px-2 py-1 focus:outline-none focus:border-gray-400"
+              />
+              <span className="text-xs text-gray-400">
+                = +{Math.round((parseFloat(markup) - 1) * 100) || 0}%
+              </span>
+              <button
+                onClick={saveMarkup}
+                disabled={markupSaving}
+                className="px-3 py-1 rounded-lg bg-gray-900 text-white text-xs font-medium hover:bg-gray-700 disabled:opacity-50 transition"
+              >
+                {markupSaved ? '✓' : 'Сохранить'}
+              </button>
+            </div>
+          </div>
+
           {balance !== null && (
             <div className="bg-white border border-gray-200 rounded-xl px-4 py-2 text-right">
               <div className="text-xs text-gray-400">Баланс аккаунта</div>
