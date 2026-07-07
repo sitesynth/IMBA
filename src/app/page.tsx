@@ -69,7 +69,8 @@ export default function LandingPage() {
 
           {/* Mega wordmark — animated swirl clipped to IMBA letterforms */}
           <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-6" style={{ minHeight: 'min(55vh, 720px)' }}>
-            <h1
+            <div
+              role="img"
               aria-label="IMBA"
               style={{
                 position: 'relative',
@@ -81,7 +82,7 @@ export default function LandingPage() {
             >
               <RainbowImbaLogo style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }} />
               <AnimatedImbaLogo height={0} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: 0.7 }} />
-            </h1>
+            </div>
           </div>
 
           {/* Lottie stickers */}
@@ -98,7 +99,7 @@ export default function LandingPage() {
         {/* Subhead + CTA below blob */}
         <div className="text-center mt-10 fade-up">
           {/* Visually hidden H1 for SEO — visual heading is the animated logo above */}
-          <h1 className="sr-only">IMBA COMBO — eSIM, VPN и виртуальная карта. Интернет без границ.</h1>
+          <h1 className="sr-only">VPN, который работает в России</h1>
           <h2 className="display text-4xl md:text-6xl mb-5">
             Твой интернет.<br />Без границ.
           </h2>

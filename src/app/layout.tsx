@@ -25,9 +25,9 @@ const word = Archivo_Black({
   display: 'swap',
 })
 
-const TITLE = 'IMBA COMBO — eSIM, VPN и виртуальная карта.'
-const DESCRIPTION = 'eSIM для 190+ стран, VPN без логов и виртуальная Visa/Mastercard для оплаты Netflix, Spotify, ChatGPT и других сервисов. Всё в одном приложении.'
-const DESCRIPTION_SHORT = 'eSIM для 190+ стран, VPN без логов и виртуальная Visa/Mastercard. Интернет без границ.'
+const TITLE = 'Купить VPN в России — eSIM и виртуальная карта в одной подписке | IMBA'
+const DESCRIPTION = 'VPN, eSIM и виртуальная Visa/Mastercard — в одной подписке IMBA. Стабильный VPN без блокировок и логов, интернет в 190+ странах, оплата зарубежных сервисов.'
+const DESCRIPTION_SHORT = 'VPN, eSIM и виртуальная Visa/Mastercard — в одной подписке IMBA. Стабильно, без блокировок и логов.'
 
 export async function generateMetadata(): Promise<Metadata> {
   const hdrs = await headers()
