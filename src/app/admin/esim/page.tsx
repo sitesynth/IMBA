@@ -262,35 +262,32 @@ export default function EsimAdminPage() {
                     <th className="text-left px-4 py-3">Страна</th>
                     <th className="text-right px-4 py-3">Данные</th>
                     <th className="text-right px-4 py-3">Дней</th>
-                    <th className="text-right px-4 py-3">Оптовая</th>
-                    <th className="text-right px-4 py-3">Розница</th>
-                    <th className="text-right px-4 py-3">Маржа</th>
+                    <th className="text-right px-4 py-3">Закупка</th>
+                    <th className="text-right px-4 py-3">Продажа ×{markup}</th>
+                    <th className="text-right px-4 py-3">Прибыль</th>
                     <th className="text-left px-4 py-3">Скорость</th>
-                    <th className="text-left px-4 py-3">Код</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50">
-                  {packages.map(p => (
+                  {packages.map(p => {
+                    const sellPrice = p.price_usd * parseFloat(markup)
+                    const profit = sellPrice - p.price_usd
+                    return (
                     <tr key={p.package_code} className="hover:bg-gray-50 transition">
                       <td className="px-4 py-3 font-medium text-gray-900 max-w-[200px] truncate">{p.name}</td>
                       <td className="px-4 py-3 text-gray-500">{p.location_code}</td>
                       <td className="px-4 py-3 text-right font-mono text-gray-900">{p.data_gb} GB</td>
                       <td className="px-4 py-3 text-right text-gray-700">{p.duration_days}д</td>
                       <td className="px-4 py-3 text-right font-semibold text-gray-900">${p.price_usd.toFixed(2)}</td>
-                      <td className="px-4 py-3 text-right text-gray-400">${p.retail_price_usd.toFixed(2)}</td>
+                      <td className="px-4 py-3 text-right font-semibold text-blue-600">${sellPrice.toFixed(2)}</td>
                       <td className="px-4 py-3 text-right">
-                        {margin(p) > 0 && (
-                          <span className={`font-semibold ${margin(p) >= 40 ? 'text-green-600' : margin(p) >= 20 ? 'text-yellow-600' : 'text-gray-500'}`}>
-                            {margin(p)}%
-                          </span>
-                        )}
+                        <span className="font-semibold text-green-600">+${profit.toFixed(2)}</span>
                       </td>
                       <td className="px-4 py-3 text-xs text-gray-400">{p.speed}</td>
-                      <td className="px-4 py-3 font-mono text-xs text-gray-400">{p.package_code}</td>
                     </tr>
-                  ))}
+                  )})}
                   {!loading && packages.length === 0 && (
-                    <tr><td colSpan={9} className="px-4 py-8 text-center text-gray-400 text-sm">Нет пакетов</td></tr>
+                    <tr><td colSpan={8} className="px-4 py-8 text-center text-gray-400 text-sm">Нет пакетов</td></tr>
                   )}
                 </tbody>
               </table>
