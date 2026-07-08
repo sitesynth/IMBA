@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-const publicPaths = ['/', '/auth/login', '/auth/register', '/auth/forgot-password', '/auth/reset-password', '/auth/check-email', '/auth/verify-email', '/auth/tg-webapp', '/auth/vk-callback', '/terms', '/privacy-policy', '/refund']
-const publicPrefixes = ['/blog']
+const publicPaths = ['/', '/auth/login', '/auth/register', '/auth/forgot-password', '/auth/reset-password', '/auth/check-email', '/auth/verify-email', '/auth/tg-webapp', '/auth/vk-callback', '/terms', '/privacy-policy', '/refund', '/esim', '/virtual-card']
+const publicPrefixes = ['/blog', '/promo']
 
 function isTokenExpired(token: string): boolean {
   try {
