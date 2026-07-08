@@ -45,22 +45,22 @@ const PLANS = [
     name: 'Старт',
     priceUsd: 0,
     bg: 'var(--paper)',
-    feats: ['1 eSIM профиль', 'VPN базовый', 'Без виртуальных карт'],
+    feats: ['1 eSIM профиль', 'VPN базовый (подключить отдельно)', '1 виртуальная карта'],
   },
   {
     slug: 'pro',
-    name: 'Про',
+    name: 'IMBA COMBO',
     priceUsd: 9.99,
     bg: 'var(--yellow)',
     hot: true,
-    feats: ['3 eSIM профиля', 'VPN Pro (50+ серверов)', '1 виртуальная карта', 'Приоритетная поддержка'],
+    feats: ['VPN Pro включён (50+ серверов)', '3 eSIM профиля', '3 виртуальные карты', 'Приоритетная поддержка'],
   },
   {
     slug: 'business',
     name: 'Бизнес',
     priceUsd: 24.99,
     bg: 'var(--violet-100)',
-    feats: ['10 eSIM профилей', 'VPN безлимит', '5 виртуальных карт', 'API доступ'],
+    feats: ['VPN безлимит включён', '10 eSIM профилей', '10 виртуальных карт', 'API доступ'],
   },
 ]
 
@@ -176,26 +176,61 @@ export default async function BillingPage() {
       </div>
       )}
 
-      {/* Plans */}
-      <div>
-        <h2 className="display text-2xl md:text-3xl mb-1">Тарифные планы</h2>
-        <p className="font-semibold text-ink/60 mb-5 text-sm">Плати только за то, что используешь</p>
+      {/* COMBO hero */}
+      {(() => {
+        const combo = PLANS.find(p => p.slug === 'pro')!
+        const isCurrent = (billing?.plan_slug || user.plan_slug) === 'pro'
+        const priceLabel = `${formatMoney(combo.priceUsd, cur, rates)}/мес`
+        return (
+          <div>
+            <h2 className="display text-2xl md:text-3xl mb-1">IMBA COMBO</h2>
+            <p className="font-semibold text-ink/60 mb-5 text-sm">VPN + eSIM + виртуальная карта — всё в одной подписке, с первого дня</p>
+            <div className="panel relative flex flex-col md:flex-row gap-6 p-6 md:p-8" style={{ background: 'var(--yellow)' }}>
+              {isCurrent && (
+                <span className="chip flex items-center gap-1 w-fit mb-2" style={{ background: 'var(--green)' }}>
+                  <Check className="w-3 h-3" strokeWidth={3} /> Активен
+                </span>
+              )}
+              <div className="flex-1">
+                <div className="display text-4xl md:text-5xl mb-1">{priceLabel}</div>
+                <p className="font-semibold text-ink/60 text-sm mb-5">Списывается с баланса раз в месяц</p>
+                <ul className="space-y-2.5 font-semibold text-sm">
+                  {combo.feats.map((f) => (
+                    <li key={f} className="flex items-center gap-2">
+                      <Check className="w-4 h-4 flex-shrink-0" strokeWidth={3} /> {f}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="flex md:flex-col justify-end gap-3">
+                <form action={upgradePlan}>
+                  <input type="hidden" name="plan_slug" value="pro" />
+                  <button
+                    type="submit"
+                    disabled={isCurrent}
+                    className={`pill whitespace-nowrap ${isCurrent ? 'pill-paper opacity-60 cursor-not-allowed' : 'pill-ink'}`}
+                  >
+                    {isCurrent ? 'Подключено' : 'Подключить COMBO →'}
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        )
+      })()}
 
-        <div className="grid md:grid-cols-3 gap-5">
-          {PLANS.map((p) => {
+      {/* Individual plans */}
+      <div>
+        <h2 className="display text-2xl md:text-3xl mb-1">Другие тарифы</h2>
+        <p className="font-semibold text-ink/60 mb-5 text-sm">Или начни бесплатно — подключи услуги по отдельности</p>
+        <div className="grid md:grid-cols-2 gap-5">
+          {PLANS.filter(p => p.slug !== 'pro').map((p) => {
             const isCurrent = (billing?.plan_slug || user.plan_slug) === p.slug
             const priceLabel = p.priceUsd === 0
               ? 'Бесплатно'
               : `${formatMoney(p.priceUsd, cur, rates)}/мес`
             return (
               <div key={p.slug} className="panel relative flex flex-col p-5 md:p-7" style={{ background: p.bg }}>
-                {(p.hot && !isCurrent) && (
-                  <div className="flex justify-center mb-3">
-                    <span className="chip flex items-center gap-1" style={{ background: 'var(--ink)', color: '#fff' }}>
-                      <FireIcon size={28} /> Популярный
-                    </span>
-                  </div>
-                )}
                 {isCurrent && (
                   <div className="flex justify-center mb-3">
                     <span className="chip flex items-center gap-1" style={{ background: 'var(--green)' }}>
@@ -218,7 +253,7 @@ export default async function BillingPage() {
                     type="submit"
                     disabled={isCurrent}
                     className={`pill w-full justify-center ${
-                      isCurrent ? 'pill-paper opacity-60 cursor-not-allowed' : p.hot ? 'pill-ink' : 'pill-paper'
+                      isCurrent ? 'pill-paper opacity-60 cursor-not-allowed' : 'pill-paper'
                     }`}
                   >
                     {isCurrent ? 'Текущий план' : `Перейти на ${p.name}`}

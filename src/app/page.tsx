@@ -177,9 +177,9 @@ export default function LandingPage() {
 
         <div className="grid md:grid-cols-3 gap-4 md:gap-6 max-w-6xl mx-auto">
           {[
-            { name: 'Старт', price: 'Бесплатно', bg: 'var(--paper)', feats: ['1 eSIM профиль', 'VPN базовый (5 серверов)', '1 виртуальная карта'], cta: 'Начать' },
-            { name: 'Про', price: '$9.99/мес', bg: 'var(--yellow)', hot: true, feats: ['5 eSIM профилей', 'VPN Pro (50+ серверов)', '3 виртуальные карты', 'Приоритетная поддержка'], cta: 'Подключить Про' },
-            { name: 'Бизнес', price: '$24.99/мес', bg: 'var(--violet-100)', feats: ['Безлимит eSIM', 'VPN безлимит', '10 виртуальных карт', 'API доступ'], cta: 'Связаться' },
+            { name: 'Старт', price: 'Бесплатно', bg: 'var(--paper)', feats: ['1 eSIM профиль', 'VPN по отдельной подписке', '1 виртуальная карта'], cta: 'Начать' },
+            { name: 'IMBA COMBO', price: '$9.99/мес', bg: 'var(--yellow)', hot: true, feats: ['VPN Pro включён (50+ серверов)', '3 eSIM профиля', '3 виртуальные карты', 'Всё с первого дня'], cta: 'Подключить COMBO' },
+            { name: 'Бизнес', price: '$24.99/мес', bg: 'var(--violet-100)', feats: ['VPN безлимит включён', 'Безлимит eSIM', '10 виртуальных карт', 'API доступ'], cta: 'Связаться' },
           ].map((p) => (
             <div key={p.name} className="panel relative flex flex-col p-5 md:p-7" style={{ background: p.bg }}>
               {p.hot && (

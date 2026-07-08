@@ -68,6 +68,7 @@ export default async function VpnPage() {
 
   const rates = user.rates ?? { EUR: 0.92, RUB: 90 }
   const vpnPrice = formatMoney(VPN_PRICE_USD, user.currency, rates)
+  const vpnIncluded = user.plan_slug === 'pro' || user.plan_slug === 'business'
 
   return (
     <div className="fade-up space-y-6">
@@ -122,15 +123,26 @@ export default async function VpnPage() {
             <div>
               <div className="display text-2xl mb-1">VPN не подключён</div>
               <p className="font-semibold text-ink/60 text-sm">
-                5 локаций · без лагов · без логов
+                {vpnIncluded
+                  ? 'Входит в вашу подписку — активация бесплатна'
+                  : '5 локаций · без лагов · без логов'}
               </p>
             </div>
           </div>
-          <div className="rounded-2xl px-5 py-4 border-2 border-ink flex items-center justify-between mb-4" style={{ background: 'var(--paper)' }}>
-            <span className="text-sm font-extrabold text-ink/60">Твой баланс</span>
-            <AnimatedBalance balance={user.balance} className="display text-2xl" />
-          </div>
-          {user.balance >= VPN_PRICE_USD ? (
+          {!vpnIncluded && (
+            <div className="rounded-2xl px-5 py-4 border-2 border-ink flex items-center justify-between mb-4" style={{ background: 'var(--paper)' }}>
+              <span className="text-sm font-extrabold text-ink/60">Твой баланс</span>
+              <AnimatedBalance balance={user.balance} className="display text-2xl" />
+            </div>
+          )}
+          {vpnIncluded ? (
+            <form action={activateVpn}>
+              <button className="pill pill-ink w-full justify-center text-base">
+                <Wifi className="w-5 h-5" strokeWidth={2.5} />
+                Активировать VPN
+              </button>
+            </form>
+          ) : user.balance >= VPN_PRICE_USD ? (
             <form action={activateVpn}>
               <button className="pill pill-ink w-full justify-center text-base">
                 <Wifi className="w-5 h-5" strokeWidth={2.5} />

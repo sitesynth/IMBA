@@ -152,13 +152,12 @@ export default function DashboardPage() {
           </div>
         </div>
         <div className="flex flex-wrap gap-2 mt-5 relative z-10">
-          {safeUser.plan_slug === 'pro' ? (
-            <Link href="/dashboard/billing/topup" className="pill pill-paper pill-sm">
-              <Plus className="w-4 h-4" strokeWidth={2.5} /> Пополнить
-            </Link>
-          ) : (
-            <Link href="/dashboard/billing" className="pill pill-paper pill-sm">
-              Перейти на Про <ArrowRight className="w-4 h-4" strokeWidth={2.5} />
+          <Link href="/dashboard/billing/topup" className="pill pill-paper pill-sm">
+            <Plus className="w-4 h-4" strokeWidth={2.5} /> Пополнить
+          </Link>
+          {safeUser.plan_slug !== 'pro' && safeUser.plan_slug !== 'business' && (
+            <Link href="/dashboard/billing" className="pill pill-sm" style={{ background: '#FFD731', color: '#111111', boxShadow: '0 4px 0 0 rgba(17,17,17,0.2)' }}>
+              IMBA COMBO <ArrowRight className="w-4 h-4" strokeWidth={2.5} />
             </Link>
           )}
         </div>
