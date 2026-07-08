@@ -81,7 +81,7 @@ export default function VirtualCardPage() {
           </div>
           <div className="flex items-center gap-1.5 md:gap-2.5">
             <Link href="/auth/login" className="pill pill-paper pill-sm text-xs md:text-sm">Войти</Link>
-            <Link href="/auth/register" className="pill pill-sm text-xs md:text-sm" style={{ background: 'var(--green)', color: 'var(--ink)', boxShadow: '0 6px 0 0 rgba(17,17,17,0.2)' }}>Выпустить карту</Link>
+            <Link href="/auth/register" className="pill pill-sm text-xs md:text-sm" style={{ background: '#55DB9C', color: '#111111', boxShadow: '0 6px 0 0 rgba(17,17,17,0.2)' }}>Выпустить карту</Link>
           </div>
         </nav>
 
@@ -95,7 +95,7 @@ export default function VirtualCardPage() {
             Visa/Mastercard в USD, EUR и AED. Netflix, Spotify, ChatGPT, Adobe — всё работает. Без российской карты, выпуск за минуту.
           </p>
           <div className="flex flex-col sm:flex-row gap-3">
-            <Link href="/auth/register" className="pill text-base" style={{ background: 'var(--green)', color: 'var(--ink)', boxShadow: '0 6px 0 0 rgba(17,17,17,0.2)' }}>
+            <Link href="/auth/register" className="pill text-base" style={{ background: '#55DB9C', color: '#111111', boxShadow: '0 6px 0 0 rgba(17,17,17,0.2)' }}>
               Выпустить карту →
             </Link>
             <Link href="#how" className="pill pill-paper text-base">Как это работает</Link>
@@ -127,7 +127,7 @@ export default function VirtualCardPage() {
             <div key={item.step} className="panel p-7 flex flex-col gap-4" style={{ background: 'var(--green-100)' }}>
               <div className="flex items-start justify-between gap-2">
                 <span className="display text-5xl text-ink/20">{item.step}</span>
-                <Link href={item.href} className="pill pill-sm flex-shrink-0" style={{ background: 'var(--green)', color: 'var(--ink)', boxShadow: '0 4px 0 0 rgba(17,17,17,0.2)', fontSize: '12px' }}>{item.cta}</Link>
+                <Link href={item.href} className="pill pill-sm flex-shrink-0" style={{ background: '#55DB9C', color: '#111111', boxShadow: '0 4px 0 0 rgba(17,17,17,0.2)', fontSize: '12px' }}>{item.cta}</Link>
               </div>
               <h3 className="display text-xl">{item.title}</h3>
               <p className="text-sm font-semibold text-ink/65 leading-relaxed">{item.desc}</p>
