@@ -22,9 +22,9 @@ export default function LandingPage() {
       <nav className="flex items-center justify-between px-4 md:px-8 py-3 md:py-4 max-w-7xl mx-auto">
         <Logo size="lg" />
         <div className="hidden md:flex items-center gap-7 text-sm uppercase flex-1 justify-center" style={{ fontFamily: 'var(--font-display), Impact, sans-serif', fontWeight: 900, letterSpacing: '-0.01em' }}>
-          <a href="#services" className="hover:opacity-60 transition-opacity">Сервисы</a>
-          <a href="#pricing" className="hover:opacity-60 transition-opacity">Тарифы</a>
-          <a href="#faq" className="hover:opacity-60 transition-opacity">Вопросы</a>
+          <Link href="/esim" className="hover:opacity-60 transition-opacity">eSIM</Link>
+          <Link href="/" className="transition-opacity" style={{ color: 'var(--yellow)', WebkitTextStroke: '0.5px var(--ink)' }}>VPN</Link>
+          <Link href="/virtual-card" className="hover:opacity-60 transition-opacity">Карта</Link>
           <Link href="/blog" className="hover:opacity-60 transition-opacity">Блог</Link>
         </div>
         <Link href="/auth/register" className="pill pill-ink pill-sm imba-btn-pulse pac-btn flex items-center gap-2.5 px-4">
@@ -129,19 +129,19 @@ export default function LandingPage() {
         <div className="grid md:grid-cols-3 gap-6">
           {[
             {
-              lottie: 'plane', tag: 'eSIM', bg: 'var(--violet-100)',
+              lottie: 'plane', tag: 'eSIM', bg: 'var(--violet-100)', href: '/esim',
               title: 'Мобильный интернет',
               desc: 'Купи eSIM для любой страны. Активация по QR за минуту, без поиска местной симки.',
               points: ['190+ стран', 'Активация по QR', 'Тарифы от 3 ГБ'],
             },
             {
-              lottie: 'lock', tag: 'VPN', bg: 'var(--blue-100)',
+              lottie: 'lock', tag: 'VPN', bg: 'var(--blue-100)', href: '#pricing',
               title: 'Свобода и защита',
               desc: 'Доступ к Instagram, LinkedIn и YouTube. VLESS Reality и WireGuard — быстро, без логов, работает в России.',
               points: ['VLESS Reality / WireGuard', '50+ серверов', 'Без логов'],
             },
             {
-              lottie: 'cards', tag: 'Карта', bg: 'var(--green-100)',
+              lottie: 'cards', tag: 'Карта', bg: 'var(--green-100)', href: '/virtual-card',
               title: 'Оплата везде',
               desc: 'Виртуальная Visa/Mastercard для Netflix, Spotify, ChatGPT и других зарубежных сервисов.',
               points: ['Visa / Mastercard', 'USD / EUR / AED', 'Моментальный выпуск'],
@@ -152,13 +152,14 @@ export default function LandingPage() {
                 <span className="chip bg-paper mb-3 md:mb-4 w-fit">{s.tag}</span>
                 <h3 className="display text-lg md:text-2xl mb-2 md:mb-3">{s.title}</h3>
                 <p className="font-medium text-ink/75 mb-3 md:mb-4 leading-relaxed text-xs md:text-sm">{s.desc}</p>
-                <ul className="space-y-1.5 md:space-y-2 font-bold text-xs md:text-sm mt-auto">
+                <ul className="space-y-1.5 md:space-y-2 font-bold text-xs md:text-sm">
                   {s.points.map((p) => (
                     <li key={p} className="flex items-center gap-2">
                       <span className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-ink" /> {p}
                     </li>
                   ))}
                 </ul>
+                <Link href={s.href} className="pill pill-paper pill-sm text-xs w-fit mt-4">Подробнее →</Link>
               </div>
               <div className="flex items-center">
                 <LottieSticker name={s.lottie} size={72} className="md:hidden" />
