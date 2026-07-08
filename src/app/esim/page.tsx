@@ -122,12 +122,15 @@ export default function EsimPage() {
 
         <div className="grid md:grid-cols-3 gap-5 max-w-4xl mx-auto">
           {[
-            { step: '01', title: 'Выбери страну', desc: 'В личном кабинете выбираешь страну назначения и объём данных — от 1 ГБ до безлимита.' },
-            { step: '02', title: 'Купи тариф', desc: 'Оплата через IMBA-баланс. Пополнение криптой или переводом. Российская карта не нужна.' },
-            { step: '03', title: 'Активируй по QR', desc: 'Сканируешь QR в настройках телефона — и всё. Профиль eSIM активен, интернет работает. Без физической симки.' },
+            { step: '01', title: 'Выбери страну', desc: 'В личном кабинете выбираешь страну назначения и объём данных — от 1 ГБ до безлимита.', cta: 'Выбрать →', href: '/auth/register' },
+            { step: '02', title: 'Купи тариф', desc: 'Оплата через IMBA-баланс. Пополнение криптой или переводом. Российская карта не нужна.', cta: 'Купить →', href: '/auth/register' },
+            { step: '03', title: 'Активируй по QR', desc: 'Сканируешь QR в настройках телефона — и всё. Профиль eSIM активен, интернет работает. Без физической симки.', cta: 'Начать →', href: '/auth/register' },
           ].map(item => (
             <div key={item.step} className="panel p-7 flex flex-col gap-4" style={{ background: 'var(--violet-100)' }}>
-              <span className="display text-5xl text-ink/20">{item.step}</span>
+              <div className="flex items-start justify-between gap-2">
+                <span className="display text-5xl text-ink/20">{item.step}</span>
+                <Link href={item.href} className="pill pill-sm flex-shrink-0" style={{ background: 'var(--violet)', color: 'var(--ink)', boxShadow: '0 4px 0 0 rgba(17,17,17,0.2)', fontSize: '12px' }}>{item.cta}</Link>
+              </div>
               <h3 className="display text-xl">{item.title}</h3>
               <p className="text-sm font-semibold text-ink/65 leading-relaxed">{item.desc}</p>
             </div>

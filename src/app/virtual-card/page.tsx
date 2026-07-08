@@ -120,12 +120,15 @@ export default function VirtualCardPage() {
 
         <div className="grid md:grid-cols-3 gap-5 max-w-4xl mx-auto">
           {[
-            { step: '01', title: 'Пополни баланс', desc: 'Через USDT, BTC или банковский перевод. Российская карта не нужна — никаких ограничений ЦБ.' },
-            { step: '02', title: 'Выпусти карту', desc: 'В личном кабинете — один клик. Реквизиты: номер карты, срок, CVV, платёжный адрес — всё готово мгновенно.' },
-            { step: '03', title: 'Оплачивай везде', desc: 'Введи реквизиты на сайте сервиса как обычную карту. Работает в 190+ странах, онлайн и в подписках.' },
+            { step: '01', title: 'Пополни баланс', desc: 'Через USDT, BTC или банковский перевод. Российская карта не нужна — никаких ограничений ЦБ.', cta: 'Пополнить →', href: '/auth/register' },
+            { step: '02', title: 'Выпусти карту', desc: 'В личном кабинете — один клик. Реквизиты: номер карты, срок, CVV, платёжный адрес — всё готово мгновенно.', cta: 'Выпустить →', href: '/auth/register' },
+            { step: '03', title: 'Оплачивай везде', desc: 'Введи реквизиты на сайте сервиса как обычную карту. Работает в 190+ странах, онлайн и в подписках.', cta: 'Начать →', href: '/auth/register' },
           ].map(item => (
             <div key={item.step} className="panel p-7 flex flex-col gap-4" style={{ background: 'var(--green-100)' }}>
-              <span className="display text-5xl text-ink/20">{item.step}</span>
+              <div className="flex items-start justify-between gap-2">
+                <span className="display text-5xl text-ink/20">{item.step}</span>
+                <Link href={item.href} className="pill pill-sm flex-shrink-0" style={{ background: 'var(--green)', color: 'var(--ink)', boxShadow: '0 4px 0 0 rgba(17,17,17,0.2)', fontSize: '12px' }}>{item.cta}</Link>
+              </div>
               <h3 className="display text-xl">{item.title}</h3>
               <p className="text-sm font-semibold text-ink/65 leading-relaxed">{item.desc}</p>
             </div>
