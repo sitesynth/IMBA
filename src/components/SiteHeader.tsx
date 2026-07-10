@@ -47,13 +47,13 @@ export function SiteHeader() {
         <div className="flex md:hidden items-center gap-1.5">
           <Link href="/auth/register" className="pill pill-ink pill-sm text-xs">Imbaнуться</Link>
           <button
-            className="flex flex-col justify-center items-center w-9 h-9 gap-1.5"
+            className="flex flex-col justify-center items-center w-7 h-7 gap-1"
             onClick={() => setOpen(o => !o)}
             aria-label="Меню"
           >
-            <span className="block w-5 h-0.5 bg-ink transition-all" style={open ? { transform: 'translateY(4px) rotate(45deg)' } : {}} />
-            <span className="block w-5 h-0.5 bg-ink transition-all" style={open ? { opacity: 0 } : {}} />
-            <span className="block w-5 h-0.5 bg-ink transition-all" style={open ? { transform: 'translateY(-4px) rotate(-45deg)' } : {}} />
+            <span className="block w-4 h-0.5 bg-ink transition-all" style={open ? { transform: 'translateY(3px) rotate(45deg)' } : {}} />
+            <span className="block w-4 h-0.5 bg-ink transition-all" style={open ? { opacity: 0 } : {}} />
+            <span className="block w-4 h-0.5 bg-ink transition-all" style={open ? { transform: 'translateY(-3px) rotate(-45deg)' } : {}} />
           </button>
         </div>
         {/* Desktop: Войти + CTA */}
