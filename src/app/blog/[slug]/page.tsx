@@ -8,7 +8,7 @@ import { posts, getPost } from '@/lib/posts'
 const COVERS: Record<string, () => React.ReactNode> = {
   'vpn-russia-2026': () => (
     // eslint-disable-next-line @next/next/no-img-element
-    <img src="/blog/cover-vpn-russia-2026.svg" alt="VPN в России 2026" className="w-full rounded-2xl" style={{ border: '3px solid var(--ink)', boxShadow: '8px 8px 0 0 var(--ink)' }} />
+    <img src="/blog/cover-vpn-russia-2026.svg" alt="VPN в России 2026" className="w-full" />
   ),
 }
 
