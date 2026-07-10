@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { LayoutDashboard, Wifi, Shield, CreditCard, Wallet, Settings, LogOut } from 'lucide-react'
+import { LayoutDashboard, Wifi, Shield, CreditCard, Wallet, Settings, LogOut, Users } from 'lucide-react'
 import { getCurrentUser, logout } from '@/lib/auth'
 import { Logo } from '@/components/Logo'
 import { Marquee } from '@/components/Marquee'
@@ -15,6 +15,7 @@ const navItems = [
   { href: '/dashboard/vpn', label: 'VPN', icon: Shield, color: 'var(--blue-100)' },
   { href: '/dashboard/card', label: 'Карта', icon: CreditCard, color: 'var(--green-100)' },
   { href: '/dashboard/billing', label: 'Биллинг', icon: Wallet, color: 'var(--yellow-100)' },
+  { href: '/dashboard/referrals', label: 'Друзья', icon: Users, color: 'var(--green-100)' },
   { href: '/dashboard/settings', label: 'Настройки', icon: Settings, color: 'var(--cream)' },
 ]
 
