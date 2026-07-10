@@ -149,7 +149,7 @@ export default function LandingPage() {
           ].map((p) => (
             <div key={p.name} className={`panel relative flex flex-col p-5 md:p-7${p.hot ? ' mt-4 md:mt-0' : ''}`} style={{ background: p.bg }}>
               {p.hot && (
-                <span className="chip bg-ink absolute -top-3.5 left-1/2 -translate-x-1/2 flex items-center gap-1" style={{ color: '#fff' }}>
+                <span className="chip bg-ink absolute -top-6 left-1/2 -translate-x-1/2 flex items-center gap-1" style={{ color: '#fff' }}>
                   <FireIcon size={28} /> Популярный
                 </span>
               )}
