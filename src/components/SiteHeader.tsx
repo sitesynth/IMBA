@@ -5,6 +5,29 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Logo } from '@/components/Logo'
 
+function PacManBtn() {
+  return (
+    <Link href="/auth/register" className="pill pill-ink pill-sm imba-btn-pulse pac-btn flex items-center gap-2.5 px-4">
+      <svg width="38" height="22" viewBox="0 0 58 34" fill="none">
+        <g className="pac-dots">
+          <circle cx="35" cy="17" r="2.5" fill="#ffffff"/>
+          <circle cx="45" cy="17" r="2.5" fill="#ffffff"/>
+          <circle cx="55" cy="17" r="2.5" fill="#ffffff"/>
+          <circle cx="65" cy="17" r="2.5" fill="#ffffff"/>
+          <circle cx="75" cy="17" r="2.5" fill="#ffffff"/>
+        </g>
+        <path d="M 4.88,10 A 14 14 0 0 0 4.88,24" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round"/>
+        <path className="pac-jaw-top" d="M 17,17 L 29.12,10 A 14 14 0 0 0 3,17" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+        <path className="pac-jaw-bottom" d="M 17,17 L 29.12,24 A 14 14 0 0 1 3,17" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+        <circle cx="12" cy="10" r="2" fill="#ffffff"/>
+      </svg>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/>
+      </svg>
+    </Link>
+  )
+}
+
 const NAV = [
   { label: 'eSIM', href: '/esim' },
   { label: 'VPN', href: '/' },
@@ -43,23 +66,23 @@ export function SiteHeader() {
           ))}
         </div>
 
-        {/* Mobile: CTA + hamburger only */}
+        {/* Mobile: pac-man + hamburger */}
         <div className="flex md:hidden items-center gap-1.5">
-          <Link href="/auth/register" className="pill pill-ink pill-sm text-xs">Imbaнуться</Link>
+          <PacManBtn />
           <button
             className="flex flex-col justify-center items-center w-7 h-7 gap-1"
             onClick={() => setOpen(o => !o)}
             aria-label="Меню"
           >
-            <span className="block w-4 h-0.5 bg-ink transition-all" style={open ? { transform: 'translateY(3px) rotate(45deg)' } : {}} />
+            <span className="block w-4 h-0.5 bg-ink transition-all" style={open ? { transform: 'translateY(6px) rotate(45deg)' } : {}} />
             <span className="block w-4 h-0.5 bg-ink transition-all" style={open ? { opacity: 0 } : {}} />
-            <span className="block w-4 h-0.5 bg-ink transition-all" style={open ? { transform: 'translateY(-3px) rotate(-45deg)' } : {}} />
+            <span className="block w-4 h-0.5 bg-ink transition-all" style={open ? { transform: 'translateY(-6px) rotate(-45deg)' } : {}} />
           </button>
         </div>
-        {/* Desktop: Войти + CTA */}
+        {/* Desktop: Войти + pac-man */}
         <div className="hidden md:flex items-center gap-2.5">
           <Link href="/auth/login" className="pill pill-paper pill-sm text-sm">Войти</Link>
-          <Link href="/auth/register" className="pill pill-ink pill-sm text-sm">Imbaнуться</Link>
+          <PacManBtn />
         </div>
       </nav>
 
