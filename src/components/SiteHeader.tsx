@@ -29,8 +29,8 @@ function PacManBtn() {
 }
 
 const NAV = [
-  { label: 'eSIM', href: '/esim' },
   { label: 'VPN', href: '/' },
+  { label: 'eSIM', href: '/esim' },
   { label: 'Карта', href: '/virtual-card' },
   { label: 'Блог', href: '/blog' },
 ]
