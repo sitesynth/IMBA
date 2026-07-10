@@ -433,3 +433,46 @@ export function getMetricaStats(days = 28) {
 export function clearAnalyticsCache() {
   return adminReq<{ ok: boolean }>("/v1/admin/analytics/cache/clear", { method: "POST" })
 }
+
+// ---------------------------------------------------------------------------
+// Promocodes
+// ---------------------------------------------------------------------------
+
+export interface Promocode {
+  id: string
+  code: string
+  description: string | null
+  discount_type: 'percent' | 'fixed' | 'vpn_trial'
+  discount_value: number
+  current_uses: number
+  max_uses: number | null
+  is_active: boolean
+  valid_from: string | null
+  valid_until: string | null
+}
+
+export interface CreatePromocodePayload {
+  code: string
+  description?: string
+  discount_type: string
+  discount_value: number
+  max_uses?: number | null
+  valid_until?: string | null
+}
+
+export function listPromocodes() {
+  return adminReq<Promocode[]>("/v1/admin/promocodes")
+}
+
+export function createPromocode(payload: CreatePromocodePayload) {
+  return adminReq<Promocode>("/v1/admin/promocodes", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  })
+}
+
+export function togglePromocode(promoId: string) {
+  return adminReq<{ is_active: boolean }>(`/v1/admin/promocodes/${promoId}/toggle`, {
+    method: "POST",
+  })
+}

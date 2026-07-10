@@ -37,6 +37,7 @@ function AdminSidebar({ onClose }: { onClose?: () => void }) {
         { href: '/admin/invoices', label: 'Invoices' },
         { href: '/admin/notifications', label: 'Notifications' },
         { href: '/admin/referrals', label: 'Referral Programs' },
+        { href: '/admin/promocodes', label: 'Промокоды' },
       ],
     },
   ]
