@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import { headers } from 'next/headers'
 import { Unbounded, Manrope, Archivo_Black } from 'next/font/google'
 import Script from 'next/script'
+import { Suspense } from 'react'
+import { RefCapture } from '@/components/RefCapture'
 import './globals.css'
 
 const display = Unbounded({
@@ -113,6 +115,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }} />
       </head>
       <body className="min-h-full flex flex-col">
+        <Suspense><RefCapture /></Suspense>
         {children}
         <Script id="ym-init" strategy="afterInteractive">{`
           (function(m,e,t,r,i,k,a){

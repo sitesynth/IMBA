@@ -22,5 +22,21 @@ export async function POST(request: NextRequest) {
 
   const { token: jwt } = await apiRes.json()
   await setApiToken(jwt)
-  return NextResponse.json({ ok: true })
+
+  const response = NextResponse.json({ ok: true })
+
+  const refCode = request.cookies.get('imba_ref')?.value
+  if (refCode && /^[a-zA-Z0-9_-]{4,30}$/.test(refCode)) {
+    try {
+      await fetch(`${apiUrl()}/v1/promotions/referral/apply/${refCode}`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${jwt}`, 'Content-Type': 'application/json' },
+      })
+    } catch {
+      // Non-critical — don't fail verification if apply fails
+    }
+    response.cookies.set('imba_ref', '', { maxAge: 0, path: '/' })
+  }
+
+  return response
 }
