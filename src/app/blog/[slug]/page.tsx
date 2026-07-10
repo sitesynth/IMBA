@@ -5,6 +5,12 @@ import { Marquee } from '@/components/Marquee'
 import { SiteHeader } from '@/components/SiteHeader'
 import { Logo } from '@/components/Logo'
 import { posts, getPost } from '@/lib/posts'
+const COVERS: Record<string, () => React.ReactNode> = {
+  'vpn-russia-2026': () => (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src="/blog/cover-vpn-russia-2026.svg" alt="VPN в России 2026" className="w-full rounded-2xl" style={{ border: '3px solid var(--ink)', boxShadow: '8px 8px 0 0 var(--ink)' }} />
+  ),
+}
 
 export async function generateStaticParams() {
   return posts.map((p) => ({ slug: p.slug }))
@@ -65,19 +71,21 @@ function renderContent(content: string) {
       elements.push(
         <div key={key++} className="overflow-x-auto my-5">
           <table className="w-full text-sm border-collapse">
-            {rows.map((row, ri) => {
-              const cells = row.split('|').filter((_, ci) => ci > 0 && ci < row.split('|').length - 1)
-              const Tag = ri === 0 ? 'th' : 'td'
-              return (
-                <tr key={ri} className={ri === 0 ? 'bg-ink text-paper' : ri % 2 === 0 ? 'bg-ink/5' : ''}>
-                  {cells.map((cell, ci) => (
-                    <Tag key={ci} className="px-3 py-2 border border-ink/20 text-left font-semibold whitespace-nowrap">
-                      {cell.trim()}
-                    </Tag>
-                  ))}
-                </tr>
-              )
-            })}
+            <tbody>
+              {rows.map((row, ri) => {
+                const cells = row.split('|').filter((_, ci) => ci > 0 && ci < row.split('|').length - 1)
+                const Tag = ri === 0 ? 'th' : 'td'
+                return (
+                  <tr key={ri} className={ri === 0 ? 'bg-ink text-paper' : ri % 2 === 0 ? 'bg-ink/5' : ''}>
+                    {cells.map((cell, ci) => (
+                      <Tag key={ci} className="px-3 py-2 border border-ink/20 text-left font-semibold whitespace-nowrap">
+                        {cell.trim()}
+                      </Tag>
+                    ))}
+                  </tr>
+                )
+              })}
+            </tbody>
           </table>
         </div>
       )
@@ -177,7 +185,9 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           </div>
 
           <h1 className="text-3xl md:text-4xl font-black leading-tight mb-5">{post.title}</h1>
-          <p className="text-base text-ink/60 leading-relaxed mb-8 pb-8 border-b border-ink/10">{post.excerpt}</p>
+          <p className="text-base text-ink/60 leading-relaxed mb-8">{post.excerpt}</p>
+
+          {COVERS[slug] && <div className="mb-8">{COVERS[slug]()}</div>}
 
           {/* Content */}
           <div>{renderContent(post.content)}</div>
