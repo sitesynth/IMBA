@@ -5,7 +5,10 @@ import { Marquee } from '@/components/Marquee'
 import { SiteHeader } from '@/components/SiteHeader'
 import { Logo } from '@/components/Logo'
 import { posts, getPost } from '@/lib/posts'
+import { VpnKompyuterCover } from '@/components/blog/VpnKompyuterCover'
+
 const COVERS: Record<string, () => React.ReactNode> = {
+  'vpn-na-kompyutere': () => <VpnKompyuterCover />,
   'vpn-russia-2026': () => (
     // eslint-disable-next-line @next/next/no-img-element
     <img src="/blog/cover-vpn-russia-2026.svg" alt="VPN в России 2026" className="w-full" style={{ marginLeft: '-8px', width: 'calc(100% + 8px)' }} />
