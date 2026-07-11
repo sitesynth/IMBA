@@ -34,7 +34,6 @@ export function VpnKompyuterCover() {
             />
           </div>
         </div>
-        </div>
       )}
     </div>
   )
