@@ -19,7 +19,7 @@ export const posts: Post[] = [
     categoryColor: 'var(--violet)',
     date: '11 июля 2026',
     readTime: '5 мин',
-    ogImage: 'https://www.imba.live/blog/og-vpn-na-kompyutere.jpg',
+    ogImage: 'https://www.imba.live/blog/og-vpn-na-kompyutere.png',
     content: `
 ## Что понадобится
 
