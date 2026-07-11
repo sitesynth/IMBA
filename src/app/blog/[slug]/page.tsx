@@ -41,7 +41,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       description: post.excerpt,
       type: 'article',
       url: `https://www.imba.live/blog/${slug}`,
-      images: [{ url: 'https://www.imba.live/og-image.png', width: 1200, height: 630 }],
+      images: [{ url: post.ogImage ?? 'https://www.imba.live/og-image.png', width: 1200, height: 630 }],
       locale: 'ru_RU',
       siteName: 'IMBA',
     },
@@ -49,7 +49,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       card: 'summary_large_image',
       title: post.title,
       description: post.excerpt,
-      images: ['https://www.imba.live/og-image.png'],
+      images: [post.ogImage ?? 'https://www.imba.live/og-image.png'],
     },
   }
 }
@@ -217,7 +217,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         inLanguage: 'ru',
         author: { '@type': 'Organization', '@id': 'https://www.imba.live/#organization', name: 'IMBA' },
         publisher: { '@type': 'Organization', '@id': 'https://www.imba.live/#organization', name: 'IMBA', logo: { '@type': 'ImageObject', url: 'https://www.imba.live/favicon.png', width: 512, height: 512 } },
-        image: { '@type': 'ImageObject', url: 'https://www.imba.live/og-image.png', width: 1200, height: 630 },
+        image: { '@type': 'ImageObject', url: post.ogImage ?? 'https://www.imba.live/og-image.png', width: 1200, height: 630 },
         isPartOf: { '@type': 'WebSite', '@id': 'https://www.imba.live/#website' },
         breadcrumb: {
           '@type': 'BreadcrumbList',

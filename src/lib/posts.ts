@@ -7,6 +7,7 @@ export type Post = {
   date: string
   readTime: string
   content: string
+  ogImage?: string
 }
 
 export const posts: Post[] = [
@@ -18,6 +19,7 @@ export const posts: Post[] = [
     categoryColor: 'var(--violet)',
     date: '11 июля 2026',
     readTime: '5 мин',
+    ogImage: 'https://www.imba.live/blog/og-vpn-na-kompyutere.png',
     content: `
 ## Что понадобится
 
@@ -90,6 +92,7 @@ Happ поддерживает Windows 10/11 и актуальные версии
     categoryColor: 'var(--violet)',
     date: '3 июня 2026',
     readTime: '7 мин',
+    ogImage: 'https://www.imba.live/blog/og-vpn-russia-2026.png',
     content: `
 ## Почему обычный VPN перестал работать
 
@@ -142,6 +145,7 @@ Reality — это протокол, который делает VPN-трафи�
     categoryColor: 'var(--blue)',
     date: '28 мая 2026',
     readTime: '5 мин',
+    ogImage: 'https://www.imba.live/blog/og-esim-russia-abroad.png',
     content: `
 ## Что такое eSIM и зачем она нужна
 
@@ -191,6 +195,7 @@ eSIM — это встроенная SIM-карта в вашем телефон
     categoryColor: 'var(--green)',
     date: '20 мая 2026',
     readTime: '4 мин',
+    ogImage: 'https://www.imba.live/blog/og-pay-abroad-from-russia.png',
     content: `
 ## Проблема: российские карты не работают за рубежом
 
@@ -237,6 +242,7 @@ IMBA выпускает виртуальные карты Visa/Mastercard, пр�
     categoryColor: 'var(--violet)',
     date: '15 мая 2026',
     readTime: '8 мин',
+    ogImage: 'https://www.imba.live/blog/og-vless-reality-explained.png',
     content: `
 ## Краткая история блокировок
 
@@ -289,6 +295,7 @@ Reality — это расширение протокола XTLS, разрабо�
     categoryColor: 'var(--blue)',
     date: '25 июня 2026',
     readTime: '4 мин',
+    ogImage: 'https://www.imba.live/blog/og-esim-turkey-2026.png',
     content: `
 ## Почему eSIM выгоднее роуминга в Турции
 
@@ -341,6 +348,7 @@ Reality — это расширение протокола XTLS, разрабо�
     categoryColor: 'var(--blue)',
     date: '10 июня 2026',
     readTime: '3 мин',
+    ogImage: 'https://www.imba.live/blog/og-esim-iphone-setup.png',
     content: `
 ## Какие iPhone поддерживают eSIM
 
@@ -396,6 +404,7 @@ Reality — это расширение протокола XTLS, разрабо�
     categoryColor: 'var(--green)',
     date: '1 июля 2026',
     readTime: '3 мин',
+    ogImage: 'https://www.imba.live/blog/og-pay-chatgpt-from-russia.png',
     content: `
 ## Проблема: OpenAI блокирует российские карты
 
@@ -455,6 +464,7 @@ OpenAI периодически проверяет IP при использов�
     categoryColor: 'var(--green)',
     date: '15 июня 2026',
     readTime: '4 мин',
+    ogImage: 'https://www.imba.live/blog/og-pay-netflix-from-russia.png',
     content: `
 ## Почему Netflix недоступен из России
 
@@ -509,6 +519,7 @@ Netflix приостановил работу в России в марте 2022
     categoryColor: 'var(--violet)',
     date: '5 июля 2026',
     readTime: '4 мин',
+    ogImage: 'https://www.imba.live/blog/og-happ-setup.png',
     content: `
 ## Что такое Happ и зачем он нужен
 
