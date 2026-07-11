@@ -92,7 +92,7 @@ Happ поддерживает Windows 10/11 и актуальные версии
     categoryColor: 'var(--violet)',
     date: '3 июня 2026',
     readTime: '7 мин',
-    ogImage: 'https://www.imba.live/blog/og-vpn-russia-2026.jpg',
+    ogImage: 'https://www.imba.live/blog/og-vpn-russia-2026.png',
     content: `
 ## Почему обычный VPN перестал работать
 
