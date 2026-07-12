@@ -13,6 +13,10 @@ const COVERS: Record<string, () => React.ReactNode> = {
     // eslint-disable-next-line @next/next/no-img-element
     <img src="/blog/cover-vpn-russia-2026.svg" alt="VPN в России 2026" className="w-full" style={{ marginLeft: '-8px', width: 'calc(100% + 8px)' }} />
   ),
+  'esim-russia-abroad': () => (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src="/blog/esim-russia-abroad.svg" alt="eSIM для россиян: интернет за рубежом без роуминга" className="w-full" />
+  ),
 }
 
 export async function generateStaticParams() {

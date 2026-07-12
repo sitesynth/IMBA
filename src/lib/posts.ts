@@ -145,7 +145,7 @@ Reality — это протокол, который делает VPN-трафи�
     categoryColor: 'var(--blue)',
     date: '28 мая 2026',
     readTime: '5 мин',
-    ogImage: 'https://www.imba.live/blog/og-esim-russia-abroad.jpg',
+    ogImage: 'https://www.imba.live/blog/og-esim-russia-abroad.png',
     content: `
 ## Что такое eSIM и зачем она нужна
 
