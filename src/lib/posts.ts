@@ -533,20 +533,35 @@ Happ — это VPN-клиент с поддержкой протокола **VL
 
 В российском Google Play Happ недоступен. Скачай APK напрямую:
 
-- **[Скачать Happ APK для Android](/downloads/happ/android)** — файл с imba.run, всегда актуальная версия
+- <a href="https://github.com/Happ-proxy/happ-android/releases/latest/download/Happ.apk"><strong>Happ APK Stable</strong></a> — стабильная версия с GitHub Releases
+- <a href="https://github.com/Happ-proxy/happ-android/releases/latest/download/Happ_beta.apk"><strong>Happ APK Beta</strong></a> — бета с новыми функциями
+- <a href="https://files-hub.com/download/android/latest?arch=universal"><strong>Зеркало (files-hub.com)</strong></a> — если GitHub недоступен
 - После скачивания разреши установку из неизвестных источников (Настройки → Безопасность → Неизвестные источники)
 
 ### iOS
 
-В российском App Store Happ удалён вместе с другими VPN-приложениями. Есть два способа:
+В российском App Store Happ удалён. Используй один из способов:
 
-**Способ 1 — Казахстанский Apple ID (рекомендуем):**
-1. Создай новый Apple ID с регионом Казахстан (бесплатно, карта не нужна)
-2. Зайди в App Store под этим аккаунтом только для скачивания
-3. **[Открыть Happ в App Store](/downloads/happ/ios)** — ссылка откроется в App Store KZ/US
+- <a href="https://apps.apple.com/us/app/happ-proxy-utility/id6504287215"><strong>App Store (US/KZ)</strong></a> — зайди в App Store под зарубежным Apple ID
+- <a href="https://testflight.apple.com/join/XMls6Ckd"><strong>TestFlight (Beta)</strong></a> — бета-версия, не требует зарубежного ID
+- Для App Store создай бесплатный Apple ID с регионом Казахстан — карта не нужна
 
-**Способ 2 — Armstore / сторонние магазины:**
-- Используй AltStore или Scarlet для установки IPA без джейлбрейка
+### Windows
+
+- <a href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/setup-Happ.x64.exe"><strong>Setup x64 .exe</strong></a> — установщик для Windows 10/11
+- <a href="https://files-hub.com/download/windows/latest?arch=x64"><strong>Зеркало (files-hub.com)</strong></a> — если GitHub недоступен
+
+### macOS
+
+- <a href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.macOS.universal.dmg"><strong>.dmg Universal</strong></a> — работает на Apple Silicon и Intel
+- <a href="https://apps.apple.com/us/app/happ-proxy-utility/id6504287215?platform=mac"><strong>Mac App Store</strong></a> — через зарубежный Apple ID
+- <a href="https://files-hub.com/download/macos/latest?arch=universal"><strong>Зеркало (files-hub.com)</strong></a>
+
+### Linux
+
+- <a href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.x64.deb"><strong>.deb x64</strong></a> — для Ubuntu, Debian, Mint
+- <a href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.arm64.deb"><strong>.deb arm64</strong></a> — для Raspberry Pi и ARM-устройств
+- <a href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.x64.rpm"><strong>.rpm x64</strong></a> — для Fedora, CentOS, RHEL
 
 ## Шаг 2. Добавить подписку IMBA
 
@@ -565,7 +580,7 @@ Happ — это VPN-клиент с поддержкой протокола **VL
 3. Переключи в положение **Выкл (Off)**
 4. Сохрани
 
-> ⚠️ Mux несовместим с XTLS Reality — если не выключить, подключение зависнет на «Connecting...» навсегда.
+Mux несовместим с XTLS Reality — если не выключить, подключение зависнет на «Connecting...» навсегда.
 
 ## Шаг 4. Подключиться
 
@@ -595,6 +610,20 @@ Happ — это VPN-клиент с поддержкой протокола **VL
 3. **Смени сервер** — попробуй другую локацию
 4. **Проверь тариф** — VPN доступен при активной подписке IMBA
 5. Напиши в [поддержку](/dashboard) — ответим в течение часа
+
+## Частые вопросы
+
+### Почему Happ нет в Google Play и российском App Store?
+
+Роскомнадзор обязал магазины удалить VPN-приложения. Happ распространяется через GitHub Releases (APK для Android) и зарубежный App Store или TestFlight для iOS.
+
+### Можно ли использовать Happ без ссылки подписки IMBA?
+
+Happ работает с любым VLESS/Reality-сервером, но без подписки IMBA ты сам отвечаешь за настройку. Ссылка из кабинета IMBA автоматически подгружает все доступные серверы и обновляет их при смене.
+
+### Сколько устройств можно подключить одновременно?
+
+На тарифе IMBA COMBO — до 5 устройств одновременно. Ссылка подписки одна — её можно вставить в Happ на всех устройствах.
     `.trim(),
   },
 ]
