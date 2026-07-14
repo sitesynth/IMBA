@@ -90,7 +90,7 @@ export default async function LandingPage() {
           </h1>
           <p className="display text-xl md:text-2xl text-ink/50 mb-5">Твой интернет. Без границ.</p>
           <p className="text-lg md:text-xl font-semibold text-ink/70 max-w-2xl mx-auto mb-8">
-            Трафик IMBA неотличим от обычного HTTPS. 7 дней бесплатно за подписку на соцсети, карта не нужна. А ещё eSIM для поездок и виртуальная карта для зарубежных подписок: 3 сервиса — в одном кабинете.
+            Трафик IMBA неотличим от обычного HTTPS. 7 дней бесплатно за подписку на соцсети, карта не нужна. А ещё eSIM для поездок и виртуальная карта для зарубежных подписок — в одном кабинете.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link href="/auth/register" className="pill pill-ink text-base imba-btn-pulse">IMBAНУТЬСЯ →</Link>
