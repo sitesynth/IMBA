@@ -147,7 +147,7 @@ export default function LandingPage() {
       {/* Servers */}
       <section id="servers" className="rounded-xl px-5 md:px-12 py-12 md:py-16" style={{ background: 'var(--violet-100)' }}>
         <div className="max-w-5xl mx-auto">
-          <h2 className="display text-3xl md:text-5xl mb-4">Серверы IMBA:<br className="md:hidden" /> 50+ локаций в 30+ странах</h2>
+          <h2 className="display text-3xl md:text-5xl mb-4">Серверы IMBA: безлимитный трафик, локации по всему миру</h2>
           <p className="text-base md:text-lg font-medium text-ink/75 leading-relaxed mb-8 max-w-3xl">
             Точки подключения подобраны по маршрутам с минимальной задержкой из России: пинг ниже 130 мс —
             это видеозвонки без рассинхрона и стриминг без буферизации. Полный список с живым пингом —
