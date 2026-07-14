@@ -203,14 +203,14 @@ export default async function LandingPage() {
             получи неделю полного доступа. Тот же VLESS Reality, те же серверы, что и на платных тарифах.
           </p>
           <div className="grid md:grid-cols-2 gap-4 mb-8 max-w-2xl">
-            <div className="panel p-5" style={{ background: 'var(--paper)' }}>
-              <h3 className="display text-lg mb-1">ВКонтакте</h3>
+            <a href="https://vk.com/club239876488" target="_blank" rel="noopener" className="panel p-5 hover:-translate-y-1 transition-transform duration-200" style={{ background: 'var(--paper)' }}>
+              <h3 className="display text-lg mb-1">ВКонтакте →</h3>
               <p className="text-sm font-medium text-ink/70">Вступи в сообщество IMBA</p>
-            </div>
-            <div className="panel p-5" style={{ background: 'var(--paper)' }}>
-              <h3 className="display text-lg mb-1">Telegram</h3>
+            </a>
+            <a href="https://t.me/imba_live" target="_blank" rel="noopener" className="panel p-5 hover:-translate-y-1 transition-transform duration-200" style={{ background: 'var(--paper)' }}>
+              <h3 className="display text-lg mb-1">Telegram →</h3>
               <p className="text-sm font-medium text-ink/70">Подпишись на канал IMBA</p>
-            </div>
+            </a>
           </div>
           <p className="text-sm md:text-base font-medium text-ink/75 mb-6 max-w-3xl">
             Как активировать: зарегистрируйся → подпишись на ВКонтакте или Telegram → в кабинете активируй
