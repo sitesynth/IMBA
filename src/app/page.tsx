@@ -15,7 +15,7 @@ export default function LandingPage() {
       {/* Top ticker — full width, no rounding */}
       <Marquee
         bg="var(--violet-100)"
-        items={['eSIM В 190 СТРАНАХ', 'VPN БЕЗ ЛОГОВ', 'ВИРТУАЛЬНАЯ КАРТА', 'ОПЛАТА ВЕЗДЕ', 'БЕЗ ГРАНИЦ']}
+        items={['РАБОТАЕТ В РОССИИ', 'VLESS REALITY', '7 ДНЕЙ БЕСПЛАТНО', '50+ СЕРВЕРОВ', 'eSIM В 190 СТРАНАХ', 'ВИРТУАЛЬНАЯ КАРТА']}
       />
 
       {/* Nav + Hero combined white block */}
@@ -64,18 +64,18 @@ export default function LandingPage() {
 
         {/* Subhead + CTA below blob */}
         <div className="text-center mt-10 fade-up">
-          {/* Visually hidden H1 for SEO — visual heading is the animated logo above */}
-          <h1 className="sr-only">VPN, который работает в России</h1>
-          <h2 className="display text-4xl md:text-6xl mb-5">
-            Твой интернет.<br />Без границ.
-          </h2>
-          <p className="text-lg md:text-xl font-semibold text-ink/70 max-w-xl mx-auto mb-8">
-            eSIM для поездок, VPN для свободы и виртуальная карта для оплаты
-            зарубежных сервисов. Всё в одном приложении.
+          <h1 className="display text-4xl md:text-6xl mb-3">
+            VPN, который работает<br />в России
+          </h1>
+          <p className="display text-xl md:text-2xl text-ink/50 mb-5">Твой интернет. Без границ.</p>
+          <p className="text-lg md:text-xl font-semibold text-ink/70 max-w-2xl mx-auto mb-8">
+            IMBA работает на VLESS Reality: для оператора твой трафик неотличим от обычного HTTPS.
+            7 дней бесплатно за подписку на соцсети, карта не нужна. А ещё eSIM для поездок
+            и виртуальная карта для зарубежных подписок — в одном кабинете.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link href="/auth/register" className="pill pill-ink text-base imba-btn-pulse">IMBAНУТЬСЯ →</Link>
-            <Link href="#services" className="pill pill-paper text-base">Как это работает</Link>
+            <Link href="#why" className="pill pill-paper text-base">Как это работает</Link>
           </div>
         </div>
       </section>
@@ -86,6 +86,187 @@ export default function LandingPage() {
         bg="var(--yellow)"
         items={['190+ СТРАН', '50+ VPN-СЕРВЕРОВ', '0 ₽ ЗА ОТКРЫТИЕ', 'VISA / MASTERCARD', 'АКТИВАЦИЯ ЗА 1 МИНУТУ']}
       />
+
+      {/* Why VLESS Reality works */}
+      <section id="why" className="rounded-xl px-5 md:px-12 py-12 md:py-16" style={{ background: 'var(--paper)' }}>
+        <div className="max-w-5xl mx-auto">
+          <h2 className="display text-3xl md:text-5xl mb-6">Почему IMBA стабилен,<br className="hidden md:block" /> когда другие отваливаются</h2>
+          <p className="text-base md:text-lg font-medium text-ink/75 leading-relaxed mb-4 max-w-3xl">
+            Большинство VPN-сервисов работают на OpenVPN и WireGuard. Системы анализа трафика (DPI)
+            узнают эти протоколы по сигнатурам за секунды — поэтому «обычный» VPN живёт неделю,
+            а потом просто перестаёт подключаться.
+          </p>
+          <p className="text-base md:text-lg font-medium text-ink/75 leading-relaxed mb-6 max-w-3xl">
+            IMBA использует <strong>VLESS с XTLS Reality</strong>. Этот протокол маскирует соединение
+            под обычный HTTPS-запрос к легитимному сайту: со стороны оператора ты просто открываешь
+            очередную страницу. Никаких VPN-сигнатур — нечего распознавать и нечего ограничивать.
+          </p>
+          <ul className="space-y-2.5 font-semibold text-sm md:text-base mb-8">
+            {[
+              ['VLESS Reality', ' — основной протокол: стабилен на МТС, Мегафоне, Билайне, Tele2 и домашнем интернете'],
+              ['WireGuard', ' — запасной вариант для сетей, где он ещё работает'],
+              ['50+ серверов в 30+ странах', ' — Берлин, Лиссабон, Нью-Йорк и другие локации с пингом от 77 мс'],
+              ['Zero-knowledge', ' — мы не храним логи и физически не видим, что ты делаешь в сети'],
+            ].map(([b, rest]) => (
+              <li key={b} className="flex gap-2">
+                <span className="w-2 h-2 rounded-full bg-ink mt-2 shrink-0" />
+                <span><strong>{b}</strong>{rest}</span>
+              </li>
+            ))}
+          </ul>
+
+          <h3 className="display text-xl md:text-2xl mb-4">Сравнение VPN-протоколов для России, 2026</h3>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm border-collapse">
+              <thead>
+                <tr className="bg-ink" style={{ color: 'var(--paper)' }}>
+                  {['Протокол', 'Виден для DPI', 'Скорость', 'Статус в РФ, 2026'].map((h) => (
+                    <th key={h} className="px-3 py-2 border border-ink/20 text-left font-semibold whitespace-nowrap">{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  ['VLESS + XTLS Reality', 'Нет — трафик как HTTPS', 'Высокая', 'Работает стабильно', '#0E7A46'],
+                  ['Shadowsocks', 'Частично', 'Высокая', 'Работает с перебоями', '#A16207'],
+                  ['WireGuard', 'Да — по сигнатуре', 'Высокая', 'Ограничен у большинства операторов', '#B42318'],
+                  ['OpenVPN', 'Да — по хэндшейку', 'Средняя', 'Не работает', '#B42318'],
+                  ['PPTP / L2TP', 'Да', 'Низкая', 'Не работает', '#B42318'],
+                ].map(([proto, dpi, speed, status, color], ri) => (
+                  <tr key={proto} className={ri % 2 === 1 ? 'bg-ink/5' : ''}>
+                    <td className="px-3 py-2 border border-ink/20 font-black whitespace-nowrap">{proto}</td>
+                    <td className="px-3 py-2 border border-ink/20 font-semibold">{dpi}</td>
+                    <td className="px-3 py-2 border border-ink/20 font-semibold">{speed}</td>
+                    <td className="px-3 py-2 border border-ink/20 font-black whitespace-nowrap" style={{ color }}>{status}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      {/* Servers */}
+      <section id="servers" className="rounded-xl px-5 md:px-12 py-12 md:py-16" style={{ background: 'var(--violet-100)' }}>
+        <div className="max-w-5xl mx-auto">
+          <h2 className="display text-3xl md:text-5xl mb-4">Серверы IMBA:<br className="md:hidden" /> 50+ локаций в 30+ странах</h2>
+          <p className="text-base md:text-lg font-medium text-ink/75 leading-relaxed mb-8 max-w-3xl">
+            Точки подключения подобраны по маршрутам с минимальной задержкой из России: пинг ниже 130 мс —
+            это видеозвонки без рассинхрона и стриминг без буферизации. Полный список с живым пингом —
+            в личном кабинете, вот ближайшие:
+          </p>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[
+              ['🇩🇪 Берлин', 'DE · ГЕРМАНИЯ', 'VLESS Reality'],
+              ['🇵🇹 Лиссабон', 'PT · ПОРТУГАЛИЯ', '⚡ ~77 мс'],
+              ['🇺🇸 Нью-Йорк', 'US · США', '⚡ ~122 мс'],
+              ['+ другие', 'ЕВРОПА · АЗИЯ · АМЕРИКА', 'Список в кабинете →'],
+            ].map(([city, cc, ping]) => (
+              <div key={city} className="panel flex flex-col gap-1.5 p-4 md:p-5" style={{ background: 'var(--paper)' }}>
+                <div className="font-black text-base md:text-lg">{city}</div>
+                <div className="text-[11px] font-bold tracking-widest text-ink/40">{cc}</div>
+                <span className="chip mt-2 w-fit text-xs" style={{ background: 'var(--violet-100)', borderColor: 'var(--ink)' }}>{ping}</span>
+              </div>
+            ))}
+          </div>
+          <p className="text-sm md:text-base font-medium text-ink/70 mt-6">
+            Один аккаунт работает на всех серверах: Берлин для работы, Нью-Йорк для стриминга.
+            Переключение — в один тап, лимитов на смену локаций нет.
+          </p>
+        </div>
+      </section>
+
+      {/* Free VPN */}
+      <section id="free-vpn" className="rounded-xl px-5 md:px-12 py-12 md:py-16" style={{ background: 'var(--yellow)' }}>
+        <div className="max-w-5xl mx-auto">
+          <h2 className="display text-3xl md:text-5xl mb-4">Бесплатный VPN на 7 дней</h2>
+          <p className="text-base md:text-lg font-medium text-ink/75 leading-relaxed mb-8 max-w-3xl">
+            «Бесплатный VPN» из сторов обычно означает рекламу, перегруженные серверы и продажу твоих
+            данных — так он и окупается. У IMBA другая сделка, честная: подпишись на наши соцсети —
+            получи неделю полного доступа. Тот же VLESS Reality, те же серверы, что и на платных тарифах.
+          </p>
+          <div className="grid md:grid-cols-2 gap-4 mb-8 max-w-2xl">
+            <div className="panel p-5" style={{ background: 'var(--paper)' }}>
+              <h3 className="display text-lg mb-1">ВКонтакте</h3>
+              <p className="text-sm font-medium text-ink/70">Вступи в сообщество IMBA</p>
+            </div>
+            <div className="panel p-5" style={{ background: 'var(--paper)' }}>
+              <h3 className="display text-lg mb-1">Telegram</h3>
+              <p className="text-sm font-medium text-ink/70">Подпишись на канал IMBA</p>
+            </div>
+          </div>
+          <p className="text-sm md:text-base font-medium text-ink/75 mb-6 max-w-3xl">
+            Как активировать: зарегистрируйся → подпишись на ВКонтакте или Telegram → в кабинете активируй
+            <strong> IMBA Старт</strong> — VPN и eSIM 500 МБ на 7 дней. Есть промокод? Он тоже применяется в кабинете.
+          </p>
+          <Link href="/auth/register" className="pill pill-ink text-base">Получить 7 дней бесплатно →</Link>
+        </div>
+      </section>
+
+      {/* What you get */}
+      <section className="rounded-xl px-5 md:px-12 py-12 md:py-16" style={{ background: 'var(--paper)' }}>
+        <div className="max-w-5xl mx-auto">
+          <h2 className="display text-3xl md:text-5xl mb-8">Что ты получаешь с IMBA VPN</h2>
+          <div className="grid md:grid-cols-2 gap-5">
+            {[
+              {
+                t: 'Доступ к YouTube и привычным сервисам',
+                d: <>YouTube в 4K без замедлений, LinkedIn, зарубежные сайты и стриминги. Всё открывается сразу и работает стабильно — без танцев с настройками.</>,
+                bg: 'var(--blue-100)',
+              },
+              {
+                t: 'Скорость без просадок',
+                d: <>XTLS почти не тратит ресурсы на шифрование: видеозвонок не рассыпается, игра не лагает. Серверы выбраны по маршрутам с минимальным пингом из России.</>,
+                bg: 'var(--green-100)',
+              },
+              {
+                t: 'Приватность: никаких логов',
+                d: <>Надёжный VPN не должен знать о тебе ничего. Мы не записываем историю, IP и время подключений. Оплата криптой — аккаунт не привязан к личности. Юрисдикция — вне РФ.</>,
+                bg: 'var(--violet-100)',
+              },
+              {
+                t: 'Работает на всех устройствах',
+                d: <>iPhone и iPad, Android, Windows, macOS, Smart TV. Настройка за 2 минуты по гайдам: <Link href="/blog/vpn-na-kompyutere" className="font-bold underline">VPN на компьютере</Link> и <Link href="/blog/happ-setup" className="font-bold underline">настройка Happ</Link>.</>,
+                bg: 'var(--cream)',
+              },
+            ].map((c) => (
+              <div key={c.t} className="panel p-5 md:p-7" style={{ background: c.bg }}>
+                <h3 className="display text-lg md:text-xl mb-2">{c.t}</h3>
+                <p className="text-sm md:text-base font-medium text-ink/75 leading-relaxed">{c.d}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 3 steps */}
+      <section className="rounded-xl px-5 md:px-12 py-12 md:py-16" style={{ background: 'var(--cream)' }}>
+        <div className="max-w-5xl mx-auto">
+          <h2 className="display text-3xl md:text-5xl mb-8">Как подключить VPN — 3 шага</h2>
+          <div className="grid md:grid-cols-3 gap-5">
+            {[
+              {
+                n: '01', t: 'Зарегистрируйся и получи 7 дней бесплатно',
+                d: <>Нужен только email. Подпишись на ВКонтакте или Telegram IMBA — и активируй Старт: VPN и eSIM 500 МБ на 7 дней. Карта не требуется.</>,
+              },
+              {
+                n: '02', t: 'Установи Happ',
+                d: <>Приложение для Android, iOS, Windows, macOS и Linux. В RU App Store и Google Play его нет — качай APK или с зеркала по ссылкам из кабинета. <Link href="/blog/happ-setup" className="font-bold underline">Полная инструкция</Link>.</>,
+              },
+              {
+                n: '03', t: 'Добавь подписку и подключись',
+                d: <>Вставь ссылку подписки из кабинета, отключи Mux в настройках сервера, нажми «Подключить». Всё.</>,
+              },
+            ].map((s) => (
+              <div key={s.n} className="panel p-5 md:p-7" style={{ background: 'var(--paper)' }}>
+                <span className="chip bg-ink mb-3 w-fit" style={{ color: '#fff' }}>{s.n}</span>
+                <h3 className="display text-lg mb-2">{s.t}</h3>
+                <p className="text-sm font-medium text-ink/75 leading-relaxed">{s.d}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* Services */}
       <section id="services" className="rounded-xl px-5 md:px-12 py-16" style={{ background: 'var(--paper)' }}>
@@ -103,7 +284,7 @@ export default function LandingPage() {
             {
               lottie: 'lock', tag: 'VPN', bg: 'var(--blue-100)', href: '#pricing',
               title: 'Свобода и защита',
-              desc: 'Доступ к Instagram, LinkedIn и YouTube. VLESS Reality и WireGuard — быстро, без логов, работает в России.',
+              desc: 'Доступ к Instagram*, LinkedIn и YouTube. VLESS Reality и WireGuard — быстро, без логов, работает в России.',
               points: ['VLESS Reality / WireGuard', '50+ серверов', 'Без логов'],
             },
             {
@@ -168,20 +349,28 @@ export default function LandingPage() {
             </div>
           ))}
         </div>
+        <p className="text-center text-sm md:text-base font-medium text-ink/60 mt-8 max-w-3xl mx-auto">
+          Начни бесплатно: после регистрации подпишись на ВКонтакте или Telegram IMBA — и активируй Старт
+          с VPN и eSIM 500 МБ на 7 дней. Без вложений и привязки карты. Апгрейд в любой момент.
+        </p>
       </section>
 
       {/* FAQ */}
       <section id="faq" className="rounded-xl px-4 md:px-12 py-10 md:py-16" style={{ background: 'var(--blue-100)' }}>
-        <h2 className="display text-3xl md:text-7xl text-center mb-2">Вопросы?</h2>
+        <h2 className="display text-3xl md:text-7xl text-center mb-2">Частые вопросы о VPN</h2>
         <p className="text-center font-semibold text-ink/60 mb-8 md:mb-12 text-sm md:text-lg">Ответы на всё что тебя беспокоит</p>
 
         <div className="max-w-3xl mx-auto">
           <FaqAccordion items={[
-            { q: 'Что такое eSIM?', a: 'eSIM — это электронная SIM-карта, встроенная в твой телефон. Не нужно идти в салон: купи тариф, отсканируй QR — и уже в сети.', color: 'var(--violet-100)' },
-            { q: 'Работает ли VPN в России?', a: 'Да. Мы используем протокол VLESS Reality — он неотличим от обычного HTTPS-трафика. 50+ серверов в 30+ странах, без логов.', color: 'var(--blue-100)' },
-            { q: 'Для чего виртуальная карта?', a: 'Для оплаты Netflix, Spotify, ChatGPT Plus, Adobe, Amazon и любых других зарубежных сервисов, которые не принимают российские карты.', color: 'var(--green-100)' },
-            { q: 'Нужно ли привязывать российскую карту?', a: 'Нет. Карту для пополнения не требуем. Пополнение через криптовалюту или переводом.', color: 'var(--paper)' },
-            { q: 'Мои данные в безопасности?', a: 'Мы не храним логи. VPN работает по принципу zero-knowledge — мы физически не можем узнать что ты делал в сети.', color: 'var(--violet-100)' },
+            { q: 'Работает ли IMBA VPN в России?', a: 'Да. Основной протокол — VLESS Reality, его трафик неотличим от обычного HTTPS. Работает на МТС, Мегафоне, Билайне, Tele2 и домашнем интернете — в Москве, Питере и регионах. 50+ серверов в 30+ странах.', color: 'var(--violet-100)' },
+            { q: 'Есть ли бесплатный VPN у IMBA?', a: 'Да: после регистрации подпишись на ВКонтакте или Telegram IMBA — и получи тариф Старт бесплатно на 7 дней: VPN на том же VLESS Reality плюс eSIM 500 МБ. Без рекламы, продажи данных и перегруженных серверов.', color: 'var(--blue-100)' },
+            { q: 'VPN замедлит интернет?', a: 'Незначительно. XTLS Reality почти не добавляет накладных расходов: YouTube в 4K, звонки и игры работают как без VPN.', color: 'var(--green-100)' },
+            { q: 'На каких устройствах работает?', a: 'iPhone, iPad, Android, Windows, macOS, Linux, Android TV. Одна подписка — несколько устройств одновременно.', color: 'var(--paper)' },
+            { q: 'Вы храните логи?', a: 'Нет. Ни историю, ни IP, ни время подключений. Архитектура zero-knowledge: данных, которые можно было бы выдать, у нас просто нет.', color: 'var(--violet-100)' },
+            { q: 'Как оплатить без зарубежной карты?', a: 'Криптовалютой (USDT, BTC) или переводом. А внутри IMBA можно выпустить виртуальную карту Visa/Mastercard — и оплачивать ей любые зарубежные сервисы.', color: 'var(--blue-100)' },
+            { q: 'Какой протокол VPN не определяется в России?', a: 'VLESS с XTLS Reality. Он маскирует соединение под обычный HTTPS-запрос к легитимному сайту, поэтому системы DPI не находят VPN-сигнатур. OpenVPN и WireGuard определяются по характерным признакам трафика и работают нестабильно.', color: 'var(--green-100)' },
+            { q: 'Законно ли пользоваться VPN в России?', a: 'Использование VPN в России не запрещено — штрафов для пользователей нет. Ограничения касаются владельцев сервисов и рекламы VPN, а не тех, кто им пользуется.', color: 'var(--paper)' },
+            { q: 'Что ещё входит в подписку?', a: 'eSIM для 190+ стран — интернет в поездках без роуминга, и виртуальная карта в USD/EUR/AED для Netflix, Spotify, ChatGPT. Три сервиса, один кабинет.', color: 'var(--violet-100)' },
           ]} />
         </div>
       </section>
@@ -209,6 +398,7 @@ export default function LandingPage() {
           { '@type': 'Question', name: 'Как оплатить VPN без зарубежной карты?', acceptedAnswer: { '@type': 'Answer', text: 'Криптовалютой (USDT, BTC) или банковским переводом. Внутри IMBA можно выпустить виртуальную карту Visa/Mastercard для оплаты зарубежных сервисов.' } },
           { '@type': 'Question', name: 'Какой протокол VPN не определяется в России?', acceptedAnswer: { '@type': 'Answer', text: 'VLESS с XTLS Reality — он маскирует соединение под обычный HTTPS-запрос, поэтому системы DPI не находят VPN-сигнатур. OpenVPN и WireGuard определяются по признакам трафика и работают нестабильно.' } },
           { '@type': 'Question', name: 'Законно ли пользоваться VPN в России?', acceptedAnswer: { '@type': 'Answer', text: 'Использование VPN в России не запрещено — штрафов для пользователей нет. Ограничения касаются владельцев сервисов и рекламы VPN, а не тех, кто им пользуется.' } },
+          { '@type': 'Question', name: 'Что ещё входит в подписку?', acceptedAnswer: { '@type': 'Answer', text: 'eSIM для 190+ стран — интернет в поездках без роуминга, и виртуальная карта в USD/EUR/AED для Netflix, Spotify, ChatGPT. Три сервиса, один кабинет.' } },
         ],
       })}} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify([
@@ -231,6 +421,9 @@ export default function LandingPage() {
         <div className="px-5 md:px-8 pb-6 border-t border-ink/10 pt-4">
           <p className="text-xs text-ink/40 text-center leading-relaxed">
             IMBA SRL · Reg. No. 3-102-942736 · Registered 25.08.2025 · Costa Rica, San José, Mata Redonda, Sabana Oeste, Avenida Doce Calle Noventa
+          </p>
+          <p className="text-[10px] text-ink/30 text-center leading-relaxed mt-2">
+            *Meta Platforms Inc. признана экстремистской организацией, её деятельность запрещена на территории РФ.
           </p>
         </div>
       </footer>
