@@ -9,11 +9,42 @@ export const metadata: Metadata = {
   title: 'Блог IMBA — eSIM, VPN и виртуальные карты. Интернет без границ.',
   description: 'Гайды, разборы протоколов и практические советы по VPN, eSIM и виртуальным картам. Интернет без границ с IMBA.',
   alternates: { canonical: 'https://www.imba.live/blog' },
+  openGraph: {
+    title: 'Блог IMBA — гайды по VPN, eSIM и виртуальным картам',
+    description: 'Практические гайды: какой VPN работает в России, как оплатить ChatGPT и Netflix, eSIM для путешествий.',
+    type: 'website',
+    url: 'https://www.imba.live/blog',
+    images: [{ url: 'https://www.imba.live/og-image.png', width: 1200, height: 630 }],
+    locale: 'ru_RU',
+    siteName: 'IMBA',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Блог IMBA — гайды по VPN, eSIM и виртуальным картам',
+    description: 'Практические гайды: какой VPN работает в России, как оплатить ChatGPT и Netflix, eSIM для путешествий.',
+    images: ['https://www.imba.live/og-image.png'],
+  },
 }
 
 export default function BlogPage() {
   return (
     <div className="min-h-screen flex flex-col gap-1.5" style={{ background: 'var(--ink)', padding: '5px' }}>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'Blog',
+        name: 'Блог IMBA',
+        url: 'https://www.imba.live/blog',
+        description: 'Гайды по VPN, eSIM и виртуальным картам для пользователей из России',
+        publisher: { '@type': 'Organization', '@id': 'https://www.imba.live/#organization', name: 'IMBA', url: 'https://www.imba.live' },
+      })}} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Главная', item: 'https://www.imba.live/' },
+          { '@type': 'ListItem', position: 2, name: 'Блог', item: 'https://www.imba.live/blog' },
+        ],
+      })}} />
       <Marquee
         bg="var(--violet-100)"
         items={['eSIM В 190 СТРАНАХ', 'VPN БЕЗ ЛОГОВ', 'ВИРТУАЛЬНАЯ КАРТА', 'ОПЛАТА ВЕЗДЕ', 'БЕЗ ГРАНИЦ']}

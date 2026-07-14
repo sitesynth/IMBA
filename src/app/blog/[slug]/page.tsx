@@ -58,6 +58,27 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   }
 }
 
+function extractFaq(content: string): { q: string; a: string }[] {
+  const faqIdx = content.indexOf('## Частые вопросы')
+  if (faqIdx === -1) return []
+  const faqSection = content.slice(faqIdx)
+  const lines = faqSection.split('\n')
+  const items: { q: string; a: string }[] = []
+  let currentQ = ''
+  let currentA: string[] = []
+  for (const line of lines) {
+    if (line.startsWith('### ')) {
+      if (currentQ && currentA.length) items.push({ q: currentQ, a: currentA.join(' ').trim() })
+      currentQ = line.slice(4).trim()
+      currentA = []
+    } else if (currentQ && line.trim() && !line.startsWith('## ')) {
+      currentA.push(line.replace(/\*\*(.+?)\*\*/g, '$1').trim())
+    }
+  }
+  if (currentQ && currentA.length) items.push({ q: currentQ, a: currentA.join(' ').trim() })
+  return items
+}
+
 function renderContent(content: string) {
   const lines = content.split('\n')
   const elements: React.ReactNode[] = []
@@ -219,7 +240,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         datePublished: toIso(post.date),
         dateModified: toIso(post.date),
         inLanguage: 'ru',
-        author: { '@type': 'Organization', '@id': 'https://www.imba.live/#organization', name: 'IMBA' },
+        author: { '@type': 'Person', name: 'Сергей Карпов' },
         publisher: { '@type': 'Organization', '@id': 'https://www.imba.live/#organization', name: 'IMBA', logo: { '@type': 'ImageObject', url: 'https://www.imba.live/favicon.png', width: 512, height: 512 } },
         image: { '@type': 'ImageObject', url: post.ogImage ?? 'https://www.imba.live/og-image.png', width: 1200, height: 630 },
         isPartOf: { '@type': 'WebSite', '@id': 'https://www.imba.live/#website' },
@@ -232,6 +253,17 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           ],
         },
       })}} />
+      {extractFaq(post.content).length > 0 && (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'FAQPage',
+          mainEntity: extractFaq(post.content).map(({ q, a }) => ({
+            '@type': 'Question',
+            name: q,
+            acceptedAnswer: { '@type': 'Answer', text: a },
+          })),
+        })}} />
+      )}
 
       {/* Footer */}
       <footer className="rounded-xl" style={{ background: 'var(--paper)' }}>
