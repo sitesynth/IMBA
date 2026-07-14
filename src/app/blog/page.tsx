@@ -100,21 +100,21 @@ export default function BlogPage() {
       <div className="rounded-xl flex-1 px-5 md:px-12 py-10" style={{ background: 'var(--cream)' }}>
         {/* Featured post */}
         {featured && (
-          <Link href={`/blog/${featured.slug}`} className="group block max-w-7xl mx-auto mb-8">
-            <article className="panel overflow-hidden grid md:grid-cols-2 gap-0 hover:-translate-y-1 transition-transform duration-200" style={{ padding: 0 }}>
+          <Link href={`/blog/${featured.slug}`} className="group block max-w-7xl mx-auto mb-10">
+            <div className="grid md:grid-cols-2 gap-6 md:gap-10 items-center">
               {featuredCover && (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={featuredCover.src}
                   alt={featuredCover.alt}
-                  className="w-full h-full object-cover border-b-2 md:border-b-0 md:border-r-2 border-ink/10"
+                  className="w-full rounded-2xl group-hover:-translate-y-1 transition-transform duration-200"
                 />
               )}
-              <div className="p-6 md:p-8 flex flex-col justify-center">
+              <div className="flex flex-col justify-center">
                 <span className="text-xs font-bold uppercase tracking-widest text-ink/40 mb-2">
                   {featured.category} · Главный материал
                 </span>
-                <h2 className="display text-2xl md:text-3xl mb-3 group-hover:opacity-70 transition-opacity">
+                <h2 className="display text-2xl md:text-4xl mb-3 group-hover:opacity-70 transition-opacity">
                   {featured.title}
                 </h2>
                 <p className="text-sm md:text-base text-ink/65 leading-relaxed mb-4">{featured.excerpt}</p>
@@ -122,7 +122,7 @@ export default function BlogPage() {
                   {AUTHOR} · {featured.date} · {featured.readTime}
                 </span>
               </div>
-            </article>
+            </div>
           </Link>
         )}
 
