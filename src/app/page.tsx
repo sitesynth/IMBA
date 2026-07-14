@@ -65,7 +65,7 @@ export default function LandingPage() {
         {/* Subhead + CTA below blob */}
         <div className="text-center mt-10 fade-up">
           <h1 className="display text-4xl md:text-6xl mb-3">
-            VPN, который работает<br />в России
+            VPN, который работает
           </h1>
           <p className="display text-xl md:text-2xl text-ink/50 mb-5">Твой интернет. Без границ.</p>
           <p className="text-lg md:text-xl font-semibold text-ink/70 max-w-2xl mx-auto mb-8">
