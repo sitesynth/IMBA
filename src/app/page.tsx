@@ -242,7 +242,7 @@ export default function LandingPage() {
           <div className="grid md:grid-cols-3 gap-5">
             {[
               {
-                n: '01', t: 'Зарегистрируйся и получи 7 дней бесплатно',
+                n: '01', t: '7 дней бесплатно',
                 d: <>Нужен только email. Подпишись на ВКонтакте или Telegram IMBA — и активируй Старт: VPN и eSIM 500 МБ на 7 дней. Карта не требуется.</>,
               },
               {
