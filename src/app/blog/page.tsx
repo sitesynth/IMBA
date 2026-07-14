@@ -137,7 +137,7 @@ export default function BlogPage() {
           Новые гайды, обновления протоколов и запасные адреса — в Telegram-канале IMBA.
           Подписка также даёт 7 дней VPN бесплатно.
         </p>
-        <a href="https://t.me/imba_live" target="_blank" rel="noopener" className="pill pill-ink text-base">Подписаться в Telegram →</a>
+        <a href="https://telegram.dog/imba_live" target="_blank" rel="noopener" className="pill pill-ink text-base">Подписаться в Telegram →</a>
       </section>
 
       {/* Footer */}

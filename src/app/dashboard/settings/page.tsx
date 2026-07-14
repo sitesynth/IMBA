@@ -77,7 +77,7 @@ export default async function SettingsPage() {
           <a href="mailto:hello@imba.live" className="pill pill-ink pill-sm">
             Написать в поддержку
           </a>
-          <a href="https://t.me/imbasupport" className="pill pill-paper pill-sm">
+          <a href="https://telegram.dog/imbasupport" className="pill pill-paper pill-sm">
             Telegram
           </a>
         </div>

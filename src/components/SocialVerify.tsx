@@ -5,7 +5,7 @@ import { getFingerprint } from '@/lib/fingerprint'
 import { VKIDButton } from './VKIDButton'
 
 const VK_GROUP_URL = 'https://vk.com/club239876488'
-const TG_CHANNEL_URL = 'https://t.me/imba_live'
+const TG_CHANNEL_URL = 'https://telegram.dog/imba_live'
 
 interface Props {
   onActivated: () => void
