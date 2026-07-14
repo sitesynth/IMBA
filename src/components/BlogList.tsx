@@ -56,21 +56,21 @@ export function BlogList({ posts }: { posts: BlogListPost[] }) {
         {visible.map((post) => (
           <Link key={post.slug} href={`/blog/${post.slug}`} className="group block">
             <article className="panel h-full flex flex-col gap-3 hover:-translate-y-1 transition-transform duration-200">
-              {post.cover && (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={post.cover.src}
-                  alt={post.cover.alt}
-                  className="w-full rounded-lg border-2 border-ink/10"
-                  loading="lazy"
-                />
-              )}
               <div className="flex items-center justify-between">
                 <span className="chip" style={{ background: post.categoryColor, borderColor: 'var(--ink)' }}>
                   {post.category}
                 </span>
                 <span className="text-xs text-ink/40 font-semibold">{post.readTime} чтения</span>
               </div>
+              {post.cover && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={post.cover.src}
+                  alt={post.cover.alt}
+                  className="w-full rounded-lg"
+                  loading="lazy"
+                />
+              )}
               <h2 className="text-lg font-black leading-snug group-hover:opacity-70 transition-opacity">
                 {post.title}
               </h2>
