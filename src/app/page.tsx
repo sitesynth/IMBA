@@ -9,7 +9,28 @@ import { FaqAccordion } from '@/components/FaqAccordion'
 import { SiteHeader } from '@/components/SiteHeader'
 import { Logo } from '@/components/Logo'
 
-export default function LandingPage() {
+export const revalidate = 60
+
+const COUNTRY_NAMES: Record<string, string> = {
+  DE: 'ГЕРМАНИЯ', PT: 'ПОРТУГАЛИЯ', US: 'США', NL: 'НИДЕРЛАНДЫ', FR: 'ФРАНЦИЯ',
+  GB: 'ВЕЛИКОБРИТАНИЯ', FI: 'ФИНЛЯНДИЯ', PL: 'ПОЛЬША', TR: 'ТУРЦИЯ', JP: 'ЯПОНИЯ',
+  SG: 'СИНГАПУР', AE: 'ОАЭ',
+}
+
+type VpnServer = { id: string; city: string; country: string; flag: string; ping?: number }
+
+async function fetchVpnServers(): Promise<VpnServer[]> {
+  try {
+    const res = await fetch(`${process.env.IMBA_API_URL}/v1/me/vpn/servers`, { next: { revalidate: 60 } })
+    if (!res.ok) return []
+    return res.json()
+  } catch {
+    return []
+  }
+}
+
+export default async function LandingPage() {
+  const vpnServers = await fetchVpnServers()
   return (
     <div className="min-h-screen flex flex-col gap-1.5" style={{ background: 'var(--ink)', padding: '5px' }}>
       {/* Top ticker — full width, no rounding */}
@@ -152,18 +173,22 @@ export default function LandingPage() {
             Ваш аккаунт работает на всех серверах: Берлин для стриминга, Нью-Йорк для нейронок. Отдельные сервера для торрентов. Переключение — в один тап, лимитов на смену локаций и ограничения трафика нет. Скорость портов серверов 10 Gbps.
           </p>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {[
-              ['🇩🇪 Берлин', 'DE · ГЕРМАНИЯ', 'VLESS Reality'],
-              ['🇵🇹 Лиссабон', 'PT · ПОРТУГАЛИЯ', '⚡ ~77 мс'],
-              ['🇺🇸 Нью-Йорк', 'US · США', '⚡ ~122 мс'],
-              ['+ другие', 'ЕВРОПА · АЗИЯ · АМЕРИКА', 'Список в кабинете →'],
-            ].map(([city, cc, ping], i) => (
-              <div key={city} className={`panel flex flex-col gap-1.5 p-4 md:p-5${i === 3 ? ' col-span-2 md:col-span-1' : ''}`} style={{ background: 'var(--paper)' }}>
-                <div className="font-black text-base md:text-lg">{city}</div>
-                <div className="text-[11px] font-bold tracking-widest text-ink/40">{cc}</div>
-                <span className="chip mt-2 w-fit text-xs" style={{ background: 'var(--violet-100)', borderColor: 'var(--ink)' }}>{ping}</span>
+            {vpnServers.map((srv) => (
+              <div key={srv.id} className="panel flex flex-col gap-1.5 p-4 md:p-5" style={{ background: 'var(--paper)' }}>
+                <div className="font-black text-base md:text-lg">{srv.flag} {srv.city}</div>
+                <div className="text-[11px] font-bold tracking-widest text-ink/40">{srv.country} · {COUNTRY_NAMES[srv.country] ?? srv.country}</div>
+                <span className="chip mt-2 w-fit text-xs" style={{ background: 'var(--violet-100)', borderColor: 'var(--ink)' }}>
+                  {srv.ping ? `⚡ ~${srv.ping} мс` : 'VLESS Reality'}
+                </span>
               </div>
             ))}
+            <div className="panel flex flex-col gap-2 p-4 md:p-5 col-span-2 md:col-span-1" style={{ background: 'var(--paper)' }}>
+              <div className="font-black text-base md:text-lg">+ другие</div>
+              <div className="text-[11px] font-bold tracking-widest text-ink/40">ЕВРОПА · АЗИЯ · АМЕРИКА</div>
+              <Link href="/auth/register" className="pill pill-ink pill-sm mt-1 w-fit text-xs">
+                Список в кабинете →
+              </Link>
+            </div>
           </div>
           <p className="text-sm md:text-base font-medium text-ink/70 mt-6">
             Один аккаунт работает на всех серверах: Берлин для работы, Нью-Йорк для стриминга.
