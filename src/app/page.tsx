@@ -201,11 +201,14 @@ export default function LandingPage() {
         '@context': 'https://schema.org',
         '@type': 'FAQPage',
         mainEntity: [
-          { '@type': 'Question', name: 'Что такое eSIM?', acceptedAnswer: { '@type': 'Answer', text: 'eSIM — это электронная SIM-карта, встроенная в твой телефон. Не нужно идти в салон: купи тариф, отсканируй QR — и уже в сети. IMBA поддерживает eSIM в 190+ странах с активацией за 1 минуту.' } },
-          { '@type': 'Question', name: 'Работает ли VPN в России?', acceptedAnswer: { '@type': 'Answer', text: 'Да. IMBA использует два протокола: VLESS Reality (для Москвы и СПб — неотличим от HTTPS для ТСПУ) и WireGuard (для регионов). 50+ серверов в 30+ странах, без логов.' } },
-          { '@type': 'Question', name: 'Для чего нужна виртуальная карта IMBA?', acceptedAnswer: { '@type': 'Answer', text: 'Виртуальная Visa/Mastercard от IMBA предназначена для оплаты Netflix, Spotify, ChatGPT Plus, Adobe, Amazon и других зарубежных сервисов, которые не принимают российские карты.' } },
-          { '@type': 'Question', name: 'Нужно ли привязывать российскую карту для пополнения?', acceptedAnswer: { '@type': 'Answer', text: 'Нет. Российская карта не требуется. Пополнение доступно через криптовалюту или денежным переводом.' } },
-          { '@type': 'Question', name: 'Мои данные в безопасности?', acceptedAnswer: { '@type': 'Answer', text: 'IMBA не хранит логи активности. VPN работает по принципу zero-knowledge — провайдер физически не может знать, что вы делали в сети.' } },
+          { '@type': 'Question', name: 'Работает ли IMBA VPN в России?', acceptedAnswer: { '@type': 'Answer', text: 'Да. Основной протокол — VLESS Reality, его трафик неотличим от обычного HTTPS. Работает на МТС, Мегафоне, Билайне, Tele2 и домашнем интернете — в Москве, Питере и регионах.' } },
+          { '@type': 'Question', name: 'Есть ли бесплатный VPN у IMBA?', acceptedAnswer: { '@type': 'Answer', text: 'Да: после регистрации подпишитесь на ВКонтакте или Telegram IMBA — и получите тариф Старт бесплатно на 7 дней: VPN на VLESS Reality плюс eSIM 500 МБ. Без рекламы и продажи данных.' } },
+          { '@type': 'Question', name: 'VPN замедлит интернет?', acceptedAnswer: { '@type': 'Answer', text: 'Незначительно. XTLS Reality почти не добавляет накладных расходов: YouTube в 4K, звонки и игры работают как без VPN.' } },
+          { '@type': 'Question', name: 'На каких устройствах работает IMBA VPN?', acceptedAnswer: { '@type': 'Answer', text: 'iPhone, iPad, Android, Windows, macOS, Linux, Android TV. Одна подписка — несколько устройств одновременно.' } },
+          { '@type': 'Question', name: 'Вы храните логи?', acceptedAnswer: { '@type': 'Answer', text: 'Нет. Ни историю, ни IP-адреса, ни время подключений. Архитектура zero-knowledge: данных, которые можно было бы выдать, просто нет.' } },
+          { '@type': 'Question', name: 'Как оплатить VPN без зарубежной карты?', acceptedAnswer: { '@type': 'Answer', text: 'Криптовалютой (USDT, BTC) или банковским переводом. Внутри IMBA можно выпустить виртуальную карту Visa/Mastercard для оплаты зарубежных сервисов.' } },
+          { '@type': 'Question', name: 'Какой протокол VPN не определяется в России?', acceptedAnswer: { '@type': 'Answer', text: 'VLESS с XTLS Reality — он маскирует соединение под обычный HTTPS-запрос, поэтому системы DPI не находят VPN-сигнатур. OpenVPN и WireGuard определяются по признакам трафика и работают нестабильно.' } },
+          { '@type': 'Question', name: 'Законно ли пользоваться VPN в России?', acceptedAnswer: { '@type': 'Answer', text: 'Использование VPN в России не запрещено — штрафов для пользователей нет. Ограничения касаются владельцев сервисов и рекламы VPN, а не тех, кто им пользуется.' } },
         ],
       })}} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify([
