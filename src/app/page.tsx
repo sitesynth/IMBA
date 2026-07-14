@@ -190,10 +190,6 @@ export default async function LandingPage() {
               </Link>
             </div>
           </div>
-          <p className="text-sm md:text-base font-medium text-ink/70 mt-6">
-            Один аккаунт работает на всех серверах: Берлин для работы, Нью-Йорк для стриминга.
-            Переключение — в один тап, лимитов на смену локаций нет.
-          </p>
         </div>
       </section>
 
