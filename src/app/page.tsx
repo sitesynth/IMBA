@@ -250,7 +250,7 @@ export default function LandingPage() {
                 d: <>Приложение для Android, iOS, Windows, macOS и Linux. В RU App Store и Google Play его нет — качай APK или с зеркала по ссылкам из кабинета. <Link href="/blog/happ-setup" className="font-bold underline">Полная инструкция</Link>.</>,
               },
               {
-                n: '03', t: 'Добавь подписку и подключись',
+                n: '03', t: 'Активируй подписку',
                 d: <>Вставь ссылку подписки из кабинета, отключи Mux в настройках сервера, нажми «Подключить». Всё.</>,
               },
             ].map((s) => (
