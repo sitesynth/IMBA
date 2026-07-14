@@ -157,8 +157,8 @@ export default function LandingPage() {
               ['🇵🇹 Лиссабон', 'PT · ПОРТУГАЛИЯ', '⚡ ~77 мс'],
               ['🇺🇸 Нью-Йорк', 'US · США', '⚡ ~122 мс'],
               ['+ другие', 'ЕВРОПА · АЗИЯ · АМЕРИКА', 'Список в кабинете →'],
-            ].map(([city, cc, ping]) => (
-              <div key={city} className="panel flex flex-col gap-1.5 p-4 md:p-5" style={{ background: 'var(--paper)' }}>
+            ].map(([city, cc, ping], i) => (
+              <div key={city} className={`panel flex flex-col gap-1.5 p-4 md:p-5${i === 3 ? ' col-span-2 md:col-span-1' : ''}`} style={{ background: 'var(--paper)' }}>
                 <div className="font-black text-base md:text-lg">{city}</div>
                 <div className="text-[11px] font-bold tracking-widest text-ink/40">{cc}</div>
                 <span className="chip mt-2 w-fit text-xs" style={{ background: 'var(--violet-100)', borderColor: 'var(--ink)' }}>{ping}</span>
@@ -266,7 +266,7 @@ export default function LandingPage() {
 
       {/* Services */}
       <section id="services" className="rounded-xl px-5 md:px-12 py-16" style={{ background: 'var(--paper)' }}>
-        <h2 className="display text-5xl md:text-7xl text-center mb-4">Три сервиса.<br />Один кабинет.</h2>
+        <h2 className="display text-4xl md:text-7xl text-center mb-4">Три сервиса.<br />Один кабинет.</h2>
         <p className="text-center text-lg font-semibold text-ink/60 mb-14">Управляй всем из одного места</p>
 
         <div className="grid md:grid-cols-3 gap-6">
