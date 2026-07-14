@@ -3,16 +3,24 @@ import Link from 'next/link'
 import { Marquee } from '@/components/Marquee'
 import { SiteHeader } from '@/components/SiteHeader'
 import { Logo } from '@/components/Logo'
+import { existsSync } from 'fs'
+import { join } from 'path'
 import { BlogList, type BlogListPost } from '@/components/BlogList'
 import { posts } from '@/lib/posts'
 
 const FEATURED_SLUG = 'vpn-russia-2026'
 const AUTHOR = 'Сергей Карпов'
 
-// Cover images with descriptive alt text (SEO). Only posts that have a rendered cover file.
-const COVERS: Record<string, { src: string; alt: string }> = {
-  'vpn-russia-2026': { src: '/blog/cover-vpn-russia-2026.svg', alt: 'VPN в России 2026: какой протокол реально работает — разбор IMBA' },
-  'esim-russia-abroad': { src: '/blog/esim-russia-abroad.svg', alt: 'eSIM для россиян: интернет за рубежом без роуминга' },
+// Auto-detect an SVG cover for a post. Drop `cover-<slug>.svg` or `<slug>.svg`
+// into public/blog/ and it appears automatically; otherwise the card falls back
+// to the text-only default. Alt text uses the post title (SEO).
+function coverFor(slug: string, title: string): { src: string; alt: string } | undefined {
+  for (const file of [`cover-${slug}.svg`, `${slug}.svg`]) {
+    if (existsSync(join(process.cwd(), 'public', 'blog', file))) {
+      return { src: `/blog/${file}`, alt: title }
+    }
+  }
+  return undefined
 }
 
 export const metadata: Metadata = {
@@ -48,9 +56,9 @@ export default function BlogPage() {
       categoryColor: p.categoryColor,
       date: p.date,
       readTime: p.readTime,
-      cover: COVERS[p.slug],
+      cover: coverFor(p.slug, p.title),
     }))
-  const featuredCover = featured ? COVERS[featured.slug] : undefined
+  const featuredCover = featured ? coverFor(featured.slug, featured.title) : undefined
 
   return (
     <div className="min-h-screen flex flex-col gap-1.5" style={{ background: 'var(--ink)', padding: '5px' }}>
