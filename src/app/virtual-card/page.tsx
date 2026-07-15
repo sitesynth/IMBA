@@ -7,12 +7,12 @@ import { FaqAccordion } from '@/components/FaqAccordion'
 import { posts } from '@/lib/posts'
 
 export const metadata: Metadata = {
-  title: 'Виртуальная карта для Netflix, Spotify, ChatGPT — без российской карты | IMBA',
-  description: 'Виртуальная Visa/Mastercard для оплаты зарубежных сервисов. Netflix, Spotify, ChatGPT Plus, Adobe, Amazon — всё работает. Выпуск за 1 минуту, без российской карты.',
+  title: 'Виртуальная карта для оплаты зарубежных сервисов | IMBA',
+  description: 'Зарубежная виртуальная карта Visa/Mastercard в USD, EUR и AED. Оплата ChatGPT, Netflix, Spotify, Steam, Booking из России. Выпуск за 1 минуту, пополнение криптой — российская карта не нужна.',
   alternates: { canonical: 'https://www.imba.live/virtual-card' },
   openGraph: {
-    title: 'Виртуальная карта для зарубежных сервисов | IMBA',
-    description: 'Visa/Mastercard для Netflix, Spotify, ChatGPT — без российской карты. Выпуск за минуту.',
+    title: 'Виртуальная карта для оплаты зарубежных сервисов | IMBA',
+    description: 'Зарубежная виртуальная карта Visa/Mastercard в USD, EUR и AED. ChatGPT, Netflix, Spotify, Steam, Booking из России. Выпуск за 1 минуту.',
     url: 'https://www.imba.live/virtual-card',
     siteName: 'IMBA',
     locale: 'ru_RU',
@@ -46,20 +46,27 @@ const productSchema = {
   '@context': 'https://schema.org',
   '@type': 'Product',
   name: 'IMBA Виртуальная карта',
-  description: 'Виртуальная Visa/Mastercard для оплаты Netflix, Spotify, ChatGPT Plus и других зарубежных сервисов. Выпуск за 1 минуту.',
+  description: 'Зарубежная виртуальная карта Visa/Mastercard в USD, EUR и AED для оплаты зарубежных сервисов из России. Выпуск за 1 минуту, пополнение криптовалютой или переводом.',
   brand: { '@type': 'Brand', name: 'IMBA' },
-  offers: {
-    '@type': 'Offer',
-    price: '0',
-    priceCurrency: 'USD',
-    availability: 'https://schema.org/InStock',
-    url: 'https://www.imba.live/auth/register',
-  },
+  offers: [
+    { '@type': 'Offer', name: 'Старт', price: '0', priceCurrency: 'USD', description: '1 виртуальная карта, выпуск бесплатно', availability: 'https://schema.org/InStock', url: 'https://www.imba.live/auth/register' },
+    { '@type': 'Offer', name: 'Про', price: '9.99', priceCurrency: 'USD', description: '3 виртуальные карты, приоритетная поддержка', availability: 'https://schema.org/InStock', url: 'https://www.imba.live/auth/register' },
+    { '@type': 'Offer', name: 'Бизнес', price: '24.99', priceCurrency: 'USD', description: '10 виртуальных карт, API доступ', availability: 'https://schema.org/InStock', url: 'https://www.imba.live/auth/register' },
+  ],
+}
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Главная', item: 'https://www.imba.live/' },
+    { '@type': 'ListItem', position: 2, name: 'Виртуальная карта', item: 'https://www.imba.live/virtual-card' },
+  ],
 }
 
 const SERVICES = [
-  'Netflix', 'Spotify', 'ChatGPT Plus', 'Adobe', 'Amazon', 'Apple', 'Patreon', 'YouTube Premium',
-  'Notion', 'Figma', 'GitHub', 'Anthropic', 'OpenAI', 'Canva', 'Dropbox', 'Microsoft 365',
+  'Netflix', 'Spotify', 'ChatGPT Plus', 'Adobe', 'Amazon', 'Apple', 'Steam', 'Booking',
+  'YouTube Premium', 'Notion', 'Figma', 'GitHub', 'Claude', 'Midjourney', 'Canva', 'Microsoft 365',
 ]
 
 export default function VirtualCardPage() {
@@ -77,20 +84,24 @@ export default function VirtualCardPage() {
 
       {/* Hero */}
       <div className="rounded-xl" style={{ background: 'var(--paper)' }}>
-        <div className="px-5 md:px-12 py-14 md:py-20 max-w-7xl mx-auto">
-          <span className="chip mb-5 inline-block" style={{ background: 'var(--green)', borderColor: 'var(--ink)' }}>Виртуальная карта</span>
-          <h1 className="display text-4xl md:text-7xl mb-6 max-w-3xl">
-            Карта для оплаты<br />зарубежных сервисов.
-          </h1>
-          <p className="text-lg md:text-xl font-semibold text-ink/65 max-w-xl mb-8">
-            Visa/Mastercard в USD, EUR и AED. Netflix, Spotify, ChatGPT, Adobe — всё работает. Без российской карты, выпуск за минуту.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-3">
-            <Link href="/auth/register" className="pill text-base" style={{ background: '#55DB9C', color: '#111111', boxShadow: '0 6px 0 0 rgba(17,17,17,0.2)' }}>
-              Выпустить карту →
-            </Link>
-            <Link href="#how" className="pill pill-paper text-base">Как это работает</Link>
+        <div className="px-5 md:px-12 py-14 md:py-20 max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-8 md:gap-12">
+          <div className="flex-1">
+            <span className="chip mb-5 inline-block" style={{ background: 'var(--green)', borderColor: 'var(--ink)' }}>Виртуальная карта</span>
+            <h1 className="display text-3xl md:text-[2.1rem] mb-6 leading-tight">
+              Виртуальная карта для оплаты зарубежных сервисов
+            </h1>
+            <p className="text-base md:text-lg font-semibold text-ink/65 max-w-xl mb-8">
+              Зарубежная виртуальная карта Visa/Mastercard в USD, EUR и AED. ChatGPT, Netflix, Spotify, Steam, Booking — всё оплачивается как обычной картой. Выпуск за минуту, без верификаций, российская карта не нужна.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Link href="/auth/register" className="pill text-base" style={{ background: '#55DB9C', color: '#111111', boxShadow: '0 6px 0 0 rgba(17,17,17,0.2)' }}>
+                Выпустить карту →
+              </Link>
+              <Link href="#how" className="pill pill-paper text-base">Как это работает</Link>
+            </div>
           </div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/blog/virtualcard.svg" alt="Виртуальная карта IMBA" className="w-56 md:w-80 shrink-0 -mt-4 md:-mt-8" />
         </div>
       </div>
 
@@ -103,6 +114,42 @@ export default function VirtualCardPage() {
           ))}
         </div>
       </div>
+
+      {/* Why you need it */}
+      <section className="rounded-xl px-5 md:px-12 py-12 md:py-16" style={{ background: 'var(--paper)' }}>
+        <h2 className="display text-3xl md:text-6xl mb-4">Зачем нужна зарубежная виртуальная карта</h2>
+        <p className="font-semibold text-ink/55 mb-4 text-sm md:text-base max-w-2xl leading-relaxed">
+          После ухода Visa и Mastercard зарубежные сайты перестали принимать карты российских банков: не продлить ChatGPT Plus, не оплатить Netflix, не купить игру в Steam, не забронировать отель на Booking.com.
+        </p>
+        <p className="font-semibold text-ink/55 text-sm md:text-base max-w-2xl leading-relaxed">
+          Виртуальная карта IMBA выпущена вне российской банковской системы, и у неё есть всё, что у обычной карты: <strong className="text-ink">номер, срок действия, CVV и платёжный адрес</strong>. Для любого сайта она неотличима от пластиковой Visa или Mastercard — вводишь реквизиты и платишь.
+        </p>
+      </section>
+
+      {/* What you can pay for */}
+      <section className="rounded-xl px-5 md:px-12 py-12 md:py-16" style={{ background: 'var(--cream)' }}>
+        <h2 className="display text-3xl md:text-5xl mb-8">Что можно оплатить виртуальной картой</h2>
+        <div className="grid md:grid-cols-3 gap-5 max-w-4xl mx-auto">
+          <div className="panel p-6">
+            <h3 className="display text-base mb-3">AI-сервисы и подписки</h3>
+            <p className="text-sm font-semibold text-ink/60 leading-relaxed">
+              ChatGPT Plus, Claude, Midjourney, Netflix, Spotify, YouTube Premium, Steam, PlayStation, Adobe, Notion — любой сервис с оплатой картой, включая автосписания. Гайды: <Link href="/blog/pay-chatgpt-from-russia" className="font-black text-ink border-b border-dotted border-ink/40">как оплатить ChatGPT</Link>, <Link href="/blog/pay-netflix-from-russia" className="font-black text-ink border-b border-dotted border-ink/40">как оплатить Netflix</Link>.
+            </p>
+          </div>
+          <div className="panel p-6">
+            <h3 className="display text-base mb-3">Покупки и путешествия</h3>
+            <p className="text-sm font-semibold text-ink/60 leading-relaxed">
+              Amazon, eBay, Booking.com, Airbnb, авиабилеты на сайтах иностранных авиакомпаний, аренда авто. В поездке карта работает в паре с <Link href="/esim" className="font-black text-ink border-b border-dotted border-ink/40">eSIM IMBA</Link> — интернет и оплата из одного кабинета.
+            </p>
+          </div>
+          <div className="panel p-6">
+            <h3 className="display text-base mb-3">Работа и бизнес</h3>
+            <p className="text-sm font-semibold text-ink/60 leading-relaxed">
+              Рекламные кабинеты, хостинги, домены, SaaS-инструменты, App Store Developer и Google Play Console. На тарифе Про — до 3 карт: отдельная под каждую задачу.
+            </p>
+          </div>
+        </div>
+      </section>
 
       {/* How it works */}
       <section id="how" className="rounded-xl px-5 md:px-12 py-12 md:py-16" style={{ background: 'var(--paper)' }}>
@@ -148,12 +195,67 @@ export default function VirtualCardPage() {
         </div>
       </section>
 
+      {/* Comparison table */}
+      <section className="rounded-xl px-5 md:px-12 py-12 md:py-16" style={{ background: 'var(--paper)' }}>
+        <h2 className="display text-3xl md:text-5xl text-center mb-10">Чем платить за зарубежные сервисы: сравнение</h2>
+        <div className="max-w-4xl mx-auto overflow-x-auto">
+          <table className="w-full text-sm border-collapse">
+            <thead>
+              <tr className="text-left text-xs text-ink/50 uppercase tracking-wider">
+                <th className="pb-3 pr-3 font-semibold">Способ</th>
+                <th className="pb-3 pr-3 font-semibold">Скорость</th>
+                <th className="pb-3 pr-3 font-semibold">Документы</th>
+                <th className="pb-3 pr-3 font-semibold">Комиссия</th>
+                <th className="pb-3 font-semibold">Автосписания</th>
+              </tr>
+            </thead>
+            <tbody className="font-semibold">
+              <tr className="border-t border-ink/10">
+                <td className="py-3 pr-3 font-black">Виртуальная карта IMBA</td>
+                <td className="py-3 pr-3" style={{ color: '#6abf6e' }}>1 минута</td>
+                <td className="py-3 pr-3" style={{ color: '#6abf6e' }}>не нужны</td>
+                <td className="py-3 pr-3" style={{ color: '#6abf6e' }}>видна до операции</td>
+                <td className="py-3" style={{ color: '#6abf6e' }}>работают</td>
+              </tr>
+              <tr className="border-t border-ink/10">
+                <td className="py-3 pr-3 font-black">Карта зарубежного банка</td>
+                <td className="py-3 pr-3" style={{ color: '#c9a040' }}>поездка + недели</td>
+                <td className="py-3 pr-3 text-ink/40">загранпаспорт, местный ИНН</td>
+                <td className="py-3 pr-3" style={{ color: '#c9a040' }}>обслуживание банка</td>
+                <td className="py-3" style={{ color: '#6abf6e' }}>работают</td>
+              </tr>
+              <tr className="border-t border-ink/10">
+                <td className="py-3 pr-3 font-black">Посредники «оплачу за вас»</td>
+                <td className="py-3 pr-3" style={{ color: '#c9a040' }}>часы</td>
+                <td className="py-3 pr-3" style={{ color: '#6abf6e' }}>нет</td>
+                <td className="py-3 pr-3 text-ink/40">20–30% наценки</td>
+                <td className="py-3 text-ink/40">каждый раз заново</td>
+              </tr>
+              <tr className="border-t border-ink/10">
+                <td className="py-3 pr-3 font-black">Криптовалюта напрямую</td>
+                <td className="py-3 pr-3" style={{ color: '#6abf6e' }}>минуты</td>
+                <td className="py-3 pr-3" style={{ color: '#6abf6e' }}>нет</td>
+                <td className="py-3 pr-3" style={{ color: '#c9a040' }}>сеть + обмен</td>
+                <td className="py-3 text-ink/40">почти нигде</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      {/* Cross-sell */}
+      <section className="rounded-xl px-5 md:px-8 py-6" style={{ background: 'var(--paper)' }}>
+        <p className="text-center font-semibold text-ink/60 text-sm md:text-base">
+          В подписку IMBA также входят <Link href="/" className="font-black text-ink border-b border-dotted border-ink/40 hover:opacity-70">VPN на VLESS Reality</Link> и <Link href="/esim" className="font-black text-ink border-b border-dotted border-ink/40 hover:opacity-70">eSIM для 190+ стран</Link> — один кабинет, один баланс.
+        </p>
+      </section>
+
       {/* Blog posts */}
       {relatedPosts.length > 0 && (
         <section className="rounded-xl px-5 md:px-12 py-12" style={{ background: 'var(--paper)' }}>
           <h2 className="display text-3xl md:text-5xl mb-2">Читай по теме</h2>
           <p className="font-semibold text-ink/55 mb-8 text-sm md:text-base">Как платить за зарубежные сервисы из России</p>
-          <div className="grid md:grid-cols-2 gap-5 max-w-3xl">
+          <div className="grid md:grid-cols-3 gap-5 max-w-5xl mx-auto">
             {relatedPosts.map(post => (
               <Link key={post.slug} href={`/blog/${post.slug}`} className="group block">
                 <article className="panel h-full flex flex-col gap-4 hover:-translate-y-1 transition-transform duration-200">
@@ -175,7 +277,7 @@ export default function VirtualCardPage() {
       )}
 
       {/* FAQ */}
-      <section className="rounded-xl px-4 md:px-12 py-12 md:py-16" style={{ background: 'var(--green-100)' }}>
+      <section className="rounded-xl px-4 md:px-12 py-12 md:py-16" style={{ background: 'var(--cream)' }}>
         <h2 className="display text-3xl md:text-7xl text-center mb-2">Вопросы?</h2>
         <p className="text-center font-semibold text-ink/60 mb-10 text-sm md:text-lg">Всё о виртуальной карте</p>
         <div className="max-w-3xl mx-auto">
@@ -210,6 +312,7 @@ export default function VirtualCardPage() {
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
     </div>
   )
 }

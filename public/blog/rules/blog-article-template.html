@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VPN на компьютер (Windows и macOS) — установка за 5 минут | IMBA</title>
+<meta name="description" content="Как установить VPN на компьютер с Windows или macOS в 2026 году: пошаговая инструкция с приложением Happ, протокол VLESS Reality, 7 дней бесплатно.">
+<meta name="theme-color" content="#111111">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Article","headline":"VPN на компьютер: установка на Windows и macOS за 5 минут","author":{"@type":"Person","name":"Сергей Карпов"},"publisher":{"@type":"Organization","name":"IMBA","logo":{"@type":"ImageObject","url":"https://www.imba.live/imba-black.svg"}},"datePublished":"2026-07-08","dateModified":"2026-07-08","mainEntityOfPage":"https://www.imba.live/blog/vpn-na-kompyutere"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"Какой VPN работает на компьютере в России в 2026?","acceptedAnswer":{"@type":"Answer","text":"Стабильно работают только протоколы с маскировкой трафика — VLESS с XTLS Reality. Классические OpenVPN и WireGuard определяются DPI-системами и работают с перебоями."}},
+{"@type":"Question","name":"Можно ли использовать одну подписку на компьютере и телефоне?","acceptedAnswer":{"@type":"Answer","text":"Да. Одна ссылка подписки работает на нескольких устройствах: компьютере, Android, iPhone и телевизоре."}},
+{"@type":"Question","name":"Это бесплатно?","acceptedAnswer":{"@type":"Answer","text":"Первые 7 дней — да, за подписку на соцсети IMBA. Дальше — тариф Про от $9.99/мес, куда входят также eSIM и виртуальная карта."}}
+]}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[
+{"@type":"ListItem","position":1,"name":"Главная","item":"https://www.imba.live/"},
+{"@type":"ListItem","position":2,"name":"Блог","item":"https://www.imba.live/blog"},
+{"@type":"ListItem","position":3,"name":"VPN на компьютер","item":"https://www.imba.live/blog/vpn-na-kompyutere"}]}
+</script>
+<style>
+:root{--bg:#111111;--card:#1a1a1a;--line:#2a2a2a;--txt:#ffffff;--mut:#9a9a9a;--dim:#6f6f6f}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif;line-height:1.7}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+header{display:flex;align-items:center;justify-content:space-between;padding:18px 0}
+.logo{font-weight:800;font-size:22px;letter-spacing:1px}
+nav{display:flex;gap:28px;font-size:14px;color:var(--mut)}
+nav a:hover{color:var(--txt)}
+nav a.active{color:var(--txt);border-bottom:2px solid var(--txt);padding-bottom:2px}
+.btn{display:inline-block;border-radius:999px;padding:12px 28px;font-weight:600;font-size:15px;background:var(--txt);color:var(--bg);transition:.2s}
+.btn:hover{transform:scale(1.03)}
+.btn-sm{padding:8px 20px;font-size:13px}
+article{max-width:760px;margin:0 auto;padding:32px 0 56px}
+.crumbs{color:var(--dim);font-size:13px;margin-bottom:20px}
+.crumbs a{color:var(--mut)}
+.cat{font-size:12px;letter-spacing:2px;color:var(--dim);text-transform:uppercase}
+h1{font-size:clamp(28px,4.5vw,44px);font-weight:800;letter-spacing:-.5px;line-height:1.15;margin:10px 0 14px}
+.meta{color:var(--dim);font-size:14px;padding-bottom:20px;border-bottom:1px solid var(--line);margin-bottom:24px}
+.lead{font-size:18px;color:#d8d8d8;margin-bottom:24px}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px 24px;margin-bottom:32px;font-size:14px}
+.toc b{display:block;margin-bottom:8px;font-size:13px;letter-spacing:2px;color:var(--dim);text-transform:uppercase}
+.toc a{display:block;color:var(--mut);padding:4px 0}
+.toc a:hover{color:var(--txt)}
+article h2{font-size:26px;font-weight:800;margin:36px 0 12px;letter-spacing:-.3px}
+article h3{font-size:19px;font-weight:700;margin:24px 0 8px}
+article p{color:#c8c8c8;margin-bottom:14px}
+article ul,article ol{margin:0 0 14px 22px;color:#c8c8c8}
+article li{margin-bottom:6px}
+.warn{background:#2a2413;border:1px solid #4a3f1a;border-radius:12px;padding:14px 18px;color:#e0c985;font-size:15px;margin:20px 0}
+.shot{background:var(--card);border:1px dashed #3a3a3a;border-radius:12px;padding:36px;text-align:center;color:var(--dim);font-size:13px;margin:20px 0}
+article a{border-bottom:1px dotted var(--mut)}
+.author{display:flex;gap:14px;align-items:center;border:1px solid var(--line);border-radius:16px;padding:18px 22px;margin:36px 0}
+.author .ava{width:48px;height:48px;border-radius:50%;background:var(--card);display:flex;align-items:center;justify-content:center;font-weight:700}
+.author p{margin:0;font-size:14px;color:var(--mut)}
+.author b{color:var(--txt);display:block;font-size:15px}
+.cta{border:1px solid var(--line);border-radius:16px;padding:28px;text-align:center;margin:36px 0}
+.cta h2{margin:0 0 6px;font-size:22px}
+.cta p{color:var(--mut);margin-bottom:18px}
+.related{max-width:760px;margin:0 auto;padding-bottom:56px}
+.related h2{font-size:22px;font-weight:800;margin-bottom:16px}
+.rel-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.rel-grid a{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;font-size:15px;font-weight:600;line-height:1.4}
+.rel-grid a:hover{border-color:#4a4a4a}
+.rel-grid span{display:block;font-size:11px;letter-spacing:2px;color:var(--dim);text-transform:uppercase;margin-bottom:6px;font-weight:400}
+footer{border-top:1px solid var(--line);padding:32px 0;color:var(--dim);font-size:13px}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+<header>
+  <div class="logo">IMBA</div>
+  <nav>
+    <a href="/esim">eSIM</a>
+    <a href="/">VPN</a>
+    <a href="/virtual-card">Карта</a>
+    <a href="/blog" class="active">Блог</a>
+  </nav>
+  <div><a href="/auth/register" class="btn btn-sm">Открыть IMBA</a></div>
+</header>
+
+<article>
+  <div class="crumbs"><a href="/">Главная</a> → <a href="/blog">Блог</a> → VPN на компьютер</div>
+  <div class="cat">VPN · Гайд</div>
+  <h1>VPN на компьютер: установка на Windows и macOS за 5 минут</h1>
+  <div class="meta">Сергей Карпов · Обновлено 8 июля 2026 · 5 мин чтения</div>
+
+  <img src="cover-vpn-kompyuter.svg" alt="Установка VPN на компьютер с Windows и macOS — гайд IMBA" style="width:100%;border-radius:16px;border:1px solid var(--line);margin:0 0 28px;display:block">
+
+  <p class="lead">Чтобы установить VPN на компьютер, скачай приложение Happ для Windows или macOS, добавь в него ссылку подписки из кабинета IMBA и отключи Mux в настройках сервера. Весь процесс занимает 5 минут, первые 7 дней — бесплатно. Разбираем по шагам.</p>
+
+  <div class="toc"><b>Содержание</b>
+    <a href="#need">Что понадобится</a>
+    <a href="#s1">Шаг 1. Регистрация и 7 дней бесплатно</a>
+    <a href="#s2">Шаг 2. Ссылка подписки</a>
+    <a href="#s3">Шаг 3. Установка Happ</a>
+    <a href="#s4">Шаг 4. Добавление подписки</a>
+    <a href="#s5">Шаг 5. Отключение Mux и подключение</a>
+    <a href="#trouble">Если не работает</a>
+    <a href="#faq">Частые вопросы</a>
+  </div>
+
+  <h2 id="need">Что понадобится</h2>
+  <ul>
+    <li>Компьютер на Windows 10/11 или macOS</li>
+    <li>Аккаунт IMBA — регистрация по email, карта не нужна</li>
+    <li>5 минут времени</li>
+  </ul>
+  <p>Важно: обычные VPN-протоколы (OpenVPN, WireGuard) на компьютере работают так же нестабильно, как на телефоне — DPI-системы распознают их на любом устройстве. Поэтому инструкция построена на VLESS Reality: для провайдера этот трафик неотличим от обычного HTTPS. Подробнее — в разборе <a href="/blog/vpn-russia-2026">какой VPN-протокол работает в России</a>.</p>
+
+  <h2 id="s1">Шаг 1. Зарегистрируйся и получи 7 дней бесплатно</h2>
+  <p>Создай аккаунт на <a href="https://www.imba.live/auth/register">imba.live</a> — нужен только email. После регистрации подпишись на ВКонтакте или Telegram IMBA в кабинете — активируется тариф Старт: VPN на 7 дней бесплатно (плюс eSIM 500 МБ, пригодится в поездках).</p>
+
+  <h2 id="s2">Шаг 2. Скопируй ссылку подписки</h2>
+  <p>В кабинете IMBA открой раздел VPN → блок «Happ — ссылка подписки» → кнопка «Копировать». Эта ссылка — твой доступ: по ней приложение получит список всех серверов.</p>
+  <div class="shot">[ Скриншот: блок «Happ — ссылка подписки» в кабинете ]</div>
+
+  <h2 id="s3">Шаг 3. Установи Happ</h2>
+  <h3>Windows</h3>
+  <p>Скачай Setup x64 (.exe) по ссылке из кабинета (есть зеркало, если основная ссылка недоступна). Запусти установщик — дальше стандартно: далее → далее → готово.</p>
+  <h3>macOS</h3>
+  <p>Вариант 1: скачай .dmg (Universal — подходит и для Intel, и для Apple Silicon), перетащи Happ в «Программы». Вариант 2: установи из Mac App Store, если у тебя есть доступ.</p>
+
+  <h2 id="s4">Шаг 4. Добавь подписку</h2>
+  <p>Открой Happ → нажми «+» → «Добавить подписку» → вставь скопированную ссылку. Приложение подтянет список серверов IMBA.</p>
+  <div class="shot">[ Скриншот: добавление подписки в Happ ]</div>
+
+  <h2 id="s5">Шаг 5. Отключи Mux и подключись</h2>
+  <div class="warn">! Mux обязательно отключить в настройках сервера — иначе VPN не работает.</div>
+  <p>Зайди в настройки сервера → найди параметр <strong>Mux</strong> → выключи. Теперь выбери сервер (для начала — ближайший, с минимальным пингом) и нажми «Подключить». Готово: проверь работу, открыв YouTube — видео должно грузиться в высоком качестве без буферизации.</p>
+
+  <h2 id="trouble">Если не работает</h2>
+  <ul>
+    <li><strong>Соединение не устанавливается</strong> — проверь, выключен ли Mux (самая частая причина)</li>
+    <li><strong>Низкая скорость</strong> — попробуй другой сервер: пинг каждого виден в кабинете</li>
+    <li><strong>Провайдер режет соединение</strong> — переключись на другой сервер; VLESS Reality работает на всех крупных провайдерах</li>
+    <li>Не помогло — поддержка IMBA отвечает в кабинете</li>
+  </ul>
+
+  <h2 id="faq">Частые вопросы</h2>
+  <h3>Какой VPN работает на компьютере в России в 2026?</h3>
+  <p>Стабильно работают только протоколы с маскировкой трафика — VLESS с XTLS Reality. Классические OpenVPN и WireGuard определяются DPI-системами и работают с перебоями. <a href="/blog/vpn-russia-2026">Подробный разбор протоколов</a>.</p>
+  <h3>Работает ли на Windows 7 или старых macOS?</h3>
+  <p>Happ поддерживает Windows 10/11 и актуальные версии macOS. Для старых систем используй Linux-сборку или обратись в поддержку.</p>
+  <h3>Можно ли использовать одну подписку на компьютере и телефоне?</h3>
+  <p>Да. Одна ссылка подписки работает на нескольких устройствах: добавь её в Happ на <a href="/blog/vpn-android">Android</a>, <a href="/blog/vpn-iphone">iPhone</a> и <a href="/blog/vpn-smart-tv">телевизоре</a>.</p>
+  <h3>Это бесплатно?</h3>
+  <p>Первые 7 дней — да, за подписку на соцсети IMBA. Дальше — тариф Про от $9.99/мес, куда входят также eSIM и виртуальная карта.</p>
+
+  <div class="author">
+    <div class="ava">СК</div>
+    <p><b>Сергей Карпов</b>Пишет про VPN-протоколы, eSIM и оплату зарубежных сервисов. Все инструкции проверяет на реальных устройствах.</p>
+  </div>
+
+  <div class="cta">
+    <h2>Попробуй IMBA на своём компьютере</h2>
+    <p>VPN + eSIM + виртуальная карта в одном кабинете</p>
+    <a href="https://www.imba.live/auth/register" class="btn">7 дней бесплатно →</a>
+  </div>
+</article>
+
+<div class="related">
+  <h2>Похожие статьи</h2>
+  <div class="rel-grid">
+    <a href="/blog/vpn-android"><span>VPN</span>VPN на Android: установка через APK</a>
+    <a href="/blog/vpn-iphone"><span>VPN</span>VPN на iPhone: App Store и TestFlight</a>
+    <a href="/blog/vpn-russia-2026"><span>VPN</span>Какой протокол работает в России</a>
+  </div>
+</div>
+
+<footer>
+  IMBA SRL · Reg. No. 3-102-942736 · Costa Rica, San José
+</footer>
+</div>
+</body>
+</html>

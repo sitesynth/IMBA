@@ -19,13 +19,24 @@ const COUNTRY_NAMES: Record<string, string> = {
 
 type VpnServer = { id: string; city: string; country: string; flag: string; ping?: number }
 
+const FALLBACK_SERVERS: VpnServer[] = [
+  { id: 'nl1', city: 'Амстердам', country: 'NL', flag: '🇳🇱' },
+  { id: 'de1', city: 'Франкфурт', country: 'DE', flag: '🇩🇪' },
+  { id: 'us1', city: 'Нью-Йорк', country: 'US', flag: '🇺🇸' },
+  { id: 'fi1', city: 'Хельсинки', country: 'FI', flag: '🇫🇮' },
+  { id: 'gb1', city: 'Лондон', country: 'GB', flag: '🇬🇧' },
+  { id: 'tr1', city: 'Стамбул', country: 'TR', flag: '🇹🇷' },
+  { id: 'jp1', city: 'Токио', country: 'JP', flag: '🇯🇵' },
+]
+
 async function fetchVpnServers(): Promise<VpnServer[]> {
   try {
     const res = await fetch(`${process.env.IMBA_API_URL}/v1/me/vpn/servers`, { next: { revalidate: 60 } })
-    if (!res.ok) return []
-    return res.json()
+    if (!res.ok) return FALLBACK_SERVERS
+    const data = await res.json()
+    return data.length > 0 ? data : FALLBACK_SERVERS
   } catch {
-    return []
+    return FALLBACK_SERVERS
   }
 }
 
@@ -418,11 +429,25 @@ export default async function LandingPage() {
           { '@type': 'Question', name: 'Что ещё входит в подписку?', acceptedAnswer: { '@type': 'Answer', text: 'eSIM для 190+ стран — интернет в поездках без роуминга, и виртуальная карта в USD/EUR/AED для Netflix, Spotify, ChatGPT. Три сервиса, один кабинет.' } },
         ],
       })}} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify([
-        { '@context': 'https://schema.org', '@type': 'Product', '@id': 'https://www.imba.live/#plan-start', name: 'IMBA Старт', description: 'Бесплатный тариф: 1 eSIM профиль, базовый VPN (5 серверов), 1 виртуальная карта.', brand: { '@type': 'Brand', name: 'IMBA' }, offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD', availability: 'https://schema.org/InStock', url: 'https://www.imba.live/auth/register' } },
-        { '@context': 'https://schema.org', '@type': 'Product', '@id': 'https://www.imba.live/#plan-pro', name: 'IMBA Про', description: '5 eSIM профилей, VPN Pro (50+ серверов), 3 виртуальные карты, приоритетная поддержка.', brand: { '@type': 'Brand', name: 'IMBA' }, offers: { '@type': 'Offer', price: '9.99', priceCurrency: 'USD', availability: 'https://schema.org/InStock', url: 'https://www.imba.live/auth/register' } },
-        { '@context': 'https://schema.org', '@type': 'Product', '@id': 'https://www.imba.live/#plan-business', name: 'IMBA Бизнес', description: 'Безлимит eSIM, VPN безлимит, 10 виртуальных карт, API-доступ.', brand: { '@type': 'Brand', name: 'IMBA' }, offers: { '@type': 'Offer', price: '24.99', priceCurrency: 'USD', availability: 'https://schema.org/InStock', url: 'https://www.imba.live/auth/register' } },
-      ])}} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        '@context': 'https://schema.org', '@type': 'Product', '@id': 'https://www.imba.live/#plan-start', name: 'IMBA Старт', description: 'Бесплатный тариф: 1 eSIM профиль, базовый VPN (5 серверов), 1 виртуальная карта.', brand: { '@type': 'Brand', name: 'IMBA' }, offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD', availability: 'https://schema.org/InStock', url: 'https://www.imba.live/auth/register' },
+      })}} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        '@context': 'https://schema.org', '@type': 'Product', '@id': 'https://www.imba.live/#plan-pro', name: 'IMBA Про', description: '5 eSIM профилей, VPN Pro (50+ серверов), 3 виртуальные карты, приоритетная поддержка.', brand: { '@type': 'Brand', name: 'IMBA' }, offers: { '@type': 'Offer', price: '9.99', priceCurrency: 'USD', availability: 'https://schema.org/InStock', url: 'https://www.imba.live/auth/register' },
+      })}} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        '@context': 'https://schema.org', '@type': 'Product', '@id': 'https://www.imba.live/#plan-business', name: 'IMBA Бизнес', description: 'Безлимит eSIM, VPN безлимит, 10 виртуальных карт, API-доступ.', brand: { '@type': 'Brand', name: 'IMBA' }, offers: { '@type': 'Offer', price: '24.99', priceCurrency: 'USD', availability: 'https://schema.org/InStock', url: 'https://www.imba.live/auth/register' },
+      })}} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'SoftwareApplication',
+        name: 'IMBA VPN',
+        applicationCategory: 'VPNApplication',
+        operatingSystem: 'iOS, Android, Windows, macOS, Linux, Android TV',
+        description: 'VPN-клиент на протоколе VLESS Reality — стабильная работа в России на МТС, Мегафоне, Билайне, Tele2. Без логов.',
+        offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD', availability: 'https://schema.org/InStock', url: 'https://www.imba.live/auth/register', description: '7 дней бесплатно' },
+        publisher: { '@type': 'Organization', '@id': 'https://www.imba.live/#organization' },
+      })}} />
 
       {/* Footer */}
       <footer className="rounded-xl" style={{ background: 'var(--paper)' }}>

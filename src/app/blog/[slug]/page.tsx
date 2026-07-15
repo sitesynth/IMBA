@@ -17,6 +17,14 @@ const COVERS: Record<string, () => React.ReactNode> = {
     // eslint-disable-next-line @next/next/no-img-element
     <img src="/blog/esim-russia-abroad.svg" alt="eSIM для россиян: интернет за рубежом без роуминга" className="w-full" />
   ),
+  'vpn-iphone': () => (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src="/blog/cover-vpn-iphone.svg" alt="VPN на iPhone в 2026: установка за 5 минут" className="w-full" />
+  ),
+  'vpn-android': () => (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src="/blog/cover-vpn-android.svg" alt="VPN на Android в 2026: установка через APK за 5 минут" className="w-full" />
+  ),
 }
 
 export async function generateStaticParams() {
@@ -208,6 +216,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
             <span className="chip" style={{ background: post.categoryColor, borderColor: 'var(--ink)' }}>
               {post.category}
             </span>
+            <Link href="/blog/author/sergey-karpov" className="text-xs text-ink/40 font-semibold hover:text-ink transition-colors">Сергей Карпов</Link>
             <span className="text-xs text-ink/40 font-semibold">{post.date}</span>
             <span className="text-xs text-ink/40 font-semibold">{post.readTime} чтения</span>
           </div>
@@ -240,7 +249,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         datePublished: toIso(post.date),
         dateModified: toIso(post.date),
         inLanguage: 'ru',
-        author: { '@type': 'Person', name: 'Сергей Карпов' },
+        author: { '@type': 'Person', '@id': 'https://www.imba.live/blog/author/sergey-karpov#person', name: 'Сергей Карпов', url: 'https://www.imba.live/blog/author/sergey-karpov' },
         publisher: { '@type': 'Organization', '@id': 'https://www.imba.live/#organization', name: 'IMBA', logo: { '@type': 'ImageObject', url: 'https://www.imba.live/favicon.png', width: 512, height: 512 } },
         image: { '@type': 'ImageObject', url: post.ogImage ?? 'https://www.imba.live/og-image.png', width: 1200, height: 630 },
         isPartOf: { '@type': 'WebSite', '@id': 'https://www.imba.live/#website' },

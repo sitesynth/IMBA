@@ -34,7 +34,7 @@ const DESCRIPTION_SHORT = 'VPN, eSIM и виртуальная Visa/Mastercard �
 export async function generateMetadata(): Promise<Metadata> {
   const hdrs = await headers()
   // x-real-host is set by the imba.run nginx proxy to preserve the original domain
-  const host = hdrs.get('x-real-host') ?? hdrs.get('host') ?? 'www.imba.live'
+  const host = hdrs.get('x-real-host') ?? hdrs.get('host') ?? 'imba.live'
   const proto = host.includes('localhost') ? 'http' : 'https'
   const base = `${proto}://${host}`
 

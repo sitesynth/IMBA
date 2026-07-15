@@ -54,24 +54,29 @@ export function BlogList({ posts }: { posts: BlogListPost[] }) {
       {/* Posts grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
         {visible.map((post) => (
-          <Link key={post.slug} href={`/blog/${post.slug}`} className="group block">
-            <article className="panel h-full flex flex-col gap-3 hover:-translate-y-1 transition-transform duration-200">
-              <div className="flex items-center justify-between">
-                <span className="chip" style={{ background: post.categoryColor, borderColor: 'var(--ink)' }}>
-                  {post.category}
-                </span>
-                <span className="text-xs text-ink/40 font-semibold">{post.readTime} чтения</span>
-              </div>
-              <h2 className="text-lg font-black leading-snug group-hover:opacity-70 transition-opacity">
+          <article key={post.slug} className="panel relative h-full flex flex-col gap-3 hover:-translate-y-1 transition-transform duration-200 group">
+            <div className="flex items-center justify-between">
+              <span className="chip" style={{ background: post.categoryColor, borderColor: 'var(--ink)' }}>
+                {post.category}
+              </span>
+              <span className="text-xs text-ink/40 font-semibold">{post.readTime} чтения</span>
+            </div>
+            <h2 className="text-lg font-black leading-snug group-hover:opacity-70 transition-opacity">
+              <Link href={`/blog/${post.slug}`} className="after:absolute after:inset-0">
                 {post.title}
-              </h2>
-              <p className="text-sm text-ink/60 leading-relaxed flex-1">{post.excerpt}</p>
-              <div className="flex items-center justify-between pt-2 border-t border-ink/10">
-                <span className="text-xs text-ink/40 font-semibold">{AUTHOR} · {post.date}</span>
-                <span className="text-sm font-black text-blue group-hover:underline">Читать →</span>
-              </div>
-            </article>
-          </Link>
+              </Link>
+            </h2>
+            <p className="text-sm text-ink/60 leading-relaxed flex-1">{post.excerpt}</p>
+            <div className="flex items-center justify-between pt-2 border-t border-ink/10">
+              <span className="text-xs text-ink/40 font-semibold">
+                <Link href="/blog/author/sergey-karpov" className="relative z-10 hover:text-ink transition-colors">
+                  {AUTHOR}
+                </Link>
+                {' · '}{post.date}
+              </span>
+              <span className="text-sm font-black text-blue group-hover:underline">Читать →</span>
+            </div>
+          </article>
         ))}
       </div>
     </div>
