@@ -223,9 +223,9 @@ tbody tr:hover td{background:#f9fafb}
               <table>
                 <thead><tr>
                   <th>Партнёр</th><th>Реф-ссылка</th><th>Контакт</th>
-                  <th>Рефералов</th><th>Completed</th>
+                  <th>Рефералов</th>
                   <th>Earned</th><th>К выплате</th>
-                  <th>Status</th><th>Actions</th>
+                  <th>Status</th><th></th>
                 </tr></thead>
                 <tbody id="ref-tbody"><tr><td colspan="9" class="empty">Загрузка…</td></tr></tbody>
               </table>
@@ -486,11 +486,11 @@ function filterRefs(q) {
 
 function renderRefRows(list) {
   const tbody = document.getElementById('ref-tbody');
-  if (!list.length) { tbody.innerHTML = '<tr><td colspan="9" class="empty">Ничего не найдено.</td></tr>'; return; }
+  if (!list.length) { tbody.innerHTML = '<tr><td colspan="8" class="empty">Ничего не найдено.</td></tr>'; return; }
   tbody.innerHTML = list.map(r => `
-    <tr>
+    <tr style="cursor:pointer" onclick="showDetail('${r.id}')">
       <td style="font-weight:500">${r.name || '<span style="color:#9ca3af">—</span>'}</td>
-      <td>
+      <td onclick="event.stopPropagation()">
         <div style="display:flex;align-items:center;gap:.4rem">
           <code style="font-size:.72rem;color:#6b7280;font-family:monospace">?ref=${r.referral_code}</code>
           <button class="btn btn-outline btn-sm" style="padding:.25rem .5rem;font-size:.7rem" onclick="copy('${refLink(r.referral_code)}')">Копировать</button>
@@ -498,15 +498,11 @@ function renderRefRows(list) {
       </td>
       <td style="color:#6b7280">${r.contact || '—'}</td>
       <td style="font-weight:600">${r.total_referrals}</td>
-      <td>${r.completed} <span style="color:#9ca3af;font-size:.72rem">(${r.pending})</span></td>
       <td class="mono">$${r.total_earned.toFixed(2)}</td>
       <td class="mono" style="color:${r.pending_payout>0?'#d97706':'#6b7280'};font-weight:${r.pending_payout>0?600:400}">$${(r.pending_payout||0).toFixed(2)}</td>
       <td><span class="badge ${r.is_active ? 'badge-green' : 'badge-gray'}">${r.is_active ? 'Active' : 'Inactive'}</span></td>
-      <td>
-        <div class="act-row">
-          <button class="btn btn-link btn-sm" onclick="showDetail('${r.id}')">View</button>
-          <button class="btn ${r.is_active?'btn-danger-link':'btn-link'} btn-sm" onclick="toggleRef('${r.id}')">${r.is_active?'Disable':'Enable'}</button>
-        </div>
+      <td onclick="event.stopPropagation()">
+        <button class="btn ${r.is_active?'btn-danger-link':'btn-link'} btn-sm" onclick="toggleRef('${r.id}')">${r.is_active?'Disable':'Enable'}</button>
       </td>
     </tr>
   `).join('');
@@ -520,7 +516,7 @@ function renderRefs() {
   document.getElementById('s-conv').textContent = refs.reduce((a,r)=>a+r.completed,0);
   document.getElementById('s-payout').textContent = '$' + totalPayout.toFixed(2);
   if (!refs.length) {
-    document.getElementById('ref-tbody').innerHTML = '<tr><td colspan="9" class="empty">Нет программ. Создайте первую.</td></tr>';
+    document.getElementById('ref-tbody').innerHTML = '<tr><td colspan="8" class="empty">Нет программ. Создайте первую.</td></tr>';
     return;
   }
   const q = document.getElementById('search-input')?.value || '';
