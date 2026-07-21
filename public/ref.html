@@ -478,6 +478,7 @@ function renderRefs() {
       <td>
         <div class="act-row">
           <button class="btn btn-link btn-sm" onclick="showDetail('${r.id}')">View</button>
+          <button class="btn btn-link btn-sm" onclick="copy('${refLink(r.referral_code)}')" title="${refLink(r.referral_code)}">Ссылка</button>
           <button class="btn ${r.is_active?'btn-danger-link':'btn-link'} btn-sm" onclick="toggleRef('${r.id}')">${r.is_active?'Disable':'Enable'}</button>
         </div>
       </td>
@@ -516,9 +517,17 @@ function renderDetailMeta(prog) {
   document.getElementById('d-title').textContent = prog.name || prog.referral_code;
   updateDetailToggleBtn();
 
+  const link = refLink(prog.referral_code);
   document.getElementById('d-fields').innerHTML = `
+    <div class="detail-field" style="grid-column:1/-1">
+      <div class="lbl">Реф-ссылка</div>
+      <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin-top:.2rem">
+        <code style="background:#f3f4f6;border:1px solid #e5e7eb;border-radius:6px;padding:.35rem .6rem;font-size:.8rem;color:#1d4ed8;word-break:break-all;flex:1">${link}</code>
+        <button class="btn btn-outline btn-sm" onclick="copy('${link}')">Копировать</button>
+      </div>
+    </div>
     <div class="detail-field"><div class="lbl">Код</div>
-      <div class="val"><button class="code-link mono" onclick="copy('${refLink(prog.referral_code)}')" title="Скопировать ссылку">${prog.referral_code}</button></div></div>
+      <div class="val mono" style="color:#374151">${prog.referral_code}</div></div>
     <div class="detail-field"><div class="lbl">Контакт</div><div class="val ${prog.contact?'':'muted'}">${prog.contact||'—'}</div></div>
     <div class="detail-field"><div class="lbl">Бонус рефоводу</div><div class="val mono">$${prog.referrer_bonus}</div></div>
     <div class="detail-field"><div class="lbl">Бонус рефералу</div><div class="val mono">$${prog.referee_bonus}</div></div>
