@@ -33,6 +33,10 @@ export async function proxy(request: NextRequest) {
     if (path.startsWith('/admin')) {
       return NextResponse.next()
     }
+    // /ref → referral partner admin (static SPA)
+    if (path === '/ref' || path.startsWith('/ref/')) {
+      return NextResponse.rewrite(new URL('/ref.html', request.url))
+    }
     // Everything else on usdc.lu → home
     return NextResponse.redirect(new URL('https://usdc.lu/', request.url))
   }

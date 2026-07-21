@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>IMBA Ref Admin</title>
+<meta name="robots" content="noindex,nofollow"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#f9fafb;color:#111827;min-height:100vh;font-size:14px;-webkit-font-smoothing:antialiased}
+
+/* ── LOGIN ────────────────────────────────────── */
+#login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:1rem;background:#f9fafb}
+.login-card{background:#fff;border:1px solid #e5e7eb;border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);padding:2rem;width:100%;max-width:340px}
+.login-logo{display:flex;flex-direction:column;align-items:center;margin-bottom:2rem;gap:.5rem}
+.login-logo svg{height:40px;width:auto}
+.login-logo .sub{font-size:.8rem;color:#9ca3af}
+
+/* ── FORMS ────────────────────────────────────── */
+.field{margin-bottom:1rem}
+.field label{display:block;font-size:.8rem;font-weight:500;color:#374151;margin-bottom:.35rem}
+.field input,.field textarea,.field select{width:100%;border:1px solid #d1d5db;border-radius:8px;padding:.625rem .75rem;font-size:.875rem;color:#111827;outline:none;background:#fff;transition:border-color .15s,box-shadow .15s;font-family:inherit}
+.field textarea{resize:vertical;min-height:72px}
+.field input:focus,.field textarea:focus{border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,.12)}
+
+/* ── BUTTONS ──────────────────────────────────── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.375rem;padding:.625rem 1rem;border-radius:8px;font-size:.8rem;font-weight:600;cursor:pointer;border:none;transition:all .15s;white-space:nowrap}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-primary{background:#2563eb;color:#fff}
+.btn-primary:hover:not(:disabled){background:#1d4ed8}
+.btn-sm{padding:.4rem .75rem;font-size:.75rem}
+.btn-outline{background:#fff;color:#374151;border:1px solid #d1d5db}
+.btn-outline:hover:not(:disabled){background:#f9fafb}
+.btn-link{background:none;color:#2563eb;font-weight:500;padding:.25rem .375rem;border-radius:4px;border:none}
+.btn-link:hover{background:#eff6ff}
+.btn-danger-link{background:none;color:#dc2626;font-weight:500;padding:.25rem .375rem;border-radius:4px;border:none}
+.btn-danger-link:hover{background:#fef2f2}
+.btn-block{width:100%}
+.err-box{background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:.5rem .75rem;font-size:.8rem;color:#b91c1c;margin-top:.75rem}
+
+/* ── APP SHELL ────────────────────────────────── */
+#app{display:none;min-height:100vh}
+.app-wrap{display:flex;min-height:100vh}
+
+.sidebar{width:240px;background:#fff;border-right:1px solid #e5e7eb;display:flex;flex-direction:column;flex-shrink:0;position:sticky;top:0;height:100vh;overflow:hidden}
+.sidebar-logo{padding:1.25rem 1.25rem 1rem;border-bottom:1px solid #f3f4f6;display:flex;align-items:center;gap:.5rem}
+.sidebar-logo svg{height:28px;width:auto}
+.sidebar-logo .sub{font-size:.72rem;color:#9ca3af;font-weight:400}
+.sidebar-nav{flex:1;padding:.75rem .5rem;overflow-y:auto}
+.nav-group{margin-bottom:1rem}
+.nav-group-label{padding:.25rem .75rem;font-size:.65rem;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.25rem}
+.nav-item{display:block;width:100%;text-align:left;padding:.5rem .75rem;border-radius:6px;font-size:.8rem;font-weight:500;color:#6b7280;cursor:pointer;border:none;background:none;transition:all .1s}
+.nav-item:hover{background:#f3f4f6;color:#111827}
+.nav-item.active{background:#eff6ff;color:#1d4ed8}
+.sidebar-footer{padding:.75rem .5rem;border-top:1px solid #f3f4f6}
+
+.main-content{flex:1;overflow:auto;min-width:0}
+.page-header{padding:1.5rem 2rem 0;background:#fff;border-bottom:1px solid #e5e7eb}
+.page-header-inner{display:flex;align-items:center;justify-content:space-between;padding-bottom:1rem;flex-wrap:wrap;gap:.75rem}
+.page-title{font-size:1.25rem;font-weight:700;color:#111827}
+.page-body{padding:1.5rem 2rem}
+
+/* ── STATS ────────────────────────────────────── */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1rem;margin-bottom:1.5rem}
+.stat-card{background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:1rem 1.25rem}
+.stat-val{font-size:1.625rem;font-weight:700;color:#111827;line-height:1.2}
+.stat-lbl{font-size:.72rem;color:#6b7280;margin-top:.2rem;font-weight:500}
+
+/* ── CARD / TABLE ─────────────────────────────── */
+.card{background:#fff;border:1px solid #e5e7eb;border-radius:10px;overflow:hidden}
+.card-header{display:flex;align-items:center;justify-content:space-between;padding:.875rem 1.25rem;border-bottom:1px solid #e5e7eb;gap:.75rem;flex-wrap:wrap}
+.card-title{font-size:.875rem;font-weight:700;color:#111827;display:flex;align-items:center;gap:.4rem}
+.overflow-x{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;font-size:.7rem;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:.05em;padding:.625rem 1.25rem;background:#f9fafb;border-bottom:1px solid #e5e7eb;white-space:nowrap}
+td{padding:.75rem 1.25rem;border-bottom:1px solid #f3f4f6;vertical-align:middle;font-size:.8rem;color:#374151;white-space:nowrap}
+tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:#f9fafb}
+
+.mono{font-family:'SFMono-Regular',Consolas,monospace}
+.code-link{font-family:'SFMono-Regular',Consolas,monospace;color:#2563eb;cursor:pointer;font-size:.8rem;border:none;background:none;padding:0}
+.code-link:hover{text-decoration:underline}
+
+.badge{display:inline-block;font-size:.68rem;font-weight:600;padding:2px 8px;border-radius:20px}
+.badge-green{background:#dcfce7;color:#16a34a}
+.badge-yellow{background:#fef9c3;color:#a16207}
+.badge-gray{background:#f3f4f6;color:#6b7280}
+
+.act-row{display:flex;gap:.25rem;align-items:center}
+
+/* ── DETAIL ───────────────────────────────────── */
+.detail-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;padding:1.25rem;border-bottom:1px solid #e5e7eb}
+.detail-field .lbl{font-size:.7rem;color:#9ca3af;font-weight:500;margin-bottom:.2rem;text-transform:uppercase;letter-spacing:.04em}
+.detail-field .val{font-size:.9rem;font-weight:600;color:#111827}
+.detail-field .val.muted{color:#6b7280;font-weight:400}
+.mini-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;padding:1.25rem}
+.mini-stat{border-radius:8px;padding:.75rem 1rem;text-align:center}
+.mini-stat.blue{background:#eff6ff}.mini-stat.blue .mv{color:#1d4ed8}
+.mini-stat.green{background:#f0fdf4}.mini-stat.green .mv{color:#16a34a}
+.mini-stat.yellow{background:#fefce8}.mini-stat.yellow .mv{color:#a16207}
+.mini-stat.purple{background:#faf5ff}.mini-stat.purple .mv{color:#7c3aed}
+.mv{font-size:1.25rem;font-weight:700}
+.ml{font-size:.68rem;color:#6b7280;margin-top:.1rem}
+
+.back-link{display:inline-flex;align-items:center;gap:.3rem;color:#6b7280;font-size:.8rem;font-weight:500;cursor:pointer;padding:.25rem 0;margin-bottom:1rem;background:none;border:none}
+.back-link:hover{color:#111827}
+
+/* ── MODAL ────────────────────────────────────── */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:100;align-items:center;justify-content:center;padding:1rem}
+.overlay.open{display:flex}
+.modal{background:#fff;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,.12);padding:1.5rem;width:100%;max-width:440px;max-height:90vh;overflow-y:auto}
+.modal h2{font-size:1rem;font-weight:700;color:#111827;margin-bottom:1.25rem}
+.modal-footer{display:flex;gap:.5rem;justify-content:flex-end;margin-top:1.25rem}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+
+.empty{padding:2.5rem;text-align:center;color:#9ca3af;font-size:.8rem}
+.toast{position:fixed;bottom:1.25rem;right:1.25rem;background:#111827;color:#fff;border-radius:8px;padding:.625rem 1rem;font-size:.8rem;z-index:200;pointer-events:none;opacity:1;transition:opacity .2s}
+.toast.hidden{opacity:0}
+
+@media(max-width:768px){
+  .sidebar{display:none}
+  th,td{padding:.5rem .875rem}
+  .page-body,.page-header{padding:1rem}
+  .stats-row{grid-template-columns:1fr 1fr}
+  .field-row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- IMBA logo SVG inline -->
+<svg id="imba-svg-tpl" xmlns="http://www.w3.org/2000/svg" viewBox="-9 142 1430 482" style="display:none">
+  <g stroke="#111111" stroke-width="9" stroke-linejoin="round" stroke-linecap="round">
+    <rect x="-2.3" y="147.8" width="235.4" height="470.8" fill="#2E7DF6"/>
+    <path fill="#55DB9C" d="M485.5,353.2c-2.6,28.2-30.1,27.9-32.4-.3l-18.9-203.3-168.5-1.5v470.4h113.7l1.9-263.8c.2-28.2,28-31,30.7-3l25.8,266.9h61.8l25.8-266.6c2.7-27.9,30.5-25.2,30.7,3l1.9,263.6h132.2V148.1l-185,1.5-19.5,203.6h-.2Z"/>
+    <path fill="#FFD731" d="M1011.7,148.3h-289.2v469.9h289.2c22.4,0,40.6-27.6,40.6-61.6v-96.1c0-34-18.2-61.6-40.6-61.6h-53.5c-8.7-1.5-15.4-12.8-15.4-26.3s7.3-25.7,16.5-26.4h52.4c22.4,0,40.6-27.6,40.6-61.6v-74.4c0-34-18.2-61.6-40.6-61.6h0ZM901.3,509.8c0,14-7.5,25.4-16.7,25.4h-15.3c-9.2,0-16.7-11.4-16.7-25.4v-65.6c0-20.5,10.9-37,24.4-37s24.4,16.6,24.4,37v65.6h-.1ZM901.3,329.3c0,14-7.5,25.4-16.7,25.4h-15.3c-9.2,0-16.7-11.4-16.7-25.4v-60c0-20.5,10.9-37,24.4-37s24.4,16.6,24.4,37v60h-.1Z"/>
+    <path fill="#C9A4FF" d="M1369.7,147.8h-240.5c-24.9,0-45.1,30.6-45.1,68.3v402.3h141v-95.3c0-14,7.5-25.4,16.7-25.4h15.3c9.2,0,16.7,11.4,16.7,25.4v95.3h141V216.1c0-37.7-20.2-68.3-45.1-68.3h0ZM1273.8,311.6v60c0,14-7.5,25.4-16.7,25.4h-15.3c-9.2,0-16.7-11.4-16.7-25.4v-88.2c0-20.5,10.9-37,24.4-37s24.4,16.6,24.4,37v28.1h-.1Z"/>
+  </g>
+</svg>
+
+<!-- ══ LOGIN ══════════════════════════════════════════════ -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="-9 142 1430 482">
+        <g stroke="#111111" stroke-width="9" stroke-linejoin="round" stroke-linecap="round">
+          <rect x="-2.3" y="147.8" width="235.4" height="470.8" fill="#2E7DF6"/>
+          <path fill="#55DB9C" d="M485.5,353.2c-2.6,28.2-30.1,27.9-32.4-.3l-18.9-203.3-168.5-1.5v470.4h113.7l1.9-263.8c.2-28.2,28-31,30.7-3l25.8,266.9h61.8l25.8-266.6c2.7-27.9,30.5-25.2,30.7,3l1.9,263.6h132.2V148.1l-185,1.5-19.5,203.6h-.2Z"/>
+          <path fill="#FFD731" d="M1011.7,148.3h-289.2v469.9h289.2c22.4,0,40.6-27.6,40.6-61.6v-96.1c0-34-18.2-61.6-40.6-61.6h-53.5c-8.7-1.5-15.4-12.8-15.4-26.3s7.3-25.7,16.5-26.4h52.4c22.4,0,40.6-27.6,40.6-61.6v-74.4c0-34-18.2-61.6-40.6-61.6h0ZM901.3,509.8c0,14-7.5,25.4-16.7,25.4h-15.3c-9.2,0-16.7-11.4-16.7-25.4v-65.6c0-20.5,10.9-37,24.4-37s24.4,16.6,24.4,37v65.6h-.1ZM901.3,329.3c0,14-7.5,25.4-16.7,25.4h-15.3c-9.2,0-16.7-11.4-16.7-25.4v-60c0-20.5,10.9-37,24.4-37s24.4,16.6,24.4,37v60h-.1Z"/>
+          <path fill="#C9A4FF" d="M1369.7,147.8h-240.5c-24.9,0-45.1,30.6-45.1,68.3v402.3h141v-95.3c0-14,7.5-25.4,16.7-25.4h15.3c9.2,0,16.7,11.4,16.7,25.4v95.3h141V216.1c0-37.7-20.2-68.3-45.1-68.3h0ZM1273.8,311.6v60c0,14-7.5,25.4-16.7,25.4h-15.3c-9.2,0-16.7-11.4-16.7-25.4v-88.2c0-20.5,10.9-37,24.4-37s24.4,16.6,24.4,37v28.1h-.1Z"/>
+        </g>
+      </svg>
+      <div class="sub">Referral Admin</div>
+    </div>
+    <form onsubmit="doLogin(event)">
+      <div class="field">
+        <label>Email</label>
+        <input type="email" id="l-email" placeholder="admin@imba.app" autocomplete="username" required autofocus/>
+      </div>
+      <div class="field">
+        <label>Пароль</label>
+        <input type="password" id="l-pass" placeholder="••••••••" autocomplete="current-password" required/>
+      </div>
+      <div id="l-err" style="display:none" class="err-box"></div>
+      <button type="submit" class="btn btn-primary btn-block" id="l-btn" style="margin-top:.75rem">Войти</button>
+    </form>
+  </div>
+</div>
+
+<!-- ══ APP ════════════════════════════════════════════════ -->
+<div id="app">
+  <div class="app-wrap">
+    <div class="sidebar">
+      <div class="sidebar-logo">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="-9 142 1430 482">
+          <g stroke="#111111" stroke-width="9" stroke-linejoin="round" stroke-linecap="round">
+            <rect x="-2.3" y="147.8" width="235.4" height="470.8" fill="#2E7DF6"/>
+            <path fill="#55DB9C" d="M485.5,353.2c-2.6,28.2-30.1,27.9-32.4-.3l-18.9-203.3-168.5-1.5v470.4h113.7l1.9-263.8c.2-28.2,28-31,30.7-3l25.8,266.9h61.8l25.8-266.6c2.7-27.9,30.5-25.2,30.7,3l1.9,263.6h132.2V148.1l-185,1.5-19.5,203.6h-.2Z"/>
+            <path fill="#FFD731" d="M1011.7,148.3h-289.2v469.9h289.2c22.4,0,40.6-27.6,40.6-61.6v-96.1c0-34-18.2-61.6-40.6-61.6h-53.5c-8.7-1.5-15.4-12.8-15.4-26.3s7.3-25.7,16.5-26.4h52.4c22.4,0,40.6-27.6,40.6-61.6v-74.4c0-34-18.2-61.6-40.6-61.6h0ZM901.3,509.8c0,14-7.5,25.4-16.7,25.4h-15.3c-9.2,0-16.7-11.4-16.7-25.4v-65.6c0-20.5,10.9-37,24.4-37s24.4,16.6,24.4,37v65.6h-.1ZM901.3,329.3c0,14-7.5,25.4-16.7,25.4h-15.3c-9.2,0-16.7-11.4-16.7-25.4v-60c0-20.5,10.9-37,24.4-37s24.4,16.6,24.4,37v60h-.1Z"/>
+            <path fill="#C9A4FF" d="M1369.7,147.8h-240.5c-24.9,0-45.1,30.6-45.1,68.3v402.3h141v-95.3c0-14,7.5-25.4,16.7-25.4h15.3c9.2,0,16.7,11.4,16.7,25.4v95.3h141V216.1c0-37.7-20.2-68.3-45.1-68.3h0ZM1273.8,311.6v60c0,14-7.5,25.4-16.7,25.4h-15.3c-9.2,0-16.7-11.4-16.7-25.4v-88.2c0-20.5,10.9-37,24.4-37s24.4,16.6,24.4,37v28.1h-.1Z"/>
+          </g>
+        </svg>
+        <span class="sub">Ref Admin</span>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-group">
+          <div class="nav-group-label">Referrals</div>
+          <button class="nav-item active" onclick="showPage('list')">Программы</button>
+        </div>
+      </nav>
+      <div class="sidebar-footer">
+        <button class="nav-item" style="color:#6b7280" onclick="doLogout()">Выйти</button>
+      </div>
+    </div>
+
+    <div class="main-content">
+
+      <!-- LIST PAGE -->
+      <div id="page-list">
+        <div class="page-header">
+          <div class="page-header-inner">
+            <div class="page-title">Referral Programs</div>
+            <button class="btn btn-primary btn-sm" onclick="openCreate()">+ Добавить</button>
+          </div>
+        </div>
+        <div class="page-body">
+          <div class="stats-row">
+            <div class="stat-card"><div class="stat-val" id="s-total">—</div><div class="stat-lbl">Всего программ</div></div>
+            <div class="stat-card"><div class="stat-val" id="s-active">—</div><div class="stat-lbl">Активных</div></div>
+            <div class="stat-card"><div class="stat-val" id="s-refs">—</div><div class="stat-lbl">Total Referrals</div></div>
+            <div class="stat-card"><div class="stat-val" id="s-conv">—</div><div class="stat-lbl">Completed</div></div>
+            <div class="stat-card"><div class="stat-val" id="s-payout">—</div><div class="stat-lbl">К выплате</div></div>
+          </div>
+          <div class="card">
+            <div class="overflow-x">
+              <table>
+                <thead><tr>
+                  <th>Партнёр</th><th>Код</th><th>Контакт</th>
+                  <th>Рефералов</th><th>Completed</th>
+                  <th>Earned</th><th>К выплате</th>
+                  <th>Status</th><th>Actions</th>
+                </tr></thead>
+                <tbody id="ref-tbody"><tr><td colspan="9" class="empty">Загрузка…</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DETAIL PAGE -->
+      <div id="page-detail" style="display:none">
+        <div class="page-header">
+          <div class="page-header-inner">
+            <div class="page-title" id="d-title">—</div>
+            <div style="display:flex;gap:.5rem">
+              <button class="btn btn-outline btn-sm" onclick="openPayoutModal()">Выплачено</button>
+              <button class="btn btn-outline btn-sm" onclick="openEditFromDetail()">Редактировать</button>
+              <button class="btn btn-sm" id="d-toggle-btn" onclick="toggleFromDetail()">—</button>
+            </div>
+          </div>
+        </div>
+        <div class="page-body">
+          <button class="back-link" onclick="showPage('list')">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+            Назад к программам
+          </button>
+          <div class="card" style="margin-bottom:1.5rem">
+            <div class="detail-grid" id="d-fields"></div>
+            <div class="mini-stats" id="d-stats"></div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Conversions</div>
+            </div>
+            <div class="overflow-x">
+              <table>
+                <thead><tr>
+                  <th>Referee Email</th><th>Status</th>
+                  <th>Referrer Bonus</th><th>Referee Bonus</th>
+                  <th>Registered</th><th>Converted</th>
+                </tr></thead>
+                <tbody id="conv-tbody"><tr><td colspan="6" class="empty">Загрузка…</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CREATE -->
+<div class="overlay" id="modal-create">
+  <div class="modal">
+    <h2>Новый партнёр</h2>
+    <div class="field-row">
+      <div class="field">
+        <label>Имя / канал *</label>
+        <input type="text" id="c-name" placeholder="Иван Блогер"/>
+      </div>
+      <div class="field">
+        <label>Код * (a-z, 0-9, -)</label>
+        <input type="text" id="c-code" placeholder="ivan123" autocomplete="off"
+          oninput="this.value=this.value.toLowerCase().replace(/[^a-z0-9-]/g,'')"/>
+      </div>
+    </div>
+    <div class="field">
+      <label>Контакт (TG, email)</label>
+      <input type="text" id="c-contact" placeholder="@ivan_blogger"/>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>Бонус рефоводу ($)</label>
+        <input type="number" id="c-rbns" value="10" min="0" step="0.5"/>
+      </div>
+      <div class="field">
+        <label>Бонус рефералу ($)</label>
+        <input type="number" id="c-fbns" value="5" min="0" step="0.5"/>
+      </div>
+    </div>
+    <div class="field">
+      <label>Заметка</label>
+      <textarea id="c-note" placeholder="Внутренняя заметка…"></textarea>
+    </div>
+    <div id="c-err" style="display:none" class="err-box"></div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeCreate()">Отмена</button>
+      <button class="btn btn-primary" id="c-btn" onclick="doCreate()">Создать</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL EDIT -->
+<div class="overlay" id="modal-edit">
+  <div class="modal">
+    <h2>Редактировать партнёра</h2>
+    <input type="hidden" id="e-id"/>
+    <div class="field-row">
+      <div class="field">
+        <label>Имя / канал</label>
+        <input type="text" id="e-name"/>
+      </div>
+      <div class="field">
+        <label>Контакт</label>
+        <input type="text" id="e-contact"/>
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>Бонус рефоводу ($)</label>
+        <input type="number" id="e-rbns" min="0" step="0.5"/>
+      </div>
+      <div class="field">
+        <label>Бонус рефералу ($)</label>
+        <input type="number" id="e-fbns" min="0" step="0.5"/>
+      </div>
+    </div>
+    <div class="field">
+      <label>Заметка</label>
+      <textarea id="e-note"></textarea>
+    </div>
+    <div id="e-err" style="display:none" class="err-box"></div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeEdit()">Отмена</button>
+      <button class="btn btn-primary" id="e-btn" onclick="doEdit()">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL PAYOUT -->
+<div class="overlay" id="modal-payout">
+  <div class="modal">
+    <h2>Зафиксировать выплату</h2>
+    <input type="hidden" id="p-id"/>
+    <p style="font-size:.8rem;color:#6b7280;margin-bottom:1rem">К выплате: <strong id="p-due" style="color:#111827">—</strong></p>
+    <div class="field">
+      <label>Сумма выплаты ($)</label>
+      <input type="number" id="p-amount" min="0.01" step="0.01" placeholder="0.00"/>
+    </div>
+    <div id="p-err" style="display:none" class="err-box"></div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closePayout()">Отмена</button>
+      <button class="btn btn-primary" id="p-btn" onclick="doPayout()">Записать</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast hidden" id="toast"></div>
+
+<script>
+const API = 'https://api.imba.live';
+let token = localStorage.getItem('imba_ref_token') || '';
+let refs = [];
+let currentId = null;
+
+// ── utils ──────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.remove('hidden');
+  clearTimeout(t._t); t._t = setTimeout(() => t.classList.add('hidden'), 2500);
+}
+function showErr(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg; el.style.display = msg ? 'block' : 'none';
+}
+async function apiFetch(method, path, body) {
+  const opts = { method, headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' } };
+  if (body !== undefined) opts.body = JSON.stringify(body);
+  const r = await fetch(API + path, opts);
+  if (r.status === 401 || r.status === 403) { doLogout(); throw new Error('Unauthorized'); }
+  if (!r.ok) { const e = await r.json().catch(() => ({})); throw new Error(e.detail || r.statusText); }
+  return r.json();
+}
+function fmtDate(iso) {
+  if (!iso) return '—';
+  return new Date(iso).toLocaleDateString('ru', {day:'2-digit',month:'2-digit',year:'2-digit'});
+}
+function refLink(code) { return 'https://www.imba.live/?ref=' + code; }
+function copy(text) { navigator.clipboard.writeText(text).then(() => showToast('Скопировано')); }
+
+// ── auth ───────────────────────────────────────────────
+async function doLogin(e) {
+  e.preventDefault();
+  const em = document.getElementById('l-email').value.trim();
+  const pw = document.getElementById('l-pass').value;
+  const btn = document.getElementById('l-btn');
+  showErr('l-err', '');
+  btn.disabled = true; btn.textContent = 'Вход…';
+  try {
+    const r = await fetch(API + '/v1/auth/login', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: em, password: pw }),
+    });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.detail || 'Неверный email или пароль');
+    const tok = d.token || d.access_token;
+    const check = await fetch(API + '/v1/admin/stats', { headers: { 'Authorization': 'Bearer ' + tok } });
+    if (!check.ok) throw new Error('Нет прав администратора');
+    token = tok;
+    localStorage.setItem('imba_ref_token', token);
+    showApp();
+  } catch(err) {
+    showErr('l-err', err.message);
+  } finally { btn.disabled = false; btn.textContent = 'Войти'; }
+}
+
+function doLogout() {
+  token = '';
+  localStorage.removeItem('imba_ref_token');
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+}
+
+function showApp() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  loadRefs();
+}
+
+// ── pages ──────────────────────────────────────────────
+function showPage(name) {
+  document.getElementById('page-list').style.display = name === 'list' ? '' : 'none';
+  document.getElementById('page-detail').style.display = name === 'detail' ? '' : 'none';
+}
+
+// ── list ───────────────────────────────────────────────
+async function loadRefs() {
+  try {
+    refs = await apiFetch('GET', '/v1/admin/referrals?limit=200');
+    renderRefs();
+  } catch(e) {
+    document.getElementById('ref-tbody').innerHTML = `<tr><td colspan="9" class="empty">${e.message}</td></tr>`;
+  }
+}
+
+function renderRefs() {
+  const totalPayout = refs.reduce((a,r) => a + (r.pending_payout || 0), 0);
+  document.getElementById('s-total').textContent = refs.length;
+  document.getElementById('s-active').textContent = refs.filter(r=>r.is_active).length;
+  document.getElementById('s-refs').textContent = refs.reduce((a,r)=>a+r.total_referrals,0);
+  document.getElementById('s-conv').textContent = refs.reduce((a,r)=>a+r.completed,0);
+  document.getElementById('s-payout').textContent = '$' + totalPayout.toFixed(2);
+
+  const tbody = document.getElementById('ref-tbody');
+  if (!refs.length) { tbody.innerHTML = '<tr><td colspan="9" class="empty">Нет программ. Создайте первую.</td></tr>'; return; }
+
+  tbody.innerHTML = refs.map(r => `
+    <tr>
+      <td style="font-weight:500">${r.name || '<span style="color:#9ca3af">—</span>'}</td>
+      <td><button class="code-link" onclick="copy('${refLink(r.referral_code)}')" title="Скопировать ссылку">${r.referral_code}</button></td>
+      <td style="color:#6b7280">${r.contact || '—'}</td>
+      <td style="font-weight:600">${r.total_referrals}</td>
+      <td>${r.completed} <span style="color:#9ca3af;font-size:.72rem">(${r.pending})</span></td>
+      <td class="mono">$${r.total_earned.toFixed(2)}</td>
+      <td class="mono" style="color:${r.pending_payout>0?'#d97706':'#6b7280'};font-weight:${r.pending_payout>0?600:400}">$${(r.pending_payout||0).toFixed(2)}</td>
+      <td><span class="badge ${r.is_active ? 'badge-green' : 'badge-gray'}">${r.is_active ? 'Active' : 'Inactive'}</span></td>
+      <td>
+        <div class="act-row">
+          <button class="btn btn-link btn-sm" onclick="showDetail('${r.id}')">View</button>
+          <button class="btn ${r.is_active?'btn-danger-link':'btn-link'} btn-sm" onclick="toggleRef('${r.id}')">${r.is_active?'Disable':'Enable'}</button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+// ── toggle ─────────────────────────────────────────────
+async function toggleRef(id) {
+  try {
+    const r = await apiFetch('POST', '/v1/admin/referrals/' + id + '/toggle');
+    const idx = refs.findIndex(x=>x.id===id);
+    if (idx>=0) refs[idx].is_active = r.is_active;
+    renderRefs();
+    if (currentId === id) updateDetailToggleBtn();
+    showToast(r.is_active ? 'Включено' : 'Отключено');
+  } catch(e) { showToast('Ошибка: ' + e.message); }
+}
+
+// ── detail ─────────────────────────────────────────────
+async function showDetail(id) {
+  currentId = id;
+  showPage('detail');
+  const prog = refs.find(r=>r.id===id);
+  if (prog) renderDetailMeta(prog);
+  document.getElementById('conv-tbody').innerHTML = '<tr><td colspan="6" class="empty">Загрузка…</td></tr>';
+  try {
+    const convs = await apiFetch('GET', '/v1/admin/referrals/' + id + '/conversions');
+    renderConversions(convs);
+  } catch(e) {
+    document.getElementById('conv-tbody').innerHTML = `<tr><td colspan="6" class="empty">${e.message}</td></tr>`;
+  }
+}
+
+function renderDetailMeta(prog) {
+  document.getElementById('d-title').textContent = prog.name || prog.referral_code;
+  updateDetailToggleBtn();
+
+  document.getElementById('d-fields').innerHTML = `
+    <div class="detail-field"><div class="lbl">Код</div>
+      <div class="val"><button class="code-link mono" onclick="copy('${refLink(prog.referral_code)}')" title="Скопировать ссылку">${prog.referral_code}</button></div></div>
+    <div class="detail-field"><div class="lbl">Контакт</div><div class="val ${prog.contact?'':'muted'}">${prog.contact||'—'}</div></div>
+    <div class="detail-field"><div class="lbl">Бонус рефоводу</div><div class="val mono">$${prog.referrer_bonus}</div></div>
+    <div class="detail-field"><div class="lbl">Бонус рефералу</div><div class="val mono">$${prog.referee_bonus}</div></div>
+    <div class="detail-field"><div class="lbl">Выплачено</div><div class="val mono">$${(prog.total_paid||0).toFixed(2)}</div></div>
+    <div class="detail-field"><div class="lbl">Создан</div><div class="val muted">${fmtDate(prog.created_at)}</div></div>
+    ${prog.note ? `<div class="detail-field" style="grid-column:1/-1"><div class="lbl">Заметка</div><div class="val" style="font-weight:400;color:#374151">${prog.note}</div></div>` : ''}
+  `;
+
+  document.getElementById('d-stats').innerHTML = `
+    <div class="mini-stat blue"><div class="mv">${prog.total_referrals}</div><div class="ml">Total Conversions</div></div>
+    <div class="mini-stat green"><div class="mv">${prog.completed}</div><div class="ml">Completed</div></div>
+    <div class="mini-stat yellow"><div class="mv">${prog.pending}</div><div class="ml">Pending</div></div>
+    <div class="mini-stat blue"><div class="mv mono" style="font-size:1rem">$${prog.total_earned.toFixed(2)}</div><div class="ml">Earned</div></div>
+    <div class="mini-stat ${(prog.pending_payout||0)>0?'purple':''}"><div class="mv mono" style="font-size:1rem;color:${(prog.pending_payout||0)>0?'#7c3aed':'#6b7280'}">$${(prog.pending_payout||0).toFixed(2)}</div><div class="ml">К выплате</div></div>
+    <div class="mini-stat"><div class="mv mono" style="font-size:1rem;color:#6b7280">$${(prog.total_paid||0).toFixed(2)}</div><div class="ml">Выплачено</div></div>
+  `;
+}
+
+function updateDetailToggleBtn() {
+  const prog = refs.find(r=>r.id===currentId); if (!prog) return;
+  const btn = document.getElementById('d-toggle-btn');
+  btn.textContent = prog.is_active ? 'Disable' : 'Enable';
+  btn.className = `btn btn-sm ${prog.is_active ? 'btn-danger-link' : 'btn-outline'}`;
+}
+function toggleFromDetail() { if (currentId) toggleRef(currentId); }
+
+function renderConversions(convs) {
+  const tbody = document.getElementById('conv-tbody');
+  if (!convs.length) { tbody.innerHTML = '<tr><td colspan="6" class="empty">No conversions yet</td></tr>'; return; }
+  tbody.innerHTML = convs.map(c => `
+    <tr>
+      <td>${c.referee_email || c.referee_id || '—'}</td>
+      <td><span class="badge ${c.status==='completed'?'badge-green':'badge-yellow'}">${c.status.toUpperCase()}</span></td>
+      <td style="color:${c.referrer_bonus_paid?'#16a34a':'#9ca3af'};font-weight:${c.referrer_bonus_paid?600:400}">${c.referrer_bonus_paid?'✓ Paid':'—'}</td>
+      <td style="color:${c.referee_bonus_paid?'#16a34a':'#9ca3af'};font-weight:${c.referee_bonus_paid?600:400}">${c.referee_bonus_paid?'✓ Paid':'—'}</td>
+      <td style="color:#6b7280">${fmtDate(c.created_at)}</td>
+      <td style="color:#6b7280">${c.completed_at?fmtDate(c.completed_at):'—'}</td>
+    </tr>
+  `).join('');
+}
+
+// ── create ─────────────────────────────────────────────
+function openCreate() {
+  ['c-name','c-code','c-contact','c-note'].forEach(id => document.getElementById(id).value='');
+  document.getElementById('c-rbns').value='10';
+  document.getElementById('c-fbns').value='5';
+  showErr('c-err','');
+  document.getElementById('modal-create').classList.add('open');
+  setTimeout(()=>document.getElementById('c-name').focus(),50);
+}
+function closeCreate() { document.getElementById('modal-create').classList.remove('open'); }
+
+async function doCreate() {
+  const name = document.getElementById('c-name').value.trim();
+  const code = document.getElementById('c-code').value.trim();
+  const contact = document.getElementById('c-contact').value.trim();
+  const note = document.getElementById('c-note').value.trim();
+  const rbns = parseFloat(document.getElementById('c-rbns').value);
+  const fbns = parseFloat(document.getElementById('c-fbns').value);
+  showErr('c-err','');
+  if (!name) { showErr('c-err','Укажите имя партнёра'); return; }
+  if (!code || code.length < 3) { showErr('c-err','Код минимум 3 символа'); return; }
+  const btn = document.getElementById('c-btn');
+  btn.disabled=true; btn.textContent='Создаём…';
+  try {
+    const r = await apiFetch('POST','/v1/admin/referrals',{referral_code:code,name,contact:contact||null,note:note||null,referrer_bonus:rbns,referee_bonus:fbns});
+    refs.unshift({...r,total_referrals:0,completed:0,pending:0,total_earned:0,pending_payout:0});
+    renderRefs(); closeCreate();
+    showToast('Создано. Ссылка: ' + refLink(r.referral_code));
+  } catch(e) { showErr('c-err',e.message); }
+  finally { btn.disabled=false; btn.textContent='Создать'; }
+}
+
+// ── edit ───────────────────────────────────────────────
+function openEdit(id,name,contact,rbns,fbns,note) {
+  document.getElementById('e-id').value=id;
+  document.getElementById('e-name').value=name||'';
+  document.getElementById('e-contact').value=contact||'';
+  document.getElementById('e-rbns').value=rbns;
+  document.getElementById('e-fbns').value=fbns;
+  document.getElementById('e-note').value=note||'';
+  showErr('e-err','');
+  document.getElementById('modal-edit').classList.add('open');
+  setTimeout(()=>document.getElementById('e-name').focus(),50);
+}
+function openEditFromDetail() {
+  const p = refs.find(r=>r.id===currentId);
+  if (p) openEdit(p.id,p.name,p.contact,p.referrer_bonus,p.referee_bonus,p.note);
+}
+function closeEdit() { document.getElementById('modal-edit').classList.remove('open'); }
+
+async function doEdit() {
+  const id=document.getElementById('e-id').value;
+  const name=document.getElementById('e-name').value.trim();
+  const contact=document.getElementById('e-contact').value.trim();
+  const rbns=parseFloat(document.getElementById('e-rbns').value);
+  const fbns=parseFloat(document.getElementById('e-fbns').value);
+  const note=document.getElementById('e-note').value.trim();
+  showErr('e-err','');
+  const btn=document.getElementById('e-btn');
+  btn.disabled=true; btn.textContent='Сохраняем…';
+  try {
+    const r=await apiFetch('PATCH','/v1/admin/referrals/'+id,{name:name||null,contact:contact||null,note:note||null,referrer_bonus:rbns,referee_bonus:fbns});
+    const idx=refs.findIndex(x=>x.id===id);
+    if(idx>=0) Object.assign(refs[idx],{name:r.name,contact:r.contact,note:r.note,referrer_bonus:r.referrer_bonus,referee_bonus:r.referee_bonus});
+    renderRefs();
+    if(currentId===id && document.getElementById('page-detail').style.display!=='none') renderDetailMeta(refs[idx]);
+    closeEdit(); showToast('Сохранено');
+  } catch(e) { showErr('e-err',e.message); }
+  finally { btn.disabled=false; btn.textContent='Сохранить'; }
+}
+
+// ── payout ─────────────────────────────────────────────
+function openPayoutModal() {
+  const prog = refs.find(r=>r.id===currentId); if(!prog) return;
+  document.getElementById('p-id').value=currentId;
+  document.getElementById('p-amount').value='';
+  document.getElementById('p-due').textContent='$'+(prog.pending_payout||0).toFixed(2);
+  showErr('p-err','');
+  document.getElementById('modal-payout').classList.add('open');
+  setTimeout(()=>document.getElementById('p-amount').focus(),50);
+}
+function closePayout() { document.getElementById('modal-payout').classList.remove('open'); }
+
+async function doPayout() {
+  const id=document.getElementById('p-id').value;
+  const amount=parseFloat(document.getElementById('p-amount').value);
+  showErr('p-err','');
+  if(!amount || amount<=0) { showErr('p-err','Укажите сумму'); return; }
+  const btn=document.getElementById('p-btn');
+  btn.disabled=true; btn.textContent='Записываем…';
+  try {
+    const r=await apiFetch('POST','/v1/admin/referrals/'+id+'/payout',{amount});
+    const idx=refs.findIndex(x=>x.id===id);
+    if(idx>=0) {
+      refs[idx].total_paid=r.total_paid;
+      refs[idx].pending_payout=Math.max(0,(refs[idx].total_earned||0)-r.total_paid);
+    }
+    renderRefs();
+    if(currentId===id) renderDetailMeta(refs[idx]);
+    closePayout(); showToast('Выплата записана: $'+amount.toFixed(2));
+  } catch(e) { showErr('p-err',e.message); }
+  finally { btn.disabled=false; btn.textContent='Записать'; }
+}
+
+// close overlays on background click
+['modal-create','modal-edit','modal-payout'].forEach(id => {
+  document.getElementById(id).addEventListener('click', e => { if(e.target===e.currentTarget) document.getElementById(id).classList.remove('open'); });
+});
+
+// ── init ───────────────────────────────────────────────
+if (token) { showApp(); }
+</script>
+</body>
+</html>
