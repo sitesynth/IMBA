@@ -212,6 +212,13 @@ tbody tr:hover td{background:#f9fafb}
             <div class="stat-card"><div class="stat-val" id="s-payout">—</div><div class="stat-lbl">К выплате</div></div>
           </div>
           <div class="card">
+            <div class="card-header">
+              <div style="flex:1">
+                <input id="search-input" type="text" placeholder="Поиск по имени, коду, контакту…"
+                  oninput="filterRefs(this.value)"
+                  style="width:100%;max-width:320px;border:1px solid #d1d5db;border-radius:8px;padding:.5rem .75rem;font-size:.8rem;outline:none"/>
+              </div>
+            </div>
             <div class="overflow-x">
               <table>
                 <thead><tr>
@@ -232,7 +239,8 @@ tbody tr:hover td{background:#f9fafb}
         <div class="page-header">
           <div class="page-header-inner">
             <div class="page-title" id="d-title">—</div>
-            <div style="display:flex;gap:.5rem">
+            <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+              <button class="btn btn-outline btn-sm" onclick="copyPartnerMessage()">Сообщение</button>
               <button class="btn btn-outline btn-sm" onclick="openPayoutModal()">Выплачено</button>
               <button class="btn btn-outline btn-sm" onclick="openEditFromDetail()">Редактировать</button>
               <button class="btn btn-sm" id="d-toggle-btn" onclick="toggleFromDetail()">—</button>
@@ -248,6 +256,18 @@ tbody tr:hover td{background:#f9fafb}
             <div class="detail-grid" id="d-fields"></div>
             <div class="mini-stats" id="d-stats"></div>
           </div>
+          <div class="card" style="margin-bottom:1.5rem">
+            <div class="card-header">
+              <div class="card-title">История выплат</div>
+            </div>
+            <div class="overflow-x">
+              <table>
+                <thead><tr><th>Дата</th><th>Сумма</th><th>Примечание</th></tr></thead>
+                <tbody id="payout-tbody"><tr><td colspan="3" class="empty">Загрузка…</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+
           <div class="card">
             <div class="card-header">
               <div class="card-title">Conversions</div>
@@ -454,18 +474,20 @@ async function loadRefs() {
   }
 }
 
-function renderRefs() {
-  const totalPayout = refs.reduce((a,r) => a + (r.pending_payout || 0), 0);
-  document.getElementById('s-total').textContent = refs.length;
-  document.getElementById('s-active').textContent = refs.filter(r=>r.is_active).length;
-  document.getElementById('s-refs').textContent = refs.reduce((a,r)=>a+r.total_referrals,0);
-  document.getElementById('s-conv').textContent = refs.reduce((a,r)=>a+r.completed,0);
-  document.getElementById('s-payout').textContent = '$' + totalPayout.toFixed(2);
+function filterRefs(q) {
+  const query = q.toLowerCase().trim();
+  const filtered = query ? refs.filter(r =>
+    (r.name||'').toLowerCase().includes(query) ||
+    (r.referral_code||'').toLowerCase().includes(query) ||
+    (r.contact||'').toLowerCase().includes(query)
+  ) : refs;
+  renderRefRows(filtered);
+}
 
+function renderRefRows(list) {
   const tbody = document.getElementById('ref-tbody');
-  if (!refs.length) { tbody.innerHTML = '<tr><td colspan="9" class="empty">Нет программ. Создайте первую.</td></tr>'; return; }
-
-  tbody.innerHTML = refs.map(r => `
+  if (!list.length) { tbody.innerHTML = '<tr><td colspan="9" class="empty">Ничего не найдено.</td></tr>'; return; }
+  tbody.innerHTML = list.map(r => `
     <tr>
       <td style="font-weight:500">${r.name || '<span style="color:#9ca3af">—</span>'}</td>
       <td><button class="code-link" onclick="copy('${refLink(r.referral_code)}')" title="Скопировать ссылку">${r.referral_code}</button></td>
@@ -484,6 +506,21 @@ function renderRefs() {
       </td>
     </tr>
   `).join('');
+}
+
+function renderRefs() {
+  const totalPayout = refs.reduce((a,r) => a + (r.pending_payout || 0), 0);
+  document.getElementById('s-total').textContent = refs.length;
+  document.getElementById('s-active').textContent = refs.filter(r=>r.is_active).length;
+  document.getElementById('s-refs').textContent = refs.reduce((a,r)=>a+r.total_referrals,0);
+  document.getElementById('s-conv').textContent = refs.reduce((a,r)=>a+r.completed,0);
+  document.getElementById('s-payout').textContent = '$' + totalPayout.toFixed(2);
+  if (!refs.length) {
+    document.getElementById('ref-tbody').innerHTML = '<tr><td colspan="9" class="empty">Нет программ. Создайте первую.</td></tr>';
+    return;
+  }
+  const q = document.getElementById('search-input')?.value || '';
+  filterRefs(q);
 }
 
 // ── toggle ─────────────────────────────────────────────
@@ -505,12 +542,44 @@ async function showDetail(id) {
   const prog = refs.find(r=>r.id===id);
   if (prog) renderDetailMeta(prog);
   document.getElementById('conv-tbody').innerHTML = '<tr><td colspan="6" class="empty">Загрузка…</td></tr>';
-  try {
-    const convs = await apiFetch('GET', '/v1/admin/referrals/' + id + '/conversions');
-    renderConversions(convs);
-  } catch(e) {
-    document.getElementById('conv-tbody').innerHTML = `<tr><td colspan="6" class="empty">${e.message}</td></tr>`;
-  }
+  document.getElementById('payout-tbody').innerHTML = '<tr><td colspan="3" class="empty">Загрузка…</td></tr>';
+  const [convs, payouts] = await Promise.allSettled([
+    apiFetch('GET', '/v1/admin/referrals/' + id + '/conversions'),
+    apiFetch('GET', '/v1/admin/referrals/' + id + '/payouts'),
+  ]);
+  if (convs.status === 'fulfilled') renderConversions(convs.value);
+  else document.getElementById('conv-tbody').innerHTML = `<tr><td colspan="6" class="empty">${convs.reason.message}</td></tr>`;
+  if (payouts.status === 'fulfilled') renderPayouts(payouts.value);
+  else document.getElementById('payout-tbody').innerHTML = `<tr><td colspan="3" class="empty">${payouts.reason?.message||'Нет выплат'}</td></tr>`;
+}
+
+function renderPayouts(list) {
+  const tbody = document.getElementById('payout-tbody');
+  if (!list.length) { tbody.innerHTML = '<tr><td colspan="3" class="empty">Выплат ещё нет</td></tr>'; return; }
+  tbody.innerHTML = list.map(p => `
+    <tr>
+      <td style="color:#6b7280">${fmtDate(p.created_at)}</td>
+      <td class="mono" style="font-weight:600;color:#16a34a">+$${p.amount.toFixed(2)}</td>
+      <td style="color:#6b7280;font-size:.75rem">${p.detail||'—'}</td>
+    </tr>
+  `).join('');
+}
+
+function copyPartnerMessage() {
+  const prog = refs.find(r=>r.id===currentId); if(!prog) return;
+  const link = refLink(prog.referral_code);
+  const msg = `Привет! 👋
+
+Вот твоя реферальная ссылка IMBA:
+${link}
+
+За каждого приведённого пользователя, который оформит подписку:
+• Ты получаешь: $${prog.referrer_bonus}
+• Новый пользователь получает: $${prog.referee_bonus} на баланс
+
+Ссылку можно вставлять в посты, stories, личные сообщения — она уникальная и отслеживается автоматически.`;
+  copy(msg);
+  showToast('Сообщение скопировано в буфер');
 }
 
 function renderDetailMeta(prog) {
@@ -667,7 +736,10 @@ async function doPayout() {
       refs[idx].pending_payout=Math.max(0,(refs[idx].total_earned||0)-r.total_paid);
     }
     renderRefs();
-    if(currentId===id) renderDetailMeta(refs[idx]);
+    if(currentId===id) {
+      renderDetailMeta(refs[idx]);
+      apiFetch('GET','/v1/admin/referrals/'+id+'/payouts').then(renderPayouts).catch(()=>{});
+    }
     closePayout(); showToast('Выплата записана: $'+amount.toFixed(2));
   } catch(e) { showErr('p-err',e.message); }
   finally { btn.disabled=false; btn.textContent='Записать'; }
