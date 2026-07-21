@@ -273,8 +273,8 @@ export default function EsimPage() {
       {/* Blog posts */}
       {relatedPosts.length > 0 && (
         <section className="rounded-xl px-5 md:px-12 py-12" style={{ background: 'var(--paper)' }}>
-          <h2 className="display text-3xl md:text-5xl mb-2">Читай по теме</h2>
-          <p className="font-semibold text-ink/55 mb-8 text-sm md:text-base">Гайды и советы по eSIM</p>
+          <h2 className="display text-3xl md:text-5xl mb-2 text-center">Читай по теме</h2>
+          <p className="font-semibold text-ink/55 mb-8 text-sm md:text-base text-center">Гайды и советы по eSIM</p>
           <div className="grid md:grid-cols-3 gap-5 max-w-5xl mx-auto">
             {relatedPosts.map(post => (
               <Link key={post.slug} href={`/blog/${post.slug}`} className="group block">

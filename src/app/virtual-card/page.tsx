@@ -117,18 +117,18 @@ export default function VirtualCardPage() {
 
       {/* Why you need it */}
       <section className="rounded-xl px-5 md:px-12 py-12 md:py-16" style={{ background: 'var(--paper)' }}>
-        <h2 className="display text-3xl md:text-6xl mb-4">Зачем нужна зарубежная виртуальная карта</h2>
-        <p className="font-semibold text-ink/55 mb-4 text-sm md:text-base max-w-2xl leading-relaxed">
+        <h2 className="display text-3xl md:text-6xl mb-4 text-center">Зачем нужна зарубежная виртуальная карта</h2>
+        <p className="font-semibold text-ink/55 mb-4 text-sm md:text-base max-w-2xl mx-auto text-center leading-relaxed">
           После ухода Visa и Mastercard зарубежные сайты перестали принимать карты российских банков: не продлить ChatGPT Plus, не оплатить Netflix, не купить игру в Steam, не забронировать отель на Booking.com.
         </p>
-        <p className="font-semibold text-ink/55 text-sm md:text-base max-w-2xl leading-relaxed">
+        <p className="font-semibold text-ink/55 text-sm md:text-base max-w-2xl mx-auto text-center leading-relaxed">
           Виртуальная карта IMBA выпущена вне российской банковской системы, и у неё есть всё, что у обычной карты: <strong className="text-ink">номер, срок действия, CVV и платёжный адрес</strong>. Для любого сайта она неотличима от пластиковой Visa или Mastercard — вводишь реквизиты и платишь.
         </p>
       </section>
 
       {/* What you can pay for */}
       <section className="rounded-xl px-5 md:px-12 py-12 md:py-16" style={{ background: 'var(--cream)' }}>
-        <h2 className="display text-3xl md:text-5xl mb-8">Что можно оплатить виртуальной картой</h2>
+        <h2 className="display text-3xl md:text-5xl mb-8 text-center">Что можно оплатить виртуальной картой</h2>
         <div className="grid md:grid-cols-3 gap-5 max-w-4xl mx-auto">
           <div className="panel p-6">
             <h3 className="display text-base mb-3">AI-сервисы и подписки</h3>
@@ -253,8 +253,8 @@ export default function VirtualCardPage() {
       {/* Blog posts */}
       {relatedPosts.length > 0 && (
         <section className="rounded-xl px-5 md:px-12 py-12" style={{ background: 'var(--paper)' }}>
-          <h2 className="display text-3xl md:text-5xl mb-2">Читай по теме</h2>
-          <p className="font-semibold text-ink/55 mb-8 text-sm md:text-base">Как платить за зарубежные сервисы из России</p>
+          <h2 className="display text-3xl md:text-5xl mb-2 text-center">Читай по теме</h2>
+          <p className="font-semibold text-ink/55 mb-8 text-sm md:text-base text-center">Как платить за зарубежные сервисы из России</p>
           <div className="grid md:grid-cols-3 gap-5 max-w-5xl mx-auto">
             {relatedPosts.map(post => (
               <Link key={post.slug} href={`/blog/${post.slug}`} className="group block">
