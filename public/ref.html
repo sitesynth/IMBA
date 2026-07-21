@@ -222,7 +222,7 @@ tbody tr:hover td{background:#f9fafb}
             <div class="overflow-x">
               <table>
                 <thead><tr>
-                  <th>Партнёр</th><th>Код</th><th>Контакт</th>
+                  <th>Партнёр</th><th>Реф-ссылка</th><th>Контакт</th>
                   <th>Рефералов</th><th>Completed</th>
                   <th>Earned</th><th>К выплате</th>
                   <th>Status</th><th>Actions</th>
@@ -490,7 +490,12 @@ function renderRefRows(list) {
   tbody.innerHTML = list.map(r => `
     <tr>
       <td style="font-weight:500">${r.name || '<span style="color:#9ca3af">—</span>'}</td>
-      <td><button class="code-link" onclick="copy('${refLink(r.referral_code)}')" title="Скопировать ссылку">${r.referral_code}</button></td>
+      <td>
+        <div style="display:flex;align-items:center;gap:.4rem">
+          <code style="font-size:.72rem;color:#6b7280;font-family:monospace">?ref=${r.referral_code}</code>
+          <button class="btn btn-outline btn-sm" style="padding:.25rem .5rem;font-size:.7rem" onclick="copy('${refLink(r.referral_code)}')">Копировать</button>
+        </div>
+      </td>
       <td style="color:#6b7280">${r.contact || '—'}</td>
       <td style="font-weight:600">${r.total_referrals}</td>
       <td>${r.completed} <span style="color:#9ca3af;font-size:.72rem">(${r.pending})</span></td>
@@ -500,7 +505,6 @@ function renderRefRows(list) {
       <td>
         <div class="act-row">
           <button class="btn btn-link btn-sm" onclick="showDetail('${r.id}')">View</button>
-          <button class="btn btn-link btn-sm" onclick="copy('${refLink(r.referral_code)}')" title="${refLink(r.referral_code)}">Ссылка</button>
           <button class="btn ${r.is_active?'btn-danger-link':'btn-link'} btn-sm" onclick="toggleRef('${r.id}')">${r.is_active?'Disable':'Enable'}</button>
         </div>
       </td>
