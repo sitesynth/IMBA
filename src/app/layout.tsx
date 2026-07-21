@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import { headers } from 'next/headers'
 import { Unbounded, Manrope, Archivo_Black } from 'next/font/google'
 import Script from 'next/script'
 import { Suspense } from 'react'
@@ -31,46 +30,38 @@ const TITLE = 'Купить VPN в России — eSIM и виртуальна
 const DESCRIPTION = 'VPN, eSIM и виртуальная Visa/Mastercard — в одной подписке IMBA. Стабильный VPN без блокировок и логов, интернет в 190+ странах, оплата зарубежных сервисов.'
 const DESCRIPTION_SHORT = 'VPN, eSIM и виртуальная Visa/Mastercard — в одной подписке IMBA. Стабильно, без блокировок и логов.'
 
-export async function generateMetadata(): Promise<Metadata> {
-  const hdrs = await headers()
-  // x-real-host is set by the imba.run nginx proxy to preserve the original domain
-  const host = hdrs.get('x-real-host') ?? hdrs.get('host') ?? 'imba.live'
-  const proto = host.includes('localhost') ? 'http' : 'https'
-  const base = `${proto}://${host}`
-
-  return {
-    metadataBase: new URL(base),
+export const metadata: Metadata = {
+  metadataBase: new URL('https://www.imba.live'),
+  title: TITLE,
+  description: DESCRIPTION,
+  alternates: { canonical: 'https://www.imba.live' },
+  icons: {
+    icon: '/favicon.ico',
+    shortcut: '/favicon.ico',
+    apple: '/favicon.png',
+  },
+  openGraph: {
     title: TITLE,
-    description: DESCRIPTION,
-    alternates: { canonical: base },
-    icons: {
-      icon: '/favicon.ico',
-      shortcut: '/favicon.ico',
-      apple: '/favicon.png',
-    },
-    openGraph: {
-      title: TITLE,
-      description: DESCRIPTION_SHORT,
-      siteName: 'IMBA',
-      locale: 'ru_RU',
-      type: 'website',
-      url: base,
-      images: [
-        {
-          url: 'https://www.imba.live/og-image.png',
-          width: 1200,
-          height: 630,
-          alt: TITLE,
-        },
-      ],
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: TITLE,
-      description: DESCRIPTION_SHORT,
-      images: ['https://www.imba.live/og-image.png'],
-    },
-  }
+    description: DESCRIPTION_SHORT,
+    siteName: 'IMBA',
+    locale: 'ru_RU',
+    type: 'website',
+    url: 'https://www.imba.live',
+    images: [
+      {
+        url: 'https://www.imba.live/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: TITLE,
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: TITLE,
+    description: DESCRIPTION_SHORT,
+    images: ['https://www.imba.live/og-image.png'],
+  },
 }
 
 const orgSchema = {
