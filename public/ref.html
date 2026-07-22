@@ -99,6 +99,11 @@ tbody tr:hover td{background:#f9fafb}
 .mini-stat.green{background:#f0fdf4}.mini-stat.green .mv{color:#16a34a}
 .mini-stat.yellow{background:#fefce8}.mini-stat.yellow .mv{color:#a16207}
 .mini-stat.purple{background:#faf5ff}.mini-stat.purple .mv{color:#7c3aed}
+.rate-chip{display:inline-block;font-size:.75rem;font-weight:600;padding:.2rem .65rem;border-radius:20px;letter-spacing:.01em}
+.rate-l1{background:#eff6ff;color:#1d4ed8}
+.rate-l2{background:#f0fdf4;color:#16a34a}
+.rate-l3{background:#faf5ff;color:#7c3aed}
+.pct-label{font-size:.8rem;color:#6b7280;font-weight:500}
 .mv{font-size:1.25rem;font-weight:700}
 .ml{font-size:.68rem;color:#6b7280;margin-top:.1rem}
 
@@ -211,6 +216,42 @@ tbody tr:hover td{background:#f9fafb}
             <div class="stat-card"><div class="stat-val" id="s-conv">—</div><div class="stat-lbl">Completed</div></div>
             <div class="stat-card"><div class="stat-val" id="s-payout">—</div><div class="stat-lbl">К выплате</div></div>
           </div>
+
+          <!-- Базовые ставки -->
+          <div class="card" style="margin-bottom:1rem">
+            <div class="card-header" style="padding-bottom:.5rem">
+              <div class="card-title">Базовые ставки комиссий</div>
+              <span style="font-size:.72rem;color:#9ca3af">Применяются к новым партнёрам по умолчанию</span>
+            </div>
+            <div style="display:flex;gap:1.25rem;align-items:flex-end;flex-wrap:wrap;padding:.25rem 1.25rem 1.25rem">
+              <div class="field">
+                <label>L1 — прямой партнёр</label>
+                <div style="display:flex;align-items:center;gap:.35rem">
+                  <input type="number" id="def-l1" value="25" min="0" max="100" step="0.5" style="width:72px"/>
+                  <span class="pct-label">%</span>
+                </div>
+              </div>
+              <div class="field">
+                <label>L2 — аплайн партнёра</label>
+                <div style="display:flex;align-items:center;gap:.35rem">
+                  <input type="number" id="def-l2" value="10" min="0" max="100" step="0.5" style="width:72px"/>
+                  <span class="pct-label">%</span>
+                </div>
+              </div>
+              <div class="field">
+                <label>L3 — аплайн аплайна</label>
+                <div style="display:flex;align-items:center;gap:.35rem">
+                  <input type="number" id="def-l3" value="5" min="0" max="100" step="0.5" style="width:72px"/>
+                  <span class="pct-label">%</span>
+                </div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:.35rem">
+                <button class="btn btn-outline btn-sm" onclick="saveDefaults()">Сохранить дефолты</button>
+                <div id="def-msg" style="font-size:.7rem;color:#16a34a;min-height:1rem"></div>
+              </div>
+            </div>
+          </div>
+
           <div class="card">
             <div class="card-header">
               <div style="flex:1">
@@ -254,6 +295,7 @@ tbody tr:hover td{background:#f9fafb}
           </button>
           <div class="card" style="margin-bottom:1.5rem">
             <div class="detail-grid" id="d-fields"></div>
+            <div id="d-rates" style="padding:.6rem 1.25rem;border-top:1px solid #f3f4f6;display:flex;align-items:center;gap:1rem;flex-wrap:wrap"></div>
             <div class="mini-stats" id="d-stats"></div>
           </div>
           <div class="card" style="margin-bottom:1.5rem">
@@ -484,10 +526,43 @@ function showPage(name) {
   document.getElementById('page-detail').style.display = name === 'detail' ? '' : 'none';
 }
 
+// ── defaults ───────────────────────────────────────────
+let refDefaults = { l1_pct: 25, l2_pct: 10, l3_pct: 5 };
+
+async function loadDefaults() {
+  try {
+    const d = await apiFetch('GET', '/v1/admin/referral-defaults');
+    refDefaults = d;
+    document.getElementById('def-l1').value = d.l1_pct;
+    document.getElementById('def-l2').value = d.l2_pct;
+    document.getElementById('def-l3').value = d.l3_pct;
+  } catch(e) { /* non-critical */ }
+}
+
+async function saveDefaults() {
+  const l1 = parseFloat(document.getElementById('def-l1').value) || 25;
+  const l2 = parseFloat(document.getElementById('def-l2').value) || 10;
+  const l3 = parseFloat(document.getElementById('def-l3').value) || 5;
+  const msg = document.getElementById('def-msg');
+  try {
+    await apiFetch('PATCH', '/v1/admin/referral-defaults', { l1_pct: l1, l2_pct: l2, l3_pct: l3 });
+    refDefaults = { l1_pct: l1, l2_pct: l2, l3_pct: l3 };
+    msg.textContent = '✓ Сохранено';
+    setTimeout(() => { msg.textContent = ''; }, 2500);
+  } catch(e) {
+    msg.style.color = '#dc2626';
+    msg.textContent = e.message;
+    setTimeout(() => { msg.style.color = '#16a34a'; msg.textContent = ''; }, 3000);
+  }
+}
+
 // ── list ───────────────────────────────────────────────
 async function loadRefs() {
   try {
-    refs = await apiFetch('GET', '/v1/admin/referrals?limit=200');
+    [refs] = await Promise.all([
+      apiFetch('GET', '/v1/admin/referrals?limit=200'),
+      loadDefaults(),
+    ]);
     renderRefs();
   } catch(e) {
     document.getElementById('ref-tbody').innerHTML = `<tr><td colspan="9" class="empty">${e.message}</td></tr>`;
@@ -636,13 +711,21 @@ function renderDetailMeta(prog) {
     <div class="mini-stat blue"><div class="mv">${prog.total_referrals}</div><div class="ml">Конверсий</div></div>
     <div class="mini-stat green"><div class="mv">${prog.completed}</div><div class="ml">Завершено</div></div>
     <div class="mini-stat yellow"><div class="mv">${prog.pending}</div><div class="ml">В ожидании</div></div>
-    <div class="mini-stat blue"><div class="mv mono" style="font-size:.95rem">$${(el1).toFixed(2)}</div><div class="ml">L1 (25%)</div></div>
-    <div class="mini-stat blue"><div class="mv mono" style="font-size:.95rem">$${(el2).toFixed(2)}</div><div class="ml">L2 (10%)</div></div>
-    <div class="mini-stat blue"><div class="mv mono" style="font-size:.95rem">$${(el3).toFixed(2)}</div><div class="ml">L3 (5%)</div></div>
+    <div class="mini-stat blue"><div class="mv mono" style="font-size:.95rem">$${(el1).toFixed(2)}</div><div class="ml">L1 (${prog.l1_pct||25}%)</div></div>
+    <div class="mini-stat blue"><div class="mv mono" style="font-size:.95rem">$${(el2).toFixed(2)}</div><div class="ml">L2 (${prog.l2_pct||10}%)</div></div>
+    <div class="mini-stat blue"><div class="mv mono" style="font-size:.95rem">$${(el3).toFixed(2)}</div><div class="ml">L3 (${prog.l3_pct||5}%)</div></div>
     <div class="mini-stat green"><div class="mv mono" style="font-size:.95rem">$${prog.total_earned.toFixed(2)}</div><div class="ml">Итого заработано</div></div>
     <div class="mini-stat ${(prog.pending_payout||0)>0?'yellow':''}"><div class="mv mono" style="font-size:.95rem;color:${(prog.pending_payout||0)>0?'#d97706':'#6b7280'}">$${(prog.pending_payout||0).toFixed(2)}</div><div class="ml">К выплате</div></div>
     <div class="mini-stat"><div class="mv mono" style="font-size:.95rem;color:#6b7280">$${(prog.total_paid||0).toFixed(2)}</div><div class="ml">Выплачено</div></div>
     ${uplineName ? `<div class="mini-stat" style="grid-column:1/-1;text-align:left;background:#f9fafb"><div class="lbl" style="font-size:.65rem;color:#9ca3af;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.25rem">Аплайн (L2 для клиентов этого партнёра)</div><div style="font-size:.8rem;font-weight:600;color:#374151">${uplineName}</div></div>` : ''}
+  `;
+
+  document.getElementById('d-rates').innerHTML = `
+    <span style="font-size:.7rem;color:#9ca3af;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap">Ставки комиссий:</span>
+    <span class="rate-chip rate-l1">L1 · ${prog.l1_pct||25}%</span>
+    <span class="rate-chip rate-l2">L2 · ${prog.l2_pct||10}%</span>
+    <span class="rate-chip rate-l3">L3 · ${prog.l3_pct||5}%</span>
+    <button class="btn btn-link btn-sm" style="font-size:.75rem;padding:.15rem .4rem" onclick="openEditFromDetail()">Изменить</button>
   `;
 }
 
@@ -686,9 +769,9 @@ function populateUplineSelect(selectId, excludeId) {
 // ── create ─────────────────────────────────────────────
 function openCreate() {
   ['c-name','c-code','c-contact','c-note'].forEach(id => document.getElementById(id).value='');
-  document.getElementById('c-l1').value='25';
-  document.getElementById('c-l2').value='10';
-  document.getElementById('c-l3').value='5';
+  document.getElementById('c-l1').value = refDefaults.l1_pct;
+  document.getElementById('c-l2').value = refDefaults.l2_pct;
+  document.getElementById('c-l3').value = refDefaults.l3_pct;
   populateUplineSelect('c-upline', null);
   document.getElementById('c-upline').value='';
   showErr('c-err','');
