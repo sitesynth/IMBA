@@ -14,14 +14,14 @@ export default function ForgotPasswordPage() {
           <div className="flex justify-center mb-5"><Logo size="lg" /></div>
           <div className="panel">
             <div className="text-4xl mb-3">📬</div>
-            <h1 className="display text-2xl mb-2">Письмо отправлено</h1>
+            <h1 className="display text-2xl mb-2">Email sent</h1>
             <p className="font-semibold text-ink/60 text-sm">
-              Если аккаунт с таким email существует — ссылка для сброса уже в почте. Проверь папку «Спам».
+              If an account with that email exists, a reset link is on its way. Check your Spam folder.
             </p>
           </div>
           <p className="text-center font-semibold text-ink/60 mt-5">
             <Link href="/auth/login" className="font-extrabold text-ink hover:opacity-60 underline underline-offset-2">
-              ← Вернуться к входу
+              ← Back to sign in
             </Link>
           </p>
         </div>
@@ -34,8 +34,8 @@ export default function ForgotPasswordPage() {
       <div className="w-full max-w-sm fade-up">
         <div className="text-center mb-7">
           <div className="flex justify-center mb-5"><Logo size="lg" /></div>
-          <h1 className="display text-3xl mb-1">Забыл пароль?</h1>
-          <p className="font-semibold text-ink/60">Пришлём ссылку для сброса на email</p>
+          <h1 className="display text-3xl mb-1">Forgot password?</h1>
+          <p className="font-semibold text-ink/60">We&apos;ll send a reset link to your email</p>
         </div>
 
         <div className="panel">
@@ -59,14 +59,14 @@ export default function ForgotPasswordPage() {
               )}
             </div>
             <button type="submit" disabled={pending} className="pill pill-ink w-full justify-center disabled:opacity-60">
-              {pending ? 'Отправляем…' : 'Отправить ссылку →'}
+              {pending ? 'Sending…' : 'Send reset link →'}
             </button>
           </form>
         </div>
 
         <p className="text-center font-semibold text-ink/60 mt-5">
           <Link href="/auth/login" className="font-extrabold text-ink hover:opacity-60 underline underline-offset-2">
-            ← Вернуться к входу
+            ← Back to sign in
           </Link>
         </p>
       </div>

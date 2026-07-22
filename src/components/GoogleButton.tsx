@@ -1,4 +1,4 @@
-export function GoogleButton({ label = 'Войти через Google' }: { label?: string }) {
+export function GoogleButton({ label = 'Continue with Google' }: { label?: string }) {
   return (
     <a href="/api/auth/google" className="pill pill-paper w-full justify-center">
       <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
@@ -13,13 +13,13 @@ export function GoogleButton({ label = 'Войти через Google' }: { label
 }
 
 const ERRORS: Record<string, string> = {
-  google_failed: 'Не удалось войти через Google. Попробуй ещё раз.',
-  google_not_configured: 'Google-вход пока не настроен.',
+  google_failed: 'Google sign-in failed. Please try again.',
+  google_not_configured: 'Google sign-in is not available yet.',
 }
 
 export function AuthError({ code }: { code?: string }) {
   if (!code) return null
-  const msg = ERRORS[code] ?? 'Произошла ошибка. Попробуй ещё раз.'
+  const msg = ERRORS[code] ?? 'Something went wrong. Please try again.'
   return (
     <div className="border-2 border-ink rounded-2xl px-4 py-3 font-bold text-sm" style={{ background: '#FFD7D7' }}>
       {msg}
@@ -31,7 +31,7 @@ export function OrDivider() {
   return (
     <div className="flex items-center gap-3 my-4">
       <span className="h-0.5 flex-1 bg-ink/15" />
-      <span className="text-xs font-extrabold uppercase tracking-wide text-ink/40">или</span>
+      <span className="text-xs font-extrabold uppercase tracking-wide text-ink/40">or</span>
       <span className="h-0.5 flex-1 bg-ink/15" />
     </div>
   )

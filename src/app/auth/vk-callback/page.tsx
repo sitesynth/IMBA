@@ -16,7 +16,7 @@ export default function VkCallbackPage() {
 function Loader() {
   return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', fontFamily: 'sans-serif', color: '#555' }}>
-      Авторизация через VK…
+      Signing in via VK…
     </div>
   )
 }
@@ -34,7 +34,7 @@ function VkCallbackContent() {
     const device_id = searchParams.get('device_id')
 
     if (!code || !device_id) {
-      router.replace('/auth/login?error=' + encodeURIComponent('VK: отсутствуют параметры'))
+      router.replace('/auth/login?error=' + encodeURIComponent('VK: missing parameters'))
       return
     }
 
@@ -69,7 +69,7 @@ function VkCallbackContent() {
       if (data.error) throw new Error(`VK error: ${data.error} — ${data.error_description || ''}`)
 
       const accessToken: string = data.access_token || ''
-      if (!accessToken) throw new Error(`VK нет access_token: keys=${Object.keys(data).join(',')}`)
+      if (!accessToken) throw new Error(`VK no access_token: keys=${Object.keys(data).join(',')}`)
 
       // Fetch user info separately (token response doesn't include user object)
       const userInfoParams = new URLSearchParams({ client_id: String(VK_APP_ID) })
@@ -82,7 +82,7 @@ function VkCallbackContent() {
       const vkId: number = user.id || user.user_id || 0
       const name = [user.first_name, user.last_name].filter(Boolean).join(' ')
 
-      if (!vkId) throw new Error(`VK нет user_id: ${JSON.stringify(userInfo).slice(0, 200)}`)
+      if (!vkId) throw new Error(`VK no user_id: ${JSON.stringify(userInfo).slice(0, 200)}`)
 
       if (mode === 'trial') {
         try {
@@ -111,7 +111,7 @@ function VkCallbackContent() {
         })
         if (!res.ok) {
           const e = await res.json().catch(() => ({}))
-          throw new Error(e.detail || 'Ошибка привязки VK')
+          throw new Error(e.detail || 'VK link error')
         }
         router.replace('/dashboard')
 
@@ -123,7 +123,7 @@ function VkCallbackContent() {
         })
         if (!res.ok) {
           const e = await res.json().catch(() => ({}))
-          throw new Error(e.error || 'Ошибка авторизации VK')
+          throw new Error(e.error || 'VK auth failed')
         }
         router.replace('/dashboard')
       }
@@ -141,7 +141,7 @@ function VkCallbackContent() {
 
   return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', fontFamily: 'sans-serif', color: '#555' }}>
-      Авторизация через VK…
+      Signing in via VK…
     </div>
   )
 }

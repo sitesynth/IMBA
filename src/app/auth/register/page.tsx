@@ -23,8 +23,8 @@ export default function RegisterPage() {
           <div className="flex justify-center mb-4">
             <LottieSticker name="keys" size={96} />
           </div>
-          <h1 className="display text-4xl mb-1">Создать аккаунт</h1>
-          <p className="font-semibold text-ink/60">Бесплатно. Без привязки карты.</p>
+          <h1 className="display text-4xl mb-1">Create account</h1>
+          <p className="font-semibold text-ink/60">Free. No card required.</p>
         </div>
 
         <Suspense fallback={<FormSkeleton />}>
@@ -32,9 +32,9 @@ export default function RegisterPage() {
         </Suspense>
 
         <p className="text-center font-semibold text-ink/60 mt-5">
-          Уже есть аккаунт?{' '}
+          Already have an account?{' '}
           <a href="/auth/login" className="font-extrabold text-ink hover:opacity-60 underline underline-offset-2">
-            Войти
+            Sign in
           </a>
         </p>
       </div>

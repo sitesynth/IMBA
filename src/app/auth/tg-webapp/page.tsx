@@ -51,7 +51,7 @@ export default function TgWebAppAuth() {
 
   return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', fontFamily: 'sans-serif', color: '#555' }}>
-      Входим через Telegram…
+      Signing in via Telegram…
     </div>
   )
 }

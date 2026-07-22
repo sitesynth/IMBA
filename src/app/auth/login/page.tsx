@@ -22,8 +22,8 @@ export default function LoginPage() {
           <div className="flex justify-center mb-4">
             <LottieSticker name="approved" size={88} />
           </div>
-          <h1 className="display text-3xl mb-1">С возвращением</h1>
-          <p className="font-semibold text-ink/60">Войди в свой кабинет</p>
+          <h1 className="display text-3xl mb-1">Welcome back</h1>
+          <p className="font-semibold text-ink/60">Sign in to your dashboard</p>
         </div>
 
         <Suspense fallback={<FormSkeleton />}>
@@ -31,9 +31,9 @@ export default function LoginPage() {
         </Suspense>
 
         <p className="text-center font-semibold text-ink/60 mt-5">
-          Нет аккаунта?{' '}
+          No account?{' '}
           <a href="/auth/register" className="font-extrabold text-ink hover:opacity-60 underline underline-offset-2">
-            Зарегистрироваться
+            Create one
           </a>
         </p>
       </div>

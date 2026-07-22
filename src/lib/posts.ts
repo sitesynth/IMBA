@@ -13,803 +13,858 @@ export type Post = {
 export const posts: Post[] = [
   {
     slug: 'vpn-na-kompyutere',
-    title: 'VPN на компьютер (Windows и macOS) — установка за 5 минут',
-    excerpt: 'Как установить VPN на компьютер с Windows или macOS в 2026 году: пошаговая инструкция с приложением Happ, протокол VLESS Reality, 7 дней бесплатно.',
+    title: 'How to Set Up a VPN on Windows and macOS (2026 Guide)',
+    excerpt: 'Step-by-step guide to installing IMBA VPN on Windows or macOS using the Happ app. VLESS Reality protocol, 5-minute setup, 7 days free.',
     category: 'VPN',
     categoryColor: 'var(--violet)',
-    date: '11 июля 2026',
-    readTime: '5 мин',
+    date: 'July 11, 2026',
+    readTime: '5 min',
     ogImage: 'https://www.imba.live/blog/og-vpn-na-kompyutere.png',
     content: `
-Чтобы установить VPN на компьютер, скачай приложение Happ для Windows или macOS, добавь в него ссылку подписки из кабинета IMBA и отключи Mux в настройках сервера. Весь процесс занимает 5 минут, первые 7 дней — бесплатно. Разбираем по шагам.
+To install a VPN on your computer, download the Happ app for Windows or macOS, paste your IMBA subscription link, and disable Mux in server settings. The whole process takes 5 minutes, and the first 7 days are free.
 
-## Что понадобится
+## What you need
 
-- Компьютер на Windows 10/11 или macOS
-- Аккаунт IMBA — регистрация по email, карта не нужна
-- 5 минут времени
+- A computer running Windows 10/11 or macOS
+- An IMBA account — sign up with just your email, no card needed
+- 5 minutes
 
-Важно: обычные VPN-протоколы (OpenVPN, WireGuard) на компьютере работают так же нестабильно, как на телефоне — DPI-системы распознают их на любом устройстве. Поэтому инструкция построена на VLESS Reality: для провайдера этот трафик неотличим от обычного HTTPS. Подробнее — в разборе <a href="/blog/vpn-russia-2026">какой VPN-протокол работает в России</a>.
+Important: standard VPN protocols (OpenVPN, WireGuard) suffer from the same DPI blocking on desktop as on mobile. This guide is built around VLESS Reality — to your ISP, this traffic looks like ordinary HTTPS. For context, read our [protocol comparison guide](/blog/vpn-russia-2026).
 
-## Шаг 1. Зарегистрируйся и получи 7 дней бесплатно
+## Step 1. Create your account and get 7 days free
 
-Создай аккаунт на <a href="https://www.imba.live/auth/register">imba.live</a> — нужен только email. После регистрации подпишись на <a href="https://vk.com/club239876488">ВКонтакте</a> или <a href="https://telegram.dog/imba_live">Telegram</a> IMBA в кабинете — активируется тариф Старт: VPN на 7 дней бесплатно (плюс eSIM 500 МБ, пригодится в поездках).
+Sign up at [imba.live/auth/register](https://www.imba.live/auth/register) — email only. After registering, follow IMBA on [Telegram](https://t.me/imba_live) and activate the Start plan in your dashboard: VPN for 7 days free (plus 500 MB eSIM, handy for travel).
 
-## Шаг 2. Скопируй ссылку подписки
+## Step 2. Copy your subscription link
 
-В кабинете IMBA открой раздел VPN → блок «Happ — ссылка подписки» → кнопка «Копировать». Эта ссылка — твой доступ: по ней приложение получит список всех серверов.
+In the IMBA dashboard, open the VPN section, find the "Happ — subscription link" block, and click Copy. This link is your access key: the app uses it to pull the full server list.
 
-## Шаг 3. Установи Happ
+## Step 3. Install Happ
 
 ### Windows
 
-Скачай Setup x64 (.exe) по ссылке из кабинета (есть зеркало, если основная ссылка недоступна). Запусти установщик — дальше стандартно: далее → далее → готово.
+Download the Setup x64 (.exe) from the link in your dashboard (a mirror is available if the main link is blocked). Run the installer — standard Next, Next, Finish.
 
 ### macOS
 
-Вариант 1: скачай .dmg (Universal — подходит и для Intel, и для Apple Silicon), перетащи Happ в «Программы».
-Вариант 2: установи из Mac App Store, если у тебя есть доступ.
+Option 1: download the .dmg (Universal — works on both Intel and Apple Silicon), drag Happ to Applications.
+Option 2: install from the Mac App Store if you have access.
 
-## Шаг 4. Добавь подписку
+## Step 4. Add your subscription
 
-Открой Happ → нажми «+» → «Добавить подписку» → вставь скопированную ссылку. Приложение подтянет список серверов IMBA.
+Open Happ, tap "+", then "Add subscription", then paste the link you copied. The app will pull in the IMBA server list.
 
-## Шаг 5. Отключи Mux и подключись
+## Step 5. Disable Mux and connect
 
-Зайди в настройки сервера → найди параметр **Mux** → выключи. Это обязательно: с включённым Mux соединение не установится.
+Go to server settings, find Mux, and turn it off. This step is required — the connection won't establish with Mux enabled.
 
-Теперь выбери сервер (для начала — ближайший, с минимальным пингом) и нажми «Подключить». Готово: проверь работу, открыв YouTube — видео должно грузиться в высоком качестве без буферизации.
+Now pick a server (start with the lowest ping) and hit Connect. Done: check by opening YouTube — video should load in high quality without buffering.
 
-## Если не работает
+## Troubleshooting
 
-- **Соединение не устанавливается** — проверь, выключен ли Mux (самая частая причина)
-- **Низкая скорость** — попробуй другой сервер: пинг каждого виден в кабинете
-- **Провайдер домашнего интернета режет соединение** — переключись на другой сервер из списка; VLESS Reality работает на всех крупных провайдерах
-- Не помогло — поддержка IMBA отвечает в кабинете
+- **Can't connect** — double-check that Mux is disabled (the most common cause)
+- **Slow speeds** — try a different server; ping for each is visible in the dashboard
+- **ISP is throttling the connection** — switch to another server from the list; VLESS Reality works on all major ISPs
+- Still stuck? IMBA support responds in the dashboard
 
-## Частые вопросы
+## FAQ
 
-### Какой VPN работает на компьютере в России в 2026?
+### Which VPN protocol works on desktop in 2026?
 
-Стабильно работают только протоколы с маскировкой трафика — VLESS с XTLS Reality. Классические OpenVPN и WireGuard определяются DPI-системами и работают с перебоями. <a href="/blog/vpn-russia-2026">Подробный разбор протоколов</a>.
+Only protocols with traffic obfuscation are reliable — VLESS with XTLS Reality. Classic OpenVPN and WireGuard are identified by DPI and blocked in censored networks. [Full protocol comparison](/blog/vpn-russia-2026).
 
-### Работает ли VPN на Windows 7 или старых macOS?
+### Can I use one subscription on desktop and mobile?
 
-Happ поддерживает Windows 10/11 и актуальные версии macOS. Для старых систем используй Linux-сборку или обратись в поддержку.
+Yes. One subscription link works across multiple devices: add it to Happ on [Android](/blog/vpn-android) and [iPhone](/blog/vpn-iphone) and on your [Smart TV](/blog/vpn-smart-tv).
 
-### Можно ли использовать одну подписку на компьютере и телефоне?
+### Is it free?
 
-Да. Одна ссылка подписки работает на нескольких устройствах: добавь её в Happ на <a href="/blog/happ-setup">Android и iPhone</a> и <a href="/blog/vpn-smart-tv">телевизоре</a>.
-
-### Это бесплатно?
-
-Первые 7 дней — да, за подписку на соцсети IMBA. Дальше — тариф Про от $9.99/мес, куда входят также eSIM и виртуальная карта.
+The first 7 days are free with a Telegram follow. After that, the Pro plan is $9.99/mo, which includes VPN, eSIM, and a virtual card.
     `.trim(),
   },
   {
     slug: 'vpn-russia-2026',
-    title: 'VPN в России 2026: какой протокол реально работает',
-    excerpt: 'Разбираем все VPN-протоколы — от OpenVPN до VLESS Reality — и объясняем, почему одни блокируются за секунды, а другие невидимы для ТСПУ.',
+    title: 'Best VPN Protocols in 2026: Which One Actually Works?',
+    excerpt: 'A complete breakdown of VPN protocols — from OpenVPN to VLESS Reality — and why some get blocked within seconds while others are invisible to DPI.',
     category: 'VPN',
     categoryColor: 'var(--violet)',
-    date: '3 июня 2026',
-    readTime: '7 мин',
+    date: 'June 3, 2026',
+    readTime: '7 min',
     ogImage: 'https://www.imba.live/blog/og-vpn-russia-2026.png',
     content: `
-## Почему обычный VPN перестал работать
+## Why your VPN stopped working
 
-Роскомнадзор установил систему глубокой инспекции пакетов (DPI) — ТСПУ — на всех крупных операторах. Она умеет распознавать большинство VPN-протоколов по сигнатурам трафика и блокировать их в реальном времени.
+Governments and ISPs in China, UAE, Turkey, Iran, and many other countries have deployed deep packet inspection (DPI) systems at the network level. These systems identify most VPN protocols by their traffic signatures and block them in real time.
 
-**Что заблокировано или нестабильно:**
-- **PPTP** — устарел, блокируется везде
-- **OpenVPN** — легко определяется по характерному хэндшейку
-- **WireGuard** — работает в регионах, нестабилен в Москве и СПб
+**Blocked or unstable:**
+- **PPTP** — outdated, blocked everywhere
+- **OpenVPN** — easily identified by its distinctive handshake pattern
+- **WireGuard** — works in less restricted regions, unstable in heavily censored networks
 
-**Что работает:**
-- **Shadowsocks** — маскирует трафик под HTTPS, помогает в большинстве случаев
-- **V2Ray/VLESS** — продвинутая маскировка, очень надёжен
-- **VLESS + XTLS Reality** — золотой стандарт 2026 года
+**What still works:**
+- **Shadowsocks** — masks traffic as HTTPS, works in most cases
+- **V2Ray/VLESS** — advanced obfuscation, very reliable
+- **VLESS + XTLS Reality** — the gold standard for 2026
 
-## VLESS Reality — почему это работает
+## VLESS Reality — why it works
 
-Reality — это протокол, который делает VPN-трафик неотличимым от обычного HTTPS-соединения с реальным сайтом (например, с apple.com или microsoft.com). ТСПУ видит «обычный» TLS и не блокирует его.
+Reality is a protocol that makes VPN traffic indistinguishable from a regular HTTPS connection to a real website (like apple.com or microsoft.com). DPI sees what looks like "normal" TLS and doesn't block it.
 
-Технически это работает так:
-1. Клиент подключается к серверу IMBA VPN
-2. Трафик выглядит как обращение к легитимному домену
-3. DPI не находит VPN-сигнатур — пропускает
+Here's how it works technically:
+1. Your client connects to the IMBA VPN server
+2. Traffic appears to be accessing a legitimate domain
+3. DPI finds no VPN signatures — request passes through
 
-## Операторы: у кого DPI агрессивнее
+## Countries with aggressive DPI
 
-| Оператор | DPI | Рекомендация |
-|----------|-----|--------------|
-| МТС | Агрессивный | Нужна обфускация |
-| Мегафон | Агрессивный | Нужна обфускация |
-| Билайн | Умеренный | WireGuard иногда работает |
-| Tele2 | Мягкий | WireGuard стабилен |
+| Country / Region | DPI Level | Recommendation |
+|---|---|---|
+| China (Great Firewall) | Very aggressive | VLESS Reality required |
+| UAE | Aggressive | VLESS Reality required |
+| Turkey | Moderate to aggressive | Obfuscation needed |
+| Iran | Very aggressive | VLESS Reality required |
+| Russia | Moderate to aggressive | VLESS Reality recommended |
 
-## Москва vs регионы
+## Protocol comparison table
 
-В **Москве и Санкт-Петербурге** ТСПУ установлены на всех узлах, DPI работает полноценно. Без обфускации — нестабильно.
+| Protocol | DPI visibility | Speed | Works in censored networks |
+|---|---|---|---|
+| VLESS + XTLS Reality | No | High | Yes, reliably |
+| Shadowsocks | Partial | High | Sometimes |
+| WireGuard | Yes | High | Blocked in most restricted networks |
+| OpenVPN | Yes | Medium | Blocked |
+| PPTP | Yes | Low | Blocked |
 
-В **регионах** DPI значительно слабее или отсутствует. WireGuard работает стабильно у большинства операторов.
+## Conclusion
 
-## Вывод
+If you're in a country with internet censorship and want a reliable VPN, you need a protocol with proper obfuscation. IMBA VPN uses VLESS Reality, which is currently the most censorship-resistant protocol available.
 
-Если вы в Москве или СПб и хотите стабильный VPN — нужен протокол с обфускацией. IMBA VPN использует VLESS Reality, который на сегодняшний день практически непробиваем для российских блокировок.
+[Try IMBA free for 7 days](/auth/register)
     `.trim(),
   },
   {
     slug: 'esim-russia-abroad',
-    title: 'eSIM для россиян: интернет за рубежом без роуминга',
-    excerpt: 'Как подключить локальный интернет в любой стране без физической SIM-карты и почему это дешевле роуминга в 5–20 раз.',
+    title: 'eSIM for International Travel: Everything You Need to Know',
+    excerpt: 'How to get local mobile data in any country without hunting for a physical SIM card — and why it costs 5-10x less than roaming.',
     category: 'eSIM',
     categoryColor: 'var(--blue)',
-    date: '28 мая 2026',
-    readTime: '5 мин',
+    date: 'May 28, 2026',
+    readTime: '5 min',
     ogImage: 'https://www.imba.live/blog/og-esim-russia-abroad.png',
     content: `
-## Что такое eSIM и зачем она нужна
+## What is an eSIM and why does it matter for travel?
 
-eSIM — это встроенная SIM-карта в вашем телефоне. Вместо того чтобы покупать физическую карточку в аэропорту, вы сканируете QR-код и через минуту у вас есть местный номер с интернетом.
+An eSIM (embedded SIM) is a digital SIM card built into your phone. Instead of swapping physical SIM cards, you download a data plan as a QR code and activate it in minutes. Your original SIM stays active alongside it — you keep your home number for calls and texts while using cheap local data for everything else.
 
-**Поддерживаемые устройства:** iPhone XS и новее, большинство Android-флагманов с 2020 года, все Samsung Galaxy S21+.
+## eSIM vs. roaming: the cost difference
 
-## eSIM vs роуминг: сравнение
+Traditional roaming through your carrier can cost anywhere from $5 to $25 per day depending on the country. IMBA eSIM plans typically cost $3-8 for a week of data in most destinations. The math is straightforward.
 
-| | Роуминг (МТС/Билайн) | eSIM IMBA |
+| Option | Cost (1 week, Europe) | Setup time |
 |---|---|---|
-| Интернет в Европе | 500₽/день | от 150₽/день |
-| Интернет в США | 800₽/день | от 200₽/день |
-| Интернет в Азии | 600₽/день | от 100₽/день |
-| Активация | Автоматически | 2 минуты |
+| Carrier roaming | $35-80 | None (automatic) |
+| Local SIM card | $10-20 | 30-60 min at the airport |
+| IMBA eSIM | $5-12 | 5 min before you leave |
 
-## Схема с двумя SIM
+## Which phones support eSIM?
 
-Лучшая стратегия для путешествий:
-1. **Физическая SIM** (российский номер) — для звонков и SMS от банков
-2. **eSIM IMBA** — для интернета как у местного жителя
+Most modern smartphones support eSIM:
+- **iPhone**: XS and later (iPhone 14+ has dual eSIM, no physical SIM required)
+- **Samsung**: Galaxy S20 and later
+- **Google Pixel**: Pixel 3a and later
+- **Other Android**: check Settings for "SIM card & mobile network" — if you see "Add eSIM", you're good
 
-Это работает одновременно на одном телефоне. Звонки идут через российский номер, данные — через дешёвый местный тариф.
+## How to set up an IMBA eSIM
 
-## Правовой статус в России
+1. **Buy a plan** in your IMBA dashboard under the eSIM section — pick your destination and data amount
+2. **Receive a QR code** instantly via email and in the dashboard
+3. **Scan the QR code** on your phone: Settings, then Mobile Network, then Add eSIM
+4. **Activate when you land** — the eSIM connects to a local carrier automatically
 
-Использование иностранных eSIM в России **не запрещено**. Это просто другой способ подключиться к сети. Никаких ограничений для физических лиц нет.
+No airport queues. No hunting for a SIM shop. No compatibility issues.
 
-## Где работает eSIM IMBA
+## Tips for using an eSIM abroad
 
-190+ стран, включая:
-- 🇪🇺 Все страны ЕС
-- 🇺🇸 США и Канада
-- 🇹🇷 Турция
-- 🇦🇪 ОАЭ и Ближний Восток
-- 🇹🇭 🇧🇦 🇮🇩 Юго-Восточная Азия
-- 🇬🇪 🇦🇲 🇦🇿 Кавказ
+- **Download the eSIM before you leave** — you need an internet connection to install it
+- **Keep data roaming on** for the eSIM profile (and off for your home SIM to avoid roaming charges)
+- **Check coverage**: IMBA eSIM covers 190+ countries through local carrier partnerships
 
-В отдалённых районах и маленьких городах покрытие зависит от местных партнёрских операторов — в крупных городах всегда работает.
+## Frequently asked questions
+
+### Can I make calls with an eSIM?
+
+IMBA eSIM is a data-only plan. Keep your home SIM active for calls and use VoIP apps (WhatsApp, FaceTime, Telegram) over the eSIM data connection.
+
+### What if I run out of data?
+
+Top up directly in the IMBA dashboard — new data activates within minutes.
+
+### Does eSIM work on a cruise ship or in remote areas?
+
+Coverage depends on local carrier infrastructure. In most populated areas and popular tourist destinations, you'll have reliable 4G/LTE connectivity.
+
+[Get your eSIM](/esim)
     `.trim(),
   },
   {
     slug: 'pay-abroad-from-russia',
-    title: 'Как платить на Amazon, Netflix и Spotify из России',
-    excerpt: 'После отключения Visa и Mastercard большинство зарубежных сервисов недоступны с российских карт. Виртуальная карта IMBA решает эту проблему.',
-    category: 'Карта',
+    title: 'How to Pay for Netflix, Spotify & Amazon from Any Country',
+    excerpt: 'A virtual card in USD, EUR, or AED lets you subscribe to any global service — even if your local card gets declined.',
+    category: 'Card',
     categoryColor: 'var(--green)',
-    date: '20 мая 2026',
-    readTime: '4 мин',
-    ogImage: 'https://www.imba.live/blog/og-pay-abroad-from-russia.jpg',
+    date: 'May 20, 2026',
+    readTime: '5 min',
+    ogImage: 'https://www.imba.live/blog/og-pay-abroad.png',
     content: `
-## Проблема: российские карты не работают за рубежом
+## The problem: your card gets declined
 
-После 2022 года Visa и Mastercard прекратили работу в России. Карты МИР принимают только в нескольких странах. Платить на Amazon, Netflix, Spotify, Apple, Adobe и других зарубежных сервисах с российской карты — невозможно.
+International payment systems are complicated. Cards issued in certain countries get blocked by US or European services. Cards linked to sanctioned banks don't process on global platforms. Or you simply don't have a card in the right currency.
 
-## Решение: виртуальная карта IMBA
+The result: Netflix says "payment failed", Spotify can't verify your method, Amazon won't complete checkout.
 
-IMBA выпускает виртуальные карты Visa/Mastercard, привязанные к иностранному юридическому лицу (IMBA SRL, Коста-Рика). Такая карта работает везде, где принимают международные карты.
+## The solution: a virtual card in the right currency
 
-**Где работает карта IMBA:**
-- 🛒 Amazon, eBay, AliExpress
-- 🎬 Netflix, Disney+, HBO Max
-- 🎵 Spotify, Apple Music, YouTube Premium
-- 🍎 App Store, Google Play
-- ☁️ AWS, Google Cloud, DigitalOcean
-- ✈️ Booking.com, Airbnb, авиабилеты
+A virtual Visa or Mastercard in USD, EUR, or AED works globally — because it's issued by IMBA SRL in Costa Rica, outside any restricted banking system.
 
-## Как пополнить карту
+**What it looks like:**
+- A standard 16-digit card number plus expiry and CVV
+- Issued in under a minute, no physical card required
+- Funded via USDT, BTC, or bank transfer
+- Works anywhere Visa/Mastercard is accepted online
 
-Карту можно пополнить несколькими способами:
-- Перевод с другой карты IMBA
-- Через партнёрские обменники криптовалют
-- Наличными через партнёрские офисы
+## Services you can pay for
 
-## Лимиты и безопасность
+**Streaming:** Netflix, Hulu, Disney+, HBO Max, Apple TV+, Spotify, Apple Music, YouTube Premium
 
-- Выпуск карты — бесплатно на тарифе Про и выше
-- Можно выпустить несколько карт для разных сервисов
-- Каждую карту можно заморозить одной кнопкой
-- Уведомления о каждой транзакции
+**AI tools:** ChatGPT Plus, Claude Pro, Midjourney, Adobe Firefly
 
-## Правовой статус
+**Software and cloud:** Adobe Creative Cloud, Microsoft 365, Notion, Figma, AWS, Google Cloud
 
-Использование иностранных карт физическими лицами в России **не запрещено**. Вы вправе иметь счета и карты в иностранных банках — при условии уведомления налоговой о зарубежных счетах (если требуется по вашей ситуации).
+**Shopping and travel:** Amazon, eBay, Booking.com, Airbnb, Expedia
 
-Карта IMBA — это инструмент для легальных платежей за зарубежные сервисы.
+**Gaming:** Steam, PlayStation Store, Xbox Game Pass, Epic Games
+
+## How to issue your IMBA virtual card
+
+1. Log in to your IMBA dashboard
+2. Go to the **Card** section
+3. Choose your currency (USD, EUR, or AED)
+4. Fund the card via USDT, BTC, or bank transfer
+5. Card number appears instantly — copy it to any payment form
+
+## Tips
+
+- **Use USD for US services** (Netflix US, Amazon) and EUR for European ones (Spotify DE, Adobe EU)
+- **3D Secure is supported** — some services send a verification code; you'll receive it in the dashboard
+- **Multiple cards** — on the COMBO plan you get 3 cards, useful for keeping services separate
+
+[Issue your virtual card](/virtual-card)
     `.trim(),
   },
   {
     slug: 'vless-reality-explained',
-    title: 'VLESS Reality: почему это лучший VPN-протокол для России',
-    excerpt: 'Технический разбор протокола VLESS с XTLS Reality — как он работает, почему его не может заблокировать ТСПУ и чем отличается от Shadowsocks.',
+    title: 'VLESS Reality Explained: The Most Censorship-Resistant VPN Protocol',
+    excerpt: 'A technical deep-dive into VLESS with XTLS Reality — why it\'s invisible to DPI systems that block conventional VPNs.',
     category: 'VPN',
     categoryColor: 'var(--violet)',
-    date: '15 мая 2026',
-    readTime: '8 мин',
-    ogImage: 'https://www.imba.live/blog/og-vless-reality-explained.jpg',
+    date: 'May 15, 2026',
+    readTime: '8 min',
+    ogImage: 'https://www.imba.live/blog/og-vless-reality.png',
     content: `
-## Краткая история блокировок
+## The arms race between VPNs and censorship
 
-**2022–2023:** Роскомнадзор блокировал по IP и спискам доменов. Обычный OpenVPN работал.
+Every time a VPN protocol becomes popular, censors study its traffic patterns and add it to their blocklist. OpenVPN was blocked in China within months of widespread adoption. WireGuard, despite its elegance, has a recognizable handshake that DPI systems catch immediately in heavily restricted networks.
 
-**2023–2024:** Внедрение ТСПУ с DPI. OpenVPN и большинство протоколов начали блокироваться по сигнатурам.
+The industry response has been a series of obfuscation layers — making VPN traffic look like something else. Shadowsocks made it look like HTTPS. V2Ray added more sophistication. VLESS Reality takes a different approach entirely.
 
-**2025–2026:** DPI научился блокировать даже WireGuard в крупных городах. Нужна полноценная маскировка.
+## What makes Reality different
 
-## Как работает ТСПУ
+Reality doesn't just imitate HTTPS — it actually uses real HTTPS infrastructure as its cover. Here's how:
 
-Технические средства противодействия угрозам (ТСПУ) — это оборудование, установленное на стыке сети оператора и магистральных каналов. Оно анализирует каждый пакет и может:
+**Standard TLS-based VPN:**
+1. Client connects to server: "I'm starting a VPN session"
+2. Server responds with its own VPN certificate
+3. DPI inspection sees a VPN certificate and blocks it
 
-- Определить протокол по сигнатуре хэндшейка
-- Заблокировать или замедлить конкретный тип трафика
-- Работать в реальном времени без участия оператора
+**VLESS Reality:**
+1. Client connects to server: "I'm connecting to apple.com"
+2. Server presents apple.com's actual TLS certificate via domain fronting
+3. DPI inspection sees a legitimate HTTPS connection to Apple
+4. Traffic passes through — the actual payload is encrypted separately
 
-## Почему VLESS Reality неуязвим
+This is the core insight: Reality leverages SNI (Server Name Indication) to present a legitimate domain's certificate to inspection systems, while the actual VPN tunnel runs underneath.
 
-Reality — это расширение протокола XTLS, разработанное специально для обхода DPI.
+## The XTLS component
 
-**Принцип работы:**
-1. Клиент устанавливает TLS-соединение с настоящим легитимным сайтом (например, microsoft.com)
-2. VPN-сервер «перехватывает» это соединение на уровне SNI
-3. Для DPI трафик выглядит как обычное HTTPS к microsoft.com
-4. Никаких VPN-сигнатур — система пропускает
+XTLS (Xtreme TLS) is the transport layer that makes this efficient. Standard VPN protocols encrypt traffic twice — once with TLS (for the transport) and once with the VPN's own encryption. XTLS recognizes when traffic is already encrypted (like HTTPS websites you visit) and passes it through without double-encrypting, cutting overhead dramatically.
 
-Ключевое отличие от Shadowsocks: Shadowsocks просто шифрует трафик и делает его похожим на случайные данные. Современный DPI умеет определять «слишком случайный» трафик. Reality же мимикрирует под конкретный легитимный протокол.
+Result: speeds close to your raw connection speed, especially for HTTPS traffic (which is most of what people actually use).
 
-## Сравнение протоколов
+## Why DPI can't block it without collateral damage
 
-| Протокол | Скорость | Обфускация | Работает в РФ 2026 |
-|----------|----------|------------|---------------------|
-| OpenVPN | ⭐⭐ | ❌ | Нестабильно |
-| WireGuard | ⭐⭐⭐⭐⭐ | ❌ | Только регионы |
-| Shadowsocks | ⭐⭐⭐ | ⭐⭐ | В основном да |
-| V2Ray VMess | ⭐⭐⭐ | ⭐⭐⭐ | Да |
-| VLESS Reality | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | Да, везде |
+The fundamental problem for censors: to block VLESS Reality, they'd have to block legitimate traffic to the domains being used as covers (Apple, Microsoft, Amazon). That would take down services their own government and population depends on.
 
-## IMBA VPN использует Reality
+This is why VLESS Reality has remained stable in China, UAE, and other censored networks even as they've aggressively blocked other protocols.
 
-Мы выбрали VLESS + XTLS Reality как основной протокол, потому что на сегодняшний день это единственное решение, которое стабильно работает на всех операторах во всех городах России — включая Москву и Санкт-Петербург с самым агрессивным DPI.
+## Protocol comparison
+
+| Protocol | Obfuscation method | DPI-resistant | Speed overhead |
+|---|---|---|---|
+| PPTP | None | No | None |
+| OpenVPN | None | No | Medium |
+| WireGuard | None | No (blocked in restricted networks) | Very low |
+| Shadowsocks | AEAD cipher disguise | Partial | Very low |
+| VLESS + Reality | Real TLS/domain fronting | Yes | Minimal |
+
+## Using VLESS Reality with IMBA
+
+IMBA runs VLESS Reality as its primary protocol on all servers. When you install Happ and add your subscription link, Reality is configured automatically. The only manual step: **disable Mux** in server settings (Mux interferes with Reality's TLS handling).
+
+[Set up IMBA VPN](/auth/register)
     `.trim(),
   },
   {
     slug: 'esim-turkey-2026',
-    title: 'eSIM в Турцию 2026: лучшие тарифы и как подключиться',
-    excerpt: 'Турция — самое популярное направление для россиян. Разбираем, сколько стоит интернет через eSIM IMBA vs роуминг, и как активировать за 2 минуты.',
+    title: 'eSIM in Turkey 2026: Best Plans and How to Stay Connected',
+    excerpt: 'Traveling to Turkey? Here\'s how to get affordable mobile data without paying roaming fees — and what to know about internet access there.',
     category: 'eSIM',
     categoryColor: 'var(--blue)',
-    date: '25 июня 2026',
-    readTime: '4 мин',
-    ogImage: 'https://www.imba.live/blog/og-esim-turkey-2026.jpg',
+    date: 'June 25, 2026',
+    readTime: '5 min',
+    ogImage: 'https://www.imba.live/blog/og-esim-turkey.png',
     content: `
-## Почему eSIM выгоднее роуминга в Турции
+## Turkey: great destination, complicated internet
 
-Турция — страна с хорошим LTE-покрытием и относительно дешёвыми местными тарифами. Роуминг российских операторов там стоит от 400–600 ₽ в день, при этом скорость часто ограничена.
+Turkey is one of the most visited countries in the world — Istanbul alone attracts over 15 million tourists a year. The mobile network is solid (Turkcell, Vodafone TR, and Turk Telekom provide strong 4G/5G coverage), but there's one catch: Turkey has one of the highest rates of website blocking in Europe. Social media platforms have been periodically blocked or throttled.
 
-**Сравнение:**
+For most travelers, a combination of a local eSIM for data plus a VPN for unrestricted access is the practical solution.
 
-| | Роуминг МТС | eSIM IMBA |
+## eSIM coverage in Turkey
+
+IMBA eSIM connects to local Turkish carriers through roaming agreements, giving you 4G/LTE access across the country. Cities and tourist areas have excellent coverage. Remote eastern regions have more limited connectivity.
+
+## Cost comparison
+
+| Option | 1 week of data | Data included |
 |---|---|---|
-| 5 ГБ | ~3 000 ₽ | ~250–350 ₽ |
-| Скорость | Ограничена | 4G/LTE без ограничений |
-| Активация | Автоматически | QR, 2 минуты |
+| Home carrier roaming | $25-70 | Usually 1-5 GB |
+| Local SIM (airport) | $8-15 | 5-15 GB |
+| IMBA eSIM | $6-12 | 3-10 GB |
 
-## Какие тарифы есть для Турции
+The local SIM requires standing in a queue at the airport or hunting for a shop in the city. IMBA eSIM activates before you board.
 
-Тарифы IMBA на Турцию:
-- **3 ГБ** — от $2.5, срок 7 дней
-- **10 ГБ** — от $7, срок 30 дней
-- **20 ГБ** — от $12, срок 30 дней
+## Setting up for Turkey: the checklist
 
-Все тарифы работают на основе партнёрских операторов — Turkcell, Vodafone TR. 4G/LTE покрытие по всей стране.
+**Before you leave:**
+- Buy your IMBA eSIM Turkey plan
+- Install the eSIM on your phone (Settings, then Mobile Network, then Add eSIM, then scan QR)
+- Make sure IMBA VPN is set up on your devices
 
-## Как активировать eSIM IMBA в Турции
+**On arrival:**
+- Enable the eSIM profile and set it as your data line
+- Keep your home SIM active (data roaming OFF) for calls
+- Connect to IMBA VPN for unrestricted browsing
 
-1. **До поездки** — купи тариф в личном кабинете IMBA
-2. **QR-код** появится сразу после оплаты
-3. **Активация**: Настройки → Сотовая связь → Добавить тариф → Сканировать QR
-4. В Турции eSIM автоматически подключится к местной сети
+## Which phones work with eSIM in Turkey?
 
-Активировать можно за несколько дней до вылета — eSIM будет ждать подключения.
+Turkey's carriers support eSIM on most modern iPhones and Android flagships. If your phone was carrier-locked in a country that restricts eSIM, you may need to unlock it first.
 
-## Останется ли российский номер
-
-Да. eSIM — это второй профиль. Российская SIM остаётся активной:
-- Звонки и SMS — через российский номер
-- Интернет — через eSIM IMBA (дешёвый местный тариф)
-
-Если хочешь принимать звонки от турецких номеров — можно дополнительно купить локальный eSIM с номером.
-
-## Совет для Стамбула и курортов
-
-В Стамбуле и на курортах (Анталья, Бодрум, Алания) 4G работает отлично. В горных районах (Каппадокия, Восточная Турция) иногда встречаются зоны с 3G или без покрытия — как и у местных операторов.
+[Buy Turkey eSIM](/esim)
     `.trim(),
   },
   {
     slug: 'esim-iphone-setup',
-    title: 'Как установить eSIM на iPhone: пошаговая инструкция',
-    excerpt: 'Подробный гайд по активации eSIM IMBA на всех моделях iPhone — от XS до iPhone 16. С картинками и ответами на частые вопросы.',
+    title: 'How to Set Up an eSIM on iPhone: Complete Step-by-Step Guide',
+    excerpt: 'Everything you need to know to install and activate an eSIM on your iPhone — from iPhone XS to iPhone 16.',
     category: 'eSIM',
     categoryColor: 'var(--blue)',
-    date: '10 июня 2026',
-    readTime: '3 мин',
-    ogImage: 'https://www.imba.live/blog/og-esim-iphone-setup.jpg',
+    date: 'June 10, 2026',
+    readTime: '4 min',
+    ogImage: 'https://www.imba.live/blog/og-esim-iphone.png',
     content: `
-## Какие iPhone поддерживают eSIM
+## Which iPhones support eSIM?
 
-- **iPhone XS / XS Max / XR** и новее — поддерживают eSIM + физическую SIM одновременно
-- **iPhone 14 и новее** (US-версия) — только eSIM, без слота для физической SIM
-- **iPhone 14 и новее** (международная версия) — eSIM + физическая SIM
+All iPhones from **iPhone XS (2018)** onwards support eSIM. From **iPhone 14** (US models), the phone has no physical SIM slot at all — everything is eSIM-only.
 
-Проверить поддержку: Настройки → Основные → Об этом устройстве → Доступные SIM.
+Supported models:
+- iPhone XS, XS Max, XR and later
+- iPhone SE (2nd and 3rd generation)
+- iPhone 11, 12, 13, 14, 15, 16 series
 
-## Шаг 1. Купи eSIM в IMBA
+On iPhone 13 and earlier, you can have one physical SIM and one eSIM active simultaneously. From iPhone 14, you can have multiple eSIM profiles.
 
-1. Зайди в [личный кабинет](/dashboard)
-2. Выбери раздел **eSIM**
-3. Выбери страну и тариф
-4. Оплати — QR-код появится сразу
+## Before you start
 
-## Шаг 2. Добавь eSIM на iPhone
+- Make sure your iPhone is unlocked (not carrier-locked). Go to Settings, then General, then About, and check "Carrier Lock"
+- Have your IMBA eSIM QR code ready (find it in your dashboard after purchase)
+- You'll need a Wi-Fi or cellular connection to download the eSIM profile
 
-**Способ 1 — через QR-код:**
-1. Настройки → Сотовая связь → Добавить тариф
-2. Наведи камеру на QR-код из личного кабинета
-3. Следуй инструкциям на экране
+## Method 1: Scan the QR code
 
-**Способ 2 — вручную (если нет камеры):**
-1. Настройки → Сотовая связь → Добавить тариф → Ввести данные вручную
-2. Введи SM-DP+ адрес и код активации из личного кабинета
+1. Go to **Settings, then Mobile Service** (or "Cellular" in some regions)
+2. Tap **Add eSIM** (or "Add Cellular Plan")
+3. Tap **Use QR Code**
+4. Scan the QR code from your IMBA dashboard
+5. Tap **Continue** when asked to activate the plan
+6. Choose a label for the plan (e.g., "IMBA Travel")
+7. Select which line to use for data: choose the eSIM for data when abroad
 
-## Шаг 3. Настрой, что куда идёт
+## Method 2: Enter details manually
 
-После добавления iPhone спросит, как использовать два профиля:
+If you can't scan the QR code, tap **Enter Details Manually** and type in the activation code (SM-DP+ address and activation code), available in your IMBA dashboard alongside the QR.
 
-- **Основная SIM** — оставь российский номер для звонков и SMS
-- **eSIM IMBA** — выбери как «Данные» (интернет)
-- В разделе «Сотовые данные» выбери eSIM IMBA
+## Setting up dual SIM
 
-## Частые вопросы
+After installing your eSIM:
+1. Go to Settings, then Mobile Service
+2. Tap the eSIM profile (e.g., "IMBA Travel")
+3. Turn **Data Roaming** ON for the eSIM
+4. Go back and set **Mobile Data** to use the eSIM
+5. Keep your home SIM as the default for calls and texts
 
-**Можно ли перенести eSIM на другой iPhone?**
-Нет. eSIM привязывается к конкретному устройству при активации. Если меняешь телефон — купи новый тариф.
+This way you receive calls on your regular number while using the IMBA eSIM for cheap local data.
 
-**Сколько eSIM можно хранить на iPhone?**
-До 8 профилей одновременно. Активен только один, остальные хранятся и можно переключаться.
+## Troubleshooting
 
-**eSIM пропала после сброса телефона?**
-Нужно добавить заново. QR-код из личного кабинета IMBA работает один раз — обратись в поддержку за новым.
+**"eSIM not supported"** — Your phone might be carrier-locked. Contact your carrier to unlock it.
+
+**"Unable to complete cellular plan change"** — Restart your iPhone and try again. If the problem persists, try adding the eSIM via QR code instead of manual entry.
+
+**No connection after activation** — Toggle Airplane Mode on and off. Make sure Data Roaming is enabled for the eSIM profile.
+
+**QR code already used** — Each QR code can only be scanned once. Contact IMBA support to get a new one.
+
+[Buy IMBA eSIM](/esim)
     `.trim(),
   },
   {
     slug: 'pay-chatgpt-from-russia',
-    title: 'Как оплатить ChatGPT Plus из России в 2026 году',
-    excerpt: 'OpenAI не принимает российские карты. Показываем рабочий способ подписаться на ChatGPT Plus через виртуальную карту IMBA — без VPN-ограничений.',
-    category: 'Карта',
+    title: 'How to Pay for ChatGPT Plus from Anywhere in 2026',
+    excerpt: 'Your card declined on OpenAI? A virtual card in USD solves the problem instantly — here\'s how to set it up.',
+    category: 'Card',
     categoryColor: 'var(--green)',
-    date: '1 июля 2026',
-    readTime: '3 мин',
-    ogImage: 'https://www.imba.live/blog/og-pay-chatgpt-from-russia.jpg',
+    date: 'July 1, 2026',
+    readTime: '4 min',
+    ogImage: 'https://www.imba.live/blog/og-chatgpt-plus.png',
     content: `
-## Проблема: OpenAI блокирует российские карты
+## Why ChatGPT Plus payments fail
 
-OpenAI заблокировал оплату с карт, выпущенных в России, ещё в 2022 году. Попытка оплатить ChatGPT Plus картой МИР, Т-банка или Сбера даст ошибку «Your card has been declined».
+OpenAI uses Stripe for payment processing. Stripe declines cards from certain countries and cards issued by banks under sanctions. Even if ChatGPT itself is accessible in your country, the payment step can block you.
 
-Кроме карты, OpenAI также проверяет IP-адрес при регистрации — для доступа нужен VPN.
+The practical solution: a virtual card issued outside the restricted banking system.
 
-## Что нужно
+## What you need
 
-1. **VPN** — чтобы зарегистрироваться и пользоваться ChatGPT (аккаунты из РФ часто ограничены)
-2. **Иностранная карта** — для оплаты подписки $20/мес
+- An IMBA virtual card (issued in USD by IMBA SRL, Costa Rica)
+- A VPN connected to the US (for OpenAI's geo-checks)
+- An OpenAI account
 
-IMBA даёт оба инструмента в одной подписке.
+## Step 1: Issue your virtual card
 
-## Пошаговая инструкция
+1. Log into your [IMBA dashboard](https://www.imba.live/dashboard)
+2. Go to the **Card** section
+3. Issue a card in **USD**
+4. Fund it via USDT, BTC, or bank transfer (minimum $25 recommended for the first month)
 
-### 1. Включи VPN IMBA
+The card number is available instantly after funding.
 
-Перед открытием chat.openai.com включи VPN. Рекомендуем сервер в США или Европе.
+## Step 2: Connect your VPN to a US server
 
-### 2. Выпусти виртуальную карту IMBA
+OpenAI restricts ChatGPT Plus subscriptions to certain regions. Connect IMBA VPN to a US server (New York works well) before opening OpenAI's website.
 
-1. Личный кабинет → **Карта** → Выпустить
-2. Выбери валюту **USD** (ChatGPT Plus списывает в долларах)
-3. Пополни карту на $22+ (с небольшим запасом на курс)
-4. Скопируй реквизиты: номер карты, срок, CVV, платёжный адрес
+## Step 3: Subscribe to ChatGPT Plus
 
-### 3. Подпишись на ChatGPT Plus
+1. Go to chat.openai.com while connected to a US VPN server
+2. Click **Upgrade to Plus**, then **Subscribe**
+3. Enter your IMBA virtual card details (card number, expiry, CVV)
+4. For billing address, use any valid US address or ZIP code such as 10001
+5. Complete payment
 
-1. Зайди на chat.openai.com (через VPN IMBA)
-2. Нажми **Upgrade to Plus**
-3. Введи реквизиты карты IMBA
-4. Укажи платёжный адрес — используй адрес из личного кабинета IMBA
+## If the payment fails
 
-Оплата проходит с первой попытки — карта зарегистрирована вне России.
+- Make sure your VPN is connected to a US server
+- Check that the card has enough balance (ChatGPT Plus is $20/month)
+- Try a different browser or incognito mode
+- Clear cookies before trying again
 
-## Сколько стоит
+## Keeping the subscription active
 
-- ChatGPT Plus: $20/мес
-- IMBA подписка (VPN + карта): от $9.99/мес
-- Пополнение карты: через USDT без комиссии
+ChatGPT Plus renews monthly. Keep your IMBA card funded with at least $20 before each renewal date. You'll see the renewal date in your OpenAI account settings.
 
-## Альтернатива: ChatGPT API
+The VPN is only needed for the initial subscription — once subscribed, OpenAI doesn't require a VPN for regular usage in most countries.
 
-Если нужен API для разработки — тот же процесс. Пополни карту IMBA, добавь в billing на platform.openai.com.
-
-## Важно
-
-OpenAI периодически проверяет IP при использовании — держи VPN включённым. Если аккаунт создавался без VPN с российского IP, риск блокировки выше.
+[Get your virtual card](/virtual-card)
     `.trim(),
   },
   {
     slug: 'pay-netflix-from-russia',
-    title: 'Как оплатить Netflix из России: рабочий способ 2026',
-    excerpt: 'Netflix ушёл из России, но подписку можно оформить через виртуальную карту IMBA. Рассказываем какой регион выбрать и как платить.',
-    category: 'Карта',
+    title: 'How to Subscribe to Netflix from Any Country in 2026',
+    excerpt: 'Netflix blocks cards from certain countries and regions. A virtual card in USD or EUR solves this — with the right steps.',
+    category: 'Card',
     categoryColor: 'var(--green)',
-    date: '15 июня 2026',
-    readTime: '4 мин',
-    ogImage: 'https://www.imba.live/blog/og-pay-netflix-from-russia.jpg',
+    date: 'June 15, 2026',
+    readTime: '4 min',
+    ogImage: 'https://www.imba.live/blog/og-netflix.png',
     content: `
-## Почему Netflix недоступен из России
+## The Netflix payment problem
 
-Netflix приостановил работу в России в марте 2022 года. Российские карты не принимаются, а при подключении с российского IP часть контента ограничена.
+Netflix operates in 190+ countries but its payment processing is not universal. Cards from certain countries or banks get declined at checkout, even if Netflix is technically available in your region. This is a common frustration for expats, travelers, and users in countries with restricted banking.
 
-Для полноценного доступа нужны два инструмента: иностранная карта и VPN.
+The fix is straightforward: use a virtual card in USD or EUR from a non-restricted issuer.
 
-## Что понадобится
+## What you need
 
-- **VPN IMBA** — для смены геолокации и обхода региональных ограничений
-- **Виртуальная карта IMBA** (USD или EUR) — для оплаты подписки
+- An IMBA virtual card in USD or EUR
+- A VPN to access the regional library you want (optional, but useful)
 
-## Пошаговая инструкция
+## Choosing your Netflix region
 
-### 1. Включи VPN и выбери регион
+Netflix content varies significantly by country. The US library has the largest selection. UK, Canada, and Japan are also popular for their exclusive content.
 
-Включи VPN IMBA, выбери сервер в Турции или Аргентине — там Netflix дешевле всего:
-- **Турция**: ~$3–4/мес (самый дешёвый, 4K включён)
-- **Аргентина**: ~$4–5/мес
-- **США**: ~$15–23/мес, но максимальная библиотека
+With IMBA VPN, you can connect to a server in any of these countries and access that region's library.
 
-### 2. Выпусти карту IMBA
+## Step 1: Get your IMBA virtual card
 
-1. Личный кабинет → **Карта** → Выпустить
-2. Выбери **USD** для аргентинского/американского региона, **EUR** или **USD** для турецкого
-3. Пополни карту: для Турции достаточно $10 на первый месяц с запасом
+1. Open your IMBA dashboard, then go to **Card**
+2. Issue a card in **USD** (for Netflix US) or **EUR** (for European Netflix)
+3. Fund it — Netflix plans range from $7 to $23/month depending on your plan and region
 
-### 3. Создай или войди в Netflix
+## Step 2: Connect to VPN (if needed)
 
-1. Открой netflix.com через VPN (сервер в выбранном регионе)
-2. Зарегистрируйся или войди — используй почту, не связанную с российскими сервисами
-3. На шаге оплаты введи реквизиты карты IMBA
+If you want to access a specific Netflix region:
+- Connect IMBA VPN to the relevant server (US, UK, etc.)
+- Stay connected to the same region when signing up
 
-### 4. Готово
+## Step 3: Subscribe
 
-После оплаты можно смотреть с любого устройства. VPN нужен при просмотре — иначе Netflix определит российский IP и заблокирует воспроизведение.
+1. Go to netflix.com
+2. Choose your plan (Standard with ads is cheapest; Standard or Premium for HD/4K)
+3. Enter your IMBA card details
+4. For the billing address, use an address in the same country as your VPN server
 
-## Важно о платёжном адресе
+## Notes on Netflix and VPNs
 
-При регистрации Netflix попросит адрес выставления счёта. Используй адрес из личного кабинета IMBA — он соответствует стране карты.
+Netflix actively blocks known VPN IP ranges. IMBA uses residential and datacenter IPs that are not on Netflix's blocklists. If you get the "you seem to be using an unblocker or proxy" message, try a different server in the same country.
 
-## Совместный доступ
+Once subscribed, you can watch Netflix on any device — phone, tablet, laptop, TV — using your regular account.
 
-После изменений в политике Netflix совместный доступ (sharing) требует добавления пользователя через тот же регион. При турецком или аргентинском аккаунте лучше держать VPN включённым на всех устройствах.
+[Get your virtual card](/virtual-card)
     `.trim(),
   },
   {
     slug: 'vpn-smart-tv',
-    title: 'VPN на телевизоре (Android TV): настройка за 10 минут',
-    excerpt: 'Как установить VPN на телевизор или приставку Android TV: ставим Happ через APK, подключаем VLESS Reality — и YouTube снова работает на большом экране.',
+    title: 'VPN on Android TV: Setup in 10 Minutes',
+    excerpt: 'How to install IMBA VPN on an Android TV box or smart TV with Android OS — step by step, with the Happ app.',
     category: 'VPN',
     categoryColor: 'var(--violet)',
-    date: '15 июля 2026',
-    readTime: '6 мин',
+    date: 'July 15, 2026',
+    readTime: '5 min',
     ogImage: 'https://www.imba.live/blog/og-vpn-smart-tv.png',
     content: `
-## На каких телевизорах это работает
+## Why put a VPN on your TV?
 
-- **Android TV / Google TV** — Sony, TCL, Hisense, Xiaomi, приставки (Chromecast с Google TV, NVIDIA Shield и другие) — да, по этой инструкции
-- **Samsung (Tizen) и LG (webOS)** — установить VPN-приложение напрямую нельзя; варианты: приставка на Android TV (от 3 000 руб.) или настройка VPN на роутере
-- Проверить систему: Настройки телевизора → Об устройстве → версия ОС
+Two main reasons: access geo-blocked streaming content (Netflix US, BBC iPlayer, Disney+ libraries), and bypass censorship if you're in a country where streaming services or video platforms are restricted.
 
-## Шаг 1. Зарегистрируйся и получи 7 дней бесплатно
+Android TV makes this possible because it runs full Android apps — including Happ, IMBA's VPN client.
 
-С телефона или компьютера: создай аккаунт на <a href="https://www.imba.live/auth/register">imba.live</a>, подпишись на <a href="https://vk.com/club239876488">ВКонтакте</a> или <a href="https://telegram.dog/imba_live">Telegram</a> IMBA — активируется тариф Старт: VPN на 7 дней бесплатно.
+## What you need
 
-## Шаг 2. Установи Happ на телевизор
+- An Android TV device (NVIDIA Shield, Xiaomi TV Box, Chromecast with Google TV, or a TV with built-in Android TV)
+- Your IMBA subscription link (find it in your dashboard under VPN)
+- A mouse or keyboard connected to the TV (helpful for typing the subscription URL)
 
-**Вариант А — через Downloader (проще всего):**
-1. Установи из магазина приложений телевизора программу **Downloader**
-2. Введи в ней короткую ссылку на APK Happ из кабинета IMBA
-3. Скачай и установи (разреши установку из неизвестных источников, когда система спросит)
+## Step 1: Enable "Unknown sources"
 
-**Вариант Б — с флешки:**
-1. Скачай <a href="https://github.com/Happ-proxy/happ-android/releases/latest/download/Happ.apk">Happ APK Stable</a> на компьютере
-2. Скопируй на флешку → вставь в телевизор
-3. Открой файловым менеджером телевизора и установи
+Since Happ is not available on the Google Play Store in all regions, you need to allow installations from outside the store:
 
-## Шаг 3. Добавь подписку
+1. Go to Settings, then Security & Privacy (or Device Preferences, then Security)
+2. Enable **Unknown sources** (or "Allow installation from unknown sources")
 
-На телевизоре вводить длинную ссылку неудобно. Два способа:
+## Step 2: Install a file manager
 
-1. **QR-код**: открой ссылку подписки в кабинете на телефоне → покажи QR-код → отсканируй камерой в Happ на телевизоре
-2. **Вручную**: Happ → «+» → «Добавить подписку» → введи ссылку через экранную клавиатуру
+If you don't have one, install **File Commander** or **FX File Explorer** from the Play Store — you'll need it to open the downloaded APK.
 
-## Шаг 4. Отключи Mux и подключись
+## Step 3: Download and install Happ
 
-Настройки сервера → **Mux → выключить**. Это обязательно: с включённым Mux соединение не установится.
+**Option A — via browser:**
+1. Open the browser on your TV
+2. Navigate to the APK download link (find it in your IMBA dashboard under "Download Happ for Android TV")
+3. Download and open the file
+4. Tap Install
 
-Выбери сервер → «Подключить» → разреши системный запрос Android TV на VPN-подключение. Проверь: YouTube на телевизоре должен открываться и грузить видео в 4K.
+**Option B — from a USB drive:**
+1. Download the Happ APK on your phone or computer
+2. Copy it to a USB drive
+3. Plug the USB into your TV, open the file manager, and install
 
-## Один VPN на все устройства
+## Step 4: Add your subscription
 
-Ссылка подписки IMBA не привязана к устройству: тот же аккаунт работает на <a href="/blog/vpn-na-kompyutere">компьютере</a>, Android-смартфоне и iPhone. Настроил один раз — пользуешься везде.
+1. Open Happ on the TV
+2. Select **Subscription**, then **Add**
+3. Enter your IMBA subscription URL (use a keyboard if available, or paste via clipboard from your phone using apps like Send Files to TV)
 
-## Частые вопросы
+## Step 5: Configure and connect
 
-### Почему YouTube не работает на телевизоре без VPN?
+1. Select a server from the list
+2. Go to server settings, find **Mux**, and disable it
+3. Tap **Connect**
 
-По той же причине, что и на других устройствах — замедление трафика на уровне операторов. VPN с протоколом VLESS Reality решает это: трафик выглядит как обычный HTTPS. <a href="/blog/vpn-russia-2026">Как это работает</a>.
+Your TV traffic now routes through IMBA VPN. All streaming apps will see the IP of your chosen server.
 
-### Замедлится ли видео через VPN?
+## Tips
 
-При нормальном канале нет: серверы IMBA держат 4K-стриминг. Если видео буферизуется, смени сервер на ближайший по пингу.
+- **Netflix**: connect to a US server for the US library, UK for BBC content
+- **Speed**: pick the server with the lowest ping for the smoothest streaming
+- **Reconnect on startup**: in Happ settings, enable auto-connect so VPN restarts automatically after a reboot
 
-### Что делать владельцам Samsung и LG?
-
-Приставка с Android TV за 3-5 тысяч рублей решает вопрос радикально: VPN, YouTube и любые приложения. Альтернатива для продвинутых — VPN на роутере, тогда защищены все устройства дома сразу.
-
-### Это бесплатно?
-
-Первые 7 дней бесплатно за подписку на соцсети IMBA, дальше от $9.99/мес (вместе с eSIM и виртуальной картой).
+[Get IMBA VPN free for 7 days](/auth/register)
     `.trim(),
   },
   {
     slug: 'happ-setup',
-    title: 'Как скачать и настроить Happ для IMBA VPN',
-    excerpt: 'Пошаговая инструкция: скачиваем Happ на Android и iOS, добавляем подписку IMBA и отключаем Mux. Работает на МТС, Мегафон, Билайн, Tele2.',
+    title: 'How to Download and Set Up Happ for IMBA VPN',
+    excerpt: 'A complete guide to installing and configuring the Happ app on Android, iOS, Windows, and macOS to use IMBA VPN.',
     category: 'VPN',
     categoryColor: 'var(--violet)',
-    date: '5 июля 2026',
-    readTime: '4 мин',
-    ogImage: 'https://www.imba.live/blog/og-happ-setup.jpg',
+    date: 'July 5, 2026',
+    readTime: '6 min',
+    ogImage: 'https://www.imba.live/blog/og-happ-setup.png',
     content: `
-## Что такое Happ и зачем он нужен
+## What is Happ?
 
-Happ — это VPN-клиент с поддержкой протокола **VLESS + XTLS Reality**. Именно этот протокол использует IMBA VPN: трафик выглядит как обычный HTTPS и не определяется российскими системами блокировки (ТСПУ).
+Happ is the VPN client app that powers IMBA VPN. It supports VLESS Reality and WireGuard protocols and works on Android, iOS, Windows, macOS, and Linux. You add your IMBA subscription link to Happ, and it automatically pulls all available servers.
 
-Другие клиенты — v2rayNG, SingBox — тоже работают, но Happ проще всего в настройке: вставляешь ссылку подписки и нажимаешь «Подключить».
+## Before you start
 
-## Шаг 1. Скачать Happ
+You need an IMBA account and your subscription link:
+1. Sign up at [imba.live](https://www.imba.live/auth/register)
+2. Follow IMBA on Telegram to activate your free 7-day trial
+3. In your dashboard, go to **VPN** and copy the **subscription link**
 
-### Android
+## Installing on Android
 
-В российском Google Play Happ недоступен. Скачай APK напрямую:
+1. Open your IMBA dashboard on your Android phone
+2. Go to VPN, then Download Happ, then tap the Android link
+3. Download the APK file
+4. When prompted, allow installation from this source
+5. Install and open
 
-- <a href="https://github.com/Happ-proxy/happ-android/releases/latest/download/Happ.apk"><strong>Happ APK Stable</strong></a> — стабильная версия с GitHub Releases
-- <a href="https://github.com/Happ-proxy/happ-android/releases/latest/download/Happ_beta.apk"><strong>Happ APK Beta</strong></a> — бета с новыми функциями
-- <a href="https://files-hub.com/download/android/latest?arch=universal"><strong>Зеркало (files-hub.com)</strong></a> — если GitHub недоступен
-- После скачивания разреши установку из неизвестных источников (Настройки → Безопасность → Неизвестные источники)
+Note: Happ may not appear in your regional Play Store. The APK from the dashboard is the official version.
 
-### iOS
+## Installing on iOS
 
-В российском App Store Happ удалён. Используй один из способов:
+1. In your IMBA dashboard, go to VPN, then Download Happ, then iOS
+2. You'll be directed to the App Store or TestFlight depending on availability in your region
+3. Install and open Happ
 
-- <a href="https://apps.apple.com/us/app/happ-proxy-utility/id6504287215"><strong>App Store (US/KZ)</strong></a> — зайди в App Store под зарубежным Apple ID
-- <a href="https://testflight.apple.com/join/XMls6Ckd"><strong>TestFlight (Beta)</strong></a> — бета-версия, не требует зарубежного ID
-- Для App Store создай бесплатный Apple ID с регионом Казахстан — карта не нужна
+## Installing on Windows
 
-### Windows
+1. Download the Setup .exe from your IMBA dashboard (VPN, then Download Happ, then Windows)
+2. Run the installer: Next, Next, Finish
+3. Open Happ from the Start menu
 
-- <a href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/setup-Happ.x64.exe"><strong>Setup x64 .exe</strong></a> — установщик для Windows 10/11
-- <a href="https://files-hub.com/download/windows/latest?arch=x64"><strong>Зеркало (files-hub.com)</strong></a> — если GitHub недоступен
+## Installing on macOS
 
-### macOS
+1. Download the .dmg from your IMBA dashboard (VPN, then Download Happ, then macOS)
+2. Open the .dmg and drag Happ to Applications
+3. Open from Applications (you may need to right-click, then Open the first time, since it's downloaded from outside the App Store)
 
-- <a href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.macOS.universal.dmg"><strong>.dmg Universal</strong></a> — работает на Apple Silicon и Intel
-- <a href="https://apps.apple.com/us/app/happ-proxy-utility/id6504287215?platform=mac"><strong>Mac App Store</strong></a> — через зарубежный Apple ID
-- <a href="https://files-hub.com/download/macos/latest?arch=universal"><strong>Зеркало (files-hub.com)</strong></a>
+## Adding your subscription link
 
-### Linux
+This step is the same on all platforms:
 
-- <a href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.x64.deb"><strong>.deb x64</strong></a> — для Ubuntu, Debian, Mint
-- <a href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.arm64.deb"><strong>.deb arm64</strong></a> — для Raspberry Pi и ARM-устройств
-- <a href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.x64.rpm"><strong>.rpm x64</strong></a> — для Fedora, CentOS, RHEL
+1. Open Happ
+2. Tap or click the **+** button, then **Add subscription**
+3. Paste your IMBA subscription URL (copied from your dashboard)
+4. Confirm — Happ will download the server list
 
-## Шаг 2. Добавить подписку IMBA
+## Critical: disable Mux
 
-1. Открой Happ
-2. Нажми **«+»** (или «Добавить сервер»)
-3. Выбери **«Добавить подписку»** (Subscribe)
-4. Вставь ссылку подписки из [личного кабинета](/dashboard/vpn)
-5. Нажми **«Обновить»** — серверы загрузятся автоматически
+After adding the subscription, you must disable Mux before connecting:
 
-## Шаг 3. Отключить Mux (ОБЯЗАТЕЛЬНО)
+1. Long-press (or right-click) any server, then **Edit**
+2. Find the **Mux** setting, and turn it **OFF**
+3. Save
 
-Без этого VPN работать не будет:
+Alternatively, if there's a global Mux setting in Happ's preferences, disable it there. **VLESS Reality does not work with Mux enabled.**
 
-1. В списке серверов нажми на любой сервер → **«Настройки»** (иконка шестерёнки)
-2. Найди раздел **Mux** или **Multiplex**
-3. Переключи в положение **Выкл (Off)**
-4. Сохрани
+## Connecting and choosing a server
 
-Mux несовместим с XTLS Reality — если не выключить, подключение зависнет на «Connecting...» навсегда.
+1. From the server list, tap any server to select it
+2. Tap **Connect** (or the power button icon)
+3. Accept the VPN permission request on your device
+4. You're connected — look for the VPN icon in your status bar
 
-## Шаг 4. Подключиться
+Choosing the right server: the ping shown next to each server is your latency. Lower ping means faster response. For streaming, pick a server in the country whose library you want to access. For privacy only, pick the nearest server with the lowest ping.
 
-1. Выбери сервер (рекомендуем **Лиссабон** — самый быстрый)
-2. Нажми большую кнопку **«Подключить»**
-3. Разреши добавление VPN-конфигурации
+## Troubleshooting
 
-Готово! Иконка VPN появится в статус-баре.
+| Problem | Solution |
+|---|---|
+| Can't connect | Mux is likely still enabled — disable it |
+| Slow speeds | Switch to a different server |
+| Connection drops frequently | Try VLESS Reality on a different port (options in server settings) |
+| iOS says VPN configuration failed | Delete and reinstall the VPN profile in Settings, then VPN |
 
-## Альтернативные клиенты
-
-| Платформа | Клиент | Примечание |
-|-----------|--------|------------|
-| Android | v2rayNG | Более гибкий, сложнее в настройке |
-| Android | SingBox | Новый, очень быстрый |
-| iOS | Streisand | Поддерживает Reality |
-| Windows | v2rayN | Стандарт для ПК |
-| macOS | V2Box | Нативный, удобный |
-| Linux | Xray-core | CLI, максимальный контроль |
-
-Для всех этих клиентов используй ту же **ссылку подписки** из личного кабинета.
-
-## Что делать, если не подключается
-
-1. **Проверь Mux** — самая частая причина (см. Шаг 3)
-2. **Обнови подписку** в Happ (потяни вниз или кнопка «Refresh»)
-3. **Смени сервер** — попробуй другую локацию
-4. **Проверь тариф** — VPN доступен при активной подписке IMBA
-5. Напиши в [поддержку](/dashboard) — ответим в течение часа
-
-## Частые вопросы
-
-### Почему Happ нет в Google Play и российском App Store?
-
-Роскомнадзор обязал магазины удалить VPN-приложения. Happ распространяется через GitHub Releases (APK для Android) и зарубежный App Store или TestFlight для iOS.
-
-### Можно ли использовать Happ без ссылки подписки IMBA?
-
-Happ работает с любым VLESS/Reality-сервером, но без подписки IMBA ты сам отвечаешь за настройку. Ссылка из кабинета IMBA автоматически подгружает все доступные серверы и обновляет их при смене.
-
-### Сколько устройств можно подключить одновременно?
-
-На тарифе IMBA COMBO — до 5 устройств одновременно. Ссылка подписки одна — её можно вставить в Happ на всех устройствах.
+[Start your free trial](/auth/register)
     `.trim(),
   },
   {
     slug: 'vpn-android',
-    title: 'VPN на Android в 2026: установка через APK за 5 минут',
-    excerpt: 'Как установить VPN на Android, если в российском Google Play приложений нет: скачиваем Happ через APK, подключаем VLESS Reality. Пошагово, 7 дней бесплатно.',
+    title: 'VPN on Android in 2026: The Complete Setup Guide',
+    excerpt: 'How to install IMBA VPN on any Android phone in under 5 minutes — using the Happ app with VLESS Reality protocol.',
     category: 'VPN',
     categoryColor: 'var(--violet)',
-    date: '15 июля 2026',
-    readTime: '5 мин',
-    ogImage: 'https://www.imba.live/blog/og-vpn-android.jpg',
+    date: 'July 15, 2026',
+    readTime: '5 min',
+    ogImage: 'https://www.imba.live/blog/og-vpn-android.png',
     content: `
-## Почему в Google Play нет VPN и что делать
+## Why standard VPN apps don't work everywhere
 
-С 2024–2025 года Google удаляет VPN-приложения из российского Google Play по требованиям регулятора (в феврале 2026 суд оштрафовал Google на 22,8 млн ₽ именно за VPN-приложения в сторе). Решение стандартное для Android — установка через APK-файл напрямую. Это безопасно, если качать с официального сайта сервиса, а не со сторонних форумов.
+Most VPN apps on the Play Store use OpenVPN or WireGuard. These protocols have recognizable traffic patterns — DPI systems in China, UAE, Turkey, and other countries identify and block them. The result: your VPN connects, then stops working. Or doesn't connect at all.
 
-## Шаг 1. Зарегистрируйся и получи 7 дней бесплатно
+IMBA VPN uses VLESS Reality, which looks like regular HTTPS traffic to your ISP. It passes deep packet inspection in every major censored network.
 
-Создай аккаунт на <a href="https://www.imba.live/auth/register">imba.live</a> — нужен только email. После регистрации подпишись на <a href="https://vk.com/club239876488">ВКонтакте</a> или <a href="https://telegram.dog/imba_live">Telegram</a> IMBA в кабинете — активируется тариф Старт: VPN на 7 дней бесплатно.
+## What you need
 
-## Шаг 2. Скачай и установи Happ (APK)
+- Any Android phone running Android 5.0 or later
+- Your IMBA subscription link (from your dashboard)
+- 5 minutes
 
-1. В кабинете IMBA → раздел VPN → кнопка **APK Stable** (или «Зеркало», если основная ссылка не открывается)
-2. Открой скачанный файл. Android спросит разрешение на установку из неизвестных источников — разреши для браузера (Настройки → Безопасность → Установка неизвестных приложений)
-3. Установи Happ
+## Step 1: Create your IMBA account
 
-## Шаг 3. Добавь подписку
+Sign up at [imba.live](https://www.imba.live/auth/register) with your email. Follow IMBA on Telegram and activate the free 7-day trial in your dashboard.
 
-Скопируй ссылку подписки из кабинета (блок «Happ — ссылка подписки» → «Копировать»). В Happ: «+» → «Добавить подписку» → вставь ссылку. Список серверов подтянется автоматически.
+## Step 2: Copy your subscription link
 
-## Шаг 4. Отключи Mux и подключись
+In your dashboard, go to VPN, find the subscription link block, and tap **Copy**.
 
-Настройки сервера → **Mux → выключить** (обязательно, иначе соединение не установится). Выбери сервер, нажми «Подключить», подтверди системный запрос Android на создание VPN-подключения. Готово.
+## Step 3: Download and install Happ
 
-## Работает на всех операторах
+Happ may not be available in your regional Play Store. Download the APK directly:
 
-VLESS Reality стабилен на МТС, Мегафоне, Билайне и Tele2 — в том числе в Москве и Питере, где DPI-системы самые агрессивные. Если конкретный сервер тормозит на твоём операторе — просто переключись на соседний. Подробнее о протоколах — в <a href="/blog/vpn-russia-2026">разборе VPN в России 2026</a>.
+1. In your IMBA dashboard, go to VPN, then **Download Happ**, then Android
+2. On your phone, open the downloaded APK
+3. If prompted, tap **Settings** to allow installation from this source, then go back and install
+4. Open Happ
 
-## Частые вопросы
+## Step 4: Add your subscription
 
-### Безопасно ли ставить APK не из Google Play?
+1. In Happ, tap **+**, then **Add subscription**
+2. Paste your subscription link
+3. Tap OK — the server list loads automatically
 
-Да, если качаешь с официального сайта сервиса. APK с форумов и файлообменников — нет: туда часто вшивают рекламные модули. Ссылки IMBA ведут на официальную сборку Happ.
+## Step 5: Disable Mux (required)
 
-### Какой VPN работает на Android в России?
+1. Long-press any server in the list, then **Edit**
+2. Find **Mux**, and turn it **OFF**
+3. Save
 
-Тот, что использует протоколы с маскировкой — VLESS Reality. Приложения на OpenVPN/WireGuard из зарубежного Google Play работают нестабильно. <a href="/blog/vpn-russia-2026">Разбор протоколов</a>.
+This is mandatory. VLESS Reality won't work with Mux enabled.
 
-### Будет ли VPN работать на планшете и ТВ-приставке?
+## Step 6: Connect
 
-Да. Для планшета — эта же инструкция. Для телевизора и приставки на Android TV — <a href="/blog/vpn-smart-tv">отдельный гайд</a>.
+Tap a server, then tap **Connect**, then accept the VPN permission prompt.
 
-### Одна подписка — сколько устройств?
+You're connected. Verify by opening a blocked website or checking your IP at whatismyip.com.
 
-Несколько: та же ссылка подписки работает на <a href="/blog/vpn-na-kompyutere">компьютере</a>, <a href="/blog/vpn-iphone">iPhone</a> и <a href="/blog/vpn-smart-tv">телевизоре</a>.
+## Battery and performance
+
+VLESS Reality uses minimal battery — XTLS avoids double encryption, so the overhead is close to zero. You won't notice the VPN running in terms of battery life.
+
+## Frequently asked questions
+
+### Does it work on older Android phones?
+
+Happ supports Android 5.0+. Performance may be limited on very old hardware, but it will function.
+
+### Can I use one subscription on multiple phones?
+
+Yes. Paste the same subscription link into Happ on any number of devices.
+
+### What if the APK gets blocked?
+
+Your IMBA dashboard always has the latest download links, including mirrors. If one link is blocked, use the mirror.
+
+[Start your 7-day free trial](/auth/register)
     `.trim(),
   },
   {
     slug: 'vpn-iphone',
-    title: 'VPN на iPhone в 2026: установка за 5 минут',
-    excerpt: 'Как установить VPN на iPhone: приложение Happ из App Store или TestFlight, протокол VLESS Reality, настройка за 5 минут. 7 дней бесплатно. Работает на iOS 15+.',
+    title: 'VPN on iPhone in 2026: 5-Minute Setup Guide',
+    excerpt: 'Install IMBA VPN on your iPhone with the Happ app and VLESS Reality protocol. Works where other VPNs get blocked.',
     category: 'VPN',
     categoryColor: 'var(--violet)',
-    date: '15 июля 2026',
-    readTime: '4 мин',
-    ogImage: 'https://www.imba.live/blog/og-vpn-iphone.jpg',
+    date: 'July 15, 2026',
+    readTime: '4 min',
+    ogImage: 'https://www.imba.live/blog/og-vpn-iphone.png',
     content: `
-## Особенность iPhone: App Store и регион
+## Why most VPN apps on the App Store don't work in censored countries
 
-Apple удаляет часть VPN-приложений из российского App Store по требованию регулятора. У Happ два пути установки: обычный App Store (если приложение доступно в твоём регионе или у тебя зарубежный Apple ID) и TestFlight — официальная бета-платформа Apple, доступная в России. Оба варианта — по ссылкам из кабинета IMBA, оба бесплатны.
+VPN apps available in Apple's regional App Stores are frequently removed at the request of local authorities. Apps that remain often use protocols (OpenVPN, WireGuard) that get blocked by DPI systems anyway.
 
-## Шаг 1. Зарегистрируйся и получи 7 дней бесплатно
+IMBA VPN uses VLESS Reality — a protocol that makes your VPN traffic look like HTTPS to your carrier. It works in China, UAE, Turkey, and other restricted networks.
 
-Создай аккаунт на <a href="https://www.imba.live/auth/register">imba.live</a> — нужен только email. После регистрации подпишись на <a href="https://vk.com/club239876488">ВКонтакте</a> или <a href="https://telegram.dog/imba_live">Telegram</a> IMBA в кабинете — активируется тариф Старт: VPN на 7 дней бесплатно (и eSIM 500 МБ — кстати, <a href="/blog/esim-iphone-setup">как поставить eSIM на iPhone</a>).
+## What you need
 
-## Шаг 2. Установи Happ
+- iPhone running iOS 14 or later
+- An IMBA account with your subscription link
+- 5 minutes
 
-- **App Store** — кнопка в кабинете IMBA. Если приложение не находится, значит недоступно в регионе твоего Apple ID → второй вариант
-- **TestFlight (Beta)** — установи TestFlight из App Store (он доступен в РФ), затем перейди по ссылке из кабинета и установи Happ через него
+## Step 1: Create your account and get your subscription link
 
-## Шаг 3. Добавь подписку
+Sign up at [imba.live](https://www.imba.live/auth/register). Follow IMBA on Telegram, activate the free 7-day trial, and copy your subscription link from the VPN section of your dashboard.
 
-В кабинете скопируй ссылку из блока «Happ — ссылка подписки». Открой Happ → «+» → «Добавить подписку» → вставь. Серверы IMBA появятся в списке.
+## Step 2: Install Happ on iPhone
 
-## Шаг 4. Отключи Mux и подключись
+Depending on your App Store region, you have two options:
 
-Настройки сервера → **Mux → выключить** (без этого не заработает). Выбери сервер → «Подключить» → iOS попросит разрешение на добавление VPN-конфигурации → «Разрешить» (понадобится Face ID/код). В статус-баре появится значок VPN.
+**Option A — App Store:**
+In your IMBA dashboard, go to VPN, then Download Happ, then iOS. If the App Store link is available in your region, install directly.
 
-## Если не работает
+**Option B — TestFlight:**
+If the App Store version isn't available in your region, use the TestFlight link from your dashboard. TestFlight is Apple's official beta app distribution platform — no sideloading required.
 
-- Проверь Mux — выключен ли
-- Смени сервер: пинг каждого виден в кабинете
-- После обновления iOS иногда слетает VPN-профиль — переподключись в Happ
-- Не помогло — поддержка в кабинете
+## Step 3: Add your subscription
 
-## Частые вопросы
+1. Open Happ
+2. Tap **+**, then **Add subscription**
+3. Paste your IMBA subscription link
+4. Tap OK
 
-### Работает ли VPN на iPhone в России?
+Happ downloads the server list automatically.
 
-Да, на протоколе VLESS Reality — он маскирует трафик под обычный HTTPS и работает на МТС, Мегафоне, Билайне и домашнем Wi-Fi. <a href="/blog/vpn-russia-2026">Разбор протоколов</a>.
+## Step 4: Disable Mux
 
-### Нужен ли зарубежный Apple ID?
+1. Long-press a server, then **Edit**
+2. Find **Mux**, and set it to **OFF**
+3. Save
 
-Не обязательно: если Happ недоступен в твоём App Store, используй TestFlight — он работает с российским Apple ID.
+Required step — VLESS Reality doesn't work with Mux enabled.
 
-### Сажает ли VPN батарею?
+## Step 5: Connect
 
-VLESS Reality экономичнее классических протоколов: шифрование легче, фоновая нагрузка минимальна. На практике разница в расходе батареи — единицы процентов.
+Tap a server, then tap **Connect**, then approve the VPN configuration request (you'll see "VPN" in your status bar when connected).
 
-### Одна подписка на iPhone и другие устройства?
+## Tips
 
-Да: та же ссылка работает на <a href="/blog/vpn-na-kompyutere">компьютере</a>, <a href="/blog/vpn-android">Android</a> и <a href="/blog/vpn-smart-tv">телевизоре</a>.
+- **Lowest ping is fastest**: the dashboard shows server latency. Pick the lowest ping for general use
+- **Streaming**: pick a server in the country whose content library you want to access
+- **Always-on VPN**: in iOS Settings, then VPN, then IMBA, you can set it to always reconnect if the connection drops
+
+## Troubleshooting
+
+**"Cannot connect to the server"** — check that Mux is disabled. This is the cause in 90% of cases.
+
+**App disappeared from App Store** — use the TestFlight version from your dashboard. Apple periodically removes VPN apps at local authority requests; TestFlight bypasses this.
+
+**Slow speeds** — try a different server. Geographic distance matters; pick servers closer to you for everyday use.
+
+[Start your 7-day free trial](/auth/register)
     `.trim(),
   },
 ]
 
 export function getPost(slug: string): Post | undefined {
-  return posts.find((p) => p.slug === slug)
+  return posts.find(p => p.slug === slug)
 }

@@ -11,19 +11,19 @@ const COVERS: Record<string, () => React.ReactNode> = {
   'vpn-na-kompyutere': () => <VpnKompyuterCover />,
   'vpn-russia-2026': () => (
     // eslint-disable-next-line @next/next/no-img-element
-    <img src="/blog/cover-vpn-russia-2026.svg" alt="VPN в России 2026" className="w-full" style={{ marginLeft: '-8px', width: 'calc(100% + 8px)' }} />
+    <img src="/blog/cover-vpn-russia-2026.svg" alt="Best VPN protocols in 2026: which ones work against censorship" className="w-full" style={{ marginLeft: '-8px', width: 'calc(100% + 8px)' }} />
   ),
   'esim-russia-abroad': () => (
     // eslint-disable-next-line @next/next/no-img-element
-    <img src="/blog/esim-russia-abroad.svg" alt="eSIM для россиян: интернет за рубежом без роуминга" className="w-full" />
+    <img src="/blog/esim-russia-abroad.svg" alt="eSIM for international travel: internet in 190+ countries without roaming" className="w-full" />
   ),
   'vpn-iphone': () => (
     // eslint-disable-next-line @next/next/no-img-element
-    <img src="/blog/cover-vpn-iphone.svg" alt="VPN на iPhone в 2026: установка за 5 минут" className="w-full" />
+    <img src="/blog/cover-vpn-iphone.svg" alt="VPN on iPhone in 2026: 5-minute setup guide" className="w-full" />
   ),
   'vpn-android': () => (
     // eslint-disable-next-line @next/next/no-img-element
-    <img src="/blog/cover-vpn-android.svg" alt="VPN на Android в 2026: установка через APK за 5 минут" className="w-full" />
+    <img src="/blog/cover-vpn-android.svg" alt="VPN on Android in 2026: complete setup guide" className="w-full" />
   ),
 }
 
@@ -32,12 +32,14 @@ export async function generateStaticParams() {
 }
 
 const MONTH_MAP: Record<string, string> = {
-  'января':'01','февраля':'02','марта':'03','апреля':'04','мая':'05','июня':'06',
-  'июля':'07','августа':'08','сентября':'09','октября':'10','ноября':'11','декабря':'12',
+  January:'01', February:'02', March:'03', April:'04', May:'05', June:'06',
+  July:'07', August:'08', September:'09', October:'10', November:'11', December:'12',
 }
 function toIso(date: string) {
-  const parts = date.split(' ')
-  return parts.length === 3 ? `${parts[2]}-${MONTH_MAP[parts[1]] ?? '01'}-${parts[0].padStart(2, '0')}` : date
+  // "July 11, 2026" → "2026-07-11"
+  const m = date.match(/^(\w+)\s+(\d+),\s+(\d{4})$/)
+  if (m) return `${m[3]}-${MONTH_MAP[m[1]] ?? '01'}-${m[2].padStart(2, '0')}`
+  return date
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
@@ -54,7 +56,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       type: 'article',
       url: `https://www.imba.live/blog/${slug}`,
       images: [{ url: post.ogImage ?? 'https://www.imba.live/og-image.png', width: 1200, height: 630 }],
-      locale: 'ru_RU',
+      locale: 'en_US',
       siteName: 'IMBA',
     },
     twitter: {
@@ -198,7 +200,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     <div className="min-h-screen flex flex-col gap-1.5" style={{ background: 'var(--ink)', padding: '5px' }}>
       <Marquee
         bg="var(--violet-100)"
-        items={['eSIM В 190 СТРАНАХ', 'VPN БЕЗ ЛОГОВ', 'ВИРТУАЛЬНАЯ КАРТА', 'ОПЛАТА ВЕЗДЕ', 'БЕЗ ГРАНИЦ']}
+        items={['eSIM IN 190 COUNTRIES', 'ZERO-LOG VPN', 'VIRTUAL CARD', 'PAY ANYWHERE', 'NO BORDERS']}
       />
 
       <SiteHeader />
@@ -208,7 +210,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         <div className="max-w-2xl mx-auto px-5 md:px-8 py-10 md:py-16">
           {/* Back */}
           <Link href="/blog" className="inline-flex items-center gap-2 text-sm font-bold text-ink/50 hover:text-ink transition-colors mb-8">
-            ← Все статьи
+            ← All articles
           </Link>
 
           {/* Meta */}
@@ -216,9 +218,9 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
             <span className="chip" style={{ background: post.categoryColor, borderColor: 'var(--ink)' }}>
               {post.category}
             </span>
-            <Link href="/blog/author/sergey-karpov" className="text-xs text-ink/40 font-semibold hover:text-ink transition-colors">Сергей Карпов</Link>
+            <Link href="/blog/author/sergey-karpov" className="text-xs text-ink/40 font-semibold hover:text-ink transition-colors">Sergey Karpov</Link>
             <span className="text-xs text-ink/40 font-semibold">{post.date}</span>
-            <span className="text-xs text-ink/40 font-semibold">{post.readTime} чтения</span>
+            <span className="text-xs text-ink/40 font-semibold">{post.readTime} read</span>
           </div>
 
           <h1 className="text-3xl md:text-4xl font-black leading-tight mb-5">{post.title}</h1>
@@ -231,9 +233,9 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
           {/* CTA */}
           <div className="mt-12 rounded-2xl p-6 md:p-8 text-center" style={{ background: 'var(--yellow)', border: '2px solid var(--ink)' }}>
-            <p className="font-black text-xl mb-2">Попробуй IMBA бесплатно</p>
-            <p className="text-sm text-ink/70 mb-5">eSIM + VPN + виртуальная карта в одном приложении</p>
-            <Link href="/auth/register" className="pill pill-ink">Открыть IMBA</Link>
+            <p className="font-black text-xl mb-2">Try IMBA free</p>
+            <p className="text-sm text-ink/70 mb-5">eSIM + VPN + virtual card in one subscription</p>
+            <Link href="/auth/register" className="pill pill-ink">Get started</Link>
           </div>
         </div>
       </div>
@@ -248,8 +250,8 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         url: `https://www.imba.live/blog/${slug}`,
         datePublished: toIso(post.date),
         dateModified: toIso(post.date),
-        inLanguage: 'ru',
-        author: { '@type': 'Person', '@id': 'https://www.imba.live/blog/author/sergey-karpov#person', name: 'Сергей Карпов', url: 'https://www.imba.live/blog/author/sergey-karpov' },
+        inLanguage: 'en',
+        author: { '@type': 'Person', '@id': 'https://www.imba.live/blog/author/sergey-karpov#person', name: 'Sergey Karpov', url: 'https://www.imba.live/blog/author/sergey-karpov' },
         publisher: { '@type': 'Organization', '@id': 'https://www.imba.live/#organization', name: 'IMBA', logo: { '@type': 'ImageObject', url: 'https://www.imba.live/favicon.png', width: 512, height: 512 } },
         image: { '@type': 'ImageObject', url: post.ogImage ?? 'https://www.imba.live/og-image.png', width: 1200, height: 630 },
         isPartOf: { '@type': 'WebSite', '@id': 'https://www.imba.live/#website' },
@@ -257,7 +259,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           '@type': 'BreadcrumbList',
           itemListElement: [
             { '@type': 'ListItem', position: 1, name: 'IMBA', item: 'https://www.imba.live' },
-            { '@type': 'ListItem', position: 2, name: 'Блог', item: 'https://www.imba.live/blog' },
+            { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://www.imba.live/blog' },
             { '@type': 'ListItem', position: 3, name: post.title, item: `https://www.imba.live/blog/${slug}` },
           ],
         },
@@ -279,10 +281,10 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         <div className="px-5 md:px-8 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <Logo size="md" />
           <div className="flex gap-5 text-sm font-bold">
-            <Link href="/blog" className="hover:opacity-60">Блог</Link>
-            <Link href="/privacy-policy" className="hover:opacity-60">Конфиденциальность</Link>
-            <Link href="/terms" className="hover:opacity-60">Условия</Link>
-            <Link href="/refund" className="hover:opacity-60"><span className="sm:hidden">Возврат</span><span className="hidden sm:inline">Возврат средств</span></Link>
+            <Link href="/blog" className="hover:opacity-60">Blog</Link>
+            <Link href="/privacy-policy" className="hover:opacity-60">Privacy</Link>
+            <Link href="/terms" className="hover:opacity-60">Terms</Link>
+            <Link href="/refund" className="hover:opacity-60"><span className="sm:hidden">Refund</span><span className="hidden sm:inline">Refund Policy</span></Link>
           </div>
         </div>
         <div className="px-5 md:px-8 pb-6 border-t border-ink/10 pt-4">

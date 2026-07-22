@@ -26,9 +26,9 @@ const word = Archivo_Black({
   display: 'swap',
 })
 
-const TITLE = 'Купить VPN в России — eSIM и виртуальная карта в одной подписке | IMBA'
-const DESCRIPTION = 'VPN, eSIM и виртуальная Visa/Mastercard — в одной подписке IMBA. Стабильный VPN без блокировок и логов, интернет в 190+ странах, оплата зарубежных сервисов.'
-const DESCRIPTION_SHORT = 'VPN, eSIM и виртуальная Visa/Mastercard — в одной подписке IMBA. Стабильно, без блокировок и логов.'
+const TITLE = 'IMBA — VPN, eSIM & Virtual Card. Internet Without Borders.'
+const DESCRIPTION = 'VPN, eSIM, and virtual Visa/Mastercard in one subscription. VLESS Reality protocol — works in China, UAE, Turkey, and anywhere else that blocks it. 50+ servers, zero logs.'
+const DESCRIPTION_SHORT = 'VPN, eSIM & virtual card in one plan. Works anywhere they try to block it. 7 days free.'
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.imba.live'),
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
     title: TITLE,
     description: DESCRIPTION_SHORT,
     siteName: 'IMBA',
-    locale: 'ru_RU',
+    locale: 'en_US',
     type: 'website',
     url: 'https://www.imba.live',
     images: [
@@ -73,8 +73,8 @@ const orgSchema = {
   url: 'https://www.imba.live',
   logo: { '@type': 'ImageObject', url: 'https://www.imba.live/favicon.png', width: 512, height: 512 },
   foundingDate: '2025',
-  description: 'eSIM для 190+ стран, VPN без логов и виртуальная Visa/Mastercard. Интернет без границ.',
-  contactPoint: { '@type': 'ContactPoint', email: 'hello@imba.live', contactType: 'customer support', availableLanguage: ['Russian'] },
+  description: 'eSIM for 190+ countries, no-log VPN, and virtual Visa/Mastercard. Internet without borders.',
+  contactPoint: { '@type': 'ContactPoint', email: 'hello@imba.live', contactType: 'customer support', availableLanguage: ['English'] },
   address: { '@type': 'PostalAddress', streetAddress: 'Mata Redonda, Sabana Oeste, Avenida Doce Calle Noventa', addressLocality: 'San José', addressCountry: 'CR' },
   identifier: { '@type': 'PropertyValue', name: 'Registro Nacional de Costa Rica', value: '3-102-942736' },
 }
@@ -85,14 +85,14 @@ const websiteSchema = {
   '@id': 'https://www.imba.live/#website',
   name: 'IMBA',
   url: 'https://www.imba.live',
-  description: 'IMBA COMBO — eSIM, VPN и виртуальная карта. Интернет без границ.',
-  inLanguage: 'ru',
+  description: 'IMBA — VPN, eSIM, and virtual card in one subscription. Internet without borders.',
+  inLanguage: 'en',
   publisher: { '@id': 'https://www.imba.live/#organization' },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ru" className={`h-full ${display.variable} ${sans.variable} ${word.variable}`}>
+    <html lang="en" className={`h-full ${display.variable} ${sans.variable} ${word.variable}`}>
       <head>
         <link rel="icon" href="/favicon.ico" />
         <link rel="shortcut icon" href="/favicon.ico" />
@@ -108,16 +108,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="min-h-full flex flex-col">
         <Suspense><RefCapture /></Suspense>
         {children}
-        <Script id="ym-init" strategy="afterInteractive">{`
-          (function(m,e,t,r,i,k,a){
-            m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-            m[i].l=1*new Date();
-            for(var j=0;j<document.scripts.length;j++){if(document.scripts[j].src===r){return;}}
-            k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
-          })(window,document,'script','https://mc.yandex.ru/metrika/tag.js?id=110388717','ym');
-          ym(110388717,'init',{ssr:true,webvisor:true,clickmap:true,ecommerce:"dataLayer",referrer:document.referrer,url:location.href,accurateTrackBounce:true,trackLinks:true});
-        `}</Script>
-        <noscript><img src="https://mc.yandex.ru/watch/110388717" style={{position:'absolute',left:'-9999px'}} alt="" /></noscript>
       </body>
     </html>
   )

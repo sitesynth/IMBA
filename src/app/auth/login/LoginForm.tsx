@@ -28,15 +28,15 @@ export function LoginForm() {
           </div>
         )}
         <Field label="Email" name="email" type="email" placeholder="you@example.com" error={state?.errors?.email?.[0]} />
-        <Field label="Пароль" name="password" type="password" placeholder="••••••••" error={state?.errors?.password?.[0]} />
+        <Field label="Password" name="password" type="password" placeholder="••••••••" error={state?.errors?.password?.[0]} />
         <div className="flex items-center justify-between mt-1 mb-1">
           <span />
           <Link href="/auth/forgot-password" className="text-xs font-bold text-ink/50 hover:text-ink underline underline-offset-2">
-            Забыл пароль?
+            Forgot password?
           </Link>
         </div>
         <button type="submit" disabled={pending} className="pill pill-ink w-full justify-center disabled:opacity-60 mt-2">
-          {pending ? 'Входим…' : 'Войти →'}
+          {pending ? 'Signing in…' : 'Sign In →'}
         </button>
       </form>
     </div>

@@ -1,4 +1,4 @@
-export function Marquee({ items, bg }: { items: string[]; bg: string }) {
+export function Marquee({ items, bg, textColor }: { items: string[]; bg: string; textColor?: string }) {
   const row = [...items, ...items]
   const style: React.CSSProperties = {
     fontFamily: 'var(--font-display), Impact, sans-serif',
@@ -6,6 +6,7 @@ export function Marquee({ items, bg }: { items: string[]; bg: string }) {
     textTransform: 'uppercase',
     letterSpacing: '-0.01em',
     whiteSpace: 'nowrap',
+    color: textColor,
   }
   return (
     <div className="marquee py-2.5" style={{ background: bg }} aria-hidden="true">

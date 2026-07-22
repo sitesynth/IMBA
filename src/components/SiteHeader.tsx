@@ -31,8 +31,8 @@ function PacManBtn() {
 const NAV = [
   { label: 'VPN', href: '/' },
   { label: 'eSIM', href: '/esim' },
-  { label: 'Карта', href: '/virtual-card' },
-  { label: 'Блог', href: '/blog' },
+  { label: 'Card', href: '/virtual-card' },
+  { label: 'Blog', href: '/blog' },
 ]
 
 export function SiteHeader() {
@@ -72,16 +72,16 @@ export function SiteHeader() {
           <button
             className="flex flex-col justify-center items-center w-7 h-7 gap-1"
             onClick={() => setOpen(o => !o)}
-            aria-label="Меню"
+            aria-label="Menu"
           >
             <span className="block w-4 h-0.5 bg-ink transition-all" style={open ? { transform: 'translateY(6px) rotate(45deg)' } : {}} />
             <span className="block w-4 h-0.5 bg-ink transition-all" style={open ? { opacity: 0 } : {}} />
             <span className="block w-4 h-0.5 bg-ink transition-all" style={open ? { transform: 'translateY(-6px) rotate(-45deg)' } : {}} />
           </button>
         </div>
-        {/* Desktop: Войти + pac-man */}
+        {/* Desktop: Sign In + pac-man */}
         <div className="hidden md:flex items-center gap-2.5">
-          <Link href="/auth/login" className="pill pill-paper pill-sm text-sm">Войти</Link>
+          <Link href="/auth/login" className="pill pill-paper pill-sm text-sm">Sign In</Link>
           <PacManBtn />
         </div>
       </nav>
@@ -103,7 +103,7 @@ export function SiteHeader() {
               {label}
             </Link>
           ))}
-          <Link href="/auth/login" onClick={() => setOpen(false)} className="mt-3 pill pill-paper pill-sm text-xs text-center">Войти</Link>
+          <Link href="/auth/login" onClick={() => setOpen(false)} className="mt-3 pill pill-paper pill-sm text-xs text-center">Sign In</Link>
         </div>
       )}
     </div>

@@ -42,31 +42,31 @@ function CheckEmailContent() {
           className="inline-block px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-widest mb-4"
           style={{ background: 'var(--yellow)', color: 'var(--ink)' }}
         >
-          Почти готово
+          Almost there
         </div>
 
         <h1 className="display text-3xl mb-3" style={{ lineHeight: 1.1 }}>
-          Проверь<br />
-          <span style={{ color: '#7B61FF' }}>почтовый ящик</span>
+          Check your<br />
+          <span style={{ color: '#7B61FF' }}>inbox</span>
         </h1>
 
         <p className="font-semibold text-ink/60 text-sm mb-6">
-          Мы отправили письмо с подтверждением на{' '}
-          <span className="font-extrabold text-ink">{email || 'твой email'}</span>.
-          Нажми кнопку в письме чтобы войти.
+          We sent a confirmation link to{' '}
+          <span className="font-extrabold text-ink">{email || 'your email'}</span>.
+          Click the button in the email to sign in.
         </p>
 
         <div className="panel mb-4 text-left">
           <div className="flex items-start gap-3">
             <Mail className="w-5 h-5 mt-0.5 text-ink/40 flex-shrink-0" />
             <p className="text-sm font-semibold text-ink/60">
-              Письмо может прийти за 1–2 минуты. Проверь папку «Спам» если не видишь его.
+              The email may take 1–2 minutes to arrive. Check your Spam folder if you don&apos;t see it.
             </p>
           </div>
         </div>
 
         {sent ? (
-          <p className="text-sm font-bold text-green-600 mb-4">Письмо отправлено повторно ✓</p>
+          <p className="text-sm font-bold text-green-600 mb-4">Email resent ✓</p>
         ) : (
           <button
             onClick={resend}
@@ -74,12 +74,12 @@ function CheckEmailContent() {
             className="pill pill-sm w-full justify-center mb-4 disabled:opacity-50"
             style={{ background: 'transparent', border: '2px solid var(--ink)' }}
           >
-            {loading ? 'Отправляем…' : 'Отправить письмо повторно'}
+            {loading ? 'Sending…' : 'Resend email'}
           </button>
         )}
 
         <Link href="/auth/login" className="text-sm font-bold text-ink/40 hover:text-ink underline underline-offset-2">
-          ← Вернуться к входу
+          ← Back to sign in
         </Link>
       </div>
     </div>

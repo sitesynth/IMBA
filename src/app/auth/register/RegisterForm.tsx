@@ -15,7 +15,7 @@ export function RegisterForm() {
   return (
     <div className="panel">
       <AuthError code={errorCode} />
-      <GoogleButton label="Регистрация через Google" />
+      <GoogleButton label="Continue with Google" />
       <OrDivider />
       <form action={action} className="space-y-4">
         {redirectTo && <input type="hidden" name="redirectTo" value={redirectTo} />}
@@ -25,11 +25,11 @@ export function RegisterForm() {
             {state.message}
           </div>
         )}
-        <Field label="Имя" name="name" type="text" placeholder="Иван Петров" error={state?.errors?.name?.[0]} />
+        <Field label="Name" name="name" type="text" placeholder="Alex Smith" error={state?.errors?.name?.[0]} />
         <Field label="Email" name="email" type="email" placeholder="you@example.com" error={state?.errors?.email?.[0]} />
-        <Field label="Пароль" name="password" type="password" placeholder="Минимум 6 символов" error={state?.errors?.password?.[0]} />
+        <Field label="Password" name="password" type="password" placeholder="At least 6 characters" error={state?.errors?.password?.[0]} />
         <button type="submit" disabled={pending} className="pill pill-ink w-full justify-center disabled:opacity-60 mt-2">
-          {pending ? 'Создаём…' : 'Зарегистрироваться →'}
+          {pending ? 'Creating account…' : 'Create account →'}
         </button>
       </form>
     </div>

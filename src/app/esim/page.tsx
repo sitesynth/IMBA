@@ -7,29 +7,29 @@ import { FaqAccordion } from '@/components/FaqAccordion'
 import { posts } from '@/lib/posts'
 
 export const metadata: Metadata = {
-  title: 'Купить eSIM для путешествий — интернет в 190+ странах | IMBA',
-  description: 'Туристическая eSIM для 190+ стран: Турция, Египет, Казахстан, Грузия. Купить есим онлайн — QR за минуту, от 40 ₽/ГБ, в 5–20 раз дешевле роуминга. 500 МБ бесплатно.',
+  title: 'eSIM for International Travel — Internet in 190+ Countries | IMBA',
+  description: 'Travel eSIM for 190+ countries. Activate via QR in 1 minute. 5–10x cheaper than roaming. Works on iPhone and Android. 500 MB free for new users.',
   alternates: { canonical: 'https://www.imba.live/esim' },
   openGraph: {
-    title: 'Купить eSIM для путешествий — интернет в 190+ странах | IMBA',
-    description: 'Купить есим онлайн — QR за минуту, от 40 ₽/ГБ. Дешевле роуминга в 5–20 раз. 500 МБ бесплатно.',
+    title: 'eSIM for International Travel — Internet in 190+ Countries | IMBA',
+    description: 'Activate via QR in 1 minute. 5–10x cheaper than roaming. 500 MB free.',
     url: 'https://www.imba.live/esim',
     siteName: 'IMBA',
-    locale: 'ru_RU',
+    locale: 'en_US',
     type: 'website',
     images: [{ url: 'https://www.imba.live/og-image.png', width: 1200, height: 630 }],
   },
 }
 
 const faqItems = [
-  { q: 'Что такое eSIM простыми словами?', a: 'Это SIM-карта, встроенная в телефон в виде чипа. Оператор записывает на неё профиль дистанционно — через QR-код. Физическая карточка не нужна.', color: 'var(--violet-100)' },
-  { q: 'Какие устройства поддерживают eSIM?', a: 'iPhone XS и новее (iPhone 14+ для США — только eSIM). Android: Pixel 4+, Galaxy S21+, большинство флагманов с 2021 года. Проверка: наберите *#06# — если есть EID, поддержка есть.', color: 'var(--paper)' },
-  { q: 'Насколько eSIM дешевле роуминга?', a: 'В 5–20 раз. Пример: 10 ГБ в Германии — роуминг МТС около 5 000 ₽, eSIM IMBA — 400–600 ₽. В Турции, Таиланде и ОАЭ разница ещё больше.', color: 'var(--violet-100)' },
-  { q: 'Когда устанавливать eSIM — дома или по прилёте?', a: 'Дома, до вылета: для установки нужен интернет. Трафик у большинства тарифов начинает списываться только с первого подключения к местной сети.', color: 'var(--paper)' },
-  { q: 'Мой российский номер останется активным?', a: 'Да. eSIM работает вторым профилем: основная SIM принимает звонки и SMS, включая коды банков, интернет идёт через eSIM.', color: 'var(--violet-100)' },
-  { q: 'Что делать, если данные закончились?', a: 'Купите новый пакет в кабинете — активация автоматическая, новый QR не нужен.', color: 'var(--paper)' },
-  { q: 'Можно ли раздавать интернет с eSIM?', a: 'Да, режим модема работает на большинстве тарифов.', color: 'var(--violet-100)' },
-  { q: 'Что происходит с eSIM после поездки?', a: 'Профиль просто перестаёт расходовать трафик. Перед следующей поездкой купите новый пакет — тот же профиль активируется снова.', color: 'var(--paper)' },
+  { q: 'What is an eSIM?', a: 'An eSIM is a digital SIM card built into your phone. Instead of a physical card, your carrier writes a profile remotely via a QR code. No need to visit a store or handle a plastic SIM.', color: 'var(--violet-100)' },
+  { q: 'Which devices support eSIM?', a: 'iPhone XS and later (iPhone 14+ US models are eSIM-only). Android: Pixel 4+, Galaxy S21+, and most flagship phones from 2021 onward. Quick check: dial *#06# — if you see an EID number, your phone supports eSIM.', color: 'var(--paper)' },
+  { q: 'How much cheaper is eSIM vs. roaming?', a: '5–10x cheaper in most destinations. Example: 10 GB in Germany costs $50–80 with carrier roaming; the same via IMBA eSIM runs $5–10. The difference is even larger in Turkey, Thailand, and UAE.', color: 'var(--violet-100)' },
+  { q: 'When should I install the eSIM — before or after I land?', a: 'Before you leave — you need an internet connection to download the eSIM profile. Data usage on most plans only starts when your phone connects to a local network at your destination.', color: 'var(--paper)' },
+  { q: 'Does my home SIM stay active?', a: 'Yes. The eSIM works as a second profile: your primary SIM keeps receiving calls and texts (including bank codes), while the eSIM handles data.', color: 'var(--violet-100)' },
+  { q: 'What if I run out of data?', a: 'Buy a new data package in the dashboard — it activates automatically. No new QR code needed.', color: 'var(--paper)' },
+  { q: 'Can I use the eSIM as a hotspot?', a: 'Yes, hotspot mode works on most plans.', color: 'var(--violet-100)' },
+  { q: 'What happens to the eSIM after my trip?', a: 'The profile stays on your phone but stops consuming data. Before your next trip, buy a new package — the same profile activates again.', color: 'var(--paper)' },
 ]
 
 const faqSchema = {
@@ -46,11 +46,11 @@ const productSchema = {
   '@context': 'https://schema.org',
   '@type': 'Product',
   name: 'IMBA eSIM',
-  description: 'Туристическая eSIM для 190+ стран: активация по QR за минуту, от 40 ₽/ГБ, российская SIM остаётся активной.',
+  description: 'Travel eSIM for 190+ countries. Activate via QR in 1 minute. Your home SIM stays active.',
   brand: { '@type': 'Brand', name: 'IMBA' },
   offers: [
-    { '@type': 'Offer', name: 'Старт', price: '0', priceCurrency: 'RUB', description: 'eSIM 500 МБ на 7 дней бесплатно за подписку на соцсети IMBA', availability: 'https://schema.org/InStock', url: 'https://www.imba.live/auth/register' },
-    { '@type': 'Offer', name: 'Тарифы по странам', price: '40', priceCurrency: 'RUB', description: 'От 40 ₽ за ГБ, пакеты от 1 ГБ до безлимита в 190+ странах', availability: 'https://schema.org/InStock', url: 'https://www.imba.live/auth/register' },
+    { '@type': 'Offer', name: 'Start', price: '0', priceCurrency: 'USD', description: 'eSIM 500 MB for 7 days free with IMBA Telegram follow', availability: 'https://schema.org/InStock', url: 'https://www.imba.live/auth/register' },
+    { '@type': 'Offer', name: 'Country plans', price: '3', priceCurrency: 'USD', description: 'From $3 per GB, packages from 1 GB to unlimited in 190+ countries', availability: 'https://schema.org/InStock', url: 'https://www.imba.live/auth/register' },
   ],
 }
 
@@ -58,7 +58,7 @@ const breadcrumbSchema = {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
   itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'Главная', item: 'https://www.imba.live/' },
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.imba.live/' },
     { '@type': 'ListItem', position: 2, name: 'eSIM', item: 'https://www.imba.live/esim' },
   ],
 }
@@ -71,7 +71,7 @@ export default function EsimPage() {
 
       <Marquee
         bg="var(--violet-100)"
-        items={['190+ СТРАН', 'АКТИВАЦИЯ ЗА 1 МИНУТУ', 'БЕЗ ФИЗИЧЕСКОЙ SIM', 'iPhone И ANDROID', 'ДЕШЕВЛЕ РОУМИНГА В 10×']}
+        items={['190+ COUNTRIES', 'ACTIVATE IN 1 MINUTE', 'NO PHYSICAL SIM', 'iPHONE & ANDROID', '10x CHEAPER THAN ROAMING']}
       />
 
       <SiteHeader />
@@ -82,20 +82,20 @@ export default function EsimPage() {
           <div className="flex-1">
             <span className="chip mb-5 inline-block" style={{ background: 'var(--violet)', borderColor: 'var(--ink)' }}>eSIM</span>
             <h1 className="display text-3xl md:text-[2.1rem] mb-6 leading-tight">
-              Купить eSIM для путешествий: интернет в&nbsp;190+ странах
+              eSIM for International Travel: Internet in 190+ Countries
             </h1>
             <p className="text-base md:text-lg font-semibold text-ink/65 max-w-xl mb-8">
-              Купить есим онлайн: выбери страну, отсканируй QR — и ты в сети по местным ценам, от 40 ₽ за гигабайт. Российская SIM остаётся активной, физическая карточка не нужна. Новым пользователям — 500 МБ бесплатно.
+              Pick your destination, scan the QR code — and you&apos;re online at local rates. Up to 10x cheaper than roaming, no physical SIM card needed. Your home number stays active. New users get 500 MB free.
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
               <Link href="/auth/register" className="pill text-base" style={{ background: '#C9A4FF', color: '#111111', boxShadow: '0 6px 0 0 rgba(17,17,17,0.2)' }}>
-                Купить eSIM →
+                Get eSIM →
               </Link>
-              <Link href="#how" className="pill pill-paper text-base">Как это работает</Link>
+              <Link href="#how" className="pill pill-paper text-base">How it works</Link>
             </div>
           </div>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/blog/esim.svg" alt="eSIM IMBA" className="w-56 md:w-80 shrink-0 -mt-4 md:-mt-8" />
+          <img src="/blog/esim.svg" alt="IMBA eSIM" className="w-56 md:w-80 shrink-0 -mt-4 md:-mt-8" />
         </div>
       </div>
 
@@ -103,10 +103,10 @@ export default function EsimPage() {
       <div className="rounded-xl px-5 md:px-12 py-8" style={{ background: 'var(--violet-100)' }}>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto text-center">
           {[
-            { n: '190+', label: 'стран' },
-            { n: '1 мин', label: 'активация по QR' },
-            { n: '× 10', label: 'дешевле роуминга' },
-            { n: '0', label: 'поход в салон' },
+            { n: '190+', label: 'countries' },
+            { n: '1 min', label: 'QR activation' },
+            { n: '× 10', label: 'cheaper than roaming' },
+            { n: '0', label: 'trips to a store' },
           ].map(s => (
             <div key={s.n}>
               <div className="display text-4xl md:text-5xl mb-1">{s.n}</div>
@@ -118,35 +118,35 @@ export default function EsimPage() {
 
       {/* Comparison table */}
       <section className="rounded-xl px-5 md:px-12 py-12 md:py-16" style={{ background: 'var(--paper)' }}>
-        <h2 className="display text-3xl md:text-6xl text-center mb-2">Что такое eSIM и почему это дешевле роуминга</h2>
+        <h2 className="display text-3xl md:text-6xl text-center mb-2">eSIM vs. Roaming: the real cost</h2>
         <p className="text-center font-semibold text-ink/55 mb-10 text-sm md:text-lg max-w-2xl mx-auto">
-          eSIM — это цифровая SIM-карта, встроенная в твой телефон. Вместо пластика в аэропортовом киоске ты покупаешь тариф онлайн, сканируешь QR-код — и через минуту у тебя локальный интернет.
+          An eSIM is a digital SIM card built into your phone. Instead of queuing at an airport kiosk, you buy a plan online, scan a QR code — and have local internet within minutes.
         </p>
         <div className="max-w-3xl mx-auto overflow-x-auto">
           <table className="w-full text-sm border-collapse">
-            <caption className="font-black text-lg mb-4">Сравни расходы на 10 ГБ в поездке</caption>
+            <caption className="font-black text-lg mb-4">Cost comparison: 10 GB while traveling</caption>
             <thead>
               <tr className="text-left text-xs text-ink/50 uppercase tracking-wider">
-                <th className="pb-3 pr-4 font-semibold">Способ</th>
-                <th className="pb-3 pr-4 font-semibold">10 ГБ стоят</th>
-                <th className="pb-3 font-semibold">Подключение</th>
+                <th className="pb-3 pr-4 font-semibold">Option</th>
+                <th className="pb-3 pr-4 font-semibold">10 GB costs</th>
+                <th className="pb-3 font-semibold">Setup</th>
               </tr>
             </thead>
             <tbody className="font-semibold">
               <tr className="border-t border-ink/10">
-                <td className="py-3 pr-4 font-black">Роуминг МТС / Мегафон / Билайн</td>
-                <td className="py-3 pr-4" style={{ color: '#c9a040' }}>2 000–5 000 ₽</td>
-                <td className="py-3 text-ink/60">автоматом, но по 200–500 ₽/ГБ</td>
+                <td className="py-3 pr-4 font-black">Carrier roaming</td>
+                <td className="py-3 pr-4" style={{ color: '#c9a040' }}>$30–80</td>
+                <td className="py-3 text-ink/60">automatic, but expensive per GB</td>
               </tr>
               <tr className="border-t border-ink/10">
-                <td className="py-3 pr-4 font-black">Местная SIM в аэропорту</td>
-                <td className="py-3 pr-4" style={{ color: '#c9a040' }}>800–1 500 ₽</td>
-                <td className="py-3 text-ink/60">очередь, паспорт, новый номер</td>
+                <td className="py-3 pr-4 font-black">Local SIM at the airport</td>
+                <td className="py-3 pr-4" style={{ color: '#c9a040' }}>$10–20</td>
+                <td className="py-3 text-ink/60">queue, passport, new number</td>
               </tr>
               <tr className="border-t border-ink/10">
-                <td className="py-3 pr-4 font-black">eSIM IMBA</td>
-                <td className="py-3 pr-4" style={{ color: '#6abf6e' }}>400–600 ₽</td>
-                <td className="py-3" style={{ color: '#6abf6e' }}>QR за 1 минуту, номер прежний</td>
+                <td className="py-3 pr-4 font-black">IMBA eSIM</td>
+                <td className="py-3 pr-4" style={{ color: '#6abf6e' }}>$5–12</td>
+                <td className="py-3" style={{ color: '#6abf6e' }}>QR in 1 minute, same number</td>
               </tr>
             </tbody>
           </table>
@@ -155,18 +155,18 @@ export default function EsimPage() {
 
       {/* Popular destinations */}
       <section className="rounded-xl px-5 md:px-12 py-12 md:py-16" style={{ background: 'var(--cream)' }}>
-        <h2 className="display text-3xl md:text-5xl mb-2 text-center">Куда купить eSIM: популярные направления</h2>
+        <h2 className="display text-3xl md:text-5xl mb-2 text-center">Popular destinations</h2>
         <p className="font-semibold text-ink/55 mb-8 text-sm md:text-base max-w-2xl mx-auto text-center">
-          Один тариф на регион работает в нескольких странах: удобно для маршрутов с пересадками. Полный список из 190+ стран с ценами — в кабинете.
+          Regional plans cover multiple countries — convenient for multi-stop trips. Full list of 190+ destinations with prices is in your dashboard.
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
           {[
-            { flag: '\u{1F1F9}\u{1F1F7}', city: 'Турция', tag: 'САМОЕ ПОПУЛЯРНОЕ', desc: 'Анталья, Стамбул, Аланья — интернет с посадки.', link: { href: '/blog/esim-turkey-2026', label: 'Гайд: eSIM в Турцию →' } },
-            { flag: '\u{1F1EA}\u{1F1EC}', city: 'Египет', tag: 'КУРОРТЫ', desc: 'Хургада и Шарм без сюрпризов в счёте за роуминг.' },
-            { flag: '\u{1F1F0}\u{1F1FF}', city: 'Казахстан', tag: 'ПОЕЗДКИ И РЕЛОКАЦИЯ', desc: 'Алматы и Астана — локальный интернет с первой минуты.' },
-            { flag: '\u{1F1EC}\u{1F1EA}', city: 'Грузия', tag: 'ТБИЛИСИ / БАТУМИ', desc: 'Работает сразу по прилёте, без местной симки.' },
-            { flag: '\u{1F1E6}\u{1F1F2}', city: 'Армения', tag: 'ЕРЕВАН', desc: 'Интернет без похода в салон и без паспорта.' },
-            { flag: '\u{1F30D}', city: 'Все страны', tag: '190+ НАПРАВЛЕНИЙ', desc: 'Европа, Азия, Америка — полный список и цены в кабинете.' },
+            { flag: '\u{1F1F9}\u{1F1F7}', city: 'Turkey', tag: 'MOST POPULAR', desc: 'Istanbul, Antalya, Bodrum — online from the moment you land.', link: { href: '/blog/esim-turkey-2026', label: 'Guide: eSIM in Turkey →' } },
+            { flag: '\u{1F1EF}\u{1F1F5}', city: 'Japan', tag: 'ASIA', desc: 'Tokyo, Osaka, Kyoto — fast 4G/LTE across the entire country.' },
+            { flag: '\u{1F1FA}\u{1F1E6}', city: 'UAE', tag: 'DUBAI / ABU DHABI', desc: 'Reliable coverage across the Emirates, including free zones.' },
+            { flag: '\u{1F1EA}\u{1F1FA}', city: 'Europe', tag: '40+ COUNTRIES', desc: 'One plan works across all EU countries — no switching needed.' },
+            { flag: '\u{1F1FA}\u{1F1F8}', city: 'USA', tag: 'NORTH AMERICA', desc: 'Nationwide coverage via T-Mobile and AT&T partner networks.' },
+            { flag: '\u{1F30D}', city: 'All countries', tag: '190+ DESTINATIONS', desc: 'Asia, Americas, Africa, Middle East — full list and prices in your dashboard.' },
           ].map(d => (
             <div key={d.city} className="panel p-5 flex flex-col gap-2">
               <div className="font-black text-lg">{d.flag} {d.city}</div>
@@ -180,14 +180,14 @@ export default function EsimPage() {
 
       {/* How it works */}
       <section id="how" className="rounded-xl px-5 md:px-12 py-12 md:py-16" style={{ background: 'var(--paper)' }}>
-        <h2 className="display text-3xl md:text-6xl text-center mb-2">Как это работает</h2>
-        <p className="text-center font-semibold text-ink/55 mb-12 text-sm md:text-lg">Три шага от регистрации до интернета</p>
+        <h2 className="display text-3xl md:text-6xl text-center mb-2">How it works</h2>
+        <p className="text-center font-semibold text-ink/55 mb-12 text-sm md:text-lg">Three steps from sign-up to internet</p>
 
         <div className="grid md:grid-cols-3 gap-5 max-w-4xl mx-auto">
           {[
-            { step: '01', title: 'Выбери страну', desc: 'В личном кабинете выбираешь страну назначения и объём данных — от 1 ГБ до безлимита.', cta: 'Выбрать →', href: '/auth/register' },
-            { step: '02', title: 'Купи тариф', desc: 'Оплата через IMBA-баланс. Пополнение криптой или переводом. Российская карта не нужна.', cta: 'Купить →', href: '/auth/register' },
-            { step: '03', title: 'Активируй по QR', desc: 'Сканируешь QR в настройках телефона — и всё. Профиль eSIM активен, интернет работает. Без физической симки.', cta: 'Начать →', href: '/auth/register' },
+            { step: '01', title: 'Pick your destination', desc: 'In the dashboard, choose your destination country and data amount — from 1 GB to unlimited.', cta: 'Browse plans →', href: '/auth/register' },
+            { step: '02', title: 'Buy a plan', desc: 'Pay via your IMBA balance. Top up with USDT, BTC, or bank transfer. No specific card required.', cta: 'Buy →', href: '/auth/register' },
+            { step: '03', title: 'Activate via QR', desc: 'Scan the QR code in your phone settings — done. The eSIM profile is active and data starts flowing. No physical SIM.', cta: 'Get started →', href: '/auth/register' },
           ].map(item => (
             <div key={item.step} className="panel p-7 flex flex-col gap-4" style={{ background: 'var(--violet-100)' }}>
               <div className="flex items-start justify-between gap-2">
@@ -203,13 +203,13 @@ export default function EsimPage() {
 
       {/* Features */}
       <section className="rounded-xl px-5 md:px-12 py-12 md:py-16" style={{ background: 'var(--cream)' }}>
-        <h2 className="display text-3xl md:text-5xl text-center mb-12">Почему IMBA eSIM</h2>
+        <h2 className="display text-3xl md:text-5xl text-center mb-12">Why IMBA eSIM</h2>
         <div className="grid md:grid-cols-2 gap-5 max-w-3xl mx-auto">
           {[
-            { icon: '🌍', title: '190+ стран', desc: 'Европа, Азия, Ближний Восток, Америка. Тариф найдётся для любого маршрута.' },
-            { icon: '⚡', title: 'Активация за 1 минуту', desc: 'QR-код — и готово. Не нужно идти в салон, искать местный магазин или ждать доставки.' },
-            { icon: '💰', title: 'Дешевле роуминга', desc: 'МТС, Билайн и Мегафон берут 200–500 ₽ за гигабайт. IMBA eSIM — от 40 ₽/ГБ.' },
-            { icon: '📱', title: 'Второй профиль', desc: 'Российский номер остаётся активным. Звонки и SMS приходят как обычно.' },
+            { icon: '🌍', title: '190+ countries', desc: 'Europe, Asia, Middle East, Americas, Africa. There is a plan for any destination.' },
+            { icon: '⚡', title: 'Active in 1 minute', desc: 'Scan the QR — done. No store visit, no hunting for a local shop, no waiting for delivery.' },
+            { icon: '💰', title: 'Fraction of roaming cost', desc: 'Carrier roaming can cost $5–10 per GB. IMBA eSIM runs $0.50–1.50 per GB in most destinations.' },
+            { icon: '📱', title: 'Dual SIM', desc: 'Your home number stays active. Calls and texts come through as normal on your primary SIM.' },
           ].map(f => (
             <div key={f.title} className="panel p-6 flex gap-5">
               <span className="text-3xl flex-shrink-0">{f.icon}</span>
@@ -224,41 +224,37 @@ export default function EsimPage() {
 
       {/* Device compatibility */}
       <section className="rounded-xl px-5 md:px-12 py-12 md:py-16" style={{ background: 'var(--paper)' }}>
-        <h2 className="display text-3xl md:text-5xl mb-8 text-center">Какие телефоны поддерживают eSIM</h2>
+        <h2 className="display text-3xl md:text-5xl mb-8 text-center">Which phones support eSIM?</h2>
         <div className="grid md:grid-cols-2 gap-5 max-w-3xl mx-auto">
           <div className="panel p-6">
             <h3 className="display text-lg mb-3">iPhone</h3>
-            <p className="text-sm font-semibold text-ink/60 leading-relaxed">XS и новее, включая SE 2020+. Американские iPhone 14+ работают только с eSIM — физического слота у них нет.</p>
+            <p className="text-sm font-semibold text-ink/60 leading-relaxed">XS and later, including SE 2020+. US iPhone 14+ models are eSIM-only — no physical SIM slot.</p>
           </div>
           <div className="panel p-6">
             <h3 className="display text-lg mb-3">Android</h3>
-            <p className="text-sm font-semibold text-ink/60 leading-relaxed">Google Pixel 4+, Samsung Galaxy S21+, Huawei P40+ и большинство флагманов с 2021 года.</p>
+            <p className="text-sm font-semibold text-ink/60 leading-relaxed">Google Pixel 4+, Samsung Galaxy S21+, and most flagship phones from 2021 onward.</p>
           </div>
         </div>
         <p className="text-sm font-semibold text-ink/55 mt-6 max-w-2xl mx-auto text-center leading-relaxed">
-          Как проверить свой телефон: набери <strong className="text-ink">*#06#</strong> — если в списке есть EID, eSIM поддерживается. На iPhone: Настройки → Сотовая связь → Добавить eSIM.
+          To check your phone: dial <strong className="text-ink">*#06#</strong> — if you see an EID number in the list, eSIM is supported. On iPhone: Settings, then Cellular, then Add eSIM.
         </p>
       </section>
 
       {/* Free trial */}
       <section className="rounded-xl px-5 md:px-12 py-12 md:py-16" style={{ background: 'var(--violet-100)' }}>
-        <h2 className="display text-3xl md:text-5xl mb-3 text-center">Попробуй бесплатно: eSIM 500 МБ на 7 дней</h2>
+        <h2 className="display text-3xl md:text-5xl mb-3 text-center">Try free: eSIM 500 MB for 7 days</h2>
         <p className="font-semibold text-ink/55 mb-8 text-sm md:text-base max-w-2xl mx-auto text-center">
-          Не уверен, что eSIM — это твоё? Проверь без вложений: зарегистрируйся, подпишись на ВКонтакте или Telegram IMBA — и активируй тариф Старт: eSIM 500 МБ плюс VPN на 7 дней. Хватит на карты, мессенджеры и такси в первый день поездки.
+          Not sure yet? Try it risk-free: sign up, follow IMBA on Telegram, and activate the Start plan — 500 MB eSIM plus VPN for 7 days. Enough for maps, messaging, and getting around on your first day abroad.
         </p>
-        <div className="grid sm:grid-cols-2 gap-4 max-w-2xl mx-auto mb-8">
-          <a href="https://vk.com/club239876488" target="_blank" rel="noopener noreferrer" className="panel p-5 hover:-translate-y-0.5 transition-transform">
-            <h3 className="font-black text-base mb-1">ВКонтакте</h3>
-            <p className="text-sm text-ink/60 font-semibold">Вступи в сообщество IMBA</p>
-          </a>
-          <a href="https://telegram.dog/imba_live" target="_blank" rel="noopener noreferrer" className="panel p-5 hover:-translate-y-0.5 transition-transform">
+        <div className="grid sm:grid-cols-1 gap-4 max-w-sm mx-auto mb-8">
+          <a href="https://t.me/imba_live" target="_blank" rel="noopener noreferrer" className="panel p-5 hover:-translate-y-0.5 transition-transform">
             <h3 className="font-black text-base mb-1">Telegram</h3>
-            <p className="text-sm text-ink/60 font-semibold">Подпишись на канал IMBA</p>
+            <p className="text-sm text-ink/60 font-semibold">Follow IMBA on Telegram</p>
           </a>
         </div>
         <div className="text-center">
           <Link href="/auth/register" className="pill text-base" style={{ background: '#C9A4FF', color: '#111111', boxShadow: '0 6px 0 0 rgba(17,17,17,0.2)' }}>
-            Получить 500 МБ бесплатно →
+            Get 500 MB free →
           </Link>
         </div>
       </section>
@@ -266,28 +262,28 @@ export default function EsimPage() {
       {/* Cross-sell */}
       <section className="rounded-xl px-5 md:px-8 py-6" style={{ background: 'var(--paper)' }}>
         <p className="text-center font-semibold text-ink/60 text-sm md:text-base">
-          В подписку IMBA также входят <Link href="/" className="font-black text-ink border-b border-dotted border-ink/40 hover:opacity-70">VPN на VLESS Reality</Link> и <Link href="/virtual-card" className="font-black text-ink border-b border-dotted border-ink/40 hover:opacity-70">виртуальная карта Visa/Mastercard</Link> — один кабинет, один баланс.
+          IMBA also includes <Link href="/" className="font-black text-ink border-b border-dotted border-ink/40 hover:opacity-70">VLESS Reality VPN</Link> and a <Link href="/virtual-card" className="font-black text-ink border-b border-dotted border-ink/40 hover:opacity-70">virtual Visa/Mastercard</Link> — one dashboard, one balance.
         </p>
       </section>
 
       {/* Blog posts */}
       {relatedPosts.length > 0 && (
         <section className="rounded-xl px-5 md:px-12 py-12" style={{ background: 'var(--paper)' }}>
-          <h2 className="display text-3xl md:text-5xl mb-2 text-center">Читай по теме</h2>
-          <p className="font-semibold text-ink/55 mb-8 text-sm md:text-base text-center">Гайды и советы по eSIM</p>
+          <h2 className="display text-3xl md:text-5xl mb-2 text-center">Read more</h2>
+          <p className="font-semibold text-ink/55 mb-8 text-sm md:text-base text-center">eSIM guides and tips</p>
           <div className="grid md:grid-cols-3 gap-5 max-w-5xl mx-auto">
             {relatedPosts.map(post => (
               <Link key={post.slug} href={`/blog/${post.slug}`} className="group block">
                 <article className="panel h-full flex flex-col gap-4 hover:-translate-y-1 transition-transform duration-200">
                   <div className="flex items-center justify-between">
                     <span className="chip" style={{ background: 'var(--violet)', borderColor: 'var(--ink)' }}>{post.category}</span>
-                    <span className="text-xs text-ink/40 font-semibold">{post.readTime} чтения</span>
+                    <span className="text-xs text-ink/40 font-semibold">{post.readTime} read</span>
                   </div>
                   <h3 className="text-lg font-black leading-snug group-hover:opacity-70 transition-opacity">{post.title}</h3>
                   <p className="text-sm text-ink/60 leading-relaxed flex-1">{post.excerpt}</p>
                   <div className="flex items-center justify-between pt-2 border-t border-ink/10">
                     <span className="text-xs text-ink/40 font-semibold">{post.date}</span>
-                    <span className="text-sm font-black group-hover:underline" style={{ color: 'var(--violet)' }}>Читать →</span>
+                    <span className="text-sm font-black group-hover:underline" style={{ color: 'var(--violet)' }}>Read →</span>
                   </div>
                 </article>
               </Link>
@@ -298,8 +294,8 @@ export default function EsimPage() {
 
       {/* FAQ */}
       <section className="rounded-xl px-4 md:px-12 py-12 md:py-16" style={{ background: 'var(--cream)' }}>
-        <h2 className="display text-3xl md:text-7xl text-center mb-2">Вопросы?</h2>
-        <p className="text-center font-semibold text-ink/60 mb-10 text-sm md:text-lg">Всё об eSIM</p>
+        <h2 className="display text-3xl md:text-7xl text-center mb-2">Questions?</h2>
+        <p className="text-center font-semibold text-ink/60 mb-10 text-sm md:text-lg">Everything about eSIM</p>
         <div className="max-w-3xl mx-auto">
           <FaqAccordion items={faqItems} />
         </div>
@@ -307,9 +303,9 @@ export default function EsimPage() {
 
       {/* CTA */}
       <section className="rounded-xl text-center py-16 px-6" style={{ background: 'var(--violet)' }}>
-        <h2 className="display text-4xl md:text-6xl mb-4">Готов в путь?</h2>
-        <p className="font-semibold text-lg text-ink/70 mb-8">Интернет в любой стране. Активация за минуту.</p>
-        <Link href="/auth/register" className="pill pill-ink text-base imba-btn-pulse">Купить eSIM →</Link>
+        <h2 className="display text-4xl md:text-6xl mb-4">Ready to travel?</h2>
+        <p className="font-semibold text-lg text-ink/70 mb-8">Internet in any country. Active in under a minute.</p>
+        <Link href="/auth/register" className="pill pill-ink text-base imba-btn-pulse">Get eSIM →</Link>
       </section>
 
       {/* Footer */}
@@ -317,10 +313,10 @@ export default function EsimPage() {
         <div className="px-5 md:px-8 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <Logo size="md" />
           <div className="flex gap-5 text-sm font-bold">
-            <Link href="/blog" className="hover:opacity-60">Блог</Link>
-            <Link href="/privacy-policy" className="hover:opacity-60">Конфиденциальность</Link>
-            <Link href="/terms" className="hover:opacity-60">Условия</Link>
-            <Link href="/refund" className="hover:opacity-60">Возврат средств</Link>
+            <Link href="/blog" className="hover:opacity-60">Blog</Link>
+            <Link href="/privacy-policy" className="hover:opacity-60">Privacy</Link>
+            <Link href="/terms" className="hover:opacity-60">Terms</Link>
+            <Link href="/refund" className="hover:opacity-60">Refund Policy</Link>
           </div>
         </div>
         <div className="px-5 md:px-8 pb-6 border-t border-ink/10 pt-4">

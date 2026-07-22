@@ -15,13 +15,13 @@ export type BlogListPost = {
 }
 
 const FILTERS: { key: string; label: string; match: string[] }[] = [
-  { key: 'all', label: 'Все', match: [] },
+  { key: 'all', label: 'All', match: [] },
   { key: 'vpn', label: 'VPN', match: ['VPN'] },
   { key: 'esim', label: 'eSIM', match: ['eSIM'] },
-  { key: 'card', label: 'Карта', match: ['Карта'] },
+  { key: 'card', label: 'Card', match: ['Card'] },
 ]
 
-const AUTHOR = 'Сергей Карпов'
+const AUTHOR = 'Sergey Karpov'
 
 export function BlogList({ posts }: { posts: BlogListPost[] }) {
   const [active, setActive] = useState('all')
@@ -59,7 +59,7 @@ export function BlogList({ posts }: { posts: BlogListPost[] }) {
               <span className="chip" style={{ background: post.categoryColor, borderColor: 'var(--ink)' }}>
                 {post.category}
               </span>
-              <span className="text-xs text-ink/40 font-semibold">{post.readTime} чтения</span>
+              <span className="text-xs text-ink/40 font-semibold">{post.readTime} read</span>
             </div>
             <h2 className="text-lg font-black leading-snug group-hover:opacity-70 transition-opacity">
               <Link href={`/blog/${post.slug}`} className="after:absolute after:inset-0">
@@ -74,7 +74,7 @@ export function BlogList({ posts }: { posts: BlogListPost[] }) {
                 </Link>
                 {' · '}{post.date}
               </span>
-              <span className="text-sm font-black text-blue group-hover:underline">Читать →</span>
+              <span className="text-sm font-black text-blue group-hover:underline">Read →</span>
             </div>
           </article>
         ))}

@@ -13,7 +13,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
       {/* Ticker */}
       <Marquee
         bg="var(--violet-100)"
-        items={['eSIM В 190 СТРАНАХ', 'VPN БЕЗ ЛОГОВ', 'ВИРТУАЛЬНАЯ КАРТА', 'ОПЛАТА ВЕЗДЕ', 'БЕЗ ГРАНИЦ']}
+        items={['eSIM IN 190 COUNTRIES', 'ZERO-LOG VPN', 'VIRTUAL CARD', 'PAY ANYWHERE', 'NO BORDERS']}
       />
 
       {/* Nav */}
@@ -21,16 +21,16 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         <nav className="flex items-center justify-between px-4 md:px-8 py-3 md:py-4 max-w-7xl mx-auto">
           <Logo size="lg" />
           <div className="hidden md:flex items-center gap-7 text-sm uppercase flex-1 justify-center" style={{ fontFamily: 'var(--font-display), Impact, sans-serif', fontWeight: 900, letterSpacing: '-0.01em' }}>
-            <Link href="/#services" className="hover:opacity-60 transition-opacity">Сервисы</Link>
-            <Link href="/#pricing" className="hover:opacity-60 transition-opacity">Тарифы</Link>
-            <Link href="/#faq" className="hover:opacity-60 transition-opacity">Вопросы</Link>
-            <Link href="/blog" className="hover:opacity-60 transition-opacity">Блог</Link>
+            <Link href="/#services" className="hover:opacity-60 transition-opacity">Services</Link>
+            <Link href="/#pricing" className="hover:opacity-60 transition-opacity">Pricing</Link>
+            <Link href="/#faq" className="hover:opacity-60 transition-opacity">FAQ</Link>
+            <Link href="/blog" className="hover:opacity-60 transition-opacity">Blog</Link>
           </div>
           <div className="flex items-center gap-1.5 md:gap-2.5">
-            <Link href="/auth/login" className="pill pill-paper pill-sm text-xs md:text-sm">Войти</Link>
+            <Link href="/auth/login" className="pill pill-paper pill-sm text-xs md:text-sm">Sign In</Link>
             <Link href="/auth/register" className="pill pill-ink pill-sm text-[10px] md:text-sm">
-              <span className="sm:hidden">Регистрация</span>
-              <span className="hidden sm:inline">Зарегистрироваться</span>
+              <span className="sm:hidden">Sign Up</span>
+              <span className="hidden sm:inline">Create account</span>
             </Link>
           </div>
         </nav>
@@ -46,10 +46,10 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         <div className="px-5 md:px-8 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <Logo size="md" />
           <div className="flex gap-5 text-sm font-bold">
-            <Link href="/blog" className="hover:opacity-60">Блог</Link>
-            <Link href="/privacy-policy" className="hover:opacity-60">Конфиденциальность</Link>
-            <Link href="/terms" className="hover:opacity-60">Условия</Link>
-            <Link href="/refund" className="hover:opacity-60"><span className="sm:hidden">Возврат</span><span className="hidden sm:inline">Возврат средств</span></Link>
+            <Link href="/blog" className="hover:opacity-60">Blog</Link>
+            <Link href="/privacy-policy" className="hover:opacity-60">Privacy</Link>
+            <Link href="/terms" className="hover:opacity-60">Terms</Link>
+            <Link href="/refund" className="hover:opacity-60"><span className="sm:hidden">Refund</span><span className="hidden sm:inline">Refund Policy</span></Link>
           </div>
         </div>
         <div className="px-5 md:px-8 pb-6 border-t border-ink/10 pt-4">

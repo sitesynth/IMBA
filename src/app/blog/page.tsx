@@ -9,7 +9,7 @@ import { BlogList, type BlogListPost } from '@/components/BlogList'
 import { posts } from '@/lib/posts'
 
 const FEATURED_SLUG = 'vpn-russia-2026'
-const AUTHOR = 'Сергей Карпов'
+const AUTHOR = 'Sergey Karpov'
 
 // Auto-detect an SVG cover for a post. Drop `cover-<slug>.svg` or `<slug>.svg`
 // into public/blog/ and it appears automatically; otherwise the card falls back
@@ -24,22 +24,22 @@ function coverFor(slug: string, title: string): { src: string; alt: string } | u
 }
 
 export const metadata: Metadata = {
-  title: 'Блог IMBA — eSIM, VPN и виртуальные карты. Интернет без границ.',
-  description: 'Гайды, разборы протоколов и практические советы по VPN, eSIM и виртуальным картам. Интернет без границ с IMBA.',
+  title: 'IMBA Blog — VPN, eSIM & Virtual Card Guides',
+  description: 'Step-by-step guides on VPN protocols, eSIM setup, and paying for global services with a virtual card. Internet without borders.',
   alternates: { canonical: 'https://www.imba.live/blog' },
   openGraph: {
-    title: 'Блог IMBA — гайды по VPN, eSIM и виртуальным картам',
-    description: 'Практические гайды: какой VPN работает в России, как оплатить ChatGPT и Netflix, eSIM для путешествий.',
+    title: 'IMBA Blog — VPN, eSIM & Virtual Card Guides',
+    description: 'Practical guides: which VPN works against censorship, how to pay for ChatGPT and Netflix, eSIM for international travel.',
     type: 'website',
     url: 'https://www.imba.live/blog',
     images: [{ url: 'https://www.imba.live/og-image.png', width: 1200, height: 630 }],
-    locale: 'ru_RU',
+    locale: 'en_US',
     siteName: 'IMBA',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Блог IMBA — гайды по VPN, eSIM и виртуальным картам',
-    description: 'Практические гайды: какой VPN работает в России, как оплатить ChatGPT и Netflix, eSIM для путешествий.',
+    title: 'IMBA Blog — VPN, eSIM & Virtual Card Guides',
+    description: 'Practical guides: which VPN works against censorship, how to pay for ChatGPT and Netflix, eSIM for international travel.',
     images: ['https://www.imba.live/og-image.png'],
   },
 }
@@ -65,22 +65,22 @@ export default function BlogPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
         '@context': 'https://schema.org',
         '@type': 'Blog',
-        name: 'Блог IMBA',
+        name: 'IMBA Blog',
         url: 'https://www.imba.live/blog',
-        description: 'Гайды по VPN, eSIM и виртуальным картам для пользователей из России',
+        description: 'Guides on VPN, eSIM, and virtual cards for global internet access',
         publisher: { '@type': 'Organization', '@id': 'https://www.imba.live/#organization', name: 'IMBA', url: 'https://www.imba.live' },
       })}} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
         '@context': 'https://schema.org',
         '@type': 'BreadcrumbList',
         itemListElement: [
-          { '@type': 'ListItem', position: 1, name: 'Главная', item: 'https://www.imba.live/' },
-          { '@type': 'ListItem', position: 2, name: 'Блог', item: 'https://www.imba.live/blog' },
+          { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.imba.live/' },
+          { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://www.imba.live/blog' },
         ],
       })}} />
       <Marquee
         bg="var(--violet-100)"
-        items={['eSIM В 190 СТРАНАХ', 'VPN БЕЗ ЛОГОВ', 'ВИРТУАЛЬНАЯ КАРТА', 'ОПЛАТА ВЕЗДЕ', 'БЕЗ ГРАНИЦ']}
+        items={['eSIM IN 190 COUNTRIES', 'ZERO-LOG VPN', 'VIRTUAL CARD', 'PAY ANYWHERE', 'NO BORDERS']}
       />
 
       <SiteHeader />
@@ -88,10 +88,10 @@ export default function BlogPage() {
       {/* Hero */}
       <div className="rounded-xl px-5 md:px-12 py-10 md:py-14" style={{ background: 'var(--yellow)' }}>
         <div className="max-w-7xl mx-auto">
-          <span className="chip mb-4" style={{ background: 'var(--ink)', color: 'var(--paper)' }}>Блог</span>
-          <h1 className="display text-4xl md:text-6xl mt-3">Гайды и инструкции</h1>
+          <span className="chip mb-4" style={{ background: 'var(--ink)', color: 'var(--paper)' }}>Blog</span>
+          <h1 className="display text-4xl md:text-6xl mt-3">Guides & How-Tos</h1>
           <p className="mt-4 text-base md:text-lg font-medium text-ink/70 max-w-2xl">
-            VPN, eSIM и виртуальные карты: как это работает и как пользоваться. Пошагово, проверено на реальных устройствах.
+            VPN, eSIM, and virtual cards: how they work and how to set them up. Step by step, tested on real devices.
           </p>
         </div>
       </div>
@@ -112,7 +112,7 @@ export default function BlogPage() {
               )}
               <div className="flex flex-col justify-center">
                 <span className="text-xs font-bold uppercase tracking-widest text-ink/40 mb-2">
-                  {featured.category} · Главный материал
+                  {featured.category} · Featured
                 </span>
                 <h2 className="display text-2xl md:text-4xl mb-3 group-hover:opacity-70 transition-opacity">
                   {featured.title}
@@ -132,12 +132,12 @@ export default function BlogPage() {
 
       {/* Community CTA */}
       <section className="rounded-xl px-5 md:px-12 py-12 text-center" style={{ background: 'var(--violet-100)' }}>
-        <h2 className="display text-2xl md:text-4xl mb-3">Не потеряй нас</h2>
+        <h2 className="display text-2xl md:text-4xl mb-3">Stay in the loop</h2>
         <p className="font-medium text-ink/70 max-w-xl mx-auto mb-6 text-sm md:text-base">
-          Новые гайды, обновления протоколов и запасные адреса — в Telegram-канале IMBA.
-          Подписка также даёт 7 дней VPN бесплатно.
+          New guides, protocol updates, and mirror links — in the IMBA Telegram channel.
+          Following also unlocks 7 days of VPN free.
         </p>
-        <a href="https://telegram.dog/imba_live" target="_blank" rel="noopener" className="pill pill-ink text-base">Подписаться в Telegram →</a>
+        <a href="https://t.me/imba_live" target="_blank" rel="noopener" className="pill pill-ink text-base">Follow on Telegram →</a>
       </section>
 
       {/* Footer */}
@@ -145,10 +145,10 @@ export default function BlogPage() {
         <div className="px-5 md:px-8 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <Logo size="md" />
           <div className="flex gap-5 text-sm font-bold">
-            <Link href="/blog" className="hover:opacity-60">Блог</Link>
-            <Link href="/privacy-policy" className="hover:opacity-60">Конфиденциальность</Link>
-            <Link href="/terms" className="hover:opacity-60">Условия</Link>
-            <Link href="/refund" className="hover:opacity-60"><span className="sm:hidden">Возврат</span><span className="hidden sm:inline">Возврат средств</span></Link>
+            <Link href="/blog" className="hover:opacity-60">Blog</Link>
+            <Link href="/privacy-policy" className="hover:opacity-60">Privacy</Link>
+            <Link href="/terms" className="hover:opacity-60">Terms</Link>
+            <Link href="/refund" className="hover:opacity-60"><span className="sm:hidden">Refund</span><span className="hidden sm:inline">Refund Policy</span></Link>
           </div>
         </div>
         <div className="px-5 md:px-8 pb-6 border-t border-ink/10 pt-4">
