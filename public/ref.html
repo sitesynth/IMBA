@@ -309,14 +309,24 @@ tbody tr:hover td{background:#f9fafb}
       <label>Контакт (TG, email)</label>
       <input type="text" id="c-contact" placeholder="@ivan_blogger"/>
     </div>
+    <div class="field">
+      <label>Аплайн (кто привёл этого партнёра)</label>
+      <select id="c-upline" style="width:100%;border:1px solid #d1d5db;border-radius:8px;padding:.625rem .75rem;font-size:.875rem;background:#fff;color:#111827;outline:none">
+        <option value="">— нет аплайна (L1 без цепочки) —</option>
+      </select>
+    </div>
     <div class="field-row">
       <div class="field">
-        <label>Бонус рефоводу ($)</label>
-        <input type="number" id="c-rbns" value="10" min="0" step="0.5"/>
+        <label>L1 % (прямые рефералы)</label>
+        <input type="number" id="c-l1" value="25" min="0" max="100" step="0.5"/>
       </div>
       <div class="field">
-        <label>Бонус рефералу ($)</label>
-        <input type="number" id="c-fbns" value="5" min="0" step="0.5"/>
+        <label>L2 % (аплайн получает)</label>
+        <input type="number" id="c-l2" value="10" min="0" max="100" step="0.5"/>
+      </div>
+      <div class="field">
+        <label>L3 % (аплайн аплайна)</label>
+        <input type="number" id="c-l3" value="5" min="0" max="100" step="0.5"/>
       </div>
     </div>
     <div class="field">
@@ -346,14 +356,24 @@ tbody tr:hover td{background:#f9fafb}
         <input type="text" id="e-contact"/>
       </div>
     </div>
+    <div class="field">
+      <label>Аплайн (кто привёл этого партнёра)</label>
+      <select id="e-upline" style="width:100%;border:1px solid #d1d5db;border-radius:8px;padding:.625rem .75rem;font-size:.875rem;background:#fff;color:#111827;outline:none">
+        <option value="">— нет аплайна —</option>
+      </select>
+    </div>
     <div class="field-row">
       <div class="field">
-        <label>Бонус рефоводу ($)</label>
-        <input type="number" id="e-rbns" min="0" step="0.5"/>
+        <label>L1 %</label>
+        <input type="number" id="e-l1" min="0" max="100" step="0.5"/>
       </div>
       <div class="field">
-        <label>Бонус рефералу ($)</label>
-        <input type="number" id="e-fbns" min="0" step="0.5"/>
+        <label>L2 %</label>
+        <input type="number" id="e-l2" min="0" max="100" step="0.5"/>
+      </div>
+      <div class="field">
+        <label>L3 %</label>
+        <input type="number" id="e-l3" min="0" max="100" step="0.5"/>
       </div>
     </div>
     <div class="field">
@@ -568,15 +588,20 @@ function renderPayouts(list) {
 function copyPartnerMessage() {
   const prog = refs.find(r=>r.id===currentId); if(!prog) return;
   const link = refLink(prog.referral_code);
+  const l1 = prog.l1_pct || 25;
+  const l2 = prog.l2_pct || 10;
+  const l3 = prog.l3_pct || 5;
   const msg = `Привет! 👋
 
 Вот твоя реферальная ссылка IMBA:
 ${link}
 
-За каждого приведённого пользователя, который оформит подписку:
-• Ты получаешь: $${prog.referrer_bonus}
-• Новый пользователь получает: $${prog.referee_bonus} на баланс
+Комиссия с первой оплаты каждого клиента:
+• Ты (L1) получаешь: ${l1}%
+• Тот, кто привёл тебя (L2): ${l2}%
+• Аплайн L2 (L3): ${l3}%
 
+Комиссия начисляется только с первого платежа клиента — разово.
 Ссылку можно вставлять в посты, stories, личные сообщения — она уникальная и отслеживается автоматически.`;
   copy(msg);
   showToast('Сообщение скопировано в буфер');
@@ -605,13 +630,19 @@ function renderDetailMeta(prog) {
     ${prog.note ? `<div class="detail-field" style="grid-column:1/-1"><div class="lbl">Заметка</div><div class="val" style="font-weight:400;color:#374151">${prog.note}</div></div>` : ''}
   `;
 
+  const el1 = prog.total_earned_l1||0, el2 = prog.total_earned_l2||0, el3 = prog.total_earned_l3||0;
+  const uplineName = prog.upline_id ? (refs.find(r=>r.id===prog.upline_id)?.name || prog.upline_id.slice(0,8)+'…') : null;
   document.getElementById('d-stats').innerHTML = `
-    <div class="mini-stat blue"><div class="mv">${prog.total_referrals}</div><div class="ml">Total Conversions</div></div>
-    <div class="mini-stat green"><div class="mv">${prog.completed}</div><div class="ml">Completed</div></div>
-    <div class="mini-stat yellow"><div class="mv">${prog.pending}</div><div class="ml">Pending</div></div>
-    <div class="mini-stat blue"><div class="mv mono" style="font-size:1rem">$${prog.total_earned.toFixed(2)}</div><div class="ml">Earned</div></div>
-    <div class="mini-stat ${(prog.pending_payout||0)>0?'purple':''}"><div class="mv mono" style="font-size:1rem;color:${(prog.pending_payout||0)>0?'#7c3aed':'#6b7280'}">$${(prog.pending_payout||0).toFixed(2)}</div><div class="ml">К выплате</div></div>
-    <div class="mini-stat"><div class="mv mono" style="font-size:1rem;color:#6b7280">$${(prog.total_paid||0).toFixed(2)}</div><div class="ml">Выплачено</div></div>
+    <div class="mini-stat blue"><div class="mv">${prog.total_referrals}</div><div class="ml">Конверсий</div></div>
+    <div class="mini-stat green"><div class="mv">${prog.completed}</div><div class="ml">Завершено</div></div>
+    <div class="mini-stat yellow"><div class="mv">${prog.pending}</div><div class="ml">В ожидании</div></div>
+    <div class="mini-stat blue"><div class="mv mono" style="font-size:.95rem">$${(el1).toFixed(2)}</div><div class="ml">L1 (25%)</div></div>
+    <div class="mini-stat blue"><div class="mv mono" style="font-size:.95rem">$${(el2).toFixed(2)}</div><div class="ml">L2 (10%)</div></div>
+    <div class="mini-stat blue"><div class="mv mono" style="font-size:.95rem">$${(el3).toFixed(2)}</div><div class="ml">L3 (5%)</div></div>
+    <div class="mini-stat green"><div class="mv mono" style="font-size:.95rem">$${prog.total_earned.toFixed(2)}</div><div class="ml">Итого заработано</div></div>
+    <div class="mini-stat ${(prog.pending_payout||0)>0?'yellow':''}"><div class="mv mono" style="font-size:.95rem;color:${(prog.pending_payout||0)>0?'#d97706':'#6b7280'}">$${(prog.pending_payout||0).toFixed(2)}</div><div class="ml">К выплате</div></div>
+    <div class="mini-stat"><div class="mv mono" style="font-size:.95rem;color:#6b7280">$${(prog.total_paid||0).toFixed(2)}</div><div class="ml">Выплачено</div></div>
+    ${uplineName ? `<div class="mini-stat" style="grid-column:1/-1;text-align:left;background:#f9fafb"><div class="lbl" style="font-size:.65rem;color:#9ca3af;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.25rem">Аплайн (L2 для клиентов этого партнёра)</div><div style="font-size:.8rem;font-weight:600;color:#374151">${uplineName}</div></div>` : ''}
   `;
 }
 
@@ -638,11 +669,28 @@ function renderConversions(convs) {
   `).join('');
 }
 
+// ── helpers ────────────────────────────────────────────
+function populateUplineSelect(selectId, excludeId) {
+  const sel = document.getElementById(selectId);
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">— нет аплайна —</option>';
+  refs.filter(r => r.id !== excludeId).forEach(r => {
+    const opt = document.createElement('option');
+    opt.value = r.id;
+    opt.textContent = (r.name || r.referral_code) + ' (?ref=' + r.referral_code + ')';
+    if (r.id === cur) opt.selected = true;
+    sel.appendChild(opt);
+  });
+}
+
 // ── create ─────────────────────────────────────────────
 function openCreate() {
   ['c-name','c-code','c-contact','c-note'].forEach(id => document.getElementById(id).value='');
-  document.getElementById('c-rbns').value='10';
-  document.getElementById('c-fbns').value='5';
+  document.getElementById('c-l1').value='25';
+  document.getElementById('c-l2').value='10';
+  document.getElementById('c-l3').value='5';
+  populateUplineSelect('c-upline', null);
+  document.getElementById('c-upline').value='';
   showErr('c-err','');
   document.getElementById('modal-create').classList.add('open');
   setTimeout(()=>document.getElementById('c-name').focus(),50);
@@ -654,16 +702,18 @@ async function doCreate() {
   const code = document.getElementById('c-code').value.trim();
   const contact = document.getElementById('c-contact').value.trim();
   const note = document.getElementById('c-note').value.trim();
-  const rbns = parseFloat(document.getElementById('c-rbns').value);
-  const fbns = parseFloat(document.getElementById('c-fbns').value);
+  const upline_id = document.getElementById('c-upline').value || null;
+  const l1_pct = parseFloat(document.getElementById('c-l1').value) || 25;
+  const l2_pct = parseFloat(document.getElementById('c-l2').value) || 10;
+  const l3_pct = parseFloat(document.getElementById('c-l3').value) || 5;
   showErr('c-err','');
   if (!name) { showErr('c-err','Укажите имя партнёра'); return; }
   if (!code || code.length < 3) { showErr('c-err','Код минимум 3 символа'); return; }
   const btn = document.getElementById('c-btn');
   btn.disabled=true; btn.textContent='Создаём…';
   try {
-    const r = await apiFetch('POST','/v1/admin/referrals',{referral_code:code,name,contact:contact||null,note:note||null,referrer_bonus:rbns,referee_bonus:fbns});
-    refs.unshift({...r,total_referrals:0,completed:0,pending:0,total_earned:0,pending_payout:0});
+    const r = await apiFetch('POST','/v1/admin/referrals',{referral_code:code,name,contact:contact||null,note:note||null,upline_id,l1_pct,l2_pct,l3_pct});
+    refs.unshift({...r,total_referrals:0,completed:0,pending:0,total_earned:0,total_earned_l1:0,total_earned_l2:0,total_earned_l3:0,pending_payout:0});
     renderRefs(); closeCreate();
     showToast('Создано. Ссылка: ' + refLink(r.referral_code));
   } catch(e) { showErr('c-err',e.message); }
@@ -671,20 +721,23 @@ async function doCreate() {
 }
 
 // ── edit ───────────────────────────────────────────────
-function openEdit(id,name,contact,rbns,fbns,note) {
-  document.getElementById('e-id').value=id;
-  document.getElementById('e-name').value=name||'';
-  document.getElementById('e-contact').value=contact||'';
-  document.getElementById('e-rbns').value=rbns;
-  document.getElementById('e-fbns').value=fbns;
-  document.getElementById('e-note').value=note||'';
+function openEdit(p) {
+  document.getElementById('e-id').value=p.id;
+  document.getElementById('e-name').value=p.name||'';
+  document.getElementById('e-contact').value=p.contact||'';
+  document.getElementById('e-l1').value=p.l1_pct||25;
+  document.getElementById('e-l2').value=p.l2_pct||10;
+  document.getElementById('e-l3').value=p.l3_pct||5;
+  document.getElementById('e-note').value=p.note||'';
+  populateUplineSelect('e-upline', p.id);
+  document.getElementById('e-upline').value=p.upline_id||'';
   showErr('e-err','');
   document.getElementById('modal-edit').classList.add('open');
   setTimeout(()=>document.getElementById('e-name').focus(),50);
 }
 function openEditFromDetail() {
   const p = refs.find(r=>r.id===currentId);
-  if (p) openEdit(p.id,p.name,p.contact,p.referrer_bonus,p.referee_bonus,p.note);
+  if (p) openEdit(p);
 }
 function closeEdit() { document.getElementById('modal-edit').classList.remove('open'); }
 
@@ -692,16 +745,18 @@ async function doEdit() {
   const id=document.getElementById('e-id').value;
   const name=document.getElementById('e-name').value.trim();
   const contact=document.getElementById('e-contact').value.trim();
-  const rbns=parseFloat(document.getElementById('e-rbns').value);
-  const fbns=parseFloat(document.getElementById('e-fbns').value);
   const note=document.getElementById('e-note').value.trim();
+  const upline_id=document.getElementById('e-upline').value||null;
+  const l1_pct=parseFloat(document.getElementById('e-l1').value)||25;
+  const l2_pct=parseFloat(document.getElementById('e-l2').value)||10;
+  const l3_pct=parseFloat(document.getElementById('e-l3').value)||5;
   showErr('e-err','');
   const btn=document.getElementById('e-btn');
   btn.disabled=true; btn.textContent='Сохраняем…';
   try {
-    const r=await apiFetch('PATCH','/v1/admin/referrals/'+id,{name:name||null,contact:contact||null,note:note||null,referrer_bonus:rbns,referee_bonus:fbns});
+    const r=await apiFetch('PATCH','/v1/admin/referrals/'+id,{name:name||null,contact:contact||null,note:note||null,upline_id,l1_pct,l2_pct,l3_pct});
     const idx=refs.findIndex(x=>x.id===id);
-    if(idx>=0) Object.assign(refs[idx],{name:r.name,contact:r.contact,note:r.note,referrer_bonus:r.referrer_bonus,referee_bonus:r.referee_bonus});
+    if(idx>=0) Object.assign(refs[idx],{name:r.name,contact:r.contact,note:r.note,upline_id:r.upline_id,l1_pct:r.l1_pct,l2_pct:r.l2_pct,l3_pct:r.l3_pct});
     renderRefs();
     if(currentId===id && document.getElementById('page-detail').style.display!=='none') renderDetailMeta(refs[idx]);
     closeEdit(); showToast('Сохранено');
