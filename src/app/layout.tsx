@@ -4,6 +4,7 @@ import Script from 'next/script'
 import { Suspense } from 'react'
 import { RefCapture } from '@/components/RefCapture'
 import './globals.css'
+import { SITE_URL } from '@/lib/site'
 
 const display = Unbounded({
   weight: ['700', '800', '900'],
@@ -31,10 +32,10 @@ const DESCRIPTION = 'VPN, eSIM, and virtual Visa/Mastercard in one subscription.
 const DESCRIPTION_SHORT = 'VPN, eSIM & virtual card in one plan. Works anywhere they try to block it. 7 days free.'
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://www.imba.live'),
+  metadataBase: new URL(SITE_URL),
   title: TITLE,
   description: DESCRIPTION,
-  alternates: { canonical: 'https://www.imba.live' },
+  alternates: { canonical: SITE_URL },
   icons: {
     icon: '/favicon.ico',
     shortcut: '/favicon.ico',
@@ -46,10 +47,10 @@ export const metadata: Metadata = {
     siteName: 'IMBA',
     locale: 'en_US',
     type: 'website',
-    url: 'https://www.imba.live',
+    url: SITE_URL,
     images: [
       {
-        url: 'https://www.imba.live/og-image.png',
+        url: SITE_URL + '/og-image.png',
         width: 1200,
         height: 630,
         alt: TITLE,
@@ -60,18 +61,18 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: TITLE,
     description: DESCRIPTION_SHORT,
-    images: ['https://www.imba.live/og-image.png'],
+    images: [SITE_URL + '/og-image.png'],
   },
 }
 
 const orgSchema = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
-  '@id': 'https://www.imba.live/#organization',
+  '@id': SITE_URL + '/#organization',
   name: 'IMBA',
   legalName: 'IMBA SRL',
-  url: 'https://www.imba.live',
-  logo: { '@type': 'ImageObject', url: 'https://www.imba.live/favicon.png', width: 512, height: 512 },
+  url: SITE_URL,
+  logo: { '@type': 'ImageObject', url: SITE_URL + '/favicon.png', width: 512, height: 512 },
   foundingDate: '2025',
   description: 'eSIM for 190+ countries, no-log VPN, and virtual Visa/Mastercard. Internet without borders.',
   contactPoint: { '@type': 'ContactPoint', email: 'hello@imba.live', contactType: 'customer support', availableLanguage: ['English'] },
@@ -82,12 +83,12 @@ const orgSchema = {
 const websiteSchema = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
-  '@id': 'https://www.imba.live/#website',
+  '@id': SITE_URL + '/#website',
   name: 'IMBA',
-  url: 'https://www.imba.live',
+  url: SITE_URL,
   description: 'IMBA — VPN, eSIM, and virtual card in one subscription. Internet without borders.',
   inLanguage: 'en',
-  publisher: { '@id': 'https://www.imba.live/#organization' },
+  publisher: { '@id': SITE_URL + '/#organization' },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

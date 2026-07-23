@@ -5,19 +5,20 @@ import { Marquee } from '@/components/Marquee'
 import { SiteHeader } from '@/components/SiteHeader'
 import { FaqAccordion } from '@/components/FaqAccordion'
 import { posts } from '@/lib/posts'
+import { SITE_URL } from '@/lib/site'
 
 export const metadata: Metadata = {
   title: 'eSIM for International Travel — Internet in 190+ Countries | IMBA',
   description: 'Travel eSIM for 190+ countries. Activate via QR in 1 minute. 5–10x cheaper than roaming. Works on iPhone and Android. 500 MB free for new users.',
-  alternates: { canonical: 'https://www.imba.live/esim' },
+  alternates: { canonical: SITE_URL + '/esim' },
   openGraph: {
     title: 'eSIM for International Travel — Internet in 190+ Countries | IMBA',
     description: 'Activate via QR in 1 minute. 5–10x cheaper than roaming. 500 MB free.',
-    url: 'https://www.imba.live/esim',
+    url: SITE_URL + '/esim',
     siteName: 'IMBA',
     locale: 'en_US',
     type: 'website',
-    images: [{ url: 'https://www.imba.live/og-image.png', width: 1200, height: 630 }],
+    images: [{ url: SITE_URL + '/og-image.png', width: 1200, height: 630 }],
   },
 }
 
@@ -49,8 +50,8 @@ const productSchema = {
   description: 'Travel eSIM for 190+ countries. Activate via QR in 1 minute. Your home SIM stays active.',
   brand: { '@type': 'Brand', name: 'IMBA' },
   offers: [
-    { '@type': 'Offer', name: 'Start', price: '0', priceCurrency: 'USD', description: 'eSIM 500 MB for 7 days free with IMBA Telegram follow', availability: 'https://schema.org/InStock', url: 'https://www.imba.live/auth/register' },
-    { '@type': 'Offer', name: 'Country plans', price: '3', priceCurrency: 'USD', description: 'From $3 per GB, packages from 1 GB to unlimited in 190+ countries', availability: 'https://schema.org/InStock', url: 'https://www.imba.live/auth/register' },
+    { '@type': 'Offer', name: 'Start', price: '0', priceCurrency: 'USD', description: 'eSIM 500 MB for 7 days free with IMBA Telegram follow', availability: 'https://schema.org/InStock', url: SITE_URL + '/auth/register' },
+    { '@type': 'Offer', name: 'Country plans', price: '3', priceCurrency: 'USD', description: 'From $3 per GB, packages from 1 GB to unlimited in 190+ countries', availability: 'https://schema.org/InStock', url: SITE_URL + '/auth/register' },
   ],
 }
 
@@ -58,8 +59,8 @@ const breadcrumbSchema = {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
   itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.imba.live/' },
-    { '@type': 'ListItem', position: 2, name: 'eSIM', item: 'https://www.imba.live/esim' },
+    { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL + '/' },
+    { '@type': 'ListItem', position: 2, name: 'eSIM', item: SITE_URL + '/esim' },
   ],
 }
 

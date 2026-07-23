@@ -6,6 +6,7 @@ import { SiteHeader } from '@/components/SiteHeader'
 import { Logo } from '@/components/Logo'
 import { posts, getPost } from '@/lib/posts'
 import { VpnKompyuterCover } from '@/components/blog/VpnKompyuterCover'
+import { SITE_URL } from '@/lib/site'
 
 const COVERS: Record<string, () => React.ReactNode> = {
   'vpn-na-kompyutere': () => <VpnKompyuterCover />,
@@ -49,13 +50,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     title: `${post.title} — IMBA`,
     description: post.excerpt,
-    alternates: { canonical: `https://www.imba.live/blog/${slug}` },
+    alternates: { canonical: `${SITE_URL}/blog/${slug}` },
     openGraph: {
       title: post.title,
       description: post.excerpt,
       type: 'article',
-      url: `https://www.imba.live/blog/${slug}`,
-      images: [{ url: post.ogImage ?? 'https://www.imba.live/og-image.png', width: 1200, height: 630 }],
+      url: `${SITE_URL}/blog/${slug}`,
+      images: [{ url: post.ogImage ?? SITE_URL + '/og-image.png', width: 1200, height: 630 }],
       locale: 'en_US',
       siteName: 'IMBA',
     },
@@ -63,7 +64,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       card: 'summary_large_image',
       title: post.title,
       description: post.excerpt,
-      images: [post.ogImage ?? 'https://www.imba.live/og-image.png'],
+      images: [post.ogImage ?? SITE_URL + '/og-image.png'],
     },
   }
 }
@@ -244,23 +245,23 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
         '@context': 'https://schema.org',
         '@type': 'Article',
-        '@id': `https://www.imba.live/blog/${slug}#article`,
+        '@id': `${SITE_URL}/blog/${slug}#article`,
         headline: post.title,
         description: post.excerpt,
-        url: `https://www.imba.live/blog/${slug}`,
+        url: `${SITE_URL}/blog/${slug}`,
         datePublished: toIso(post.date),
         dateModified: toIso(post.date),
         inLanguage: 'en',
-        author: { '@type': 'Person', '@id': 'https://www.imba.live/blog/author/sergey-karpov#person', name: 'Sergey Karpov', url: 'https://www.imba.live/blog/author/sergey-karpov' },
-        publisher: { '@type': 'Organization', '@id': 'https://www.imba.live/#organization', name: 'IMBA', logo: { '@type': 'ImageObject', url: 'https://www.imba.live/favicon.png', width: 512, height: 512 } },
-        image: { '@type': 'ImageObject', url: post.ogImage ?? 'https://www.imba.live/og-image.png', width: 1200, height: 630 },
-        isPartOf: { '@type': 'WebSite', '@id': 'https://www.imba.live/#website' },
+        author: { '@type': 'Person', '@id': SITE_URL + '/blog/author/sergey-karpov#person', name: 'Sergey Karpov', url: SITE_URL + '/blog/author/sergey-karpov' },
+        publisher: { '@type': 'Organization', '@id': SITE_URL + '/#organization', name: 'IMBA', logo: { '@type': 'ImageObject', url: SITE_URL + '/favicon.png', width: 512, height: 512 } },
+        image: { '@type': 'ImageObject', url: post.ogImage ?? SITE_URL + '/og-image.png', width: 1200, height: 630 },
+        isPartOf: { '@type': 'WebSite', '@id': SITE_URL + '/#website' },
         breadcrumb: {
           '@type': 'BreadcrumbList',
           itemListElement: [
-            { '@type': 'ListItem', position: 1, name: 'IMBA', item: 'https://www.imba.live' },
-            { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://www.imba.live/blog' },
-            { '@type': 'ListItem', position: 3, name: post.title, item: `https://www.imba.live/blog/${slug}` },
+            { '@type': 'ListItem', position: 1, name: 'IMBA', item: SITE_URL },
+            { '@type': 'ListItem', position: 2, name: 'Blog', item: SITE_URL + '/blog' },
+            { '@type': 'ListItem', position: 3, name: post.title, item: `${SITE_URL}/blog/${slug}` },
           ],
         },
       })}} />

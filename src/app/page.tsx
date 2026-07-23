@@ -8,11 +8,12 @@ import { FaqAccordion } from '@/components/FaqAccordion'
 import { SiteHeader } from '@/components/SiteHeader'
 import { Logo } from '@/components/Logo'
 import type { Metadata } from 'next'
+import { SITE_URL } from '@/lib/site'
 
 export const metadata: Metadata = {
   title: 'IMBA — VPN, eSIM & Virtual Card. Internet Without Borders.',
   description: 'VPN, eSIM, and virtual Visa/Mastercard in one subscription. VLESS Reality protocol works in China, UAE, Turkey, and anywhere else that blocks it. 50+ servers, zero logs. Try 7 days free.',
-  alternates: { canonical: 'https://www.imba.live' },
+  alternates: { canonical: SITE_URL },
 }
 
 const vpnServers = [
@@ -399,16 +400,16 @@ export default function HomePage() {
         ],
       })}} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
-        '@context': 'https://schema.org', '@type': 'Product', '@id': 'https://www.imba.live/#plan-start',
+        '@context': 'https://schema.org', '@type': 'Product', '@id': SITE_URL + '/#plan-start',
         name: 'IMBA Start', description: 'Free plan: 1 eSIM profile, basic VPN, 1 virtual card.',
         brand: { '@type': 'Brand', name: 'IMBA' },
-        offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD', availability: 'https://schema.org/InStock', url: 'https://www.imba.live/auth/register' },
+        offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD', availability: 'https://schema.org/InStock', url: SITE_URL + '/auth/register' },
       })}} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
-        '@context': 'https://schema.org', '@type': 'Product', '@id': 'https://www.imba.live/#plan-combo',
+        '@context': 'https://schema.org', '@type': 'Product', '@id': SITE_URL + '/#plan-combo',
         name: 'IMBA COMBO', description: '3 eSIM profiles, VPN Pro (50+ servers), 3 virtual cards.',
         brand: { '@type': 'Brand', name: 'IMBA' },
-        offers: { '@type': 'Offer', price: '9.99', priceCurrency: 'USD', availability: 'https://schema.org/InStock', url: 'https://www.imba.live/auth/register' },
+        offers: { '@type': 'Offer', price: '9.99', priceCurrency: 'USD', availability: 'https://schema.org/InStock', url: SITE_URL + '/auth/register' },
       })}} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
         '@context': 'https://schema.org',
@@ -417,8 +418,8 @@ export default function HomePage() {
         applicationCategory: 'VPNApplication',
         operatingSystem: 'iOS, Android, Windows, macOS, Linux, Android TV',
         description: 'VPN client running VLESS Reality — works in China, UAE, Turkey, and any censored network. Zero logs.',
-        offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD', availability: 'https://schema.org/InStock', url: 'https://www.imba.live/auth/register', description: '7 days free' },
-        publisher: { '@type': 'Organization', '@id': 'https://www.imba.live/#organization' },
+        offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD', availability: 'https://schema.org/InStock', url: SITE_URL + '/auth/register', description: '7 days free' },
+        publisher: { '@type': 'Organization', '@id': SITE_URL + '/#organization' },
       })}} />
 
       {/* Footer */}

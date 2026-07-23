@@ -7,6 +7,7 @@ import { existsSync } from 'fs'
 import { join } from 'path'
 import { BlogList, type BlogListPost } from '@/components/BlogList'
 import { posts } from '@/lib/posts'
+import { SITE_URL } from '@/lib/site'
 
 const FEATURED_SLUG = 'vpn-russia-2026'
 const AUTHOR = 'Sergey Karpov'
@@ -26,13 +27,13 @@ function coverFor(slug: string, title: string): { src: string; alt: string } | u
 export const metadata: Metadata = {
   title: 'IMBA Blog — VPN, eSIM & Virtual Card Guides',
   description: 'Step-by-step guides on VPN protocols, eSIM setup, and paying for global services with a virtual card. Internet without borders.',
-  alternates: { canonical: 'https://www.imba.live/blog' },
+  alternates: { canonical: SITE_URL + '/blog' },
   openGraph: {
     title: 'IMBA Blog — VPN, eSIM & Virtual Card Guides',
     description: 'Practical guides: which VPN works against censorship, how to pay for ChatGPT and Netflix, eSIM for international travel.',
     type: 'website',
-    url: 'https://www.imba.live/blog',
-    images: [{ url: 'https://www.imba.live/og-image.png', width: 1200, height: 630 }],
+    url: SITE_URL + '/blog',
+    images: [{ url: SITE_URL + '/og-image.png', width: 1200, height: 630 }],
     locale: 'en_US',
     siteName: 'IMBA',
   },
@@ -40,7 +41,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'IMBA Blog — VPN, eSIM & Virtual Card Guides',
     description: 'Practical guides: which VPN works against censorship, how to pay for ChatGPT and Netflix, eSIM for international travel.',
-    images: ['https://www.imba.live/og-image.png'],
+    images: [SITE_URL + '/og-image.png'],
   },
 }
 
@@ -66,16 +67,16 @@ export default function BlogPage() {
         '@context': 'https://schema.org',
         '@type': 'Blog',
         name: 'IMBA Blog',
-        url: 'https://www.imba.live/blog',
+        url: SITE_URL + '/blog',
         description: 'Guides on VPN, eSIM, and virtual cards for global internet access',
-        publisher: { '@type': 'Organization', '@id': 'https://www.imba.live/#organization', name: 'IMBA', url: 'https://www.imba.live' },
+        publisher: { '@type': 'Organization', '@id': SITE_URL + '/#organization', name: 'IMBA', url: SITE_URL },
       })}} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
         '@context': 'https://schema.org',
         '@type': 'BreadcrumbList',
         itemListElement: [
-          { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.imba.live/' },
-          { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://www.imba.live/blog' },
+          { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL + '/' },
+          { '@type': 'ListItem', position: 2, name: 'Blog', item: SITE_URL + '/blog' },
         ],
       })}} />
       <Marquee

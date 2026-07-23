@@ -4,15 +4,16 @@ import { Logo } from '@/components/Logo'
 import { Marquee } from '@/components/Marquee'
 import { SiteHeader } from '@/components/SiteHeader'
 import { posts } from '@/lib/posts'
+import { SITE_URL } from '@/lib/site'
 
 export const metadata: Metadata = {
   title: 'Sergey Karpov — IMBA Blog: VPN, eSIM, Virtual Cards',
   description: 'Articles by Sergey Karpov on the IMBA blog: VPN protocol guides, eSIM setup, and paying for global services. All guides tested on real devices.',
-  alternates: { canonical: 'https://www.imba.live/blog/author/sergey-karpov' },
+  alternates: { canonical: SITE_URL + '/blog/author/sergey-karpov' },
   openGraph: {
     title: 'Sergey Karpov — IMBA Blog Author',
     description: 'Articles by Sergey Karpov on the IMBA blog: VPN protocol guides, eSIM setup, and paying for global services.',
-    url: 'https://www.imba.live/blog/author/sergey-karpov',
+    url: SITE_URL + '/blog/author/sergey-karpov',
     siteName: 'IMBA',
     locale: 'en_US',
     type: 'profile',
@@ -22,11 +23,11 @@ export const metadata: Metadata = {
 const personSchema = {
   '@context': 'https://schema.org',
   '@type': 'Person',
-  '@id': 'https://www.imba.live/blog/author/sergey-karpov#person',
+  '@id': SITE_URL + '/blog/author/sergey-karpov#person',
   name: 'Sergey Karpov',
-  url: 'https://www.imba.live/blog/author/sergey-karpov',
+  url: SITE_URL + '/blog/author/sergey-karpov',
   jobTitle: 'IMBA Blog Author',
-  worksFor: { '@type': 'Organization', '@id': 'https://www.imba.live/#organization', name: 'IMBA', url: 'https://www.imba.live' },
+  worksFor: { '@type': 'Organization', '@id': SITE_URL + '/#organization', name: 'IMBA', url: SITE_URL },
   knowsAbout: ['VPN', 'VLESS Reality', 'WireGuard', 'eSIM', 'virtual cards', 'global payment methods'],
   sameAs: [],
 }
@@ -35,9 +36,9 @@ const breadcrumbSchema = {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
   itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.imba.live/' },
-    { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://www.imba.live/blog' },
-    { '@type': 'ListItem', position: 3, name: 'Sergey Karpov', item: 'https://www.imba.live/blog/author/sergey-karpov' },
+    { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL + '/' },
+    { '@type': 'ListItem', position: 2, name: 'Blog', item: SITE_URL + '/blog' },
+    { '@type': 'ListItem', position: 3, name: 'Sergey Karpov', item: SITE_URL + '/blog/author/sergey-karpov' },
   ],
 }
 

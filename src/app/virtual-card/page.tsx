@@ -5,19 +5,20 @@ import { Marquee } from '@/components/Marquee'
 import { SiteHeader } from '@/components/SiteHeader'
 import { FaqAccordion } from '@/components/FaqAccordion'
 import { posts } from '@/lib/posts'
+import { SITE_URL } from '@/lib/site'
 
 export const metadata: Metadata = {
   title: 'Virtual Visa/Mastercard for Global Payments | IMBA',
   description: 'Virtual Visa/Mastercard in USD, EUR, and AED. Pay for ChatGPT, Netflix, Spotify, Steam, Amazon from anywhere. Issue in 1 minute, fund with crypto or bank transfer.',
-  alternates: { canonical: 'https://www.imba.live/virtual-card' },
+  alternates: { canonical: SITE_URL + '/virtual-card' },
   openGraph: {
     title: 'Virtual Visa/Mastercard for Global Payments | IMBA',
     description: 'Virtual card in USD, EUR, AED. ChatGPT, Netflix, Spotify, Steam, Amazon. Issue in 1 minute.',
-    url: 'https://www.imba.live/virtual-card',
+    url: SITE_URL + '/virtual-card',
     siteName: 'IMBA',
     locale: 'en_US',
     type: 'website',
-    images: [{ url: 'https://www.imba.live/og-image.png', width: 1200, height: 630 }],
+    images: [{ url: SITE_URL + '/og-image.png', width: 1200, height: 630 }],
   },
 }
 
@@ -49,9 +50,9 @@ const productSchema = {
   description: 'Virtual Visa/Mastercard in USD, EUR, and AED for global online payments. Issue in 1 minute, fund with crypto or bank transfer.',
   brand: { '@type': 'Brand', name: 'IMBA' },
   offers: [
-    { '@type': 'Offer', name: 'Start', price: '0', priceCurrency: 'USD', description: '1 virtual card, free to issue', availability: 'https://schema.org/InStock', url: 'https://www.imba.live/auth/register' },
-    { '@type': 'Offer', name: 'Pro', price: '9.99', priceCurrency: 'USD', description: '3 virtual cards, priority support', availability: 'https://schema.org/InStock', url: 'https://www.imba.live/auth/register' },
-    { '@type': 'Offer', name: 'Business', price: '24.99', priceCurrency: 'USD', description: '10 virtual cards, API access', availability: 'https://schema.org/InStock', url: 'https://www.imba.live/auth/register' },
+    { '@type': 'Offer', name: 'Start', price: '0', priceCurrency: 'USD', description: '1 virtual card, free to issue', availability: 'https://schema.org/InStock', url: SITE_URL + '/auth/register' },
+    { '@type': 'Offer', name: 'Pro', price: '9.99', priceCurrency: 'USD', description: '3 virtual cards, priority support', availability: 'https://schema.org/InStock', url: SITE_URL + '/auth/register' },
+    { '@type': 'Offer', name: 'Business', price: '24.99', priceCurrency: 'USD', description: '10 virtual cards, API access', availability: 'https://schema.org/InStock', url: SITE_URL + '/auth/register' },
   ],
 }
 
@@ -59,8 +60,8 @@ const breadcrumbSchema = {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
   itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.imba.live/' },
-    { '@type': 'ListItem', position: 2, name: 'Virtual Card', item: 'https://www.imba.live/virtual-card' },
+    { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL + '/' },
+    { '@type': 'ListItem', position: 2, name: 'Virtual Card', item: SITE_URL + '/virtual-card' },
   ],
 }
 
