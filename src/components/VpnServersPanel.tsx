@@ -5,11 +5,17 @@ import { Zap, Smartphone, Download, Link, Terminal, Moon } from 'lucide-react'
 import { CopyButton } from '@/components/CopyButton'
 import type { VpnServer } from '@/lib/types'
 
-const WDTT_PASSWORD = 'CGFxnHnHXvpb'
+// Fallback shared credentials — used only for users without a per-user link (legacy/trial)
+const WDTT_FALLBACK_PASSWORD = 'CGFxnHnHXvpb'
 const WDTT_VK_HASH = 'WFNnNWAeRPkesAmtYkf40YIh-Zo-jJe_TfNeZ7jrCv8'
 const WDTT_SERVER = '38.19.201.176'
-const WDTT_LINK = `wdtt://${WDTT_SERVER}:56000:56001:9000:${WDTT_PASSWORD}:${WDTT_VK_HASH}`
-const MAC_CMD = `sudo ./client-darwin-arm64 -server ${WDTT_SERVER}:56000 -wg-port 56001 -password ${WDTT_PASSWORD} -hash ${WDTT_VK_HASH}`
+const WDTT_FALLBACK_LINK = `wdtt://${WDTT_SERVER}:56000:56001:9000:${WDTT_FALLBACK_PASSWORD}:${WDTT_VK_HASH}`
+
+// Extract password from a wdtt:// link (format: wdtt://host:port:wgport:apiport:password:hash)
+function wdttPassword(link: string): string {
+  const parts = link.split(':')
+  return parts.length >= 6 ? parts[5] : WDTT_FALLBACK_PASSWORD
+}
 
 const URLS = {
   testflight: 'https://testflight.apple.com/join/ANm6cmDv',
@@ -50,9 +56,12 @@ interface Props {
   vlessMap: Record<string, string>
   serverKey: string | null
   hasActive: boolean
+  wdttLink?: string | null
 }
 
-function WdttInstructions({ platform }: { platform: Platform }) {
+function WdttInstructions({ platform, link }: { platform: Platform; link: string }) {
+  const password = wdttPassword(link)
+  const macCmd = `sudo ./client-darwin-arm64 -server ${WDTT_SERVER}:56000 -wg-port 56001 -password ${password} -hash ${WDTT_VK_HASH}`
   if (platform === 'android') return (
     <ol className="space-y-3 text-sm font-semibold text-ink/70 mb-4">
       <li className="flex items-start gap-2">
@@ -70,8 +79,8 @@ function WdttInstructions({ platform }: { platform: Platform }) {
         <div className="flex-1">
           <div className="mb-1">В приложении нажми <strong>«Импорт ссылки»</strong> и вставь:</div>
           <div className="flex items-center gap-2 mt-2 rounded-xl px-3 py-2" style={{ background: 'var(--blue-100)' }}>
-            <p className="text-xs font-mono break-all text-ink/70 flex-1 select-all">{WDTT_LINK}</p>
-            <CopyButton text={WDTT_LINK} />
+            <p className="text-xs font-mono break-all text-ink/70 flex-1 select-all">{link}</p>
+            <CopyButton text={link} />
           </div>
         </div>
       </li>
@@ -99,8 +108,8 @@ function WdttInstructions({ platform }: { platform: Platform }) {
           <div className="mb-1">Settings → Server mode → <strong>SRTP-WRAP-A</strong></div>
           <div className="mb-1">Нажми <strong>«Import from connection link»</strong> и вставь:</div>
           <div className="flex items-center gap-2 mt-2 rounded-xl px-3 py-2" style={{ background: 'var(--blue-100)' }}>
-            <p className="text-xs font-mono break-all text-ink/70 flex-1 select-all">{WDTT_LINK}</p>
-            <CopyButton text={WDTT_LINK} />
+            <p className="text-xs font-mono break-all text-ink/70 flex-1 select-all">{link}</p>
+            <CopyButton text={link} />
           </div>
         </div>
       </li>
@@ -127,8 +136,8 @@ function WdttInstructions({ platform }: { platform: Platform }) {
         <div className="flex-1">
           <div className="mb-1">Запусти и вставь ссылку в поле <strong>«WDTT Link»</strong>:</div>
           <div className="flex items-center gap-2 mt-2 rounded-xl px-3 py-2" style={{ background: 'var(--blue-100)' }}>
-            <p className="text-xs font-mono break-all text-ink/70 flex-1 select-all">{WDTT_LINK}</p>
-            <CopyButton text={WDTT_LINK} />
+            <p className="text-xs font-mono break-all text-ink/70 flex-1 select-all">{link}</p>
+            <CopyButton text={link} />
           </div>
         </div>
       </li>
@@ -161,8 +170,8 @@ function WdttInstructions({ platform }: { platform: Platform }) {
           <div className="mb-2">Открой терминал в папке с файлом и запусти:</div>
           <div className="flex items-center gap-2 rounded-xl px-3 py-2" style={{ background: 'var(--blue-100)' }}>
             <Terminal className="w-3.5 h-3.5 text-ink/40 shrink-0" strokeWidth={2} />
-            <p className="text-xs font-mono break-all text-ink/70 flex-1 select-all">{MAC_CMD}</p>
-            <CopyButton text={MAC_CMD} />
+            <p className="text-xs font-mono break-all text-ink/70 flex-1 select-all">{macCmd}</p>
+            <CopyButton text={macCmd} />
           </div>
           <p className="text-xs text-ink/40 mt-1">Нужен sudo — создаёт WireGuard-интерфейс</p>
         </div>
@@ -195,8 +204,8 @@ function WdttInstructions({ platform }: { platform: Platform }) {
             <p className="text-xs font-mono text-ink/70 flex-1 select-all">chmod +x pwdtt-linux-amd64 && sudo ./pwdtt-linux-amd64</p>
           </div>
           <div className="flex items-center gap-2 rounded-xl px-3 py-2" style={{ background: 'var(--blue-100)' }}>
-            <p className="text-xs font-mono break-all text-ink/70 flex-1 select-all">{WDTT_LINK}</p>
-            <CopyButton text={WDTT_LINK} />
+            <p className="text-xs font-mono break-all text-ink/70 flex-1 select-all">{link}</p>
+            <CopyButton text={link} />
           </div>
         </div>
       </li>
@@ -208,9 +217,10 @@ function WdttInstructions({ platform }: { platform: Platform }) {
   )
 }
 
-export function VpnServersPanel({ servers, vlessMap, serverKey, hasActive }: Props) {
+export function VpnServersPanel({ servers, vlessMap, serverKey, hasActive, wdttLink }: Props) {
   const [selectedPanel, setSelectedPanel] = useState<'happ' | 'wdtt'>('happ')
   const [platform, setPlatform] = useState<Platform>('android')
+  const activeWdttLink = wdttLink ?? WDTT_FALLBACK_LINK
 
   const lisbonPing = servers.find((s) => {
     const city = s.city?.toLowerCase() ?? ''
@@ -247,7 +257,7 @@ export function VpnServersPanel({ servers, vlessMap, serverKey, hasActive }: Pro
             ))}
           </div>
 
-          <WdttInstructions platform={platform} />
+          <WdttInstructions platform={platform} link={activeWdttLink} />
 
           <div className="rounded-xl px-3 py-2 text-xs font-bold" style={{ background: 'var(--green-100)', color: 'var(--ink)' }}>
             ✓ Трафик идёт через VK — оператор видит звонок ВКонтакте, не VPN

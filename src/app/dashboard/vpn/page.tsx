@@ -113,6 +113,7 @@ export default async function VpnPage() {
             vlessMap={vlessMap}
             serverKey={active.server_key}
             hasActive={true}
+            wdttLink={active.wdtt_link}
           />
         </>
       ) : (
@@ -165,6 +166,7 @@ export default async function VpnPage() {
           vlessMap={vlessMap}
           serverKey={null}
           hasActive={false}
+          wdttLink={null}
         />
       )}
     </div>
