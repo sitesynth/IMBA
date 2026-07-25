@@ -3,151 +3,82 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>IMBA Ref Admin</title>
+<title>IMBA Partner</title>
 <meta name="robots" content="noindex,nofollow"/>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#f9fafb;color:#111827;min-height:100vh;font-size:14px;-webkit-font-smoothing:antialiased}
 
-/* ── LOGIN ────────────────────────────────────── */
-#login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:1rem;background:#f9fafb}
-.login-card{background:#fff;border:1px solid #e5e7eb;border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);padding:2rem;width:100%;max-width:340px}
-.login-logo{display:flex;flex-direction:column;align-items:center;margin-bottom:2rem;gap:.5rem}
-.login-logo svg{height:40px;width:auto}
-.login-logo .sub{font-size:.8rem;color:#9ca3af}
+#auth-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:1rem;background:#f9fafb}
+.auth-card{background:#fff;border:1px solid #e5e7eb;border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);padding:2rem;width:100%;max-width:360px}
+.auth-logo{display:flex;flex-direction:column;align-items:center;margin-bottom:1.5rem;gap:.5rem}
+.auth-logo svg{height:40px;width:auto}
+.auth-logo .sub{font-size:.8rem;color:#9ca3af}
 
-/* ── FORMS ────────────────────────────────────── */
 .field{margin-bottom:1rem}
 .field label{display:block;font-size:.8rem;font-weight:500;color:#374151;margin-bottom:.35rem}
-.field input,.field textarea,.field select{width:100%;border:1px solid #d1d5db;border-radius:8px;padding:.625rem .75rem;font-size:.875rem;color:#111827;outline:none;background:#fff;transition:border-color .15s,box-shadow .15s;font-family:inherit}
-.field textarea{resize:vertical;min-height:72px}
-.field input:focus,.field textarea:focus{border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,.12)}
+.field input{width:100%;border:1px solid #d1d5db;border-radius:8px;padding:.625rem .75rem;font-size:.875rem;color:#111827;outline:none;background:#fff;transition:border-color .15s,box-shadow .15s;font-family:inherit}
+.field input:focus{border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,.12)}
 
-/* ── BUTTONS ──────────────────────────────────── */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:.375rem;padding:.625rem 1rem;border-radius:8px;font-size:.8rem;font-weight:600;cursor:pointer;border:none;transition:all .15s;white-space:nowrap}
 .btn:disabled{opacity:.5;cursor:not-allowed}
 .btn-primary{background:#2563eb;color:#fff}
 .btn-primary:hover:not(:disabled){background:#1d4ed8}
-.btn-sm{padding:.4rem .75rem;font-size:.75rem}
 .btn-outline{background:#fff;color:#374151;border:1px solid #d1d5db}
 .btn-outline:hover:not(:disabled){background:#f9fafb}
-.btn-link{background:none;color:#2563eb;font-weight:500;padding:.25rem .375rem;border-radius:4px;border:none}
-.btn-link:hover{background:#eff6ff}
-.btn-danger-link{background:none;color:#dc2626;font-weight:500;padding:.25rem .375rem;border-radius:4px;border:none}
-.btn-danger-link:hover{background:#fef2f2}
+.btn-sm{padding:.4rem .75rem;font-size:.75rem}
 .btn-block{width:100%}
 .err-box{background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:.5rem .75rem;font-size:.8rem;color:#b91c1c;margin-top:.75rem}
 
-/* ── APP SHELL ────────────────────────────────── */
 #app{display:none;min-height:100vh}
-.app-wrap{display:flex;min-height:100vh}
+.topbar{background:#fff;border-bottom:1px solid #e5e7eb;padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between}
+.topbar-logo{display:flex;align-items:center;gap:.5rem}
+.topbar-logo svg{height:26px;width:auto}
+.topbar-logo .sub{font-size:.72rem;color:#9ca3af}
+.page-body{padding:1.5rem 2rem;max-width:1080px;margin:0 auto}
 
-.sidebar{width:240px;background:#fff;border-right:1px solid #e5e7eb;display:flex;flex-direction:column;flex-shrink:0;position:sticky;top:0;height:100vh;overflow:hidden}
-.sidebar-logo{padding:1.25rem 1.25rem 1rem;border-bottom:1px solid #f3f4f6;display:flex;align-items:center;gap:.5rem}
-.sidebar-logo svg{height:28px;width:auto}
-.sidebar-logo .sub{font-size:.72rem;color:#9ca3af;font-weight:400}
-.sidebar-nav{flex:1;padding:.75rem .5rem;overflow-y:auto}
-.nav-group{margin-bottom:1rem}
-.nav-group-label{padding:.25rem .75rem;font-size:.65rem;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.25rem}
-.nav-item{display:block;width:100%;text-align:left;padding:.5rem .75rem;border-radius:6px;font-size:.8rem;font-weight:500;color:#6b7280;cursor:pointer;border:none;background:none;transition:all .1s}
-.nav-item:hover{background:#f3f4f6;color:#111827}
-.nav-item.active{background:#eff6ff;color:#1d4ed8}
-.sidebar-footer{padding:.75rem .5rem;border-top:1px solid #f3f4f6}
-
-.main-content{flex:1;overflow:auto;min-width:0}
-.page-header{padding:1.5rem 2rem 0;background:#fff;border-bottom:1px solid #e5e7eb}
-.page-header-inner{display:flex;align-items:center;justify-content:space-between;padding-bottom:1rem;flex-wrap:wrap;gap:.75rem}
-.page-title{font-size:1.25rem;font-weight:700;color:#111827}
-.page-body{padding:1.5rem 2rem}
-
-/* ── STATS ────────────────────────────────────── */
 .stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1rem;margin-bottom:1.5rem}
 .stat-card{background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:1rem 1.25rem}
-.stat-val{font-size:1.625rem;font-weight:700;color:#111827;line-height:1.2}
+.stat-val{font-size:1.5rem;font-weight:700;color:#111827;line-height:1.2}
 .stat-lbl{font-size:.72rem;color:#6b7280;margin-top:.2rem;font-weight:500}
 
-/* ── CARD / TABLE ─────────────────────────────── */
-.card{background:#fff;border:1px solid #e5e7eb;border-radius:10px;overflow:hidden}
+.card{background:#fff;border:1px solid #e5e7eb;border-radius:10px;overflow:hidden;margin-bottom:1.5rem}
 .card-header{display:flex;align-items:center;justify-content:space-between;padding:.875rem 1.25rem;border-bottom:1px solid #e5e7eb;gap:.75rem;flex-wrap:wrap}
-.card-title{font-size:.875rem;font-weight:700;color:#111827;display:flex;align-items:center;gap:.4rem}
+.card-title{font-size:.9rem;font-weight:700;color:#111827}
+.card-body{padding:1.25rem}
 .overflow-x{overflow-x:auto}
 table{width:100%;border-collapse:collapse}
 th{text-align:left;font-size:.7rem;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:.05em;padding:.625rem 1.25rem;background:#f9fafb;border-bottom:1px solid #e5e7eb;white-space:nowrap}
 td{padding:.75rem 1.25rem;border-bottom:1px solid #f3f4f6;vertical-align:middle;font-size:.8rem;color:#374151;white-space:nowrap}
 tr:last-child td{border-bottom:none}
-tbody tr:hover td{background:#f9fafb}
 
 .mono{font-family:'SFMono-Regular',Consolas,monospace}
-.code-link{font-family:'SFMono-Regular',Consolas,monospace;color:#2563eb;cursor:pointer;font-size:.8rem;border:none;background:none;padding:0}
-.code-link:hover{text-decoration:underline}
-
-.badge{display:inline-block;font-size:.68rem;font-weight:600;padding:2px 8px;border-radius:20px}
-.badge-green{background:#dcfce7;color:#16a34a}
-.badge-yellow{background:#fef9c3;color:#a16207}
-.badge-gray{background:#f3f4f6;color:#6b7280}
-
-.act-row{display:flex;gap:.25rem;align-items:center}
-
-/* ── DETAIL ───────────────────────────────────── */
-.detail-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;padding:1.25rem;border-bottom:1px solid #e5e7eb}
-.detail-field .lbl{font-size:.7rem;color:#9ca3af;font-weight:500;margin-bottom:.2rem;text-transform:uppercase;letter-spacing:.04em}
-.detail-field .val{font-size:.9rem;font-weight:600;color:#111827}
-.detail-field .val.muted{color:#6b7280;font-weight:400}
-.mini-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;padding:1.25rem}
-.mini-stat{border-radius:8px;padding:.75rem 1rem;text-align:center}
-.mini-stat.blue{background:#eff6ff}.mini-stat.blue .mv{color:#1d4ed8}
-.mini-stat.green{background:#f0fdf4}.mini-stat.green .mv{color:#16a34a}
-.mini-stat.yellow{background:#fefce8}.mini-stat.yellow .mv{color:#a16207}
-.mini-stat.purple{background:#faf5ff}.mini-stat.purple .mv{color:#7c3aed}
 .rate-chip{display:inline-block;font-size:.75rem;font-weight:600;padding:.2rem .65rem;border-radius:20px;letter-spacing:.01em}
 .rate-l1{background:#eff6ff;color:#1d4ed8}
 .rate-l2{background:#f0fdf4;color:#16a34a}
 .rate-l3{background:#faf5ff;color:#7c3aed}
-.pct-label{font-size:.8rem;color:#6b7280;font-weight:500}
-.mv{font-size:1.25rem;font-weight:700}
-.ml{font-size:.68rem;color:#6b7280;margin-top:.1rem}
-
-.back-link{display:inline-flex;align-items:center;gap:.3rem;color:#6b7280;font-size:.8rem;font-weight:500;cursor:pointer;padding:.25rem 0;margin-bottom:1rem;background:none;border:none}
-.back-link:hover{color:#111827}
-
-/* ── MODAL ────────────────────────────────────── */
-.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:100;align-items:center;justify-content:center;padding:1rem}
-.overlay.open{display:flex}
-.modal{background:#fff;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,.12);padding:1.5rem;width:100%;max-width:440px;max-height:90vh;overflow-y:auto}
-.modal h2{font-size:1rem;font-weight:700;color:#111827;margin-bottom:1.25rem}
-.modal-footer{display:flex;gap:.5rem;justify-content:flex-end;margin-top:1.25rem}
-.field-row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
-
 .empty{padding:2.5rem;text-align:center;color:#9ca3af;font-size:.8rem}
+
 .toast{position:fixed;bottom:1.25rem;right:1.25rem;background:#111827;color:#fff;border-radius:8px;padding:.625rem 1rem;font-size:.8rem;z-index:200;pointer-events:none;opacity:1;transition:opacity .2s}
 .toast.hidden{opacity:0}
 
+.link-row{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
+.link-row code{background:#f3f4f6;border:1px solid #e5e7eb;border-radius:6px;padding:.4rem .65rem;font-size:.8rem;color:#1d4ed8;word-break:break-all;flex:1}
+
 @media(max-width:768px){
-  .sidebar{display:none}
   th,td{padding:.5rem .875rem}
-  .page-body,.page-header{padding:1rem}
+  .page-body{padding:1rem}
   .stats-row{grid-template-columns:1fr 1fr}
-  .field-row{grid-template-columns:1fr}
 }
 </style>
 </head>
 <body>
 
-<!-- IMBA logo SVG inline -->
-<svg id="imba-svg-tpl" xmlns="http://www.w3.org/2000/svg" viewBox="-9 142 1430 482" style="display:none">
-  <g stroke="#111111" stroke-width="9" stroke-linejoin="round" stroke-linecap="round">
-    <rect x="-2.3" y="147.8" width="235.4" height="470.8" fill="#2E7DF6"/>
-    <path fill="#55DB9C" d="M485.5,353.2c-2.6,28.2-30.1,27.9-32.4-.3l-18.9-203.3-168.5-1.5v470.4h113.7l1.9-263.8c.2-28.2,28-31,30.7-3l25.8,266.9h61.8l25.8-266.6c2.7-27.9,30.5-25.2,30.7,3l1.9,263.6h132.2V148.1l-185,1.5-19.5,203.6h-.2Z"/>
-    <path fill="#FFD731" d="M1011.7,148.3h-289.2v469.9h289.2c22.4,0,40.6-27.6,40.6-61.6v-96.1c0-34-18.2-61.6-40.6-61.6h-53.5c-8.7-1.5-15.4-12.8-15.4-26.3s7.3-25.7,16.5-26.4h52.4c22.4,0,40.6-27.6,40.6-61.6v-74.4c0-34-18.2-61.6-40.6-61.6h0ZM901.3,509.8c0,14-7.5,25.4-16.7,25.4h-15.3c-9.2,0-16.7-11.4-16.7-25.4v-65.6c0-20.5,10.9-37,24.4-37s24.4,16.6,24.4,37v65.6h-.1ZM901.3,329.3c0,14-7.5,25.4-16.7,25.4h-15.3c-9.2,0-16.7-11.4-16.7-25.4v-60c0-20.5,10.9-37,24.4-37s24.4,16.6,24.4,37v60h-.1Z"/>
-    <path fill="#C9A4FF" d="M1369.7,147.8h-240.5c-24.9,0-45.1,30.6-45.1,68.3v402.3h141v-95.3c0-14,7.5-25.4,16.7-25.4h15.3c9.2,0,16.7,11.4,16.7,25.4v95.3h141V216.1c0-37.7-20.2-68.3-45.1-68.3h0ZM1273.8,311.6v60c0,14-7.5,25.4-16.7,25.4h-15.3c-9.2,0-16.7-11.4-16.7-25.4v-88.2c0-20.5,10.9-37,24.4-37s24.4,16.6,24.4,37v28.1h-.1Z"/>
-  </g>
-</svg>
-
-<!-- ══ LOGIN ══════════════════════════════════════════════ -->
-<div id="login-screen">
-  <div class="login-card">
-    <div class="login-logo">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="-9 142 1430 482">
+<!-- ══ AUTH ══ -->
+<div id="auth-screen">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="-9 142 1430 482" height="40">
         <g stroke="#111111" stroke-width="9" stroke-linejoin="round" stroke-linecap="round">
           <rect x="-2.3" y="147.8" width="235.4" height="470.8" fill="#2E7DF6"/>
           <path fill="#55DB9C" d="M485.5,353.2c-2.6,28.2-30.1,27.9-32.4-.3l-18.9-203.3-168.5-1.5v470.4h113.7l1.9-263.8c.2-28.2,28-31,30.7-3l25.8,266.9h61.8l25.8-266.6c2.7-27.9,30.5-25.2,30.7,3l1.9,263.6h132.2V148.1l-185,1.5-19.5,203.6h-.2Z"/>
@@ -155,295 +86,99 @@ tbody tr:hover td{background:#f9fafb}
           <path fill="#C9A4FF" d="M1369.7,147.8h-240.5c-24.9,0-45.1,30.6-45.1,68.3v402.3h141v-95.3c0-14,7.5-25.4,16.7-25.4h15.3c9.2,0,16.7,11.4,16.7,25.4v95.3h141V216.1c0-37.7-20.2-68.3-45.1-68.3h0ZM1273.8,311.6v60c0,14-7.5,25.4-16.7,25.4h-15.3c-9.2,0-16.7-11.4-16.7-25.4v-88.2c0-20.5,10.9-37,24.4-37s24.4,16.6,24.4,37v28.1h-.1Z"/>
         </g>
       </svg>
-      <div class="sub">Referral Admin</div>
+      <div class="sub" id="auth-sub">Партнёрский кабинет</div>
     </div>
-    <form onsubmit="doLogin(event)">
+
+    <!-- Login form -->
+    <form id="login-form" onsubmit="doLogin(event)">
       <div class="field">
         <label>Email</label>
-        <input type="email" id="l-email" placeholder="admin@imba.app" autocomplete="username" required autofocus/>
+        <input type="email" id="l-email" autocomplete="username" required autofocus/>
       </div>
       <div class="field">
         <label>Пароль</label>
-        <input type="password" id="l-pass" placeholder="••••••••" autocomplete="current-password" required/>
+        <input type="password" id="l-pass" autocomplete="current-password" required/>
       </div>
       <div id="l-err" style="display:none" class="err-box"></div>
       <button type="submit" class="btn btn-primary btn-block" id="l-btn" style="margin-top:.75rem">Войти</button>
     </form>
+
+    <!-- One-time setup form -->
+    <form id="setup-form" style="display:none" onsubmit="doSetup(event)">
+      <p style="font-size:.8rem;color:#6b7280;margin-bottom:1rem">Придумайте email и пароль для входа в свой кабинет.</p>
+      <div class="field">
+        <label>Email</label>
+        <input type="email" id="s-email" autocomplete="username" required/>
+      </div>
+      <div class="field">
+        <label>Пароль (мин. 6 символов)</label>
+        <input type="password" id="s-pass" autocomplete="new-password" minlength="6" required/>
+      </div>
+      <div id="s-err" style="display:none" class="err-box"></div>
+      <button type="submit" class="btn btn-primary btn-block" id="s-btn" style="margin-top:.75rem">Создать кабинет</button>
+    </form>
   </div>
 </div>
 
-<!-- ══ APP ════════════════════════════════════════════════ -->
+<!-- ══ APP ══ -->
 <div id="app">
-  <div class="app-wrap">
-    <div class="sidebar">
-      <div class="sidebar-logo">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="-9 142 1430 482">
-          <g stroke="#111111" stroke-width="9" stroke-linejoin="round" stroke-linecap="round">
-            <rect x="-2.3" y="147.8" width="235.4" height="470.8" fill="#2E7DF6"/>
-            <path fill="#55DB9C" d="M485.5,353.2c-2.6,28.2-30.1,27.9-32.4-.3l-18.9-203.3-168.5-1.5v470.4h113.7l1.9-263.8c.2-28.2,28-31,30.7-3l25.8,266.9h61.8l25.8-266.6c2.7-27.9,30.5-25.2,30.7,3l1.9,263.6h132.2V148.1l-185,1.5-19.5,203.6h-.2Z"/>
-            <path fill="#FFD731" d="M1011.7,148.3h-289.2v469.9h289.2c22.4,0,40.6-27.6,40.6-61.6v-96.1c0-34-18.2-61.6-40.6-61.6h-53.5c-8.7-1.5-15.4-12.8-15.4-26.3s7.3-25.7,16.5-26.4h52.4c22.4,0,40.6-27.6,40.6-61.6v-74.4c0-34-18.2-61.6-40.6-61.6h0ZM901.3,509.8c0,14-7.5,25.4-16.7,25.4h-15.3c-9.2,0-16.7-11.4-16.7-25.4v-65.6c0-20.5,10.9-37,24.4-37s24.4,16.6,24.4,37v65.6h-.1ZM901.3,329.3c0,14-7.5,25.4-16.7,25.4h-15.3c-9.2,0-16.7-11.4-16.7-25.4v-60c0-20.5,10.9-37,24.4-37s24.4,16.6,24.4,37v60h-.1Z"/>
-            <path fill="#C9A4FF" d="M1369.7,147.8h-240.5c-24.9,0-45.1,30.6-45.1,68.3v402.3h141v-95.3c0-14,7.5-25.4,16.7-25.4h15.3c9.2,0,16.7,11.4,16.7,25.4v95.3h141V216.1c0-37.7-20.2-68.3-45.1-68.3h0ZM1273.8,311.6v60c0,14-7.5,25.4-16.7,25.4h-15.3c-9.2,0-16.7-11.4-16.7-25.4v-88.2c0-20.5,10.9-37,24.4-37s24.4,16.6,24.4,37v28.1h-.1Z"/>
-          </g>
-        </svg>
-        <span class="sub">Ref Admin</span>
-      </div>
-      <nav class="sidebar-nav">
-        <div class="nav-group">
-          <div class="nav-group-label">Referrals</div>
-          <button class="nav-item active" onclick="showPage('list')">Программы</button>
-        </div>
-      </nav>
-      <div class="sidebar-footer">
-        <button class="nav-item" style="color:#6b7280" onclick="doLogout()">Выйти</button>
-      </div>
+  <div class="topbar">
+    <div class="topbar-logo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="-9 142 1430 482" height="26">
+        <g stroke="#111111" stroke-width="9" stroke-linejoin="round" stroke-linecap="round">
+          <rect x="-2.3" y="147.8" width="235.4" height="470.8" fill="#2E7DF6"/>
+          <path fill="#55DB9C" d="M485.5,353.2c-2.6,28.2-30.1,27.9-32.4-.3l-18.9-203.3-168.5-1.5v470.4h113.7l1.9-263.8c.2-28.2,28-31,30.7-3l25.8,266.9h61.8l25.8-266.6c2.7-27.9,30.5-25.2,30.7,3l1.9,263.6h132.2V148.1l-185,1.5-19.5,203.6h-.2Z"/>
+          <path fill="#FFD731" d="M1011.7,148.3h-289.2v469.9h289.2c22.4,0,40.6-27.6,40.6-61.6v-96.1c0-34-18.2-61.6-40.6-61.6h-53.5c-8.7-1.5-15.4-12.8-15.4-26.3s7.3-25.7,16.5-26.4h52.4c22.4,0,40.6-27.6,40.6-61.6v-74.4c0-34-18.2-61.6-40.6-61.6h0ZM901.3,509.8c0,14-7.5,25.4-16.7,25.4h-15.3c-9.2,0-16.7-11.4-16.7-25.4v-65.6c0-20.5,10.9-37,24.4-37s24.4,16.6,24.4,37v65.6h-.1ZM901.3,329.3c0,14-7.5,25.4-16.7,25.4h-15.3c-9.2,0-16.7-11.4-16.7-25.4v-60c0-20.5,10.9-37,24.4-37s24.4,16.6,24.4,37v60h-.1Z"/>
+          <path fill="#C9A4FF" d="M1369.7,147.8h-240.5c-24.9,0-45.1,30.6-45.1,68.3v402.3h141v-95.3c0-14,7.5-25.4,16.7-25.4h15.3c9.2,0,16.7,11.4,16.7,25.4v95.3h141V216.1c0-37.7-20.2-68.3-45.1-68.3h0ZM1273.8,311.6v60c0,14-7.5,25.4-16.7,25.4h-15.3c-9.2,0-16.7-11.4-16.7-25.4v-88.2c0-20.5,10.9-37,24.4-37s24.4,16.6,24.4,37v28.1h-.1Z"/>
+        </g>
+      </svg>
+      <span class="sub" id="topbar-name">Партнёр</span>
     </div>
-
-    <div class="main-content">
-
-      <!-- LIST PAGE -->
-      <div id="page-list">
-        <div class="page-header">
-          <div class="page-header-inner">
-            <div class="page-title">Referral Programs</div>
-            <button class="btn btn-primary btn-sm" onclick="openCreate()">+ Добавить</button>
-          </div>
-        </div>
-        <div class="page-body">
-          <div class="stats-row">
-            <div class="stat-card"><div class="stat-val" id="s-total">—</div><div class="stat-lbl">Всего программ</div></div>
-            <div class="stat-card"><div class="stat-val" id="s-active">—</div><div class="stat-lbl">Активных</div></div>
-            <div class="stat-card"><div class="stat-val" id="s-refs">—</div><div class="stat-lbl">Total Referrals</div></div>
-            <div class="stat-card"><div class="stat-val" id="s-conv">—</div><div class="stat-lbl">Completed</div></div>
-            <div class="stat-card"><div class="stat-val" id="s-payout">—</div><div class="stat-lbl">К выплате</div></div>
-          </div>
-
-          <!-- Базовые ставки -->
-          <div class="card" style="margin-bottom:1rem">
-            <div class="card-header" style="padding-bottom:.5rem">
-              <div class="card-title">Базовые ставки комиссий</div>
-              <span style="font-size:.72rem;color:#9ca3af">Применяются к новым партнёрам по умолчанию</span>
-            </div>
-            <div style="display:flex;gap:1.25rem;align-items:flex-end;flex-wrap:wrap;padding:.25rem 1.25rem 1.25rem">
-              <div class="field">
-                <label>L1 — прямой партнёр</label>
-                <div style="display:flex;align-items:center;gap:.35rem">
-                  <input type="number" id="def-l1" value="25" min="0" max="100" step="0.5" style="width:72px"/>
-                  <span class="pct-label">%</span>
-                </div>
-              </div>
-              <div class="field">
-                <label>L2 — аплайн партнёра</label>
-                <div style="display:flex;align-items:center;gap:.35rem">
-                  <input type="number" id="def-l2" value="10" min="0" max="100" step="0.5" style="width:72px"/>
-                  <span class="pct-label">%</span>
-                </div>
-              </div>
-              <div class="field">
-                <label>L3 — аплайн аплайна</label>
-                <div style="display:flex;align-items:center;gap:.35rem">
-                  <input type="number" id="def-l3" value="5" min="0" max="100" step="0.5" style="width:72px"/>
-                  <span class="pct-label">%</span>
-                </div>
-              </div>
-              <div style="display:flex;flex-direction:column;gap:.35rem">
-                <button class="btn btn-outline btn-sm" onclick="saveDefaults()">Сохранить дефолты</button>
-                <div id="def-msg" style="font-size:.7rem;color:#16a34a;min-height:1rem"></div>
-              </div>
-            </div>
-          </div>
-
-          <div class="card">
-            <div class="card-header">
-              <div style="flex:1">
-                <input id="search-input" type="text" placeholder="Поиск по имени, коду, контакту…"
-                  oninput="filterRefs(this.value)"
-                  style="width:100%;max-width:320px;border:1px solid #d1d5db;border-radius:8px;padding:.5rem .75rem;font-size:.8rem;outline:none"/>
-              </div>
-            </div>
-            <div class="overflow-x">
-              <table>
-                <thead><tr>
-                  <th>Партнёр</th><th>Реф-ссылка</th><th>Контакт</th>
-                  <th>Рефералов</th>
-                  <th>Earned</th><th>К выплате</th>
-                  <th>Status</th><th></th>
-                </tr></thead>
-                <tbody id="ref-tbody"><tr><td colspan="9" class="empty">Загрузка…</td></tr></tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- DETAIL PAGE -->
-      <div id="page-detail" style="display:none">
-        <div class="page-header">
-          <div class="page-header-inner">
-            <div class="page-title" id="d-title">—</div>
-            <div style="display:flex;gap:.5rem;flex-wrap:wrap">
-              <button class="btn btn-outline btn-sm" onclick="copyPartnerMessage()">Сообщение</button>
-              <button class="btn btn-outline btn-sm" onclick="openPayoutModal()">Выплачено</button>
-              <button class="btn btn-outline btn-sm" onclick="openEditFromDetail()">Редактировать</button>
-              <button class="btn btn-sm" id="d-toggle-btn" onclick="toggleFromDetail()">—</button>
-            </div>
-          </div>
-        </div>
-        <div class="page-body">
-          <button class="back-link" onclick="showPage('list')">
-            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
-            Назад к программам
-          </button>
-          <div class="card" style="margin-bottom:1.5rem">
-            <div class="detail-grid" id="d-fields"></div>
-            <div id="d-rates" style="padding:.6rem 1.25rem;border-top:1px solid #f3f4f6;display:flex;align-items:center;gap:1rem;flex-wrap:wrap"></div>
-            <div class="mini-stats" id="d-stats"></div>
-          </div>
-          <div class="card" style="margin-bottom:1.5rem">
-            <div class="card-header">
-              <div class="card-title">История выплат</div>
-            </div>
-            <div class="overflow-x">
-              <table>
-                <thead><tr><th>Дата</th><th>Сумма</th><th>Примечание</th></tr></thead>
-                <tbody id="payout-tbody"><tr><td colspan="3" class="empty">Загрузка…</td></tr></tbody>
-              </table>
-            </div>
-          </div>
-
-          <div class="card">
-            <div class="card-header">
-              <div class="card-title">Conversions</div>
-            </div>
-            <div class="overflow-x">
-              <table>
-                <thead><tr>
-                  <th>Referee Email</th><th>Status</th>
-                  <th>Referrer Bonus</th><th>Referee Bonus</th>
-                  <th>Registered</th><th>Converted</th>
-                </tr></thead>
-                <tbody id="conv-tbody"><tr><td colspan="6" class="empty">Загрузка…</td></tr></tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
+    <button class="btn btn-outline btn-sm" onclick="doLogout()">Выйти</button>
   </div>
-</div>
 
-<!-- MODAL CREATE -->
-<div class="overlay" id="modal-create">
-  <div class="modal">
-    <h2>Новый партнёр</h2>
-    <div class="field-row">
-      <div class="field">
-        <label>Имя / канал *</label>
-        <input type="text" id="c-name" placeholder="Иван Блогер"/>
-      </div>
-      <div class="field">
-        <label>Код * (a-z, 0-9, -)</label>
-        <input type="text" id="c-code" placeholder="ivan123" autocomplete="off"
-          oninput="this.value=this.value.toLowerCase().replace(/[^a-z0-9-]/g,'')"/>
-      </div>
+  <div class="page-body">
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-val" id="s-refs">—</div><div class="stat-lbl">Рефералов</div></div>
+      <div class="stat-card"><div class="stat-val" id="s-completed">—</div><div class="stat-lbl">Завершено</div></div>
+      <div class="stat-card"><div class="stat-val" id="s-earned">—</div><div class="stat-lbl">Заработано</div></div>
+      <div class="stat-card"><div class="stat-val" id="s-due">—</div><div class="stat-lbl">К выплате</div></div>
     </div>
-    <div class="field">
-      <label>Контакт (TG, email)</label>
-      <input type="text" id="c-contact" placeholder="@ivan_blogger"/>
-    </div>
-    <div class="field">
-      <label>Аплайн (кто привёл этого партнёра)</label>
-      <select id="c-upline" style="width:100%;border:1px solid #d1d5db;border-radius:8px;padding:.625rem .75rem;font-size:.875rem;background:#fff;color:#111827;outline:none">
-        <option value="">— нет аплайна (L1 без цепочки) —</option>
-      </select>
-    </div>
-    <div class="field-row">
-      <div class="field">
-        <label>L1 % (прямые рефералы)</label>
-        <input type="number" id="c-l1" value="25" min="0" max="100" step="0.5"/>
-      </div>
-      <div class="field">
-        <label>L2 % (аплайн получает)</label>
-        <input type="number" id="c-l2" value="10" min="0" max="100" step="0.5"/>
-      </div>
-      <div class="field">
-        <label>L3 % (аплайн аплайна)</label>
-        <input type="number" id="c-l3" value="5" min="0" max="100" step="0.5"/>
-      </div>
-    </div>
-    <div class="field">
-      <label>Заметка</label>
-      <textarea id="c-note" placeholder="Внутренняя заметка…"></textarea>
-    </div>
-    <div id="c-err" style="display:none" class="err-box"></div>
-    <div class="modal-footer">
-      <button class="btn btn-outline" onclick="closeCreate()">Отмена</button>
-      <button class="btn btn-primary" id="c-btn" onclick="doCreate()">Создать</button>
-    </div>
-  </div>
-</div>
 
-<!-- MODAL EDIT -->
-<div class="overlay" id="modal-edit">
-  <div class="modal">
-    <h2>Редактировать партнёра</h2>
-    <input type="hidden" id="e-id"/>
-    <div class="field-row">
-      <div class="field">
-        <label>Имя / канал</label>
-        <input type="text" id="e-name"/>
-      </div>
-      <div class="field">
-        <label>Контакт</label>
-        <input type="text" id="e-contact"/>
-      </div>
-    </div>
-    <div class="field">
-      <label>Аплайн (кто привёл этого партнёра)</label>
-      <select id="e-upline" style="width:100%;border:1px solid #d1d5db;border-radius:8px;padding:.625rem .75rem;font-size:.875rem;background:#fff;color:#111827;outline:none">
-        <option value="">— нет аплайна —</option>
-      </select>
-    </div>
-    <div class="field-row">
-      <div class="field">
-        <label>L1 %</label>
-        <input type="number" id="e-l1" min="0" max="100" step="0.5"/>
-      </div>
-      <div class="field">
-        <label>L2 %</label>
-        <input type="number" id="e-l2" min="0" max="100" step="0.5"/>
-      </div>
-      <div class="field">
-        <label>L3 %</label>
-        <input type="number" id="e-l3" min="0" max="100" step="0.5"/>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Ваша реферальная ссылка</span></div>
+      <div class="card-body">
+        <div class="link-row">
+          <code id="my-link">—</code>
+          <button class="btn btn-outline btn-sm" onclick="copyMyLink()">Копировать</button>
+        </div>
+        <div style="margin-top:.9rem;display:flex;gap:.5rem;align-items:center;flex-wrap:wrap">
+          <span style="font-size:.7rem;color:#9ca3af;text-transform:uppercase;letter-spacing:.06em">Ваши ставки:</span>
+          <span class="rate-chip rate-l1" id="r-l1">L1 · —%</span>
+          <span class="rate-chip rate-l2" id="r-l2">L2 · —%</span>
+          <span class="rate-chip rate-l3" id="r-l3">L3 · —%</span>
+        </div>
       </div>
     </div>
-    <div class="field">
-      <label>Заметка</label>
-      <textarea id="e-note"></textarea>
-    </div>
-    <div id="e-err" style="display:none" class="err-box"></div>
-    <div class="modal-footer">
-      <button class="btn btn-outline" onclick="closeEdit()">Отмена</button>
-      <button class="btn btn-primary" id="e-btn" onclick="doEdit()">Сохранить</button>
-    </div>
-  </div>
-</div>
 
-<!-- MODAL PAYOUT -->
-<div class="overlay" id="modal-payout">
-  <div class="modal">
-    <h2>Зафиксировать выплату</h2>
-    <input type="hidden" id="p-id"/>
-    <p style="font-size:.8rem;color:#6b7280;margin-bottom:1rem">К выплате: <strong id="p-due" style="color:#111827">—</strong></p>
-    <div class="field">
-      <label>Сумма выплаты ($)</label>
-      <input type="number" id="p-amount" min="0.01" step="0.01" placeholder="0.00"/>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Ваша структура (кого вы привели в партнёрку)</span></div>
+      <div class="overflow-x">
+        <table>
+          <thead><tr><th>Партнёр</th><th>Код</th><th>Его рефералов</th></tr></thead>
+          <tbody id="downline-tbody"><tr><td colspan="3" class="empty">Загрузка…</td></tr></tbody>
+        </table>
+      </div>
     </div>
-    <div id="p-err" style="display:none" class="err-box"></div>
-    <div class="modal-footer">
-      <button class="btn btn-outline" onclick="closePayout()">Отмена</button>
-      <button class="btn btn-primary" id="p-btn" onclick="doPayout()">Записать</button>
+
+    <div class="card">
+      <div class="card-header"><span class="card-title">История выплат</span></div>
+      <div class="overflow-x">
+        <table>
+          <thead><tr><th>Дата</th><th>Сумма</th><th>Примечание</th></tr></thead>
+          <tbody id="payout-tbody"><tr><td colspan="3" class="empty">Загрузка…</td></tr></tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>
@@ -452,11 +187,9 @@ tbody tr:hover td{background:#f9fafb}
 
 <script>
 const API = 'https://api.imba.live';
-let token = localStorage.getItem('imba_ref_token') || '';
-let refs = [];
-let currentId = null;
+const TOKEN_KEY = 'imba_ref_partner_token';
+let token = localStorage.getItem(TOKEN_KEY) || '';
 
-// ── utils ──────────────────────────────────────────────
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg; t.classList.remove('hidden');
@@ -467,10 +200,11 @@ function showErr(id, msg) {
   el.textContent = msg; el.style.display = msg ? 'block' : 'none';
 }
 async function apiFetch(method, path, body) {
-  const opts = { method, headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' } };
+  const opts = { method, headers: { 'Content-Type': 'application/json' } };
+  if (token) opts.headers['Authorization'] = 'Bearer ' + token;
   if (body !== undefined) opts.body = JSON.stringify(body);
   const r = await fetch(API + path, opts);
-  if (r.status === 401 || r.status === 403) { doLogout(); throw new Error('Unauthorized'); }
+  if (r.status === 401 || r.status === 403) { doLogout(); throw new Error('Сессия истекла, войдите снова'); }
   if (!r.ok) { const e = await r.json().catch(() => ({})); throw new Error(e.detail || r.statusText); }
   return r.json();
 }
@@ -478,418 +212,95 @@ function fmtDate(iso) {
   if (!iso) return '—';
   return new Date(iso).toLocaleDateString('ru', {day:'2-digit',month:'2-digit',year:'2-digit'});
 }
-function refLink(code) { return 'https://www.imba.live/?ref=' + code; }
 function copy(text) { navigator.clipboard.writeText(text).then(() => showToast('Скопировано')); }
+function copyMyLink() { copy(document.getElementById('my-link').textContent); }
 
-// ── auth ───────────────────────────────────────────────
+// ── auth ──────────────────────────────────────────────
+const setupToken = new URLSearchParams(location.search).get('setup');
+
 async function doLogin(e) {
   e.preventDefault();
-  const em = document.getElementById('l-email').value.trim();
-  const pw = document.getElementById('l-pass').value;
+  const email = document.getElementById('l-email').value.trim();
+  const password = document.getElementById('l-pass').value;
   const btn = document.getElementById('l-btn');
   showErr('l-err', '');
   btn.disabled = true; btn.textContent = 'Вход…';
   try {
-    const r = await fetch(API + '/v1/auth/login', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: em, password: pw }),
-    });
-    const d = await r.json();
-    if (!r.ok) throw new Error(d.detail || 'Неверный email или пароль');
-    const tok = d.token || d.access_token;
-    const check = await fetch(API + '/v1/admin/stats', { headers: { 'Authorization': 'Bearer ' + tok } });
-    if (!check.ok) throw new Error('Нет прав администратора');
-    token = tok;
-    localStorage.setItem('imba_ref_token', token);
+    const r = await apiFetch('POST', '/v1/ref/login', { email, password });
+    token = r.token;
+    localStorage.setItem(TOKEN_KEY, token);
     showApp();
-  } catch(err) {
+  } catch (err) {
     showErr('l-err', err.message);
   } finally { btn.disabled = false; btn.textContent = 'Войти'; }
 }
 
+async function doSetup(e) {
+  e.preventDefault();
+  const email = document.getElementById('s-email').value.trim();
+  const password = document.getElementById('s-pass').value;
+  const btn = document.getElementById('s-btn');
+  showErr('s-err', '');
+  btn.disabled = true; btn.textContent = 'Создаём…';
+  try {
+    const r = await apiFetch('POST', '/v1/ref/setup', { token: setupToken, email, password });
+    token = r.token;
+    localStorage.setItem(TOKEN_KEY, token);
+    history.replaceState(null, '', location.pathname);
+    showApp();
+  } catch (err) {
+    showErr('s-err', err.message);
+  } finally { btn.disabled = false; btn.textContent = 'Создать кабинет'; }
+}
+
 function doLogout() {
   token = '';
-  localStorage.removeItem('imba_ref_token');
+  localStorage.removeItem(TOKEN_KEY);
   document.getElementById('app').style.display = 'none';
-  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('auth-screen').style.display = 'flex';
 }
 
 function showApp() {
-  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('auth-screen').style.display = 'none';
   document.getElementById('app').style.display = 'block';
-  loadRefs();
+  loadDashboard();
 }
 
-// ── pages ──────────────────────────────────────────────
-function showPage(name) {
-  document.getElementById('page-list').style.display = name === 'list' ? '' : 'none';
-  document.getElementById('page-detail').style.display = name === 'detail' ? '' : 'none';
-}
-
-// ── defaults ───────────────────────────────────────────
-let refDefaults = { l1_pct: 25, l2_pct: 10, l3_pct: 5 };
-
-async function loadDefaults() {
+async function loadDashboard() {
   try {
-    const d = await apiFetch('GET', '/v1/admin/referral-defaults');
-    refDefaults = d;
-    document.getElementById('def-l1').value = d.l1_pct;
-    document.getElementById('def-l2').value = d.l2_pct;
-    document.getElementById('def-l3').value = d.l3_pct;
-  } catch(e) { /* non-critical */ }
-}
+    const d = await apiFetch('GET', '/v1/ref/me');
+    document.getElementById('topbar-name').textContent = d.name || d.referral_code;
+    document.getElementById('s-refs').textContent = d.total_referrals;
+    document.getElementById('s-completed').textContent = d.completed;
+    document.getElementById('s-earned').textContent = '$' + d.total_earned.toFixed(2);
+    document.getElementById('s-due').textContent = '$' + d.pending_payout.toFixed(2);
+    document.getElementById('my-link').textContent = d.referral_link;
+    document.getElementById('r-l1').textContent = 'L1 · ' + d.l1_pct + '%';
+    document.getElementById('r-l2').textContent = 'L2 · ' + d.l2_pct + '%';
+    document.getElementById('r-l3').textContent = 'L3 · ' + d.l3_pct + '%';
 
-async function saveDefaults() {
-  const l1 = parseFloat(document.getElementById('def-l1').value) || 25;
-  const l2 = parseFloat(document.getElementById('def-l2').value) || 10;
-  const l3 = parseFloat(document.getElementById('def-l3').value) || 5;
-  const msg = document.getElementById('def-msg');
-  try {
-    await apiFetch('PATCH', '/v1/admin/referral-defaults', { l1_pct: l1, l2_pct: l2, l3_pct: l3 });
-    refDefaults = { l1_pct: l1, l2_pct: l2, l3_pct: l3 };
-    msg.textContent = '✓ Сохранено';
-    setTimeout(() => { msg.textContent = ''; }, 2500);
-  } catch(e) {
-    msg.style.color = '#dc2626';
-    msg.textContent = e.message;
-    setTimeout(() => { msg.style.color = '#16a34a'; msg.textContent = ''; }, 3000);
+    const dl = document.getElementById('downline-tbody');
+    dl.innerHTML = !d.downline.length
+      ? '<tr><td colspan="3" class="empty">Вы пока никого не привели в партнёрку</td></tr>'
+      : d.downline.map(p => `<tr><td>${p.name || '—'}</td><td class="mono">${p.referral_code}</td><td>${p.total_referrals}</td></tr>`).join('');
+
+    const po = document.getElementById('payout-tbody');
+    po.innerHTML = !d.payouts.length
+      ? '<tr><td colspan="3" class="empty">Выплат ещё нет</td></tr>'
+      : d.payouts.map(p => `<tr><td>${fmtDate(p.created_at)}</td><td class="mono" style="font-weight:600;color:#16a34a">+$${p.amount.toFixed(2)}</td><td>${p.detail || '—'}</td></tr>`).join('');
+  } catch (e) {
+    showToast(e.message);
   }
 }
 
-// ── list ───────────────────────────────────────────────
-async function loadRefs() {
-  try {
-    [refs] = await Promise.all([
-      apiFetch('GET', '/v1/admin/referrals?limit=200'),
-      loadDefaults(),
-    ]);
-    renderRefs();
-  } catch(e) {
-    document.getElementById('ref-tbody').innerHTML = `<tr><td colspan="9" class="empty">${e.message}</td></tr>`;
-  }
+// ── init ──────────────────────────────────────────────
+if (setupToken) {
+  document.getElementById('auth-sub').textContent = 'Создайте свой кабинет партнёра';
+  document.getElementById('login-form').style.display = 'none';
+  document.getElementById('setup-form').style.display = 'block';
+} else if (token) {
+  showApp();
 }
-
-function filterRefs(q) {
-  const query = q.toLowerCase().trim();
-  const filtered = query ? refs.filter(r =>
-    (r.name||'').toLowerCase().includes(query) ||
-    (r.referral_code||'').toLowerCase().includes(query) ||
-    (r.contact||'').toLowerCase().includes(query)
-  ) : refs;
-  renderRefRows(filtered);
-}
-
-function renderRefRows(list) {
-  const tbody = document.getElementById('ref-tbody');
-  if (!list.length) { tbody.innerHTML = '<tr><td colspan="8" class="empty">Ничего не найдено.</td></tr>'; return; }
-  tbody.innerHTML = list.map(r => `
-    <tr style="cursor:pointer" onclick="showDetail('${r.id}')">
-      <td style="font-weight:500">${r.name || '<span style="color:#9ca3af">—</span>'}</td>
-      <td onclick="event.stopPropagation()">
-        <div style="display:flex;align-items:center;gap:.4rem">
-          <code style="font-size:.72rem;color:#6b7280;font-family:monospace">?ref=${r.referral_code}</code>
-          <button class="btn btn-outline btn-sm" style="padding:.25rem .5rem;font-size:.7rem" onclick="copy('${refLink(r.referral_code)}')">Копировать</button>
-        </div>
-      </td>
-      <td style="color:#6b7280">${r.contact || '—'}</td>
-      <td style="font-weight:600">${r.total_referrals}</td>
-      <td class="mono">$${r.total_earned.toFixed(2)}</td>
-      <td class="mono" style="color:${r.pending_payout>0?'#d97706':'#6b7280'};font-weight:${r.pending_payout>0?600:400}">$${(r.pending_payout||0).toFixed(2)}</td>
-      <td><span class="badge ${r.is_active ? 'badge-green' : 'badge-gray'}">${r.is_active ? 'Active' : 'Inactive'}</span></td>
-      <td onclick="event.stopPropagation()">
-        <button class="btn ${r.is_active?'btn-danger-link':'btn-link'} btn-sm" onclick="toggleRef('${r.id}')">${r.is_active?'Disable':'Enable'}</button>
-      </td>
-    </tr>
-  `).join('');
-}
-
-function renderRefs() {
-  const totalPayout = refs.reduce((a,r) => a + (r.pending_payout || 0), 0);
-  document.getElementById('s-total').textContent = refs.length;
-  document.getElementById('s-active').textContent = refs.filter(r=>r.is_active).length;
-  document.getElementById('s-refs').textContent = refs.reduce((a,r)=>a+r.total_referrals,0);
-  document.getElementById('s-conv').textContent = refs.reduce((a,r)=>a+r.completed,0);
-  document.getElementById('s-payout').textContent = '$' + totalPayout.toFixed(2);
-  if (!refs.length) {
-    document.getElementById('ref-tbody').innerHTML = '<tr><td colspan="8" class="empty">Нет программ. Создайте первую.</td></tr>';
-    return;
-  }
-  const q = document.getElementById('search-input')?.value || '';
-  filterRefs(q);
-}
-
-// ── toggle ─────────────────────────────────────────────
-async function toggleRef(id) {
-  try {
-    const r = await apiFetch('POST', '/v1/admin/referrals/' + id + '/toggle');
-    const idx = refs.findIndex(x=>x.id===id);
-    if (idx>=0) refs[idx].is_active = r.is_active;
-    renderRefs();
-    if (currentId === id) updateDetailToggleBtn();
-    showToast(r.is_active ? 'Включено' : 'Отключено');
-  } catch(e) { showToast('Ошибка: ' + e.message); }
-}
-
-// ── detail ─────────────────────────────────────────────
-async function showDetail(id) {
-  currentId = id;
-  showPage('detail');
-  const prog = refs.find(r=>r.id===id);
-  if (prog) renderDetailMeta(prog);
-  document.getElementById('conv-tbody').innerHTML = '<tr><td colspan="6" class="empty">Загрузка…</td></tr>';
-  document.getElementById('payout-tbody').innerHTML = '<tr><td colspan="3" class="empty">Загрузка…</td></tr>';
-  const [convs, payouts] = await Promise.allSettled([
-    apiFetch('GET', '/v1/admin/referrals/' + id + '/conversions'),
-    apiFetch('GET', '/v1/admin/referrals/' + id + '/payouts'),
-  ]);
-  if (convs.status === 'fulfilled') renderConversions(convs.value);
-  else document.getElementById('conv-tbody').innerHTML = `<tr><td colspan="6" class="empty">${convs.reason.message}</td></tr>`;
-  if (payouts.status === 'fulfilled') renderPayouts(payouts.value);
-  else document.getElementById('payout-tbody').innerHTML = `<tr><td colspan="3" class="empty">${payouts.reason?.message||'Нет выплат'}</td></tr>`;
-}
-
-function renderPayouts(list) {
-  const tbody = document.getElementById('payout-tbody');
-  if (!list.length) { tbody.innerHTML = '<tr><td colspan="3" class="empty">Выплат ещё нет</td></tr>'; return; }
-  tbody.innerHTML = list.map(p => `
-    <tr>
-      <td style="color:#6b7280">${fmtDate(p.created_at)}</td>
-      <td class="mono" style="font-weight:600;color:#16a34a">+$${p.amount.toFixed(2)}</td>
-      <td style="color:#6b7280;font-size:.75rem">${p.detail||'—'}</td>
-    </tr>
-  `).join('');
-}
-
-function copyPartnerMessage() {
-  const prog = refs.find(r=>r.id===currentId); if(!prog) return;
-  const link = refLink(prog.referral_code);
-  const l1 = prog.l1_pct || 25;
-  const l2 = prog.l2_pct || 10;
-  const l3 = prog.l3_pct || 5;
-  const msg = `Привет! 👋
-
-Вот твоя реферальная ссылка IMBA:
-${link}
-
-Комиссия с первой оплаты каждого клиента:
-• Ты (L1) получаешь: ${l1}%
-• Тот, кто привёл тебя (L2): ${l2}%
-• Аплайн L2 (L3): ${l3}%
-
-Комиссия начисляется только с первого платежа клиента — разово.
-Ссылку можно вставлять в посты, stories, личные сообщения — она уникальная и отслеживается автоматически.`;
-  copy(msg);
-  showToast('Сообщение скопировано в буфер');
-}
-
-function renderDetailMeta(prog) {
-  document.getElementById('d-title').textContent = prog.name || prog.referral_code;
-  updateDetailToggleBtn();
-
-  const link = refLink(prog.referral_code);
-  document.getElementById('d-fields').innerHTML = `
-    <div class="detail-field" style="grid-column:1/-1">
-      <div class="lbl">Реф-ссылка</div>
-      <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin-top:.2rem">
-        <code style="background:#f3f4f6;border:1px solid #e5e7eb;border-radius:6px;padding:.35rem .6rem;font-size:.8rem;color:#1d4ed8;word-break:break-all;flex:1">${link}</code>
-        <button class="btn btn-outline btn-sm" onclick="copy('${link}')">Копировать</button>
-      </div>
-    </div>
-    <div class="detail-field"><div class="lbl">Код</div>
-      <div class="val mono" style="color:#374151">${prog.referral_code}</div></div>
-    <div class="detail-field"><div class="lbl">Контакт</div><div class="val ${prog.contact?'':'muted'}">${prog.contact||'—'}</div></div>
-    <div class="detail-field"><div class="lbl">Бонус рефоводу</div><div class="val mono">$${prog.referrer_bonus}</div></div>
-    <div class="detail-field"><div class="lbl">Бонус рефералу</div><div class="val mono">$${prog.referee_bonus}</div></div>
-    <div class="detail-field"><div class="lbl">Выплачено</div><div class="val mono">$${(prog.total_paid||0).toFixed(2)}</div></div>
-    <div class="detail-field"><div class="lbl">Создан</div><div class="val muted">${fmtDate(prog.created_at)}</div></div>
-    ${prog.note ? `<div class="detail-field" style="grid-column:1/-1"><div class="lbl">Заметка</div><div class="val" style="font-weight:400;color:#374151">${prog.note}</div></div>` : ''}
-  `;
-
-  const el1 = prog.total_earned_l1||0, el2 = prog.total_earned_l2||0, el3 = prog.total_earned_l3||0;
-  const uplineName = prog.upline_id ? (refs.find(r=>r.id===prog.upline_id)?.name || prog.upline_id.slice(0,8)+'…') : null;
-  document.getElementById('d-stats').innerHTML = `
-    <div class="mini-stat blue"><div class="mv">${prog.total_referrals}</div><div class="ml">Конверсий</div></div>
-    <div class="mini-stat green"><div class="mv">${prog.completed}</div><div class="ml">Завершено</div></div>
-    <div class="mini-stat yellow"><div class="mv">${prog.pending}</div><div class="ml">В ожидании</div></div>
-    <div class="mini-stat blue"><div class="mv mono" style="font-size:.95rem">$${(el1).toFixed(2)}</div><div class="ml">L1 (${prog.l1_pct||25}%)</div></div>
-    <div class="mini-stat blue"><div class="mv mono" style="font-size:.95rem">$${(el2).toFixed(2)}</div><div class="ml">L2 (${prog.l2_pct||10}%)</div></div>
-    <div class="mini-stat blue"><div class="mv mono" style="font-size:.95rem">$${(el3).toFixed(2)}</div><div class="ml">L3 (${prog.l3_pct||5}%)</div></div>
-    <div class="mini-stat green"><div class="mv mono" style="font-size:.95rem">$${prog.total_earned.toFixed(2)}</div><div class="ml">Итого заработано</div></div>
-    <div class="mini-stat ${(prog.pending_payout||0)>0?'yellow':''}"><div class="mv mono" style="font-size:.95rem;color:${(prog.pending_payout||0)>0?'#d97706':'#6b7280'}">$${(prog.pending_payout||0).toFixed(2)}</div><div class="ml">К выплате</div></div>
-    <div class="mini-stat"><div class="mv mono" style="font-size:.95rem;color:#6b7280">$${(prog.total_paid||0).toFixed(2)}</div><div class="ml">Выплачено</div></div>
-    ${uplineName ? `<div class="mini-stat" style="grid-column:1/-1;text-align:left;background:#f9fafb"><div class="lbl" style="font-size:.65rem;color:#9ca3af;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.25rem">Аплайн (L2 для клиентов этого партнёра)</div><div style="font-size:.8rem;font-weight:600;color:#374151">${uplineName}</div></div>` : ''}
-  `;
-
-  document.getElementById('d-rates').innerHTML = `
-    <span style="font-size:.7rem;color:#9ca3af;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap">Ставки комиссий:</span>
-    <span class="rate-chip rate-l1">L1 · ${prog.l1_pct||25}%</span>
-    <span class="rate-chip rate-l2">L2 · ${prog.l2_pct||10}%</span>
-    <span class="rate-chip rate-l3">L3 · ${prog.l3_pct||5}%</span>
-    <button class="btn btn-link btn-sm" style="font-size:.75rem;padding:.15rem .4rem" onclick="openEditFromDetail()">Изменить</button>
-  `;
-}
-
-function updateDetailToggleBtn() {
-  const prog = refs.find(r=>r.id===currentId); if (!prog) return;
-  const btn = document.getElementById('d-toggle-btn');
-  btn.textContent = prog.is_active ? 'Disable' : 'Enable';
-  btn.className = `btn btn-sm ${prog.is_active ? 'btn-danger-link' : 'btn-outline'}`;
-}
-function toggleFromDetail() { if (currentId) toggleRef(currentId); }
-
-function renderConversions(convs) {
-  const tbody = document.getElementById('conv-tbody');
-  if (!convs.length) { tbody.innerHTML = '<tr><td colspan="6" class="empty">No conversions yet</td></tr>'; return; }
-  tbody.innerHTML = convs.map(c => `
-    <tr>
-      <td>${c.referee_email || c.referee_id || '—'}</td>
-      <td><span class="badge ${c.status==='completed'?'badge-green':'badge-yellow'}">${c.status.toUpperCase()}</span></td>
-      <td style="color:${c.referrer_bonus_paid?'#16a34a':'#9ca3af'};font-weight:${c.referrer_bonus_paid?600:400}">${c.referrer_bonus_paid?'✓ Paid':'—'}</td>
-      <td style="color:${c.referee_bonus_paid?'#16a34a':'#9ca3af'};font-weight:${c.referee_bonus_paid?600:400}">${c.referee_bonus_paid?'✓ Paid':'—'}</td>
-      <td style="color:#6b7280">${fmtDate(c.created_at)}</td>
-      <td style="color:#6b7280">${c.completed_at?fmtDate(c.completed_at):'—'}</td>
-    </tr>
-  `).join('');
-}
-
-// ── helpers ────────────────────────────────────────────
-function populateUplineSelect(selectId, excludeId) {
-  const sel = document.getElementById(selectId);
-  const cur = sel.value;
-  sel.innerHTML = '<option value="">— нет аплайна —</option>';
-  refs.filter(r => r.id !== excludeId).forEach(r => {
-    const opt = document.createElement('option');
-    opt.value = r.id;
-    opt.textContent = (r.name || r.referral_code) + ' (?ref=' + r.referral_code + ')';
-    if (r.id === cur) opt.selected = true;
-    sel.appendChild(opt);
-  });
-}
-
-// ── create ─────────────────────────────────────────────
-function openCreate() {
-  ['c-name','c-code','c-contact','c-note'].forEach(id => document.getElementById(id).value='');
-  document.getElementById('c-l1').value = refDefaults.l1_pct;
-  document.getElementById('c-l2').value = refDefaults.l2_pct;
-  document.getElementById('c-l3').value = refDefaults.l3_pct;
-  populateUplineSelect('c-upline', null);
-  document.getElementById('c-upline').value='';
-  showErr('c-err','');
-  document.getElementById('modal-create').classList.add('open');
-  setTimeout(()=>document.getElementById('c-name').focus(),50);
-}
-function closeCreate() { document.getElementById('modal-create').classList.remove('open'); }
-
-async function doCreate() {
-  const name = document.getElementById('c-name').value.trim();
-  const code = document.getElementById('c-code').value.trim();
-  const contact = document.getElementById('c-contact').value.trim();
-  const note = document.getElementById('c-note').value.trim();
-  const upline_id = document.getElementById('c-upline').value || null;
-  const l1_pct = parseFloat(document.getElementById('c-l1').value) || 25;
-  const l2_pct = parseFloat(document.getElementById('c-l2').value) || 10;
-  const l3_pct = parseFloat(document.getElementById('c-l3').value) || 5;
-  showErr('c-err','');
-  if (!name) { showErr('c-err','Укажите имя партнёра'); return; }
-  if (!code || code.length < 3) { showErr('c-err','Код минимум 3 символа'); return; }
-  const btn = document.getElementById('c-btn');
-  btn.disabled=true; btn.textContent='Создаём…';
-  try {
-    const r = await apiFetch('POST','/v1/admin/referrals',{referral_code:code,name,contact:contact||null,note:note||null,upline_id,l1_pct,l2_pct,l3_pct});
-    refs.unshift({...r,total_referrals:0,completed:0,pending:0,total_earned:0,total_earned_l1:0,total_earned_l2:0,total_earned_l3:0,pending_payout:0});
-    renderRefs(); closeCreate();
-    showToast('Создано. Ссылка: ' + refLink(r.referral_code));
-  } catch(e) { showErr('c-err',e.message); }
-  finally { btn.disabled=false; btn.textContent='Создать'; }
-}
-
-// ── edit ───────────────────────────────────────────────
-function openEdit(p) {
-  document.getElementById('e-id').value=p.id;
-  document.getElementById('e-name').value=p.name||'';
-  document.getElementById('e-contact').value=p.contact||'';
-  document.getElementById('e-l1').value=p.l1_pct||25;
-  document.getElementById('e-l2').value=p.l2_pct||10;
-  document.getElementById('e-l3').value=p.l3_pct||5;
-  document.getElementById('e-note').value=p.note||'';
-  populateUplineSelect('e-upline', p.id);
-  document.getElementById('e-upline').value=p.upline_id||'';
-  showErr('e-err','');
-  document.getElementById('modal-edit').classList.add('open');
-  setTimeout(()=>document.getElementById('e-name').focus(),50);
-}
-function openEditFromDetail() {
-  const p = refs.find(r=>r.id===currentId);
-  if (p) openEdit(p);
-}
-function closeEdit() { document.getElementById('modal-edit').classList.remove('open'); }
-
-async function doEdit() {
-  const id=document.getElementById('e-id').value;
-  const name=document.getElementById('e-name').value.trim();
-  const contact=document.getElementById('e-contact').value.trim();
-  const note=document.getElementById('e-note').value.trim();
-  const upline_id=document.getElementById('e-upline').value||null;
-  const l1_pct=parseFloat(document.getElementById('e-l1').value)||25;
-  const l2_pct=parseFloat(document.getElementById('e-l2').value)||10;
-  const l3_pct=parseFloat(document.getElementById('e-l3').value)||5;
-  showErr('e-err','');
-  const btn=document.getElementById('e-btn');
-  btn.disabled=true; btn.textContent='Сохраняем…';
-  try {
-    const r=await apiFetch('PATCH','/v1/admin/referrals/'+id,{name:name||null,contact:contact||null,note:note||null,upline_id,l1_pct,l2_pct,l3_pct});
-    const idx=refs.findIndex(x=>x.id===id);
-    if(idx>=0) Object.assign(refs[idx],{name:r.name,contact:r.contact,note:r.note,upline_id:r.upline_id,l1_pct:r.l1_pct,l2_pct:r.l2_pct,l3_pct:r.l3_pct});
-    renderRefs();
-    if(currentId===id && document.getElementById('page-detail').style.display!=='none') renderDetailMeta(refs[idx]);
-    closeEdit(); showToast('Сохранено');
-  } catch(e) { showErr('e-err',e.message); }
-  finally { btn.disabled=false; btn.textContent='Сохранить'; }
-}
-
-// ── payout ─────────────────────────────────────────────
-function openPayoutModal() {
-  const prog = refs.find(r=>r.id===currentId); if(!prog) return;
-  document.getElementById('p-id').value=currentId;
-  document.getElementById('p-amount').value='';
-  document.getElementById('p-due').textContent='$'+(prog.pending_payout||0).toFixed(2);
-  showErr('p-err','');
-  document.getElementById('modal-payout').classList.add('open');
-  setTimeout(()=>document.getElementById('p-amount').focus(),50);
-}
-function closePayout() { document.getElementById('modal-payout').classList.remove('open'); }
-
-async function doPayout() {
-  const id=document.getElementById('p-id').value;
-  const amount=parseFloat(document.getElementById('p-amount').value);
-  showErr('p-err','');
-  if(!amount || amount<=0) { showErr('p-err','Укажите сумму'); return; }
-  const btn=document.getElementById('p-btn');
-  btn.disabled=true; btn.textContent='Записываем…';
-  try {
-    const r=await apiFetch('POST','/v1/admin/referrals/'+id+'/payout',{amount});
-    const idx=refs.findIndex(x=>x.id===id);
-    if(idx>=0) {
-      refs[idx].total_paid=r.total_paid;
-      refs[idx].pending_payout=Math.max(0,(refs[idx].total_earned||0)-r.total_paid);
-    }
-    renderRefs();
-    if(currentId===id) {
-      renderDetailMeta(refs[idx]);
-      apiFetch('GET','/v1/admin/referrals/'+id+'/payouts').then(renderPayouts).catch(()=>{});
-    }
-    closePayout(); showToast('Выплата записана: $'+amount.toFixed(2));
-  } catch(e) { showErr('p-err',e.message); }
-  finally { btn.disabled=false; btn.textContent='Записать'; }
-}
-
-// close overlays on background click
-['modal-create','modal-edit','modal-payout'].forEach(id => {
-  document.getElementById(id).addEventListener('click', e => { if(e.target===e.currentTarget) document.getElementById(id).classList.remove('open'); });
-});
-
-// ── init ───────────────────────────────────────────────
-if (token) { showApp(); }
 </script>
 </body>
 </html>

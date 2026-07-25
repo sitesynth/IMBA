@@ -259,6 +259,13 @@ export interface ReferralProgram {
   referrer_id: string
   referrer_email?: string
   referral_code: string
+  name: string | null
+  contact: string | null
+  note: string | null
+  upline_id: string | null
+  l1_pct: number
+  l2_pct: number
+  l3_pct: number
   referrer_bonus: number
   referee_bonus: number
   is_active: boolean
@@ -266,6 +273,45 @@ export interface ReferralProgram {
   completed: number
   pending: number
   total_earned: number
+  total_earned_l1: number
+  total_earned_l2: number
+  total_earned_l3: number
+  total_paid: number
+  pending_payout: number
+  created_at: string
+}
+
+export interface ReferralDefaults {
+  l1_pct: number
+  l2_pct: number
+  l3_pct: number
+}
+
+export interface CreateReferralProgramPayload {
+  referral_code: string
+  name?: string | null
+  contact?: string | null
+  note?: string | null
+  upline_id?: string | null
+  l1_pct: number
+  l2_pct: number
+  l3_pct: number
+}
+
+export interface UpdateReferralProgramPayload {
+  name?: string | null
+  contact?: string | null
+  note?: string | null
+  upline_id?: string | null
+  l1_pct?: number
+  l2_pct?: number
+  l3_pct?: number
+}
+
+export interface ReferralPayout {
+  amount: number
+  detail: string | null
+  created_at: string | null
 }
 
 export interface ReferralConversion {
@@ -312,6 +358,49 @@ export function toggleReferralProgram(programId: string) {
   return adminReq<ReferralProgram>(`/v1/admin/referrals/${programId}/toggle`, {
     method: "POST",
   })
+}
+
+export function createReferralProgram(payload: CreateReferralProgramPayload) {
+  return adminReq<ReferralProgram>("/v1/admin/referrals", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  })
+}
+
+export function updateReferralProgram(programId: string, payload: UpdateReferralProgramPayload) {
+  return adminReq<ReferralProgram>(`/v1/admin/referrals/${programId}`, {
+    method: "PATCH",
+    body: JSON.stringify(payload),
+  })
+}
+
+export function getReferralDefaults() {
+  return adminReq<ReferralDefaults>("/v1/admin/referral-defaults")
+}
+
+export function updateReferralDefaults(payload: ReferralDefaults) {
+  return adminReq<ReferralDefaults>("/v1/admin/referral-defaults", {
+    method: "PATCH",
+    body: JSON.stringify(payload),
+  })
+}
+
+export function recordReferralPayout(programId: string, amount: number) {
+  return adminReq<{ id: string; referral_code: string; total_paid: number }>(
+    `/v1/admin/referrals/${programId}/payout`,
+    { method: "POST", body: JSON.stringify({ amount }) },
+  )
+}
+
+export function getReferralPayouts(programId: string) {
+  return adminReq<ReferralPayout[]>(`/v1/admin/referrals/${programId}/payouts`)
+}
+
+export function generatePartnerSetupLink(programId: string) {
+  return adminReq<{ setup_url: string; expires_at: string }>(
+    `/v1/admin/referrals/${programId}/setup-link`,
+    { method: "POST" },
+  )
 }
 
 export interface Subscription {
@@ -449,6 +538,8 @@ export interface Promocode {
   is_active: boolean
   valid_from: string | null
   valid_until: string | null
+  referral_program_id: string | null
+  referral_partner_name: string | null
 }
 
 export interface CreatePromocodePayload {
@@ -458,6 +549,7 @@ export interface CreatePromocodePayload {
   discount_value: number
   max_uses?: number | null
   valid_until?: string | null
+  referral_program_id?: string | null
 }
 
 export function listPromocodes() {

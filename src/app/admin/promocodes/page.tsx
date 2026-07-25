@@ -2,8 +2,8 @@
 import { useEffect, useState } from 'react'
 import { Copy, Check, Plus, ToggleLeft, ToggleRight, Tag, Loader2 } from 'lucide-react'
 import {
-  listPromocodes, createPromocode, togglePromocode,
-  type Promocode,
+  listPromocodes, createPromocode, togglePromocode, getReferralPrograms,
+  type Promocode, type ReferralProgram,
 } from '@/lib/admin-api'
 
 function randomSuffix(len = 6) {
@@ -13,6 +13,7 @@ function randomSuffix(len = 6) {
 
 export default function AdminPromocodesPage() {
   const [codes, setCodes] = useState<Promocode[]>([])
+  const [partners, setPartners] = useState<ReferralProgram[]>([])
   const [loading, setLoading] = useState(true)
   const [generating, setGenerating] = useState(false)
   const [copied, setCopied] = useState<string | null>(null)
@@ -24,6 +25,7 @@ export default function AdminPromocodesPage() {
   const [maxUses, setMaxUses] = useState<number | ''>(1)
   const [validUntil, setValidUntil] = useState('')
   const [description, setDescription] = useState('')
+  const [referralProgramId, setReferralProgramId] = useState('')
   const [lastBatch, setLastBatch] = useState<string[]>([])
   const [batchError, setBatchError] = useState('')
 
@@ -31,7 +33,11 @@ export default function AdminPromocodesPage() {
 
   async function load() {
     setLoading(true)
-    try { setCodes(await listPromocodes()) } catch { /* ignore */ }
+    try {
+      const [promo, refs] = await Promise.all([listPromocodes(), getReferralPrograms()])
+      setCodes(promo)
+      setPartners(refs)
+    } catch { /* ignore */ }
     setLoading(false)
   }
 
@@ -50,6 +56,7 @@ export default function AdminPromocodesPage() {
           discount_value: days,
           max_uses: maxUses !== '' ? maxUses : null,
           valid_until: validUntil ? new Date(validUntil).toISOString() : null,
+          referral_program_id: referralProgramId || null,
         })
         created.push(code)
       } catch (e: unknown) {
@@ -155,6 +162,19 @@ export default function AdminPromocodesPage() {
               className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
             />
           </div>
+          <div>
+            <label className="block text-xs font-semibold text-gray-500 mb-1">Привязать к рефералу (необязательно)</label>
+            <select
+              value={referralProgramId}
+              onChange={e => setReferralProgramId(e.target.value)}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white"
+            >
+              <option value="">— не привязывать —</option>
+              {partners.map(p => (
+                <option key={p.id} value={p.id}>{p.name || p.referral_code} (?ref={p.referral_code})</option>
+              ))}
+            </select>
+          </div>
         </div>
 
         <div className="flex items-center gap-3">
@@ -169,6 +189,7 @@ export default function AdminPromocodesPage() {
           <span className="text-xs text-gray-400">
             Формат: {prefix || 'PREFIX'}-XXXXXX · {days} дней VPN
             {maxUses !== '' ? ` · до ${maxUses} юз.` : ' · безлимит'}
+            {referralProgramId ? ' · комиссия партнёру за редемпшн' : ''}
           </span>
         </div>
 
@@ -221,6 +242,7 @@ export default function AdminPromocodesPage() {
                 <th className="px-5 py-2.5 text-left">Использований</th>
                 <th className="px-5 py-2.5 text-left">Истекает</th>
                 <th className="px-5 py-2.5 text-left">Описание</th>
+                <th className="px-5 py-2.5 text-left">Реферал</th>
                 <th className="px-5 py-2.5 text-left">Статус</th>
                 <th className="px-5 py-2.5 text-left">Действия</th>
               </tr>
@@ -237,6 +259,7 @@ export default function AdminPromocodesPage() {
                     {p.valid_until ? p.valid_until.slice(0, 10) : '∞'}
                   </td>
                   <td className="px-5 py-3 text-gray-500 max-w-[180px] truncate">{p.description || '—'}</td>
+                  <td className="px-5 py-3 text-gray-500">{p.referral_partner_name || '—'}</td>
                   <td className="px-5 py-3">
                     <span className={`text-xs font-bold ${p.is_active ? 'text-green-600' : 'text-gray-400'}`}>
                       {p.is_active ? 'Активен' : 'Выкл'}
