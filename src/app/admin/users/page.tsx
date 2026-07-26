@@ -85,7 +85,7 @@ function UserRow({ u, index, onRefresh, onDeleted, selected, onSelect }: { u: Ad
             ? <span className="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">Active</span>
             : <span className="px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">Blocked</span>}
         </td>
-        <td className="px-4 py-3 text-sm text-gray-700">{new Date(u.created_at).toLocaleDateString('ru')}</td>
+        <td className="px-3 py-3 text-xs text-gray-500 tabular-nums whitespace-nowrap">{new Date(u.created_at).toLocaleDateString('ru')}</td>
         <td className="px-4 py-3 text-sm text-gray-400">
           {open ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
         </td>
