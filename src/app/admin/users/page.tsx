@@ -346,13 +346,13 @@ export default function AdminUsers() {
           className="flex-1 min-w-[180px] border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)}
-          className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+          className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 select-arrow">
           <option value="">All statuses</option>
           <option value="active">Active</option>
           <option value="blocked">Blocked</option>
         </select>
         <select value={sourceFilter} onChange={e => setSourceFilter(e.target.value)}
-          className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+          className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 select-arrow">
           <option value="">All sources</option>
           <option value="vk">VK</option>
           <option value="google">Google</option>

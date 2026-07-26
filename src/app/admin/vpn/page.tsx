@@ -108,7 +108,7 @@ export default function AdminVpnPage() {
         <select
           value={filterStatus}
           onChange={e => setFilterStatus(e.target.value)}
-          className="text-sm border border-gray-200 rounded-lg px-3 py-2 bg-white"
+          className="text-sm border border-gray-200 rounded-lg px-3 py-2 bg-white select-arrow"
         >
           <option value="">All statuses</option>
           <option value="active">Active</option>
@@ -118,7 +118,7 @@ export default function AdminVpnPage() {
         <select
           value={filterProvider}
           onChange={e => setFilterProvider(e.target.value)}
-          className="text-sm border border-gray-200 rounded-lg px-3 py-2 bg-white"
+          className="text-sm border border-gray-200 rounded-lg px-3 py-2 bg-white select-arrow"
         >
           <option value="">All providers</option>
           <option value="remnawave">Remnawave</option>

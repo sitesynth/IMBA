@@ -80,7 +80,7 @@ function EditModal({
           <div>
             <label className="block text-xs font-semibold text-gray-500 mb-1">Аплайн</label>
             <select value={uplineId} onChange={e => setUplineId(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white">
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white select-arrow">
               <option value="">— нет аплайна —</option>
               {programs.filter(p => p.id !== program.id).map(p => (
                 <option key={p.id} value={p.id}>{p.name || p.referral_code} (?ref={p.referral_code})</option>

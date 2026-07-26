@@ -292,6 +292,17 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink) !important
   animation: pac-jaw-bottom 175ms linear alternate infinite;
 }
 
+/* Custom select arrow (replaces OS default) */
+.select-arrow {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='none' stroke='%236b7280' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  padding-right: 2.25rem !important;
+}
+
 /* Hide number input spinners globally */
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {

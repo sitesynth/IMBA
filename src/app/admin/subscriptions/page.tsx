@@ -172,7 +172,7 @@ export default function AdminSubscriptions() {
           <select
             value={statusFilter}
             onChange={e => setStatusFilter(e.target.value)}
-            className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 select-arrow"
           >
             <option value="">Все статусы</option>
             <option value="active">Активные</option>

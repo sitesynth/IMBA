@@ -145,7 +145,7 @@ export default function AdminPromocodesPage() {
             <select
               value={promoSettings.discount_type}
               onChange={e => setPromoSettings({ ...promoSettings, discount_type: e.target.value })}
-              className="border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white"
+              className="border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white select-arrow"
             >
               <option value="vpn_trial">VPN триал (дней)</option>
               <option value="percent">Скидка %</option>
@@ -251,7 +251,7 @@ export default function AdminPromocodesPage() {
             <select
               value={referralProgramId}
               onChange={e => handlePartnerChange(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white select-arrow"
             >
               <option value="">— не привязывать —</option>
               {partners.map(p => (

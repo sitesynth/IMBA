@@ -69,7 +69,7 @@ export default function AdminTransactions() {
       {/* Filters */}
       <div className="flex flex-wrap gap-3 mb-4">
         <select value={status} onChange={e => setStatus(e.target.value)}
-          className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+          className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 select-arrow">
           <option value="">All statuses</option>
           <option value="confirmed">confirmed</option>
           <option value="pending">pending</option>
@@ -77,13 +77,13 @@ export default function AdminTransactions() {
           <option value="cancelled">cancelled</option>
         </select>
         <select value={currency} onChange={e => setCurrency(e.target.value)}
-          className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+          className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 select-arrow">
           <option value="">All currencies</option>
           <option value="RUB">RUB</option>
           <option value="USD">USD</option>
         </select>
         <select value={provider} onChange={e => setProvider(e.target.value)}
-          className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+          className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 select-arrow">
           <option value="">All providers</option>
           <option value="enot">Enot</option>
           <option value="yookassa">YooKassa</option>
