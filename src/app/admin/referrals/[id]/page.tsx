@@ -5,7 +5,7 @@ import { ArrowLeft, Users, X, Copy, Check } from 'lucide-react'
 import Link from 'next/link'
 import {
   getReferralPrograms, getReferralConversions, updateReferralProgram,
-  recordReferralPayout, getReferralPayouts, confirmReferralPayout, generatePartnerSetupLink,
+  recordReferralPayout, getReferralPayouts, confirmReferralPayout, generatePartnerSetupLink, maskWallet,
   AdminApiError, ReferralProgram, ReferralConversion, ReferralPayout,
 } from '@/lib/admin-api'
 
@@ -159,7 +159,7 @@ function PayoutModal({
         <div className="px-6 py-5 space-y-3">
           <p className="text-sm text-gray-600">К выплате: <strong>${program.pending_payout.toFixed(2)}</strong></p>
           {program.payout_wallet && (
-            <p className="text-xs text-gray-500 font-mono break-all">Кошелёк: {program.payout_wallet}</p>
+            <p className="text-xs text-gray-500 font-mono" title={program.payout_wallet}>Кошелёк: {maskWallet(program.payout_wallet)}</p>
           )}
           <div>
             <label className="block text-xs font-semibold text-gray-500 mb-1">Сумма выплаты ($)</label>
@@ -220,7 +220,7 @@ function ConfirmPayoutModal({
         </div>
         <div className="px-6 py-5 space-y-3">
           <p className="text-sm text-gray-600">Сумма: <strong>${payout.amount.toFixed(2)}</strong></p>
-          {payout.wallet && <p className="text-xs text-gray-500 font-mono break-all">Кошелёк: {payout.wallet}</p>}
+          {payout.wallet && <p className="text-xs text-gray-500 font-mono" title={payout.wallet}>Кошелёк: {maskWallet(payout.wallet)}</p>}
           <div>
             <label className="block text-xs font-semibold text-gray-500 mb-1">Хэш транзакции (TRC20) *</label>
             <input value={txHash} onChange={e => setTxHash(e.target.value)}
@@ -429,7 +429,7 @@ export default function ReferralDetail() {
               <tr key={p.id} className="hover:bg-gray-50">
                 <td className="px-6 py-4 text-sm text-gray-600">{p.requested_at ? new Date(p.requested_at).toLocaleDateString() : '—'}</td>
                 <td className="px-6 py-4 text-sm font-mono font-bold text-green-600">${p.amount.toFixed(2)}</td>
-                <td className="px-6 py-4 text-xs font-mono text-gray-500 max-w-[160px] truncate">{p.wallet || '—'}</td>
+                <td className="px-6 py-4 text-xs font-mono text-gray-500" title={p.wallet || undefined}>{maskWallet(p.wallet)}</td>
                 <td className="px-6 py-4 text-sm">
                   <span className={`px-2 py-1 rounded text-xs font-medium ${p.status === 'paid' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
                     {p.status === 'paid' ? 'Оплачено' : 'Ожидает'}

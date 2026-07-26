@@ -17,16 +17,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 
 .field{margin-bottom:1rem}
 .field label{display:block;font-size:.8rem;font-weight:500;color:#374151;margin-bottom:.35rem}
-.field input{width:100%;border:1px solid #d1d5db;border-radius:8px;padding:.625rem .75rem;font-size:.875rem;color:#111827;outline:none;background:#fff;transition:border-color .15s,box-shadow .15s;font-family:inherit}
-.field input:focus{border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,.12)}
+.field input,.field select{width:100%;border:1px solid #d1d5db;border-radius:8px;padding:.625rem .75rem;font-size:.875rem;color:#111827;outline:none;background:#fff;transition:border-color .15s,box-shadow .15s;font-family:inherit;height:2.625rem}
+.field input:focus,.field select:focus{border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,.12)}
 
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:.375rem;padding:.625rem 1rem;border-radius:8px;font-size:.8rem;font-weight:600;cursor:pointer;border:none;transition:all .15s;white-space:nowrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.375rem;padding:.625rem 1rem;border-radius:8px;font-size:.8rem;font-weight:600;cursor:pointer;border:none;transition:all .15s;white-space:nowrap;height:2.625rem;flex-shrink:0}
 .btn:disabled{opacity:.5;cursor:not-allowed}
 .btn-primary{background:#2563eb;color:#fff}
 .btn-primary:hover:not(:disabled){background:#1d4ed8}
 .btn-outline{background:#fff;color:#374151;border:1px solid #d1d5db}
 .btn-outline:hover:not(:disabled){background:#f9fafb}
-.btn-sm{padding:.4rem .75rem;font-size:.75rem}
+.btn-sm{padding:.4rem .75rem;font-size:.75rem;height:auto}
 .btn-block{width:100%}
 .err-box{background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:.5rem .75rem;font-size:.8rem;color:#b91c1c;margin-top:.75rem}
 
@@ -189,24 +189,24 @@ tr:last-child td{border-bottom:none}
     <div class="card">
       <div class="card-header"><span class="card-title">Выплата на кошелёк</span></div>
       <div class="card-body">
-        <form onsubmit="saveWallet(event)" style="display:flex;gap:1rem;align-items:flex-end;flex-wrap:wrap;margin-bottom:1rem">
-          <div class="field" style="margin-bottom:0;flex:1;min-width:220px">
+        <form onsubmit="saveWallet(event)" style="display:flex;gap:.75rem;align-items:flex-end;flex-wrap:wrap;margin-bottom:1rem">
+          <div class="field" style="margin-bottom:0;flex:1;min-width:260px">
             <label>USDT TRC20 адрес</label>
-            <input id="w-wallet" placeholder="T..." />
+            <input id="w-wallet" placeholder="TPAgKfYzRdK83Qocc4gXvEVu4jPKfeuer5" class="mono" style="font-size:.8rem"/>
           </div>
-          <div class="field" style="margin-bottom:0">
+          <div class="field" style="margin-bottom:0;width:160px">
             <label>Период выплат</label>
-            <select id="w-period" style="border:1px solid #d1d5db;border-radius:8px;padding:.625rem .75rem;font-size:.875rem;background:#fff">
+            <select id="w-period">
               <option value="weekly">Раз в неделю</option>
               <option value="monthly">Раз в месяц</option>
             </select>
           </div>
-          <button type="submit" class="btn btn-outline btn-sm" id="w-btn">Сохранить</button>
+          <button type="submit" class="btn btn-outline" id="w-btn">Сохранить</button>
         </form>
         <div id="w-err" style="display:none" class="err-box"></div>
-        <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;padding-top:.5rem;border-top:1px solid #f3f4f6">
-          <span style="font-size:.8rem;color:#6b7280">К выплате: <strong id="w-due" style="color:#111827">$0.00</strong></span>
-          <button class="btn btn-primary btn-sm" id="request-btn" onclick="requestPayout()">Запросить выплату</button>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:.75rem;flex-wrap:wrap;padding-top:1rem;margin-top:.25rem;border-top:1px solid #f3f4f6">
+          <span style="font-size:.8rem;color:#6b7280">К выплате: <strong id="w-due" style="color:#111827;font-size:.9rem">$0.00</strong></span>
+          <button class="btn btn-primary" id="request-btn" onclick="requestPayout()">Запросить выплату</button>
         </div>
       </div>
     </div>
@@ -253,6 +253,7 @@ function fmtDate(iso) {
   return new Date(iso).toLocaleDateString('ru', {day:'2-digit',month:'2-digit',year:'2-digit'});
 }
 function copy(text) { navigator.clipboard.writeText(text).then(() => showToast('Скопировано')); }
+function maskWallet(w) { return !w || w.length <= 12 ? (w || '—') : w.slice(0, 6) + '…' + w.slice(-4); }
 function copyMyLink() { copy(document.getElementById('my-link').textContent); }
 
 // ── auth ──────────────────────────────────────────────

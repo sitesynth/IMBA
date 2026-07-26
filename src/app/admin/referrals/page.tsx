@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { Share2, X, Copy, Check } from 'lucide-react'
 import {
   getReferralPrograms, toggleReferralProgram, createReferralProgram,
-  getReferralDefaults, updateReferralDefaults, getPendingPayoutRequests,
+  getReferralDefaults, updateReferralDefaults, getPendingPayoutRequests, maskWallet,
   AdminApiError, ReferralProgram, ReferralDefaults, ReferralPayout,
 } from '@/lib/admin-api'
 
@@ -252,7 +252,7 @@ export default function AdminReferrals() {
                 <tr key={p.id}>
                   <td className="px-5 py-2.5 text-sm font-medium">{p.partner_name || p.referral_code}</td>
                   <td className="px-5 py-2.5 text-sm font-mono font-bold">${p.amount.toFixed(2)}</td>
-                  <td className="px-5 py-2.5 text-xs font-mono text-gray-600 max-w-[160px] truncate">{p.wallet || '—'}</td>
+                  <td className="px-5 py-2.5 text-xs font-mono text-gray-600">{maskWallet(p.wallet)}</td>
                   <td className="px-5 py-2.5 text-sm text-gray-600">{p.period === 'weekly' ? 'Неделя' : 'Месяц'}</td>
                   <td className="px-5 py-2.5 text-sm text-gray-600">{p.requested_at ? new Date(p.requested_at).toLocaleDateString() : '—'}</td>
                   <td className="px-5 py-2.5 text-sm">

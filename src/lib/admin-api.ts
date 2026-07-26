@@ -420,6 +420,12 @@ export function getPendingPayoutRequests() {
   return adminReq<ReferralPayout[]>("/v1/admin/referrals/payout-requests")
 }
 
+export function maskWallet(wallet: string | null | undefined): string {
+  if (!wallet) return "—"
+  if (wallet.length <= 12) return wallet
+  return `${wallet.slice(0, 6)}…${wallet.slice(-4)}`
+}
+
 export function generatePartnerSetupLink(programId: string) {
   return adminReq<{ setup_url: string; expires_at: string }>(
     `/v1/admin/referrals/${programId}/setup-link`,
