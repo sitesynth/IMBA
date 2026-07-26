@@ -169,6 +169,31 @@ tr:last-child td{border-bottom:none}
     </div>
 
     <div class="card">
+      <div class="card-header">
+        <span class="card-title">Ваши промокоды</span>
+        <span id="promo-quota" style="font-size:.72rem;color:#9ca3af">—</span>
+      </div>
+      <div class="card-body" style="padding-bottom:0">
+        <form onsubmit="createPromo(event)" style="display:flex;gap:.75rem;align-items:flex-end;flex-wrap:wrap;margin-bottom:1rem">
+          <div class="field" style="margin-bottom:0;flex:1;min-width:200px">
+            <label>Название кода</label>
+            <input id="promo-code-input" placeholder="IVAN20" maxlength="20" class="mono"
+              oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9-]/g,'')"/>
+          </div>
+          <button type="submit" class="btn btn-primary" id="promo-create-btn">Создать код</button>
+        </form>
+        <div id="promo-err" style="display:none" class="err-box"></div>
+        <p id="promo-scheme" style="font-size:.75rem;color:#9ca3af;margin-bottom:1rem">—</p>
+      </div>
+      <div class="overflow-x">
+        <table>
+          <thead><tr><th>Код</th><th>Скидка</th><th>Использований</th><th>Статус</th><th></th></tr></thead>
+          <tbody id="promo-tbody"><tr><td colspan="5" class="empty">Пока нет промокодов</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
       <div class="card-header"><span class="card-title">Ваши рефералы</span></div>
       <div class="overflow-x">
         <table>
@@ -257,6 +282,39 @@ function fmtDate(iso) {
 function copy(text) { navigator.clipboard.writeText(text).then(() => showToast('Скопировано')); }
 function maskWallet(w) { return !w || w.length <= 12 ? (w || '—') : w.slice(0, 6) + '…' + w.slice(-4); }
 function copyMyLink() { copy(document.getElementById('my-link').textContent); }
+function formatDiscount(type, value) {
+  if (type === 'vpn_trial') return `${value} дн. VPN`;
+  if (type === 'percent') return `${value}%`;
+  return `$${value}`;
+}
+let lastDashboard = null;
+
+async function createPromo(e) {
+  e.preventDefault();
+  const input = document.getElementById('promo-code-input');
+  const code = input.value.trim();
+  const btn = document.getElementById('promo-create-btn');
+  showErr('promo-err', '');
+  if (code.length < 3) { showErr('promo-err', 'Минимум 3 символа'); return; }
+  btn.disabled = true;
+  try {
+    await apiFetch('POST', '/v1/ref/promocodes', { code });
+    input.value = '';
+    showToast('Код создан');
+    loadDashboard();
+  } catch (err) {
+    showErr('promo-err', err.message);
+  } finally { btn.disabled = false; }
+}
+
+async function togglePromo(code) {
+  try {
+    await apiFetch('POST', `/v1/ref/promocodes/${encodeURIComponent(code)}/toggle`);
+    loadDashboard();
+  } catch (err) {
+    showToast(err.message);
+  }
+}
 
 // ── auth ──────────────────────────────────────────────
 const setupToken = new URLSearchParams(location.search).get('setup');
@@ -329,6 +387,20 @@ async function loadDashboard() {
     const reqBtn = document.getElementById('request-btn');
     reqBtn.disabled = hasPending || !d.payout_wallet || d.pending_payout <= 0;
     reqBtn.textContent = hasPending ? 'Запрос уже отправлен' : 'Запросить выплату';
+
+    lastDashboard = d;
+    const activeCodes = d.promocodes.filter(p => p.is_active).length;
+    document.getElementById('promo-quota').textContent = `${activeCodes} / ${d.promo_max_active_codes} активных`;
+    document.getElementById('promo-scheme').textContent = `Каждый код даёт: ${formatDiscount(d.promo_discount_type, d.promo_discount_value)}`;
+    document.getElementById('promo-create-btn').disabled = activeCodes >= d.promo_max_active_codes;
+
+    document.getElementById('promo-tbody').innerHTML = !d.promocodes.length
+      ? '<tr><td colspan="5" class="empty">Пока нет промокодов</td></tr>'
+      : d.promocodes.map(p => {
+          const uses = p.current_uses + (p.max_uses ? '/' + p.max_uses : '');
+          const statusCls = p.is_active ? 'badge-status' : 'badge-status pending';
+          return `<tr><td class="mono" style="font-weight:600">${p.code}</td><td>${formatDiscount(p.discount_type, p.discount_value)}</td><td>${uses}</td><td><span class="badge ${statusCls}">${p.is_active ? 'Активен' : 'Выкл'}</span></td><td><button class="btn btn-outline btn-sm" onclick="togglePromo('${p.code}')">${p.is_active ? 'Выключить' : 'Включить'}</button></td></tr>`;
+        }).join('');
 
     const cv = document.getElementById('conv-tbody');
     cv.innerHTML = !d.conversions.length

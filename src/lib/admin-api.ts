@@ -420,6 +420,23 @@ export function getPendingPayoutRequests() {
   return adminReq<ReferralPayout[]>("/v1/admin/referrals/payout-requests")
 }
 
+export interface PartnerPromoSettings {
+  discount_type: string
+  discount_value: number
+  max_active_codes: number
+}
+
+export function getPartnerPromoSettings() {
+  return adminReq<PartnerPromoSettings>("/v1/admin/partner-promo-settings")
+}
+
+export function updatePartnerPromoSettings(payload: PartnerPromoSettings) {
+  return adminReq<PartnerPromoSettings>("/v1/admin/partner-promo-settings", {
+    method: "PATCH",
+    body: JSON.stringify(payload),
+  })
+}
+
 export function maskWallet(wallet: string | null | undefined): string {
   if (!wallet) return "—"
   if (wallet.length <= 12) return wallet

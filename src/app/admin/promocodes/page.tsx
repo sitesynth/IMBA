@@ -3,7 +3,8 @@ import { useEffect, useState } from 'react'
 import { Copy, Check, Plus, ToggleLeft, ToggleRight, Tag, Loader2 } from 'lucide-react'
 import {
   listPromocodes, createPromocode, togglePromocode, getReferralPrograms,
-  type Promocode, type ReferralProgram,
+  getPartnerPromoSettings, updatePartnerPromoSettings,
+  type Promocode, type ReferralProgram, type PartnerPromoSettings,
 } from '@/lib/admin-api'
 
 function randomSuffix(len = 6) {
@@ -29,25 +30,54 @@ export default function AdminPromocodesPage() {
   const [lastBatch, setLastBatch] = useState<string[]>([])
   const [batchError, setBatchError] = useState('')
 
+  // Partner self-service scheme
+  const [promoSettings, setPromoSettings] = useState<PartnerPromoSettings>({ discount_type: 'vpn_trial', discount_value: 7, max_active_codes: 3 })
+  const [promoSettingsMsg, setPromoSettingsMsg] = useState('')
+  const [promoSettingsSaving, setPromoSettingsSaving] = useState(false)
+
   useEffect(() => { load() }, [])
 
   async function load() {
     setLoading(true)
     try {
-      const [promo, refs] = await Promise.all([listPromocodes(), getReferralPrograms()])
+      const [promo, refs, settings] = await Promise.all([
+        listPromocodes(), getReferralPrograms(), getPartnerPromoSettings().catch(() => promoSettings),
+      ])
       setCodes(promo)
       setPartners(refs)
+      setPromoSettings(settings)
     } catch { /* ignore */ }
     setLoading(false)
   }
+
+  async function savePromoSettings() {
+    setPromoSettingsSaving(true)
+    setPromoSettingsMsg('')
+    try {
+      const saved = await updatePartnerPromoSettings(promoSettings)
+      setPromoSettings(saved)
+      setPromoSettingsMsg('✓ Сохранено')
+      setTimeout(() => setPromoSettingsMsg(''), 2500)
+    } catch (e) {
+      setPromoSettingsMsg(e instanceof Error ? e.message : 'Ошибка')
+    } finally {
+      setPromoSettingsSaving(false)
+    }
+  }
+
+  const selectedPartner = partners.find(p => p.id === referralProgramId)
 
   async function generate() {
     setGenerating(true)
     setBatchError('')
     setLastBatch([])
+    // Partner-linked codes are one simple, reusable, memorable code (their own referral
+    // code) — not a batch of random single-use ones, which is what the rest of this form
+    // generates for general campaigns.
+    const effectiveCount = selectedPartner ? 1 : count
     const created: string[] = []
-    for (let i = 0; i < count; i++) {
-      const code = `${prefix.toUpperCase()}-${randomSuffix()}`
+    for (let i = 0; i < effectiveCount; i++) {
+      const code = selectedPartner ? selectedPartner.referral_code.toUpperCase() : `${prefix.toUpperCase()}-${randomSuffix()}`
       try {
         await createPromocode({
           code,
@@ -67,6 +97,11 @@ export default function AdminPromocodesPage() {
     setLastBatch(created)
     setGenerating(false)
     await load()
+  }
+
+  function handlePartnerChange(id: string) {
+    setReferralProgramId(id)
+    if (id) setMaxUses('') // partner codes are meant to be reused by many customers
   }
 
   async function toggle(id: string) {
@@ -98,6 +133,53 @@ export default function AdminPromocodesPage() {
         <h1 className="text-2xl font-bold">Промокоды</h1>
       </div>
 
+      {/* Partner self-service scheme */}
+      <div className="bg-white rounded-xl border border-gray-200 p-5">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="font-bold">Промокоды рефоводов (самообслуживание)</h2>
+          <span className="text-xs text-gray-400">Партнёры сами создают код у себя в кабинете — по этой схеме</span>
+        </div>
+        <div className="flex items-end gap-4 flex-wrap">
+          <div>
+            <label className="block text-xs font-semibold text-gray-500 mb-1">Тип</label>
+            <select
+              value={promoSettings.discount_type}
+              onChange={e => setPromoSettings({ ...promoSettings, discount_type: e.target.value })}
+              className="border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white"
+            >
+              <option value="vpn_trial">VPN триал (дней)</option>
+              <option value="percent">Скидка %</option>
+              <option value="fixed">Скидка $</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-gray-500 mb-1">Значение</label>
+            <input
+              type="number" min={0} step={promoSettings.discount_type === 'vpn_trial' ? 1 : 0.5}
+              value={promoSettings.discount_value}
+              onChange={e => setPromoSettings({ ...promoSettings, discount_value: parseFloat(e.target.value) || 0 })}
+              className="w-24 border border-gray-300 rounded-lg px-3 py-2 text-sm"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-gray-500 mb-1">Макс. активных кодов / партнёр</label>
+            <input
+              type="number" min={1} max={20}
+              value={promoSettings.max_active_codes}
+              onChange={e => setPromoSettings({ ...promoSettings, max_active_codes: parseInt(e.target.value) || 1 })}
+              className="w-24 border border-gray-300 rounded-lg px-3 py-2 text-sm"
+            />
+          </div>
+          <div className="flex flex-col gap-1">
+            <button onClick={savePromoSettings} disabled={promoSettingsSaving}
+              className="px-3 py-1.5 rounded-lg border border-gray-300 text-sm font-semibold disabled:opacity-50">
+              Сохранить
+            </button>
+            <div className={`text-xs min-h-[1rem] ${promoSettingsMsg.startsWith('✓') ? 'text-green-600' : 'text-red-600'}`}>{promoSettingsMsg}</div>
+          </div>
+        </div>
+      </div>
+
       {/* Generator */}
       <div className="bg-white rounded-xl border border-gray-200 p-6 space-y-5">
         <h2 className="font-bold text-lg">Создать VPN-промокоды</h2>
@@ -106,11 +188,12 @@ export default function AdminPromocodesPage() {
           <div>
             <label className="block text-xs font-semibold text-gray-500 mb-1">Префикс</label>
             <input
-              value={prefix}
+              value={selectedPartner ? selectedPartner.referral_code.toUpperCase() : prefix}
               onChange={e => setPrefix(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''))}
+              disabled={!!selectedPartner}
               maxLength={10}
               placeholder="VPN"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm font-mono uppercase"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm font-mono uppercase disabled:bg-gray-50 disabled:text-gray-400"
             />
           </div>
           <div>
@@ -126,9 +209,10 @@ export default function AdminPromocodesPage() {
             <label className="block text-xs font-semibold text-gray-500 mb-1">Кол-во кодов</label>
             <input
               type="number" min={1} max={500}
-              value={count}
+              value={selectedPartner ? 1 : count}
               onChange={e => setCount(Number(e.target.value))}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
+              disabled={!!selectedPartner}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm disabled:bg-gray-50 disabled:text-gray-400"
             />
           </div>
           <div>
@@ -166,7 +250,7 @@ export default function AdminPromocodesPage() {
             <label className="block text-xs font-semibold text-gray-500 mb-1">Привязать к рефералу (необязательно)</label>
             <select
               value={referralProgramId}
-              onChange={e => setReferralProgramId(e.target.value)}
+              onChange={e => handlePartnerChange(e.target.value)}
               className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white"
             >
               <option value="">— не привязывать —</option>
@@ -180,16 +264,18 @@ export default function AdminPromocodesPage() {
         <div className="flex items-center gap-3">
           <button
             onClick={generate}
-            disabled={generating || !prefix}
+            disabled={generating || (!selectedPartner && !prefix)}
             className="flex items-center gap-2 bg-black text-white px-5 py-2.5 rounded-lg text-sm font-bold disabled:opacity-50"
           >
             {generating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
-            {generating ? `Создаём ${count}...` : `Сгенерировать ${count} ${count === 1 ? 'код' : 'кодов'}`}
+            {generating
+              ? (selectedPartner ? 'Создаём...' : `Создаём ${count}...`)
+              : selectedPartner ? `Создать код ${selectedPartner.referral_code.toUpperCase()}` : `Сгенерировать ${count} ${count === 1 ? 'код' : 'кодов'}`}
           </button>
           <span className="text-xs text-gray-400">
-            Формат: {prefix || 'PREFIX'}-XXXXXX · {days} дней VPN
-            {maxUses !== '' ? ` · до ${maxUses} юз.` : ' · безлимит'}
-            {referralProgramId ? ' · комиссия партнёру за редемпшн' : ''}
+            {selectedPartner
+              ? `Код: ${selectedPartner.referral_code.toUpperCase()} · ${days} дней VPN · ${maxUses !== '' ? `до ${maxUses} юз.` : 'безлимит'} · редемпшн засчитается как реферал ${selectedPartner.name || selectedPartner.referral_code}`
+              : `Формат: ${prefix || 'PREFIX'}-XXXXXX · ${days} дней VPN · ${maxUses !== '' ? `до ${maxUses} юз.` : 'безлимит'}`}
           </span>
         </div>
 
