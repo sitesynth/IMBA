@@ -30,6 +30,19 @@ export async function signup(state: FormState, formData: FormData): Promise<Form
   if (!password || password.length < 6) errors.password = ['Пароль должен быть не менее 6 символов']
   if (Object.keys(errors).length > 0) return { errors }
 
+  const turnstileSecret = process.env.TURNSTILE_SECRET_KEY
+  if (turnstileSecret) {
+    const token = formData.get('cf-turnstile-response') as string
+    if (!token) return { message: 'Пройдите проверку безопасности' }
+    const verify = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ secret: turnstileSecret, response: token }),
+    })
+    const result = await verify.json() as { success: boolean }
+    if (!result.success) return { message: 'Проверка безопасности не пройдена. Попробуйте снова.' }
+  }
+
   try {
     const frontend_url = (formData.get('frontend_url') as string) || undefined
     await apiFetch<{ status: string; email: string }>('/v1/auth/register', {
