@@ -186,7 +186,7 @@ export default function AdminSubscriptions() {
       </div>
 
       {/* Summary chips */}
-      <div className="flex gap-3">
+      <div className="flex gap-3 flex-wrap">
         {(['active', 'expired', 'cancelled'] as const).map(s => {
           const count = subs.filter(x => x.status === s).length
           return (
@@ -202,73 +202,75 @@ export default function AdminSubscriptions() {
       </div>
 
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="bg-gray-50 border-b border-gray-200 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">
-              <th className="px-4 py-3">Пользователь</th>
-              <th className="px-4 py-3">План</th>
-              <th className="px-4 py-3">Статус</th>
-              <th className="px-4 py-3">Начало</th>
-              <th className="px-4 py-3">Истекает</th>
-              <th className="px-4 py-3">Авто-продление</th>
-              <th className="px-4 py-3">Действия</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-100">
-            {loading ? (
-              <tr><td colSpan={7} className="px-4 py-8 text-center text-gray-400">Загрузка...</td></tr>
-            ) : subs.length === 0 ? (
-              <tr><td colSpan={7} className="px-4 py-8 text-center text-gray-400">Подписок не найдено</td></tr>
-            ) : subs.map(sub => (
-              <tr key={sub.id} className="hover:bg-gray-50 transition">
-                <td className="px-4 py-3">
-                  <div className="font-medium text-gray-900">{sub.email}</div>
-                  {sub.name && <div className="text-xs text-gray-500">{sub.name}</div>}
-                </td>
-                <td className="px-4 py-3">
-                  <PlanSelect sub={sub} plans={plans} onDone={load} />
-                  <div className="text-xs text-gray-500">${sub.price_usd}/мес</div>
-                </td>
-                <td className="px-4 py-3">
-                  <span className={`px-2 py-1 rounded-full text-xs font-semibold ${STATUS_COLORS[sub.status] ?? 'bg-gray-100 text-gray-500'}`}>
-                    {STATUS_LABELS[sub.status] ?? sub.status}
-                  </span>
-                </td>
-                <td className="px-4 py-3 text-gray-600">{fmtDate(sub.starts_at)}</td>
-                <td className="px-4 py-3 text-gray-600">{fmtDate(sub.expires_at)}</td>
-                <td className="px-4 py-3">
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={sub.auto_renew}
-                      onChange={() => toggleAutoRenew(sub)}
-                      className="w-4 h-4 rounded"
-                    />
-                    <span className="text-xs text-gray-600">{sub.auto_renew ? 'Да' : 'Нет'}</span>
-                  </label>
-                </td>
-                <td className="px-4 py-3">
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => setExtending(sub)}
-                      className="px-2 py-1 text-xs bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 font-medium"
-                    >
-                      Продлить
-                    </button>
-                    {sub.status !== 'cancelled' && (
-                      <button
-                        onClick={() => cancel(sub)}
-                        className="px-2 py-1 text-xs bg-red-50 text-red-600 rounded-lg hover:bg-red-100 font-medium"
-                      >
-                        Отменить
-                      </button>
-                    )}
-                  </div>
-                </td>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="bg-gray-50 border-b border-gray-200 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                <th className="px-4 py-3">Пользователь</th>
+                <th className="px-4 py-3">План</th>
+                <th className="px-4 py-3">Статус</th>
+                <th className="px-4 py-3">Начало</th>
+                <th className="px-4 py-3">Истекает</th>
+                <th className="px-4 py-3">Авто-продление</th>
+                <th className="px-4 py-3">Действия</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {loading ? (
+                <tr><td colSpan={7} className="px-4 py-8 text-center text-gray-400">Загрузка...</td></tr>
+              ) : subs.length === 0 ? (
+                <tr><td colSpan={7} className="px-4 py-8 text-center text-gray-400">Подписок не найдено</td></tr>
+              ) : subs.map(sub => (
+                <tr key={sub.id} className="hover:bg-gray-50 transition">
+                  <td className="px-4 py-3">
+                    <div className="font-medium text-gray-900">{sub.email}</div>
+                    {sub.name && <div className="text-xs text-gray-500">{sub.name}</div>}
+                  </td>
+                  <td className="px-4 py-3">
+                    <PlanSelect sub={sub} plans={plans} onDone={load} />
+                    <div className="text-xs text-gray-500">${sub.price_usd}/мес</div>
+                  </td>
+                  <td className="px-4 py-3">
+                    <span className={`px-2 py-1 rounded-full text-xs font-semibold ${STATUS_COLORS[sub.status] ?? 'bg-gray-100 text-gray-500'}`}>
+                      {STATUS_LABELS[sub.status] ?? sub.status}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 text-gray-600">{fmtDate(sub.starts_at)}</td>
+                  <td className="px-4 py-3 text-gray-600">{fmtDate(sub.expires_at)}</td>
+                  <td className="px-4 py-3">
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={sub.auto_renew}
+                        onChange={() => toggleAutoRenew(sub)}
+                        className="w-4 h-4 rounded"
+                      />
+                      <span className="text-xs text-gray-600">{sub.auto_renew ? 'Да' : 'Нет'}</span>
+                    </label>
+                  </td>
+                  <td className="px-4 py-3">
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => setExtending(sub)}
+                        className="px-2 py-1 text-xs bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 font-medium"
+                      >
+                        Продлить
+                      </button>
+                      {sub.status !== 'cancelled' && (
+                        <button
+                          onClick={() => cancel(sub)}
+                          className="px-2 py-1 text-xs bg-red-50 text-red-600 rounded-lg hover:bg-red-100 font-medium"
+                        >
+                          Отменить
+                        </button>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   )

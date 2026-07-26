@@ -123,28 +123,30 @@ export default function AdminNotifications() {
           <h2 className="text-xl font-bold">Recent Notifications</h2>
         </div>
 
-        <table className="w-full">
-          <thead className="bg-gray-50 border-b border-gray-200">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Email</th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Title</th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Type</th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Read</th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Sent</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200">
-            {notifications.map((n) => (
-              <tr key={n.id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 text-sm">{n.email || '—'}</td>
-                <td className="px-6 py-4 text-sm font-medium">{n.title}</td>
-                <td className="px-6 py-4 text-sm">{n.notification_type}</td>
-                <td className="px-6 py-4 text-sm">{n.is_read ? '✓' : '✗'}</td>
-                <td className="px-6 py-4 text-sm">{new Date(n.created_at).toLocaleDateString()}</td>
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-gray-50 border-b border-gray-200">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Email</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Title</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Type</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Read</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Sent</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {notifications.map((n) => (
+                <tr key={n.id} className="hover:bg-gray-50">
+                  <td className="px-6 py-4 text-sm">{n.email || '—'}</td>
+                  <td className="px-6 py-4 text-sm font-medium">{n.title}</td>
+                  <td className="px-6 py-4 text-sm">{n.notification_type}</td>
+                  <td className="px-6 py-4 text-sm">{n.is_read ? '✓' : '✗'}</td>
+                  <td className="px-6 py-4 text-sm">{new Date(n.created_at).toLocaleDateString()}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   )

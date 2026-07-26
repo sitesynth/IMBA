@@ -366,41 +366,43 @@ export default function AdminUsers() {
       {error && <div className="mb-4 text-red-600 text-sm">{error}</div>}
 
       <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-        <table className="w-full">
-          <thead className="bg-gray-50 border-b border-gray-200">
-            <tr>
-              <th className="px-4 py-3 text-left">
-                <input type="checkbox" checked={selected.size === filtered.length && filtered.length > 0} onChange={toggleAll} />
-              </th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700">#</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700">Email / Contact</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700">Name</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700">Plan</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700">Balance</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700">Total paid</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700">Source</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700">City</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700">Status</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700">Created</th>
-              <th className="px-4 py-3"></th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200">
-            {loading ? (
-              <tr><td colSpan={12} className="px-4 py-8 text-center text-gray-500">Loading...</td></tr>
-            ) : filtered.map((u, i) => (
-              <UserRow
-                key={u.user_id}
-                u={u}
-                index={i}
-                onRefresh={load}
-                onDeleted={(id) => setUsers(prev => prev.filter(x => x.user_id !== id))}
-                selected={selected.has(u.user_id)}
-                onSelect={(e) => toggleSelect(u.user_id, e)}
-              />
-            ))}
-          </tbody>
-        </table>
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-gray-50 border-b border-gray-200">
+              <tr>
+                <th className="px-4 py-3 text-left">
+                  <input type="checkbox" checked={selected.size === filtered.length && filtered.length > 0} onChange={toggleAll} />
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700">#</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700">Email / Contact</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700">Name</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700">Plan</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700">Balance</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700">Total paid</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700">Source</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700">City</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700">Status</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700">Created</th>
+                <th className="px-4 py-3"></th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {loading ? (
+                <tr><td colSpan={12} className="px-4 py-8 text-center text-gray-500">Loading...</td></tr>
+              ) : filtered.map((u, i) => (
+                <UserRow
+                  key={u.user_id}
+                  u={u}
+                  index={i}
+                  onRefresh={load}
+                  onDeleted={(id) => setUsers(prev => prev.filter(x => x.user_id !== id))}
+                  selected={selected.has(u.user_id)}
+                  onSelect={(e) => toggleSelect(u.user_id, e)}
+                />
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* Bulk delete modal */}

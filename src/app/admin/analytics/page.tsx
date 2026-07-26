@@ -133,49 +133,53 @@ export default function AdminAnalytics() {
               {/* Top queries */}
               <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
                 <div className="px-4 py-2.5 bg-gray-50 border-b border-gray-200 text-xs font-semibold text-gray-700">Top queries</div>
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="text-xs text-gray-500">
-                      <th className="px-4 py-2 text-left">Query</th>
-                      <th className="px-4 py-2 text-right">Clicks</th>
-                      <th className="px-4 py-2 text-right">Pos</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-100">
-                    {gsc.top_queries.map(r => (
-                      <tr key={r.query} className="hover:bg-gray-50">
-                        <td className="px-4 py-2 text-gray-800 truncate max-w-[180px]">{r.query}</td>
-                        <td className="px-4 py-2 text-right font-mono text-gray-700">{r.clicks}</td>
-                        <td className="px-4 py-2 text-right font-mono text-gray-500">{r.position}</td>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="text-xs text-gray-500">
+                        <th className="px-4 py-2 text-left">Query</th>
+                        <th className="px-4 py-2 text-right">Clicks</th>
+                        <th className="px-4 py-2 text-right">Pos</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody className="divide-y divide-gray-100">
+                      {gsc.top_queries.map(r => (
+                        <tr key={r.query} className="hover:bg-gray-50">
+                          <td className="px-4 py-2 text-gray-800 truncate max-w-[180px]">{r.query}</td>
+                          <td className="px-4 py-2 text-right font-mono text-gray-700">{r.clicks}</td>
+                          <td className="px-4 py-2 text-right font-mono text-gray-500">{r.position}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
 
               {/* Top pages */}
               <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
                 <div className="px-4 py-2.5 bg-gray-50 border-b border-gray-200 text-xs font-semibold text-gray-700">Top pages</div>
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="text-xs text-gray-500">
-                      <th className="px-4 py-2 text-left">Page</th>
-                      <th className="px-4 py-2 text-right">Clicks</th>
-                      <th className="px-4 py-2 text-right">Impr</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-100">
-                    {gsc.top_pages.map(r => (
-                      <tr key={r.page} className="hover:bg-gray-50">
-                        <td className="px-4 py-2 text-gray-800 truncate max-w-[180px]">
-                          {r.page?.replace(/^https?:\/\/[^/]+/, '') || '/'}
-                        </td>
-                        <td className="px-4 py-2 text-right font-mono text-gray-700">{r.clicks}</td>
-                        <td className="px-4 py-2 text-right font-mono text-gray-500">{r.impressions}</td>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="text-xs text-gray-500">
+                        <th className="px-4 py-2 text-left">Page</th>
+                        <th className="px-4 py-2 text-right">Clicks</th>
+                        <th className="px-4 py-2 text-right">Impr</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody className="divide-y divide-gray-100">
+                      {gsc.top_pages.map(r => (
+                        <tr key={r.page} className="hover:bg-gray-50">
+                          <td className="px-4 py-2 text-gray-800 truncate max-w-[180px]">
+                            {r.page?.replace(/^https?:\/\/[^/]+/, '') || '/'}
+                          </td>
+                          <td className="px-4 py-2 text-right font-mono text-gray-700">{r.clicks}</td>
+                          <td className="px-4 py-2 text-right font-mono text-gray-500">{r.impressions}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           </>
@@ -221,45 +225,49 @@ export default function AdminAnalytics() {
               {/* Top pages */}
               <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
                 <div className="px-4 py-2.5 bg-gray-50 border-b border-gray-200 text-xs font-semibold text-gray-700">Топ страниц</div>
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="text-xs text-gray-500">
-                      <th className="px-4 py-2 text-left">Страница</th>
-                      <th className="px-4 py-2 text-right">Визиты</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-100">
-                    {metrica.top_pages.map(r => (
-                      <tr key={r.page} className="hover:bg-gray-50">
-                        <td className="px-4 py-2 text-gray-800 truncate max-w-[220px]">
-                          {r.page?.replace(/^https?:\/\/[^/]+/, '') || '/'}
-                        </td>
-                        <td className="px-4 py-2 text-right font-mono text-gray-700">{r.visits}</td>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="text-xs text-gray-500">
+                        <th className="px-4 py-2 text-left">Страница</th>
+                        <th className="px-4 py-2 text-right">Визиты</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody className="divide-y divide-gray-100">
+                      {metrica.top_pages.map(r => (
+                        <tr key={r.page} className="hover:bg-gray-50">
+                          <td className="px-4 py-2 text-gray-800 truncate max-w-[220px]">
+                            {r.page?.replace(/^https?:\/\/[^/]+/, '') || '/'}
+                          </td>
+                          <td className="px-4 py-2 text-right font-mono text-gray-700">{r.visits}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
 
               {/* Sources */}
               <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
                 <div className="px-4 py-2.5 bg-gray-50 border-b border-gray-200 text-xs font-semibold text-gray-700">Источники</div>
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="text-xs text-gray-500">
-                      <th className="px-4 py-2 text-left">Источник</th>
-                      <th className="px-4 py-2 text-right">Визиты</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-100">
-                    {metrica.sources.map(r => (
-                      <tr key={r.source} className="hover:bg-gray-50">
-                        <td className="px-4 py-2 text-gray-800">{r.source}</td>
-                        <td className="px-4 py-2 text-right font-mono text-gray-700">{r.visits}</td>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="text-xs text-gray-500">
+                        <th className="px-4 py-2 text-left">Источник</th>
+                        <th className="px-4 py-2 text-right">Визиты</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody className="divide-y divide-gray-100">
+                      {metrica.sources.map(r => (
+                        <tr key={r.source} className="hover:bg-gray-50">
+                          <td className="px-4 py-2 text-gray-800">{r.source}</td>
+                          <td className="px-4 py-2 text-right font-mono text-gray-700">{r.visits}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           </>

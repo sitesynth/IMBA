@@ -234,51 +234,53 @@ export default function AdminPromocodesPage() {
         ) : vpnCodes.length === 0 ? (
           <div className="p-8 text-center text-gray-400 text-sm">Нет промокодов</div>
         ) : (
-          <table className="w-full text-sm">
-            <thead className="bg-gray-50 text-xs font-semibold text-gray-500">
-              <tr>
-                <th className="px-5 py-2.5 text-left">Код</th>
-                <th className="px-5 py-2.5 text-left">Дней</th>
-                <th className="px-5 py-2.5 text-left">Использований</th>
-                <th className="px-5 py-2.5 text-left">Истекает</th>
-                <th className="px-5 py-2.5 text-left">Описание</th>
-                <th className="px-5 py-2.5 text-left">Реферал</th>
-                <th className="px-5 py-2.5 text-left">Статус</th>
-                <th className="px-5 py-2.5 text-left">Действия</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
-              {vpnCodes.map(p => (
-                <tr key={p.id} className={p.is_active ? '' : 'opacity-50'}>
-                  <td className="px-5 py-3 font-mono font-bold">{p.code}</td>
-                  <td className="px-5 py-3 font-bold">{p.discount_value}д</td>
-                  <td className="px-5 py-3">
-                    {p.current_uses}{p.max_uses ? `/${p.max_uses}` : ''}
-                  </td>
-                  <td className="px-5 py-3 text-gray-500">
-                    {p.valid_until ? p.valid_until.slice(0, 10) : '∞'}
-                  </td>
-                  <td className="px-5 py-3 text-gray-500 max-w-[180px] truncate">{p.description || '—'}</td>
-                  <td className="px-5 py-3 text-gray-500">{p.referral_partner_name || '—'}</td>
-                  <td className="px-5 py-3">
-                    <span className={`text-xs font-bold ${p.is_active ? 'text-green-600' : 'text-gray-400'}`}>
-                      {p.is_active ? 'Активен' : 'Выкл'}
-                    </span>
-                  </td>
-                  <td className="px-5 py-3">
-                    <div className="flex items-center gap-2">
-                      <button onClick={() => copyCode(p.code)} title="Скопировать ссылку" className="text-gray-400 hover:text-gray-700">
-                        {copied === p.code ? <Check className="w-4 h-4 text-green-600" /> : <Copy className="w-4 h-4" />}
-                      </button>
-                      <button onClick={() => toggle(p.id)} title={p.is_active ? 'Выключить' : 'Включить'} className="text-gray-400 hover:text-gray-700">
-                        {p.is_active ? <ToggleRight className="w-5 h-5 text-green-600" /> : <ToggleLeft className="w-5 h-5" />}
-                      </button>
-                    </div>
-                  </td>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-gray-50 text-xs font-semibold text-gray-500">
+                <tr>
+                  <th className="px-5 py-2.5 text-left">Код</th>
+                  <th className="px-5 py-2.5 text-left">Дней</th>
+                  <th className="px-5 py-2.5 text-left">Использований</th>
+                  <th className="px-5 py-2.5 text-left">Истекает</th>
+                  <th className="px-5 py-2.5 text-left">Описание</th>
+                  <th className="px-5 py-2.5 text-left">Реферал</th>
+                  <th className="px-5 py-2.5 text-left">Статус</th>
+                  <th className="px-5 py-2.5 text-left">Действия</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {vpnCodes.map(p => (
+                  <tr key={p.id} className={p.is_active ? '' : 'opacity-50'}>
+                    <td className="px-5 py-3 font-mono font-bold">{p.code}</td>
+                    <td className="px-5 py-3 font-bold">{p.discount_value}д</td>
+                    <td className="px-5 py-3">
+                      {p.current_uses}{p.max_uses ? `/${p.max_uses}` : ''}
+                    </td>
+                    <td className="px-5 py-3 text-gray-500">
+                      {p.valid_until ? p.valid_until.slice(0, 10) : '∞'}
+                    </td>
+                    <td className="px-5 py-3 text-gray-500 max-w-[180px] truncate">{p.description || '—'}</td>
+                    <td className="px-5 py-3 text-gray-500">{p.referral_partner_name || '—'}</td>
+                    <td className="px-5 py-3">
+                      <span className={`text-xs font-bold ${p.is_active ? 'text-green-600' : 'text-gray-400'}`}>
+                        {p.is_active ? 'Активен' : 'Выкл'}
+                      </span>
+                    </td>
+                    <td className="px-5 py-3">
+                      <div className="flex items-center gap-2">
+                        <button onClick={() => copyCode(p.code)} title="Скопировать ссылку" className="text-gray-400 hover:text-gray-700">
+                          {copied === p.code ? <Check className="w-4 h-4 text-green-600" /> : <Copy className="w-4 h-4" />}
+                        </button>
+                        <button onClick={() => toggle(p.id)} title={p.is_active ? 'Выключить' : 'Включить'} className="text-gray-400 hover:text-gray-700">
+                          {p.is_active ? <ToggleRight className="w-5 h-5 text-green-600" /> : <ToggleLeft className="w-5 h-5" />}
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
 
@@ -288,38 +290,40 @@ export default function AdminPromocodesPage() {
           <div className="px-5 py-3 border-b border-gray-100">
             <h2 className="font-bold">Остальные промокоды (скидки)</h2>
           </div>
-          <table className="w-full text-sm">
-            <thead className="bg-gray-50 text-xs font-semibold text-gray-500">
-              <tr>
-                <th className="px-5 py-2.5 text-left">Код</th>
-                <th className="px-5 py-2.5 text-left">Тип</th>
-                <th className="px-5 py-2.5 text-left">Значение</th>
-                <th className="px-5 py-2.5 text-left">Использований</th>
-                <th className="px-5 py-2.5 text-left">Статус</th>
-                <th className="px-5 py-2.5 text-left">Действия</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
-              {otherCodes.map(p => (
-                <tr key={p.id} className={p.is_active ? '' : 'opacity-50'}>
-                  <td className="px-5 py-3 font-mono font-bold">{p.code}</td>
-                  <td className="px-5 py-3 text-gray-500">{p.discount_type}</td>
-                  <td className="px-5 py-3">{p.discount_type === 'percent' ? `${p.discount_value}%` : `$${p.discount_value}`}</td>
-                  <td className="px-5 py-3">{p.current_uses}{p.max_uses ? `/${p.max_uses}` : ''}</td>
-                  <td className="px-5 py-3">
-                    <span className={`text-xs font-bold ${p.is_active ? 'text-green-600' : 'text-gray-400'}`}>
-                      {p.is_active ? 'Активен' : 'Выкл'}
-                    </span>
-                  </td>
-                  <td className="px-5 py-3">
-                    <button onClick={() => toggle(p.id)} className="text-gray-400 hover:text-gray-700">
-                      {p.is_active ? <ToggleRight className="w-5 h-5 text-green-600" /> : <ToggleLeft className="w-5 h-5" />}
-                    </button>
-                  </td>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-gray-50 text-xs font-semibold text-gray-500">
+                <tr>
+                  <th className="px-5 py-2.5 text-left">Код</th>
+                  <th className="px-5 py-2.5 text-left">Тип</th>
+                  <th className="px-5 py-2.5 text-left">Значение</th>
+                  <th className="px-5 py-2.5 text-left">Использований</th>
+                  <th className="px-5 py-2.5 text-left">Статус</th>
+                  <th className="px-5 py-2.5 text-left">Действия</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {otherCodes.map(p => (
+                  <tr key={p.id} className={p.is_active ? '' : 'opacity-50'}>
+                    <td className="px-5 py-3 font-mono font-bold">{p.code}</td>
+                    <td className="px-5 py-3 text-gray-500">{p.discount_type}</td>
+                    <td className="px-5 py-3">{p.discount_type === 'percent' ? `${p.discount_value}%` : `$${p.discount_value}`}</td>
+                    <td className="px-5 py-3">{p.current_uses}{p.max_uses ? `/${p.max_uses}` : ''}</td>
+                    <td className="px-5 py-3">
+                      <span className={`text-xs font-bold ${p.is_active ? 'text-green-600' : 'text-gray-400'}`}>
+                        {p.is_active ? 'Активен' : 'Выкл'}
+                      </span>
+                    </td>
+                    <td className="px-5 py-3">
+                      <button onClick={() => toggle(p.id)} className="text-gray-400 hover:text-gray-700">
+                        {p.is_active ? <ToggleRight className="w-5 h-5 text-green-600" /> : <ToggleLeft className="w-5 h-5" />}
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
     </div>

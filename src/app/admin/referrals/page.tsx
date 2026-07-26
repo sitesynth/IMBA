@@ -236,34 +236,36 @@ export default function AdminReferrals() {
           <div className="px-5 py-3 border-b border-amber-200">
             <h2 className="font-bold text-amber-900">Запросы на выплату ({pendingPayouts.length})</h2>
           </div>
-          <table className="w-full">
-            <thead className="bg-amber-100/50">
-              <tr>
-                <th className="px-5 py-2 text-left text-xs font-semibold text-amber-800">Партнёр</th>
-                <th className="px-5 py-2 text-left text-xs font-semibold text-amber-800">Сумма</th>
-                <th className="px-5 py-2 text-left text-xs font-semibold text-amber-800">Кошелёк</th>
-                <th className="px-5 py-2 text-left text-xs font-semibold text-amber-800">Период</th>
-                <th className="px-5 py-2 text-left text-xs font-semibold text-amber-800">Запрошено</th>
-                <th className="px-5 py-2 text-left text-xs font-semibold text-amber-800"></th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-amber-200">
-              {pendingPayouts.map(p => (
-                <tr key={p.id}>
-                  <td className="px-5 py-2.5 text-sm font-medium">{p.partner_name || p.referral_code}</td>
-                  <td className="px-5 py-2.5 text-sm font-mono font-bold">${p.amount.toFixed(2)}</td>
-                  <td className="px-5 py-2.5 text-xs font-mono text-gray-600">{maskWallet(p.wallet)}</td>
-                  <td className="px-5 py-2.5 text-sm text-gray-600">{p.period === 'weekly' ? 'Неделя' : 'Месяц'}</td>
-                  <td className="px-5 py-2.5 text-sm text-gray-600">{p.requested_at ? new Date(p.requested_at).toLocaleDateString() : '—'}</td>
-                  <td className="px-5 py-2.5 text-sm">
-                    <Link href={`/admin/referrals/${p.referral_id}`} className="text-blue-600 hover:underline font-semibold">
-                      Подтвердить
-                    </Link>
-                  </td>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-amber-100/50">
+                <tr>
+                  <th className="px-5 py-2 text-left text-xs font-semibold text-amber-800">Партнёр</th>
+                  <th className="px-5 py-2 text-left text-xs font-semibold text-amber-800">Сумма</th>
+                  <th className="px-5 py-2 text-left text-xs font-semibold text-amber-800">Кошелёк</th>
+                  <th className="px-5 py-2 text-left text-xs font-semibold text-amber-800">Период</th>
+                  <th className="px-5 py-2 text-left text-xs font-semibold text-amber-800">Запрошено</th>
+                  <th className="px-5 py-2 text-left text-xs font-semibold text-amber-800"></th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-amber-200">
+                {pendingPayouts.map(p => (
+                  <tr key={p.id}>
+                    <td className="px-5 py-2.5 text-sm font-medium">{p.partner_name || p.referral_code}</td>
+                    <td className="px-5 py-2.5 text-sm font-mono font-bold">${p.amount.toFixed(2)}</td>
+                    <td className="px-5 py-2.5 text-xs font-mono text-gray-600">{maskWallet(p.wallet)}</td>
+                    <td className="px-5 py-2.5 text-sm text-gray-600">{p.period === 'weekly' ? 'Неделя' : 'Месяц'}</td>
+                    <td className="px-5 py-2.5 text-sm text-gray-600">{p.requested_at ? new Date(p.requested_at).toLocaleDateString() : '—'}</td>
+                    <td className="px-5 py-2.5 text-sm">
+                      <Link href={`/admin/referrals/${p.referral_id}`} className="text-blue-600 hover:underline font-semibold">
+                        Подтвердить
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
 
@@ -305,59 +307,61 @@ export default function AdminReferrals() {
             placeholder="Поиск по имени, коду, контакту…"
             className="w-full max-w-xs border border-gray-300 rounded-lg px-3 py-2 text-sm" />
         </div>
-        <table className="w-full">
-          <thead className="bg-gray-50 border-b border-gray-200">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Партнёр</th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Реф-ссылка</th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Контакт</th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Рефералов</th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Earned</th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">К выплате</th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Status</th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200">
-            {filtered.length === 0 ? (
-              <tr><td colSpan={8} className="px-6 py-8 text-center text-gray-400 text-sm">Нет программ. Создайте первую.</td></tr>
-            ) : filtered.map((prog) => (
-              <tr key={prog.id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 text-sm font-medium">
-                  <Link href={`/admin/referrals/${prog.id}`} className="hover:underline">{prog.name || '—'}</Link>
-                </td>
-                <td className="px-6 py-4 text-sm">
-                  <div className="flex items-center gap-2">
-                    <code className="text-xs text-gray-500 font-mono">?ref={prog.referral_code}</code>
-                    <button onClick={() => copy(refLink(prog.referral_code), prog.id)}
-                      className="text-gray-400 hover:text-gray-700">
-                      {copied === prog.id ? <Check className="w-3.5 h-3.5 text-green-600" /> : <Copy className="w-3.5 h-3.5" />}
-                    </button>
-                  </div>
-                </td>
-                <td className="px-6 py-4 text-sm text-gray-600">{prog.contact || '—'}</td>
-                <td className="px-6 py-4 text-sm font-bold">{prog.total_referrals}</td>
-                <td className="px-6 py-4 text-sm font-mono">${prog.total_earned.toFixed(2)}</td>
-                <td className={`px-6 py-4 text-sm font-mono ${prog.pending_payout > 0 ? 'text-amber-600 font-bold' : 'text-gray-500'}`}>
-                  ${prog.pending_payout.toFixed(2)}
-                </td>
-                <td className="px-6 py-4 text-sm">
-                  <span className={prog.is_active ? 'text-green-600 font-semibold' : 'text-gray-400'}>
-                    {prog.is_active ? 'Active' : 'Inactive'}
-                  </span>
-                </td>
-                <td className="px-6 py-4 text-sm">
-                  <div className="flex gap-3">
-                    <Link href={`/admin/referrals/${prog.id}`} className="text-blue-600 hover:underline">View</Link>
-                    <button onClick={() => handleToggle(prog.id)} className="text-orange-600 hover:underline">
-                      {prog.is_active ? 'Disable' : 'Enable'}
-                    </button>
-                  </div>
-                </td>
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-gray-50 border-b border-gray-200">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Партнёр</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Реф-ссылка</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Контакт</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Рефералов</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Earned</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">К выплате</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Status</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {filtered.length === 0 ? (
+                <tr><td colSpan={8} className="px-6 py-8 text-center text-gray-400 text-sm">Нет программ. Создайте первую.</td></tr>
+              ) : filtered.map((prog) => (
+                <tr key={prog.id} className="hover:bg-gray-50">
+                  <td className="px-6 py-4 text-sm font-medium">
+                    <Link href={`/admin/referrals/${prog.id}`} className="hover:underline">{prog.name || '—'}</Link>
+                  </td>
+                  <td className="px-6 py-4 text-sm">
+                    <div className="flex items-center gap-2">
+                      <code className="text-xs text-gray-500 font-mono">?ref={prog.referral_code}</code>
+                      <button onClick={() => copy(refLink(prog.referral_code), prog.id)}
+                        className="text-gray-400 hover:text-gray-700">
+                        {copied === prog.id ? <Check className="w-3.5 h-3.5 text-green-600" /> : <Copy className="w-3.5 h-3.5" />}
+                      </button>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 text-sm text-gray-600">{prog.contact || '—'}</td>
+                  <td className="px-6 py-4 text-sm font-bold">{prog.total_referrals}</td>
+                  <td className="px-6 py-4 text-sm font-mono">${prog.total_earned.toFixed(2)}</td>
+                  <td className={`px-6 py-4 text-sm font-mono ${prog.pending_payout > 0 ? 'text-amber-600 font-bold' : 'text-gray-500'}`}>
+                    ${prog.pending_payout.toFixed(2)}
+                  </td>
+                  <td className="px-6 py-4 text-sm">
+                    <span className={prog.is_active ? 'text-green-600 font-semibold' : 'text-gray-400'}>
+                      {prog.is_active ? 'Active' : 'Inactive'}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 text-sm">
+                    <div className="flex gap-3">
+                      <Link href={`/admin/referrals/${prog.id}`} className="text-blue-600 hover:underline">View</Link>
+                      <button onClick={() => handleToggle(prog.id)} className="text-orange-600 hover:underline">
+                        {prog.is_active ? 'Disable' : 'Enable'}
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {error && <div className="bg-red-50 border border-red-200 rounded-lg px-4 py-2 text-sm text-red-700">{error}</div>}

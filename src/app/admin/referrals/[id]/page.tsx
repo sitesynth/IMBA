@@ -63,7 +63,7 @@ function EditModal({
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600"><X className="w-5 h-5" /></button>
         </div>
         <div className="px-6 py-5 space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-semibold text-gray-500 mb-1">Имя / канал</label>
               <input value={name} onChange={e => setName(e.target.value)}
@@ -85,7 +85,7 @@ function EditModal({
               ))}
             </select>
           </div>
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
               <label className="block text-xs font-semibold text-gray-500 mb-1">L1 %</label>
               <input type="number" min={0} max={100} step={0.5} value={l1} onChange={e => setL1(parseFloat(e.target.value) || 0)}
@@ -362,7 +362,7 @@ export default function ReferralDetail() {
           </div>
         </div>
 
-        <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
           <div className="bg-blue-50 rounded-lg p-4 text-center">
             <div className="text-xl font-bold text-blue-600">{conversions.length}</div>
             <div className="text-xs text-gray-600 mt-1">Конверсий</div>
@@ -389,7 +389,7 @@ export default function ReferralDetail() {
           </div>
         </div>
 
-        <div className="grid grid-cols-3 gap-4 mt-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
           <div className="bg-gray-50 rounded-lg p-4 text-center">
             <div className="text-lg font-bold font-mono">${program.total_earned.toFixed(2)}</div>
             <div className="text-xs text-gray-600 mt-1">Итого заработано</div>
@@ -411,48 +411,50 @@ export default function ReferralDetail() {
         <div className="px-6 py-4 border-b border-gray-200">
           <h2 className="text-xl font-bold">История выплат</h2>
         </div>
-        <table className="w-full">
-          <thead className="bg-gray-50 border-b border-gray-200">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Запрошено</th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Сумма</th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Кошелёк</th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Статус</th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Хэш</th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700"></th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200">
-            {payouts.length === 0 ? (
-              <tr><td colSpan={6} className="px-6 py-8 text-center text-gray-500">Выплат ещё нет</td></tr>
-            ) : payouts.map((p) => (
-              <tr key={p.id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 text-sm text-gray-600">{p.requested_at ? new Date(p.requested_at).toLocaleDateString() : '—'}</td>
-                <td className="px-6 py-4 text-sm font-mono font-bold text-green-600">${p.amount.toFixed(2)}</td>
-                <td className="px-6 py-4 text-xs font-mono text-gray-500" title={p.wallet || undefined}>{maskWallet(p.wallet)}</td>
-                <td className="px-6 py-4 text-sm">
-                  <span className={`px-2 py-1 rounded text-xs font-medium ${p.status === 'paid' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
-                    {p.status === 'paid' ? 'Оплачено' : 'Ожидает'}
-                  </span>
-                </td>
-                <td className="px-6 py-4 text-sm">
-                  {p.tx_hash ? (
-                    <a href={tronscanLink(p.tx_hash)} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline font-mono text-xs">
-                      {p.tx_hash.slice(0, 10)}…
-                    </a>
-                  ) : '—'}
-                </td>
-                <td className="px-6 py-4 text-sm">
-                  {p.status === 'pending' && (
-                    <button onClick={() => setConfirmingPayout(p)} className="text-blue-600 hover:underline font-semibold">
-                      Подтвердить
-                    </button>
-                  )}
-                </td>
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-gray-50 border-b border-gray-200">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Запрошено</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Сумма</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Кошелёк</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Статус</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Хэш</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700"></th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {payouts.length === 0 ? (
+                <tr><td colSpan={6} className="px-6 py-8 text-center text-gray-500">Выплат ещё нет</td></tr>
+              ) : payouts.map((p) => (
+                <tr key={p.id} className="hover:bg-gray-50">
+                  <td className="px-6 py-4 text-sm text-gray-600">{p.requested_at ? new Date(p.requested_at).toLocaleDateString() : '—'}</td>
+                  <td className="px-6 py-4 text-sm font-mono font-bold text-green-600">${p.amount.toFixed(2)}</td>
+                  <td className="px-6 py-4 text-xs font-mono text-gray-500" title={p.wallet || undefined}>{maskWallet(p.wallet)}</td>
+                  <td className="px-6 py-4 text-sm">
+                    <span className={`px-2 py-1 rounded text-xs font-medium ${p.status === 'paid' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
+                      {p.status === 'paid' ? 'Оплачено' : 'Ожидает'}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 text-sm">
+                    {p.tx_hash ? (
+                      <a href={tronscanLink(p.tx_hash)} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline font-mono text-xs">
+                        {p.tx_hash.slice(0, 10)}…
+                      </a>
+                    ) : '—'}
+                  </td>
+                  <td className="px-6 py-4 text-sm">
+                    {p.status === 'pending' && (
+                      <button onClick={() => setConfirmingPayout(p)} className="text-blue-600 hover:underline font-semibold">
+                        Подтвердить
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
@@ -461,60 +463,62 @@ export default function ReferralDetail() {
           <h2 className="text-xl font-bold">Conversions</h2>
         </div>
 
-        <table className="w-full">
-          <thead className="bg-gray-50 border-b border-gray-200">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Referee Email</th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Status</th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Источник</th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Referrer Bonus</th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Referee Bonus</th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Converted</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200">
-            {conversions.length === 0 ? (
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
-                <td colSpan={6} className="px-6 py-8 text-center text-gray-500">No conversions yet</td>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Referee Email</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Status</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Источник</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Referrer Bonus</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Referee Bonus</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Converted</th>
               </tr>
-            ) : (
-              conversions.map((conv) => (
-                <tr key={conv.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 text-sm">{conv.referee_email || '—'}</td>
-                  <td className="px-6 py-4 text-sm">
-                    <span className={`px-2 py-1 rounded text-xs font-medium ${
-                      conv.status === 'completed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
-                    }`}>
-                      {conv.status.toUpperCase()}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-sm">
-                    {conv.source === 'promo' ? (
-                      <span className="px-2 py-1 rounded text-xs font-medium bg-purple-100 text-purple-800" title={conv.promocode || undefined}>
-                        Промокод{conv.promocode ? ` · ${conv.promocode}` : ''}
-                      </span>
-                    ) : (
-                      <span className="px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800">
-                        Реф-ссылка
-                      </span>
-                    )}
-                  </td>
-                  <td className="px-6 py-4 text-sm">
-                    <span className={conv.referrer_bonus_paid ? 'text-green-600 font-semibold' : 'text-gray-500'}>
-                      {conv.referrer_bonus_paid ? '✓ Paid' : '—'}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-sm">
-                    <span className={conv.referee_bonus_paid ? 'text-green-600 font-semibold' : 'text-gray-500'}>
-                      {conv.referee_bonus_paid ? '✓ Paid' : '—'}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-sm">{conv.completed_at ? new Date(conv.completed_at).toLocaleDateString() : '—'}</td>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {conversions.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="px-6 py-8 text-center text-gray-500">No conversions yet</td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : (
+                conversions.map((conv) => (
+                  <tr key={conv.id} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 text-sm">{conv.referee_email || '—'}</td>
+                    <td className="px-6 py-4 text-sm">
+                      <span className={`px-2 py-1 rounded text-xs font-medium ${
+                        conv.status === 'completed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                      }`}>
+                        {conv.status.toUpperCase()}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-sm">
+                      {conv.source === 'promo' ? (
+                        <span className="px-2 py-1 rounded text-xs font-medium bg-purple-100 text-purple-800" title={conv.promocode || undefined}>
+                          Промокод{conv.promocode ? ` · ${conv.promocode}` : ''}
+                        </span>
+                      ) : (
+                        <span className="px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800">
+                          Реф-ссылка
+                        </span>
+                      )}
+                    </td>
+                    <td className="px-6 py-4 text-sm">
+                      <span className={conv.referrer_bonus_paid ? 'text-green-600 font-semibold' : 'text-gray-500'}>
+                        {conv.referrer_bonus_paid ? '✓ Paid' : '—'}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-sm">
+                      <span className={conv.referee_bonus_paid ? 'text-green-600 font-semibold' : 'text-gray-500'}>
+                        {conv.referee_bonus_paid ? '✓ Paid' : '—'}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-sm">{conv.completed_at ? new Date(conv.completed_at).toLocaleDateString() : '—'}</td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {error && <div className="bg-red-50 border border-red-200 rounded-lg px-4 py-2 text-sm text-red-700">{error}</div>}

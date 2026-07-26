@@ -101,26 +101,28 @@ export default function AdminUserDetail() {
           <div className="px-6 py-4 border-b border-gray-200">
             <h2 className="text-lg font-semibold text-gray-900">Recent Payments</h2>
           </div>
-          <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-200">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Amount</th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Note</th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Date</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {user.payments.map((p) => (
-                <tr key={p.payment_id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 text-sm font-mono text-gray-900">${p.amount?.toFixed(2)}</td>
-                  <td className="px-6 py-4 text-sm text-gray-700">{p.status}</td>
-                  <td className="px-6 py-4 text-sm text-gray-700">{p.note || '—'}</td>
-                  <td className="px-6 py-4 text-sm text-gray-700">{new Date(p.created_at).toLocaleDateString()}</td>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gray-50 border-b border-gray-200">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Amount</th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Status</th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Note</th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Date</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                {user.payments.map((p) => (
+                  <tr key={p.payment_id} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 text-sm font-mono text-gray-900">${p.amount?.toFixed(2)}</td>
+                    <td className="px-6 py-4 text-sm text-gray-700">{p.status}</td>
+                    <td className="px-6 py-4 text-sm text-gray-700">{p.note || '—'}</td>
+                    <td className="px-6 py-4 text-sm text-gray-700">{new Date(p.created_at).toLocaleDateString()}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
     </div>

@@ -252,7 +252,7 @@ export default function AdminCardsPage() {
 
             <div className="p-6 space-y-5">
               {/* Stats row */}
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div className="bg-gray-50 rounded-xl p-3 text-center">
                   <div className="text-xs text-gray-400 mb-1">Баланс</div>
                   <div className="font-bold text-gray-900">${selectedCard.balance.toFixed(2)}</div>

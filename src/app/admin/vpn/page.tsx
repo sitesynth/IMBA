@@ -130,61 +130,63 @@ export default function AdminVpnPage() {
 
       {!loading && !error && (
         <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-          <table className="w-full text-sm">
-            <thead className="bg-gray-50 border-b border-gray-200">
-              <tr>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">User</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Provider</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Plan</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Status</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Expires</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
-              {subs.map(s => (
-                <tr key={s.id} className={`hover:bg-gray-50 ${s.provider === 'mock' ? 'bg-red-50/40' : ''}`}>
-                  <td className="px-4 py-3">
-                    <Link href={`/admin/users/${s.user_id}`} className="text-blue-600 hover:underline font-medium">
-                      {s.email ?? '—'}
-                    </Link>
-                    {s.name && <div className="text-xs text-gray-400">{s.name}</div>}
-                  </td>
-                  <td className="px-4 py-3"><ProviderBadge provider={s.provider} /></td>
-                  <td className="px-4 py-3 text-gray-700">{s.plan}</td>
-                  <td className="px-4 py-3"><StatusBadge status={s.status} /></td>
-                  <td className="px-4 py-3 text-gray-500 text-xs">
-                    {s.expires_at ? new Date(s.expires_at).toLocaleDateString('ru') : '—'}
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => handleRecreate(s.id)}
-                        disabled={!!busy[s.id]}
-                        className="text-xs px-2.5 py-1.5 rounded-md bg-blue-600 text-white font-semibold hover:bg-blue-700 disabled:opacity-50 transition"
-                      >
-                        {busy[s.id] === 'recreate' ? '…' : 'Recreate'}
-                      </button>
-                      {s.status === 'active' && (
-                        <button
-                          onClick={() => handleRevoke(s.id)}
-                          disabled={!!busy[s.id]}
-                          className="text-xs px-2.5 py-1.5 rounded-md bg-red-100 text-red-700 font-semibold hover:bg-red-200 disabled:opacity-50 transition"
-                        >
-                          {busy[s.id] === 'revoke' ? '…' : 'Revoke'}
-                        </button>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              ))}
-              {subs.length === 0 && (
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
-                  <td colSpan={6} className="px-4 py-12 text-center text-gray-400">No VPN subscriptions found</td>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">User</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Provider</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Plan</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Status</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Expires</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Actions</th>
                 </tr>
-              )}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {subs.map(s => (
+                  <tr key={s.id} className={`hover:bg-gray-50 ${s.provider === 'mock' ? 'bg-red-50/40' : ''}`}>
+                    <td className="px-4 py-3">
+                      <Link href={`/admin/users/${s.user_id}`} className="text-blue-600 hover:underline font-medium">
+                        {s.email ?? '—'}
+                      </Link>
+                      {s.name && <div className="text-xs text-gray-400">{s.name}</div>}
+                    </td>
+                    <td className="px-4 py-3"><ProviderBadge provider={s.provider} /></td>
+                    <td className="px-4 py-3 text-gray-700">{s.plan}</td>
+                    <td className="px-4 py-3"><StatusBadge status={s.status} /></td>
+                    <td className="px-4 py-3 text-gray-500 text-xs">
+                      {s.expires_at ? new Date(s.expires_at).toLocaleDateString('ru') : '—'}
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleRecreate(s.id)}
+                          disabled={!!busy[s.id]}
+                          className="text-xs px-2.5 py-1.5 rounded-md bg-blue-600 text-white font-semibold hover:bg-blue-700 disabled:opacity-50 transition"
+                        >
+                          {busy[s.id] === 'recreate' ? '…' : 'Recreate'}
+                        </button>
+                        {s.status === 'active' && (
+                          <button
+                            onClick={() => handleRevoke(s.id)}
+                            disabled={!!busy[s.id]}
+                            className="text-xs px-2.5 py-1.5 rounded-md bg-red-100 text-red-700 font-semibold hover:bg-red-200 disabled:opacity-50 transition"
+                          >
+                            {busy[s.id] === 'revoke' ? '…' : 'Revoke'}
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+                {subs.length === 0 && (
+                  <tr>
+                    <td colSpan={6} className="px-4 py-12 text-center text-gray-400">No VPN subscriptions found</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
     </div>

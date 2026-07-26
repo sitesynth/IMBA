@@ -73,17 +73,17 @@ function PlanModal({
         </div>
 
         <form onSubmit={handleSubmit} className="px-6 py-5 space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {field('Название', inp({ value: form.name, onChange: e => handleName(e.target.value), required: true, placeholder: 'Про' }))}
             {field('Slug', inp({ value: form.slug, onChange: e => set('slug', e.target.value), required: true, placeholder: 'pro' }))}
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {field('Цена (USD)', inp({ type: 'number', min: 0, step: '0.01', value: form.price_usd, onChange: e => set('price_usd', parseFloat(e.target.value) || 0), required: true }))}
             {field('Период (дней)', inp({ type: 'number', min: 1, value: form.period_days, onChange: e => set('period_days', parseInt(e.target.value) || 30), required: true }))}
           </div>
 
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {field('eSIM слотов', inp({ type: 'number', min: 0, value: form.esim_slots, onChange: e => set('esim_slots', parseInt(e.target.value) || 0) }))}
             {field('Карт слотов', inp({ type: 'number', min: 0, value: form.card_slots, onChange: e => set('card_slots', parseInt(e.target.value) || 0) }))}
             {field('Порядок', inp({ type: 'number', min: 0, value: form.sort_order, onChange: e => set('sort_order', parseInt(e.target.value) || 0) }))}
@@ -171,8 +171,8 @@ export default function AdminPlans() {
 
       <div className="grid gap-4">
         {plans.map((p) => (
-          <div key={p.plan_id} className={`bg-white rounded-xl border p-5 flex items-center gap-4 ${!p.is_active ? 'opacity-50' : 'border-gray-200'}`}>
-            <div className="flex-1 grid grid-cols-7 gap-4 items-center">
+          <div key={p.plan_id} className={`bg-white rounded-xl border p-5 flex items-center gap-4 flex-wrap ${!p.is_active ? 'opacity-50' : 'border-gray-200'}`}>
+            <div className="flex-1 grid grid-cols-2 sm:grid-cols-7 gap-4 items-center min-w-[240px]">
               <div className="col-span-2">
                 <div className="font-bold text-gray-900">{p.name}</div>
                 <div className="text-xs text-gray-500 font-mono">{p.slug}</div>
