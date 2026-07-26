@@ -254,6 +254,13 @@ export default function AdminUsers() {
   const [amount, setAmount] = useState('')
   const [note, setNote] = useState('')
   const [saving, setSaving] = useState(false)
+  const [sortKey, setSortKey] = useState<string>('created_at')
+  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc')
+
+  function handleSort(key: string) {
+    if (sortKey === key) setSortDir(d => d === 'asc' ? 'desc' : 'asc')
+    else { setSortKey(key); setSortDir('asc') }
+  }
 
   async function load() {
     setLoading(true)
@@ -313,7 +320,28 @@ export default function AdminUsers() {
     } finally { setSaving(false) }
   }
 
-  const filtered = users
+  const sortedUsers = [...users].sort((a, b) => {
+    const av = (a as unknown as Record<string, unknown>)[sortKey] ?? ''
+    const bv = (b as unknown as Record<string, unknown>)[sortKey] ?? ''
+    const cmp = typeof av === 'number' && typeof bv === 'number'
+      ? av - bv
+      : String(av).localeCompare(String(bv))
+    return sortDir === 'asc' ? cmp : -cmp
+  })
+
+  const SortTh = ({ col, label }: { col: string; label: string }) => (
+    <th
+      onClick={() => handleSort(col)}
+      className={`px-4 py-3 text-left text-xs font-semibold cursor-pointer select-none hover:bg-gray-100 transition-colors ${sortKey === col ? 'text-blue-600' : 'text-gray-700'}`}
+    >
+      <span className="inline-flex items-center gap-1">
+        {label}
+        {sortKey === col
+          ? sortDir === 'asc' ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />
+          : <span className="opacity-20 text-[10px]">↕</span>}
+      </span>
+    </th>
+  )
 
   return (
     <div className="max-w-6xl">
@@ -371,25 +399,25 @@ export default function AdminUsers() {
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
                 <th className="px-4 py-3 text-left">
-                  <input type="checkbox" checked={selected.size === filtered.length && filtered.length > 0} onChange={toggleAll} />
+                  <input type="checkbox" checked={selected.size === sortedUsers.length && sortedUsers.length > 0} onChange={toggleAll} />
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700">#</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700">Email / Contact</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700">Name</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700">Plan</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700">Balance</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700">Total paid</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700">Source</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700">City</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700">Status</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700">Created</th>
+                <SortTh col="email" label="Email / Contact" />
+                <SortTh col="name" label="Name" />
+                <SortTh col="plan" label="Plan" />
+                <SortTh col="balance" label="Balance" />
+                <SortTh col="total_paid" label="Total paid" />
+                <SortTh col="source" label="Source" />
+                <SortTh col="city" label="City" />
+                <SortTh col="is_active" label="Status" />
+                <SortTh col="created_at" label="Created" />
                 <th className="px-4 py-3"></th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
               {loading ? (
                 <tr><td colSpan={12} className="px-4 py-8 text-center text-gray-500">Loading...</td></tr>
-              ) : filtered.map((u, i) => (
+              ) : sortedUsers.map((u, i) => (
                 <UserRow
                   key={u.user_id}
                   u={u}
