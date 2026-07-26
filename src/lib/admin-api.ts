@@ -280,6 +280,7 @@ export interface ReferralProgram {
   pending_payout: number
   payout_wallet: string | null
   payout_period: string
+  promo_max_active_codes: number | null
   created_at: string
 }
 
@@ -308,6 +309,7 @@ export interface UpdateReferralProgramPayload {
   l1_pct?: number
   l2_pct?: number
   l3_pct?: number
+  promo_max_active_codes?: number
 }
 
 export interface ReferralPayout {

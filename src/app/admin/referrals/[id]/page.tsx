@@ -32,6 +32,7 @@ function EditModal({
   const [l2, setL2] = useState(program.l2_pct)
   const [l3, setL3] = useState(program.l3_pct)
   const [note, setNote] = useState(program.note || '')
+  const [promoLimit, setPromoLimit] = useState(program.promo_max_active_codes?.toString() || '')
   const [error, setError] = useState('')
   const [saving, setSaving] = useState(false)
 
@@ -45,6 +46,7 @@ function EditModal({
         upline_id: uplineId || null,
         l1_pct: l1, l2_pct: l2, l3_pct: l3,
         note: note.trim() || null,
+        promo_max_active_codes: promoLimit ? parseInt(promoLimit) : 0,
       })
       onSaved(updated)
       onClose()
@@ -101,6 +103,11 @@ function EditModal({
               <input type="number" min={0} max={100} step={0.5} value={l3} onChange={e => setL3(parseFloat(e.target.value) || 0)}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" />
             </div>
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-gray-500 mb-1">Лимит своих промокодов (пусто = общий лимит)</label>
+            <input type="number" min={1} value={promoLimit} onChange={e => setPromoLimit(e.target.value)}
+              placeholder="по умолчанию" className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" />
           </div>
           <div>
             <label className="block text-xs font-semibold text-gray-500 mb-1">Заметка</label>
