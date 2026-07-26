@@ -278,6 +278,8 @@ export interface ReferralProgram {
   total_earned_l3: number
   total_paid: number
   pending_payout: number
+  payout_wallet: string | null
+  payout_period: string
   created_at: string
 }
 
@@ -309,9 +311,18 @@ export interface UpdateReferralProgramPayload {
 }
 
 export interface ReferralPayout {
+  id: string
+  referral_id?: string
   amount: number
-  detail: string | null
-  created_at: string | null
+  wallet: string | null
+  period: string | null
+  status: 'pending' | 'paid'
+  tx_hash: string | null
+  note: string | null
+  requested_at: string | null
+  paid_at: string | null
+  referral_code?: string
+  partner_name?: string | null
 }
 
 export interface ReferralConversion {
@@ -387,15 +398,26 @@ export function updateReferralDefaults(payload: ReferralDefaults) {
   })
 }
 
-export function recordReferralPayout(programId: string, amount: number) {
-  return adminReq<{ id: string; referral_code: string; total_paid: number }>(
+export function recordReferralPayout(programId: string, amount: number, txHash?: string) {
+  return adminReq<{ id: string; referral_code: string; total_paid: number; payout: ReferralPayout }>(
     `/v1/admin/referrals/${programId}/payout`,
-    { method: "POST", body: JSON.stringify({ amount }) },
+    { method: "POST", body: JSON.stringify({ amount, tx_hash: txHash || undefined }) },
   )
 }
 
 export function getReferralPayouts(programId: string) {
   return adminReq<ReferralPayout[]>(`/v1/admin/referrals/${programId}/payouts`)
+}
+
+export function confirmReferralPayout(payoutId: string, txHash: string) {
+  return adminReq<ReferralPayout>(`/v1/admin/referrals/payouts/${payoutId}/confirm`, {
+    method: "POST",
+    body: JSON.stringify({ tx_hash: txHash }),
+  })
+}
+
+export function getPendingPayoutRequests() {
+  return adminReq<ReferralPayout[]>("/v1/admin/referrals/payout-requests")
 }
 
 export function generatePartnerSetupLink(programId: string) {

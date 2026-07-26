@@ -4,8 +4,8 @@ import Link from 'next/link'
 import { Share2, X, Copy, Check } from 'lucide-react'
 import {
   getReferralPrograms, toggleReferralProgram, createReferralProgram,
-  getReferralDefaults, updateReferralDefaults,
-  AdminApiError, ReferralProgram, ReferralDefaults,
+  getReferralDefaults, updateReferralDefaults, getPendingPayoutRequests,
+  AdminApiError, ReferralProgram, ReferralDefaults, ReferralPayout,
 } from '@/lib/admin-api'
 
 function refLink(code: string) {
@@ -137,14 +137,18 @@ export default function AdminReferrals() {
   const [defMsg, setDefMsg] = useState('')
   const [defSaving, setDefSaving] = useState(false)
   const [copied, setCopied] = useState<string | null>(null)
+  const [pendingPayouts, setPendingPayouts] = useState<ReferralPayout[]>([])
 
   useEffect(() => { fetchAll() }, [])
 
   const fetchAll = async () => {
     try {
-      const [progs, defs] = await Promise.all([getReferralPrograms(), getReferralDefaults()])
+      const [progs, defs, pending] = await Promise.all([
+        getReferralPrograms(), getReferralDefaults(), getPendingPayoutRequests().catch(() => []),
+      ])
       setPrograms(progs)
       setDefaults(defs)
+      setPendingPayouts(pending)
     } catch (e) {
       setError(e instanceof AdminApiError ? e.message : (e as Error).message)
     } finally {
@@ -226,6 +230,42 @@ export default function AdminReferrals() {
           <div className="text-xs text-gray-500 mt-1">К выплате</div>
         </div>
       </div>
+
+      {pendingPayouts.length > 0 && (
+        <div className="bg-amber-50 rounded-xl border border-amber-200 overflow-hidden">
+          <div className="px-5 py-3 border-b border-amber-200">
+            <h2 className="font-bold text-amber-900">Запросы на выплату ({pendingPayouts.length})</h2>
+          </div>
+          <table className="w-full">
+            <thead className="bg-amber-100/50">
+              <tr>
+                <th className="px-5 py-2 text-left text-xs font-semibold text-amber-800">Партнёр</th>
+                <th className="px-5 py-2 text-left text-xs font-semibold text-amber-800">Сумма</th>
+                <th className="px-5 py-2 text-left text-xs font-semibold text-amber-800">Кошелёк</th>
+                <th className="px-5 py-2 text-left text-xs font-semibold text-amber-800">Период</th>
+                <th className="px-5 py-2 text-left text-xs font-semibold text-amber-800">Запрошено</th>
+                <th className="px-5 py-2 text-left text-xs font-semibold text-amber-800"></th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-amber-200">
+              {pendingPayouts.map(p => (
+                <tr key={p.id}>
+                  <td className="px-5 py-2.5 text-sm font-medium">{p.partner_name || p.referral_code}</td>
+                  <td className="px-5 py-2.5 text-sm font-mono font-bold">${p.amount.toFixed(2)}</td>
+                  <td className="px-5 py-2.5 text-xs font-mono text-gray-600 max-w-[160px] truncate">{p.wallet || '—'}</td>
+                  <td className="px-5 py-2.5 text-sm text-gray-600">{p.period === 'weekly' ? 'Неделя' : 'Месяц'}</td>
+                  <td className="px-5 py-2.5 text-sm text-gray-600">{p.requested_at ? new Date(p.requested_at).toLocaleDateString() : '—'}</td>
+                  <td className="px-5 py-2.5 text-sm">
+                    <Link href={`/admin/referrals/${p.referral_id}`} className="text-blue-600 hover:underline font-semibold">
+                      Подтвердить
+                    </Link>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
 
       <div className="bg-white rounded-xl border border-gray-200 p-5">
         <div className="flex items-center justify-between mb-4">

@@ -5,9 +5,13 @@ import { ArrowLeft, Users, X, Copy, Check } from 'lucide-react'
 import Link from 'next/link'
 import {
   getReferralPrograms, getReferralConversions, updateReferralProgram,
-  recordReferralPayout, getReferralPayouts, generatePartnerSetupLink,
+  recordReferralPayout, getReferralPayouts, confirmReferralPayout, generatePartnerSetupLink,
   AdminApiError, ReferralProgram, ReferralConversion, ReferralPayout,
 } from '@/lib/admin-api'
+
+function tronscanLink(hash: string) {
+  return `https://tronscan.org/#/transaction/${hash}`
+}
 
 function refLink(code: string) {
   return `https://www.imba.live/?ref=${code}`
@@ -124,7 +128,8 @@ function PayoutModal({
   onClose: () => void
   onSaved: (totalPaid: number) => void
 }) {
-  const [amount, setAmount] = useState('')
+  const [amount, setAmount] = useState(program.pending_payout > 0 ? program.pending_payout.toFixed(2) : '')
+  const [txHash, setTxHash] = useState('')
   const [error, setError] = useState('')
   const [saving, setSaving] = useState(false)
 
@@ -134,7 +139,7 @@ function PayoutModal({
     setSaving(true)
     setError('')
     try {
-      const r = await recordReferralPayout(program.id, val)
+      const r = await recordReferralPayout(program.id, val, txHash.trim() || undefined)
       onSaved(r.total_paid)
       onClose()
     } catch (e) {
@@ -153,10 +158,18 @@ function PayoutModal({
         </div>
         <div className="px-6 py-5 space-y-3">
           <p className="text-sm text-gray-600">К выплате: <strong>${program.pending_payout.toFixed(2)}</strong></p>
+          {program.payout_wallet && (
+            <p className="text-xs text-gray-500 font-mono break-all">Кошелёк: {program.payout_wallet}</p>
+          )}
           <div>
             <label className="block text-xs font-semibold text-gray-500 mb-1">Сумма выплаты ($)</label>
             <input type="number" min={0.01} step={0.01} value={amount} onChange={e => setAmount(e.target.value)}
               placeholder="0.00" className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" />
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-gray-500 mb-1">Хэш транзакции (необязательно)</label>
+            <input value={txHash} onChange={e => setTxHash(e.target.value)}
+              placeholder="TRC20 tx hash" className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm font-mono" />
           </div>
           {error && <div className="bg-red-50 border border-red-200 rounded-lg px-3 py-2 text-sm text-red-700">{error}</div>}
         </div>
@@ -165,6 +178,61 @@ function PayoutModal({
           <button onClick={submit} disabled={saving}
             className="px-4 py-2 rounded-lg bg-black text-white text-sm font-semibold disabled:opacity-50">
             {saving ? 'Записываем…' : 'Записать'}
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function ConfirmPayoutModal({
+  payout, onClose, onConfirmed,
+}: {
+  payout: ReferralPayout
+  onClose: () => void
+  onConfirmed: (updated: ReferralPayout) => void
+}) {
+  const [txHash, setTxHash] = useState('')
+  const [error, setError] = useState('')
+  const [saving, setSaving] = useState(false)
+
+  const submit = async () => {
+    if (!txHash.trim()) { setError('Укажите хэш транзакции'); return }
+    setSaving(true)
+    setError('')
+    try {
+      const updated = await confirmReferralPayout(payout.id, txHash.trim())
+      onConfirmed(updated)
+      onClose()
+    } catch (e) {
+      setError(e instanceof AdminApiError ? e.message : (e as Error).message)
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  return (
+    <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+          <h2 className="text-lg font-bold">Подтвердить выплату</h2>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600"><X className="w-5 h-5" /></button>
+        </div>
+        <div className="px-6 py-5 space-y-3">
+          <p className="text-sm text-gray-600">Сумма: <strong>${payout.amount.toFixed(2)}</strong></p>
+          {payout.wallet && <p className="text-xs text-gray-500 font-mono break-all">Кошелёк: {payout.wallet}</p>}
+          <div>
+            <label className="block text-xs font-semibold text-gray-500 mb-1">Хэш транзакции (TRC20) *</label>
+            <input value={txHash} onChange={e => setTxHash(e.target.value)}
+              placeholder="tx hash" autoFocus className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm font-mono" />
+          </div>
+          {error && <div className="bg-red-50 border border-red-200 rounded-lg px-3 py-2 text-sm text-red-700">{error}</div>}
+        </div>
+        <div className="flex justify-end gap-2 px-6 py-4 border-t border-gray-100">
+          <button onClick={onClose} className="px-4 py-2 rounded-lg border border-gray-300 text-sm font-semibold">Отмена</button>
+          <button onClick={submit} disabled={saving}
+            className="px-4 py-2 rounded-lg bg-black text-white text-sm font-semibold disabled:opacity-50">
+            {saving ? 'Подтверждаем…' : 'Подтвердить'}
           </button>
         </div>
       </div>
@@ -184,6 +252,7 @@ export default function ReferralDetail() {
   const [error, setError] = useState('')
   const [showEdit, setShowEdit] = useState(false)
   const [showPayout, setShowPayout] = useState(false)
+  const [confirmingPayout, setConfirmingPayout] = useState<ReferralPayout | null>(null)
   const [copied, setCopied] = useState(false)
   const [setupUrl, setSetupUrl] = useState('')
 
@@ -345,19 +414,41 @@ export default function ReferralDetail() {
         <table className="w-full">
           <thead className="bg-gray-50 border-b border-gray-200">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Дата</th>
+              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Запрошено</th>
               <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Сумма</th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Примечание</th>
+              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Кошелёк</th>
+              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Статус</th>
+              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Хэш</th>
+              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700"></th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
             {payouts.length === 0 ? (
-              <tr><td colSpan={3} className="px-6 py-8 text-center text-gray-500">Выплат ещё нет</td></tr>
-            ) : payouts.map((p, i) => (
-              <tr key={i} className="hover:bg-gray-50">
-                <td className="px-6 py-4 text-sm text-gray-600">{p.created_at ? new Date(p.created_at).toLocaleDateString() : '—'}</td>
-                <td className="px-6 py-4 text-sm font-mono font-bold text-green-600">+${p.amount.toFixed(2)}</td>
-                <td className="px-6 py-4 text-sm text-gray-600">{p.detail || '—'}</td>
+              <tr><td colSpan={6} className="px-6 py-8 text-center text-gray-500">Выплат ещё нет</td></tr>
+            ) : payouts.map((p) => (
+              <tr key={p.id} className="hover:bg-gray-50">
+                <td className="px-6 py-4 text-sm text-gray-600">{p.requested_at ? new Date(p.requested_at).toLocaleDateString() : '—'}</td>
+                <td className="px-6 py-4 text-sm font-mono font-bold text-green-600">${p.amount.toFixed(2)}</td>
+                <td className="px-6 py-4 text-xs font-mono text-gray-500 max-w-[160px] truncate">{p.wallet || '—'}</td>
+                <td className="px-6 py-4 text-sm">
+                  <span className={`px-2 py-1 rounded text-xs font-medium ${p.status === 'paid' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
+                    {p.status === 'paid' ? 'Оплачено' : 'Ожидает'}
+                  </span>
+                </td>
+                <td className="px-6 py-4 text-sm">
+                  {p.tx_hash ? (
+                    <a href={tronscanLink(p.tx_hash)} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline font-mono text-xs">
+                      {p.tx_hash.slice(0, 10)}…
+                    </a>
+                  ) : '—'}
+                </td>
+                <td className="px-6 py-4 text-sm">
+                  {p.status === 'pending' && (
+                    <button onClick={() => setConfirmingPayout(p)} className="text-blue-600 hover:underline font-semibold">
+                      Подтвердить
+                    </button>
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>
@@ -443,6 +534,18 @@ export default function ReferralDetail() {
           onSaved={(totalPaid) => {
             setProgram(prev => prev ? { ...prev, total_paid: totalPaid, pending_payout: Math.round((prev.total_earned - totalPaid) * 100) / 100 } : prev)
             getReferralPayouts(program.id).then(setPayouts).catch(() => {})
+          }}
+        />
+      )}
+      {confirmingPayout && (
+        <ConfirmPayoutModal
+          payout={confirmingPayout}
+          onClose={() => setConfirmingPayout(null)}
+          onConfirmed={(updated) => {
+            setPayouts(prev => prev.map(p => p.id === updated.id ? updated : p))
+            setProgram(prev => prev
+              ? { ...prev, total_paid: prev.total_paid + updated.amount, pending_payout: Math.round((prev.total_earned - (prev.total_paid + updated.amount)) * 100) / 100 }
+              : prev)
           }}
         />
       )}

@@ -187,11 +187,36 @@ tr:last-child td{border-bottom:none}
     </div>
 
     <div class="card">
+      <div class="card-header"><span class="card-title">Выплата на кошелёк</span></div>
+      <div class="card-body">
+        <form onsubmit="saveWallet(event)" style="display:flex;gap:1rem;align-items:flex-end;flex-wrap:wrap;margin-bottom:1rem">
+          <div class="field" style="margin-bottom:0;flex:1;min-width:220px">
+            <label>USDT TRC20 адрес</label>
+            <input id="w-wallet" placeholder="T..." />
+          </div>
+          <div class="field" style="margin-bottom:0">
+            <label>Период выплат</label>
+            <select id="w-period" style="border:1px solid #d1d5db;border-radius:8px;padding:.625rem .75rem;font-size:.875rem;background:#fff">
+              <option value="weekly">Раз в неделю</option>
+              <option value="monthly">Раз в месяц</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-outline btn-sm" id="w-btn">Сохранить</button>
+        </form>
+        <div id="w-err" style="display:none" class="err-box"></div>
+        <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;padding-top:.5rem;border-top:1px solid #f3f4f6">
+          <span style="font-size:.8rem;color:#6b7280">К выплате: <strong id="w-due" style="color:#111827">$0.00</strong></span>
+          <button class="btn btn-primary btn-sm" id="request-btn" onclick="requestPayout()">Запросить выплату</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
       <div class="card-header"><span class="card-title">История выплат</span></div>
       <div class="overflow-x">
         <table>
-          <thead><tr><th>Дата</th><th>Сумма</th><th>Примечание</th></tr></thead>
-          <tbody id="payout-tbody"><tr><td colspan="3" class="empty">Загрузка…</td></tr></tbody>
+          <thead><tr><th>Запрошено</th><th>Сумма</th><th>Период</th><th>Статус</th><th>Хэш</th></tr></thead>
+          <tbody id="payout-tbody"><tr><td colspan="5" class="empty">Загрузка…</td></tr></tbody>
         </table>
       </div>
     </div>
@@ -294,6 +319,14 @@ async function loadDashboard() {
     document.getElementById('r-l2').textContent = 'L2 · ' + d.l2_pct + '%';
     document.getElementById('r-l3').textContent = 'L3 · ' + d.l3_pct + '%';
 
+    document.getElementById('w-wallet').value = d.payout_wallet || '';
+    document.getElementById('w-period').value = d.payout_period || 'monthly';
+    document.getElementById('w-due').textContent = '$' + d.pending_payout.toFixed(2);
+    const hasPending = d.payouts.some(p => p.status === 'pending');
+    const reqBtn = document.getElementById('request-btn');
+    reqBtn.disabled = hasPending || !d.payout_wallet || d.pending_payout <= 0;
+    reqBtn.textContent = hasPending ? 'Запрос уже отправлен' : 'Запросить выплату';
+
     const cv = document.getElementById('conv-tbody');
     cv.innerHTML = !d.conversions.length
       ? '<tr><td colspan="3" class="empty">Рефералов пока нет</td></tr>'
@@ -313,10 +346,47 @@ async function loadDashboard() {
 
     const po = document.getElementById('payout-tbody');
     po.innerHTML = !d.payouts.length
-      ? '<tr><td colspan="3" class="empty">Выплат ещё нет</td></tr>'
-      : d.payouts.map(p => `<tr><td>${fmtDate(p.created_at)}</td><td class="mono" style="font-weight:600;color:#16a34a">+$${p.amount.toFixed(2)}</td><td>${p.detail || '—'}</td></tr>`).join('');
+      ? '<tr><td colspan="5" class="empty">Выплат ещё нет</td></tr>'
+      : d.payouts.map(p => {
+          const statusCls = p.status === 'paid' ? 'badge-status' : 'badge-status pending';
+          const statusText = p.status === 'paid' ? 'Оплачено' : 'Ожидает';
+          const periodText = p.period === 'weekly' ? 'Неделя' : 'Месяц';
+          const hashHtml = p.tx_hash
+            ? `<a href="https://tronscan.org/#/transaction/${p.tx_hash}" target="_blank" rel="noopener noreferrer" style="color:#2563eb">${p.tx_hash.slice(0, 10)}…</a>`
+            : '—';
+          return `<tr><td>${fmtDate(p.requested_at)}</td><td class="mono" style="font-weight:600;color:#16a34a">$${p.amount.toFixed(2)}</td><td>${periodText}</td><td><span class="badge ${statusCls}">${statusText}</span></td><td class="mono">${hashHtml}</td></tr>`;
+        }).join('');
   } catch (e) {
     showToast(e.message);
+  }
+}
+
+async function saveWallet(e) {
+  e.preventDefault();
+  const wallet = document.getElementById('w-wallet').value.trim();
+  const period = document.getElementById('w-period').value;
+  const btn = document.getElementById('w-btn');
+  showErr('w-err', '');
+  btn.disabled = true; btn.textContent = 'Сохраняем…';
+  try {
+    await apiFetch('PATCH', '/v1/ref/wallet', { wallet, period });
+    showToast('Сохранено');
+    loadDashboard();
+  } catch (err) {
+    showErr('w-err', err.message);
+  } finally { btn.disabled = false; btn.textContent = 'Сохранить'; }
+}
+
+async function requestPayout() {
+  const btn = document.getElementById('request-btn');
+  btn.disabled = true;
+  try {
+    await apiFetch('POST', '/v1/ref/payout-request');
+    showToast('Запрос на выплату отправлен');
+    loadDashboard();
+  } catch (err) {
+    showToast(err.message);
+    btn.disabled = false;
   }
 }
 
