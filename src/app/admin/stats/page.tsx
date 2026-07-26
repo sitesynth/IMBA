@@ -61,7 +61,7 @@ export default function AdminStats() {
             ].map(item => (
               <div key={item.label} className="bg-white rounded-xl border border-gray-200 px-4 py-4 shadow-sm">
                 <p className="text-xs text-gray-400 font-medium mb-2 leading-none">{item.label}</p>
-                <p className="text-3xl font-bold text-gray-900 leading-none">{item.value}</p>
+                <p className="text-2xl sm:text-3xl font-bold text-gray-900 leading-none">{item.value}</p>
               </div>
             ))}
           </div>
@@ -72,19 +72,19 @@ export default function AdminStats() {
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               <div className="bg-white rounded-xl border border-gray-200 px-4 py-4 shadow-sm">
                 <p className="text-xs text-gray-400 font-medium mb-2 leading-none">RUB total</p>
-                <p className="text-3xl font-bold text-gray-900 leading-none">{(stats.revenue_rub?.total ?? 0).toLocaleString('ru')} ₽</p>
+                <p className="text-2xl sm:text-3xl font-bold text-gray-900 leading-none">{(stats.revenue_rub?.total ?? 0).toLocaleString('ru')} ₽</p>
               </div>
               <div className="bg-white rounded-xl border border-gray-200 px-4 py-4 shadow-sm">
                 <p className="text-xs text-gray-400 font-medium mb-2 leading-none">Avg RUB check</p>
-                <p className="text-3xl font-bold text-gray-900 leading-none">{(stats.revenue_rub?.avg_check ?? 0).toLocaleString('ru')} ₽</p>
+                <p className="text-2xl sm:text-3xl font-bold text-gray-900 leading-none">{(stats.revenue_rub?.avg_check ?? 0).toLocaleString('ru')} ₽</p>
               </div>
               <div className="bg-white rounded-xl border border-gray-200 px-4 py-4 shadow-sm">
                 <p className="text-xs text-gray-400 font-medium mb-2 leading-none">USD total</p>
-                <p className="text-3xl font-bold text-gray-900 leading-none">${(stats.revenue_usd?.total ?? 0).toFixed(2)}</p>
+                <p className="text-2xl sm:text-3xl font-bold text-gray-900 leading-none">${(stats.revenue_usd?.total ?? 0).toFixed(2)}</p>
               </div>
               <div className="bg-white rounded-xl border border-gray-200 px-4 py-4 shadow-sm">
                 <p className="text-xs text-gray-400 font-medium mb-2 leading-none">Avg USD check</p>
-                <p className="text-3xl font-bold text-gray-900 leading-none">${(stats.revenue_usd?.avg_check ?? 0).toFixed(2)}</p>
+                <p className="text-2xl sm:text-3xl font-bold text-gray-900 leading-none">${(stats.revenue_usd?.avg_check ?? 0).toFixed(2)}</p>
               </div>
             </div>
           </div>
@@ -95,7 +95,7 @@ export default function AdminStats() {
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
               <div className="bg-white rounded-xl border border-gray-200 px-4 py-4 shadow-sm">
                 <p className="text-xs text-gray-400 font-medium mb-2 leading-none">Avg reg/day</p>
-                <p className="text-3xl font-bold text-gray-900 leading-none">
+                <p className="text-2xl sm:text-3xl font-bold text-gray-900 leading-none">
                   {stats.registrations_by_day?.length
                     ? (stats.registrations_by_day.reduce((s, r) => s + r.count, 0) / stats.registrations_by_day.length).toFixed(1)
                     : '0'}
@@ -103,11 +103,11 @@ export default function AdminStats() {
               </div>
               <div className="bg-white rounded-xl border border-gray-200 px-4 py-4 shadow-sm">
                 <p className="text-xs text-gray-400 font-medium mb-2 leading-none">Same-day conv.</p>
-                <p className="text-3xl font-bold text-gray-900 leading-none">{stats.same_day_conversions ?? 0}</p>
+                <p className="text-2xl sm:text-3xl font-bold text-gray-900 leading-none">{stats.same_day_conversions ?? 0}</p>
               </div>
               <div className="bg-white rounded-xl border border-gray-200 px-4 py-4 shadow-sm">
                 <p className="text-xs text-gray-400 font-medium mb-2 leading-none">Conversion %</p>
-                <p className="text-3xl font-bold text-gray-900 leading-none">{stats.conversion_pct ?? 0}%</p>
+                <p className="text-2xl sm:text-3xl font-bold text-gray-900 leading-none">{stats.conversion_pct ?? 0}%</p>
               </div>
             </div>
           </div>
