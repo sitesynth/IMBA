@@ -57,6 +57,11 @@ tr:last-child td{border-bottom:none}
 .rate-l1{background:#eff6ff;color:#1d4ed8}
 .rate-l2{background:#f0fdf4;color:#16a34a}
 .rate-l3{background:#faf5ff;color:#7c3aed}
+.badge{display:inline-block;font-size:.7rem;font-weight:600;padding:2px 8px;border-radius:20px}
+.badge-promo{background:#faf5ff;color:#7c3aed}
+.badge-link{background:#eff6ff;color:#1d4ed8}
+.badge-status{background:#dcfce7;color:#16a34a}
+.badge-status.pending{background:#fef9c3;color:#a16207}
 .empty{padding:2.5rem;text-align:center;color:#9ca3af;font-size:.8rem}
 
 .toast{position:fixed;bottom:1.25rem;right:1.25rem;background:#111827;color:#fff;border-radius:8px;padding:.625rem 1rem;font-size:.8rem;z-index:200;pointer-events:none;opacity:1;transition:opacity .2s}
@@ -158,6 +163,16 @@ tr:last-child td{border-bottom:none}
           <span class="rate-chip rate-l2" id="r-l2">L2 · —%</span>
           <span class="rate-chip rate-l3" id="r-l3">L3 · —%</span>
         </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><span class="card-title">Ваши рефералы</span></div>
+      <div class="overflow-x">
+        <table>
+          <thead><tr><th>Дата</th><th>Статус</th><th>Источник</th></tr></thead>
+          <tbody id="conv-tbody"><tr><td colspan="3" class="empty">Загрузка…</td></tr></tbody>
+        </table>
       </div>
     </div>
 
@@ -278,6 +293,18 @@ async function loadDashboard() {
     document.getElementById('r-l1').textContent = 'L1 · ' + d.l1_pct + '%';
     document.getElementById('r-l2').textContent = 'L2 · ' + d.l2_pct + '%';
     document.getElementById('r-l3').textContent = 'L3 · ' + d.l3_pct + '%';
+
+    const cv = document.getElementById('conv-tbody');
+    cv.innerHTML = !d.conversions.length
+      ? '<tr><td colspan="3" class="empty">Рефералов пока нет</td></tr>'
+      : d.conversions.map(c => {
+          const statusCls = c.status === 'completed' ? 'badge-status' : 'badge-status pending';
+          const statusText = c.status === 'completed' ? 'Завершено' : 'В ожидании';
+          const sourceHtml = c.source === 'promo'
+            ? `<span class="badge badge-promo">Промокод${c.promocode ? ' · ' + c.promocode : ''}</span>`
+            : '<span class="badge badge-link">Реф-ссылка</span>';
+          return `<tr><td>${fmtDate(c.created_at)}</td><td><span class="badge ${statusCls}">${statusText}</span></td><td>${sourceHtml}</td></tr>`;
+        }).join('');
 
     const dl = document.getElementById('downline-tbody');
     dl.innerHTML = !d.downline.length

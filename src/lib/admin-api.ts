@@ -320,6 +320,8 @@ export interface ReferralConversion {
   referee_id: string
   referee_email?: string
   status: string
+  source: 'link' | 'promo'
+  promocode: string | null
   referrer_bonus_paid: boolean
   referee_bonus_paid: boolean
   completed_at?: string

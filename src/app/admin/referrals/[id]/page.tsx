@@ -375,6 +375,7 @@ export default function ReferralDetail() {
             <tr>
               <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Referee Email</th>
               <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Status</th>
+              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Источник</th>
               <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Referrer Bonus</th>
               <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Referee Bonus</th>
               <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">Converted</th>
@@ -383,7 +384,7 @@ export default function ReferralDetail() {
           <tbody className="divide-y divide-gray-200">
             {conversions.length === 0 ? (
               <tr>
-                <td colSpan={5} className="px-6 py-8 text-center text-gray-500">No conversions yet</td>
+                <td colSpan={6} className="px-6 py-8 text-center text-gray-500">No conversions yet</td>
               </tr>
             ) : (
               conversions.map((conv) => (
@@ -395,6 +396,17 @@ export default function ReferralDetail() {
                     }`}>
                       {conv.status.toUpperCase()}
                     </span>
+                  </td>
+                  <td className="px-6 py-4 text-sm">
+                    {conv.source === 'promo' ? (
+                      <span className="px-2 py-1 rounded text-xs font-medium bg-purple-100 text-purple-800" title={conv.promocode || undefined}>
+                        Промокод{conv.promocode ? ` · ${conv.promocode}` : ''}
+                      </span>
+                    ) : (
+                      <span className="px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800">
+                        Реф-ссылка
+                      </span>
+                    )}
                   </td>
                   <td className="px-6 py-4 text-sm">
                     <span className={conv.referrer_bonus_paid ? 'text-green-600 font-semibold' : 'text-gray-500'}>
