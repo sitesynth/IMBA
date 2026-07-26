@@ -74,6 +74,8 @@ tr:last-child td{border-bottom:none}
   th,td{padding:.5rem .875rem}
   .page-body{padding:1rem}
   .stats-row{grid-template-columns:1fr 1fr}
+  .field-period{width:100% !important}
+  .field-wallet{min-width:0 !important}
 }
 </style>
 </head>
@@ -190,11 +192,11 @@ tr:last-child td{border-bottom:none}
       <div class="card-header"><span class="card-title">Выплата на кошелёк</span></div>
       <div class="card-body">
         <form onsubmit="saveWallet(event)" style="display:flex;gap:.75rem;align-items:flex-end;flex-wrap:wrap;margin-bottom:1rem">
-          <div class="field" style="margin-bottom:0;flex:1;min-width:260px">
+          <div class="field field-wallet" style="margin-bottom:0;flex:1;min-width:260px">
             <label>USDT TRC20 адрес</label>
             <input id="w-wallet" placeholder="TPAgKfYzRdK83Qocc4gXvEVu4jPKfeuer5" class="mono" style="font-size:.8rem"/>
           </div>
-          <div class="field" style="margin-bottom:0;width:160px">
+          <div class="field field-period" style="margin-bottom:0;width:160px">
             <label>Период выплат</label>
             <select id="w-period">
               <option value="weekly">Раз в неделю</option>
