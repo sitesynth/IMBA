@@ -186,12 +186,12 @@ export default async function BillingPage() {
             <h2 className="display text-2xl md:text-3xl mb-1">IMBA COMBO</h2>
             <p className="font-semibold text-ink/60 mb-5 text-sm">VPN + eSIM + виртуальная карта — всё в одной подписке, с первого дня</p>
             <div className="panel relative flex flex-col md:flex-row gap-6 p-6 md:p-8" style={{ background: 'var(--yellow)' }}>
-              {isCurrent && (
-                <span className="chip flex items-center gap-1 w-fit mb-2" style={{ background: 'var(--green)' }}>
-                  <Check className="w-3 h-3" strokeWidth={3} /> Активен
-                </span>
-              )}
               <div className="flex-1">
+                {isCurrent && (
+                  <span className="chip flex items-center gap-1 w-fit mb-3" style={{ background: 'var(--green)' }}>
+                    <Check className="w-3 h-3" strokeWidth={3} /> Активен
+                  </span>
+                )}
                 <div className="display text-4xl md:text-5xl mb-1">{priceLabel}</div>
                 <p className="font-semibold text-ink/60 text-sm mb-5">Списывается с баланса раз в месяц</p>
                 <ul className="space-y-2.5 font-semibold text-sm">
