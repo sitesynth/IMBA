@@ -219,8 +219,8 @@ tr:last-child td{border-bottom:none}
       <div class="card-header"><span class="card-title">Ваши рефералы</span></div>
       <div class="overflow-x">
         <table>
-          <thead><tr><th>Дата</th><th>Статус</th><th>Источник</th></tr></thead>
-          <tbody id="conv-tbody"><tr><td colspan="3" class="empty">Загрузка…</td></tr></tbody>
+          <thead><tr><th>Пользователь</th><th>Дата</th><th>Статус</th><th>Источник</th></tr></thead>
+          <tbody id="conv-tbody"><tr><td colspan="4" class="empty">Загрузка…</td></tr></tbody>
         </table>
       </div>
     </div>
@@ -433,14 +433,15 @@ async function loadDashboard() {
 
     const cv = document.getElementById('conv-tbody');
     cv.innerHTML = !d.conversions.length
-      ? '<tr><td colspan="3" class="empty">Рефералов пока нет</td></tr>'
+      ? '<tr><td colspan="4" class="empty">Рефералов пока нет</td></tr>'
       : d.conversions.map(c => {
           const statusCls = c.status === 'completed' ? 'badge-status' : 'badge-status pending';
           const statusText = c.status === 'completed' ? 'Завершено' : 'В ожидании';
           const sourceHtml = c.source === 'promo'
             ? `<span class="badge badge-promo">Промокод${c.promocode ? ' · ' + c.promocode : ''}</span>`
             : '<span class="badge badge-link">Реф-ссылка</span>';
-          return `<tr><td>${fmtDate(c.created_at)}</td><td><span class="badge ${statusCls}">${statusText}</span></td><td>${sourceHtml}</td></tr>`;
+          const userText = c.referee_name || c.referee_email || '—';
+          return `<tr><td>${userText}</td><td>${fmtDate(c.created_at)}</td><td><span class="badge ${statusCls}">${statusText}</span></td><td>${sourceHtml}</td></tr>`;
         }).join('');
 
     const dl = document.getElementById('downline-tbody');
