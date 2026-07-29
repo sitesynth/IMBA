@@ -863,6 +863,375 @@ Tap a server, then tap **Connect**, then approve the VPN configuration request (
 [Start your 7-day free trial](/auth/register)
     `.trim(),
   },
+  {
+    slug: 'eu-chat-control-vpn',
+    title: 'EU Chat Control: What It Means for Your Privacy and Why You Need a VPN',
+    excerpt: 'The EU is pushing to scan every private message you send. Here\'s what Chat Control actually does, which countries oppose it, and how to protect yourself.',
+    category: 'Privacy',
+    categoryColor: 'var(--violet)',
+    date: 'July 28, 2026',
+    readTime: '7 min',
+    content: `
+## The EU wants to read your messages
+
+Chat Control is a proposed EU regulation that would require messaging platforms to scan every message, photo, and video you send for illegal content. Not just metadata. The actual content of your private conversations.
+
+The European Commission first proposed this in 2022. After years of debate, the regulation is still advancing through the legislative process in 2026, with several member states pushing for adoption despite fierce opposition from privacy advocates, cryptographers, and even some EU governments.
+
+## How Chat Control works
+
+The proposal requires messaging services (WhatsApp, Signal, Telegram, iMessage, and others) to implement client-side scanning. Before a message is encrypted and sent, software on your device would analyze it and flag anything the system considers suspicious.
+
+**What gets scanned:**
+- All images and videos sent in private chats
+- Text messages in certain contexts
+- Links shared in conversations
+
+**The technical problem:** to scan messages before encryption, the platform must either break end-to-end encryption or install scanning software directly on your device. Both approaches fundamentally undermine the security model that protects your private communications.
+
+## Why cryptographers say it can't work safely
+
+Over 300 security researchers signed an open letter warning that there is no technical way to implement client-side scanning without creating vulnerabilities that attackers can exploit. The scanning system itself becomes an attack surface.
+
+Once a backdoor exists for "authorized" scanning, it can be exploited by hackers, foreign governments, and anyone who discovers the vulnerability. The history of surveillance backdoors confirms this: every one has eventually been compromised.
+
+## Which EU countries oppose Chat Control
+
+Several EU member states have pushed back:
+
+| Country | Position |
+|---|---|
+| Germany | Strongly opposed, citing constitutional privacy protections |
+| Austria | Opposed |
+| Netherlands | Opposed |
+| Poland | Opposed |
+| Ireland | Raised concerns about compatibility with EU privacy law |
+| France | Mixed signals, leaning toward targeted measures |
+
+Germany's opposition has been the most vocal, with the government calling the proposal "incompatible with European values of privacy and data protection."
+
+## What this means for you right now
+
+Even before Chat Control becomes law, the debate has shifted the landscape:
+
+- **Messaging apps are preparing compliance mechanisms** that could weaken encryption in EU-regulated versions
+- **EU-based email and cloud providers** may be required to scan stored content
+- **VPN usage in Europe has surged** as users look for ways to maintain privacy regardless of what regulations pass
+
+## How a VPN helps
+
+A VPN doesn't prevent client-side scanning (that happens on your device before the data leaves). But it protects you in several important ways:
+
+- **Encrypts all your internet traffic** so your ISP can't see what services you use, what websites you visit, or build a profile of your online behavior
+- **Prevents traffic analysis** that could be used to identify which encrypted messaging services you're using and when
+- **Gives you access to services hosted outside the EU** that aren't subject to Chat Control requirements
+- **Protects against network-level surveillance** that Chat Control's infrastructure could enable
+
+Combined with privacy-focused messaging apps and good operational security, a VPN is one layer in a practical privacy strategy.
+
+## The bigger picture
+
+Chat Control is part of a global trend: governments pushing to weaken encryption under the justification of public safety. The UK's Online Safety Act, Australia's Assistance and Access Act, and similar proposals in the US follow the same logic.
+
+The technical reality hasn't changed: you cannot create a system that scans private communications for governments without also creating a system that can be exploited by criminals, foreign intelligence services, and authoritarian regimes.
+
+[Protect your privacy with IMBA VPN](/auth/register)
+    `.trim(),
+  },
+  {
+    slug: 'turkey-instagram-ban-vpn',
+    title: 'Turkey Blocked Instagram Again: How to Get Access Back',
+    excerpt: 'Turkey has a long history of blocking social media platforms. Here\'s why Instagram keeps getting banned and how to bypass the block with a VPN.',
+    category: 'VPN',
+    categoryColor: 'var(--violet)',
+    date: 'July 25, 2026',
+    readTime: '5 min',
+    content: `
+## Turkey and social media blocks
+
+Turkey is one of the most active countries in the world when it comes to blocking social media. Wikipedia was blocked for over two years (2017-2020). Twitter (now X) has been throttled or blocked multiple times. And Instagram has faced repeated bans, sometimes lasting weeks.
+
+The pattern is consistent: a political event or public controversy triggers a government order, and Turkish ISPs block access to the platform within hours. For Turkey's 85 million residents and the millions of tourists visiting each year, this means waking up one morning to find Instagram, X, or YouTube simply not loading.
+
+## Why Instagram gets blocked in Turkey
+
+Turkey's Radio and Television Supreme Council (RTUK) and the Information and Communication Technologies Authority (BTK) have broad powers to order blocks on websites and platforms. Common triggers:
+
+- **Political content** that the government considers harmful to national security
+- **Refusal to comply** with Turkish content removal orders (this was the reason for the 2024 Instagram block)
+- **Disinformation laws** that require platforms to remove content within hours of a government request
+- **Election periods** when social media access is sometimes restricted
+
+The blocks are implemented at the ISP level using DNS filtering and IP blocking. Most Turkish ISPs comply immediately.
+
+## How to bypass the Instagram block
+
+A VPN routes your traffic through a server outside Turkey, making it appear as if you're browsing from another country. Turkish ISPs can't block what they can't see.
+
+**Step 1: Install IMBA VPN before you need it**
+
+Don't wait for the next block. Set up your VPN now:
+1. Sign up at [imba.live](https://www.imba.live/auth/register)
+2. Install the Happ app on your phone
+3. Add your subscription link and disable Mux
+4. Connect to any European server (Germany and Netherlands have the lowest latency from Turkey)
+
+**Step 2: When a block happens**
+
+1. Open Happ
+2. Connect to any server outside Turkey
+3. Open Instagram normally
+
+That's it. The block is at the Turkish ISP level. Once your traffic exits through a VPN server in Germany or the Netherlands, Instagram works as usual.
+
+## Why VLESS Reality matters in Turkey
+
+Turkey's DPI systems are moderately aggressive. They can identify and block standard VPN protocols like OpenVPN and sometimes WireGuard. IMBA uses VLESS Reality, which makes your VPN traffic look like a normal HTTPS connection. Turkish ISPs see what appears to be regular web browsing and let it through.
+
+This is why free VPN apps often stop working during Turkish blocks: they use detectable protocols. VLESS Reality has remained stable through every recent Turkish blocking event.
+
+## For tourists visiting Turkey
+
+If you're traveling to Turkey:
+- **Install your VPN before you arrive.** VPN download sites themselves are sometimes blocked during major censorship events
+- **Get an IMBA eSIM** for cheap local data (instead of paying roaming fees)
+- **Keep Happ connected** for unrestricted access to all your apps and services
+
+Turkey has excellent mobile coverage (Turkcell and Vodafone TR provide strong 4G/5G), but your internet experience depends on whether the government has decided to block something that week.
+
+## Services commonly blocked in Turkey
+
+| Service | Block history |
+|---|---|
+| Instagram | Multiple blocks, most recently 2024 |
+| Twitter/X | Repeatedly throttled and blocked since 2014 |
+| Wikipedia | Blocked 2017-2020 |
+| YouTube | Blocked 2008-2010, throttled since |
+| Various news sites | Regularly blocked |
+
+[Get IMBA VPN — works in Turkey](/auth/register)
+    `.trim(),
+  },
+  {
+    slug: 'uk-online-safety-act-vpn',
+    title: 'UK Online Safety Act: How It Affects Your Internet and What You Can Do',
+    excerpt: 'The UK\'s Online Safety Act gives Ofcom power to order platforms to scan encrypted messages. Here\'s what it means for privacy in Britain.',
+    category: 'Privacy',
+    categoryColor: 'var(--violet)',
+    date: 'July 22, 2026',
+    readTime: '6 min',
+    content: `
+## What the Online Safety Act actually does
+
+The UK Online Safety Act became law in October 2023. It gives Ofcom, the UK's communications regulator, sweeping powers to regulate online platforms, including the ability to require platforms to use "accredited technology" to scan messages for illegal content.
+
+This is not theoretical. Ofcom has been issuing codes of practice and enforcement guidance throughout 2024-2026, and platforms operating in the UK are adapting their services to comply.
+
+**Key provisions:**
+- Platforms must use automated tools to detect and remove illegal content
+- Ofcom can require scanning of encrypted messages using "accredited technology"
+- Age verification is required for platforms hosting content harmful to children
+- Platforms face fines of up to 10% of global revenue for non-compliance
+- Senior managers can face criminal prosecution
+
+## The encryption problem
+
+The most controversial provision is Section 122, which allows Ofcom to issue "technology notices" requiring platforms to identify illegal content in encrypted messages. Signal and WhatsApp have both threatened to leave the UK market rather than compromise their encryption.
+
+As of 2026, Ofcom has acknowledged that no technology currently exists that can scan encrypted messages without breaking the encryption itself. But the legal power remains on the books, and platforms must comply if and when Ofcom issues a technology notice.
+
+## What's already changed
+
+Even without fully exercising its scanning powers, the Online Safety Act has already affected internet use in the UK:
+
+- **Age verification walls** are appearing on more websites, requiring users to prove their age through ID uploads or facial recognition
+- **VPN usage in the UK has increased significantly** as users seek to avoid age verification and maintain privacy
+- **Some smaller platforms have geo-blocked UK users** rather than invest in compliance infrastructure
+- **Content moderation has become more aggressive** across platforms serving UK users
+
+## How VPN usage is changing in the UK
+
+The UK has traditionally been a low-VPN-usage country compared to Germany or the Netherlands. That's changing. According to industry data, UK VPN adoption grew by over 40% in the 18 months following the Act's passage.
+
+The primary drivers:
+- Avoiding age verification on adult content sites
+- Maintaining privacy in the face of potential message scanning
+- Accessing content blocked or restricted in the UK
+- General distrust of government surveillance powers
+
+## What a VPN does and doesn't protect
+
+**A VPN protects:**
+- Your browsing history from your ISP (BT, Virgin Media, Sky, etc.)
+- Your IP address from websites and services
+- Your location data from geo-restriction systems
+- Your traffic from network-level monitoring
+
+**A VPN doesn't protect against:**
+- Client-side scanning (if a platform scans messages on your device before sending)
+- Content you voluntarily upload to platforms that comply with Ofcom's requirements
+- Age verification that uses device-level checks rather than IP-based geo-detection
+
+## Practical steps for UK residents
+
+1. **Use a VPN** to encrypt your internet traffic and prevent ISP-level monitoring. IMBA VPN uses VLESS Reality, which is indistinguishable from normal HTTPS traffic
+2. **Choose messaging apps carefully.** Signal remains the gold standard for encrypted messaging and has committed to leaving the UK rather than compromising encryption
+3. **Be aware of what you share on platforms** that comply with UK scanning requirements
+4. **Stay informed** about Ofcom's enforcement actions and any technology notices issued
+
+The Online Safety Act represents a fundamental shift in how the UK government approaches internet regulation. Whether you agree with its goals or not, understanding what it does and protecting your privacy accordingly is practical, not political.
+
+[Start protecting your privacy](/auth/register)
+    `.trim(),
+  },
+  {
+    slug: 'france-hadopi-vpn-torrents',
+    title: 'Torrenting in France: HADOPI, Arcom, and Why You Need a VPN',
+    excerpt: 'France has the strictest anti-piracy enforcement in Europe. Arcom (formerly HADOPI) monitors torrents and sends fines. Here\'s how it works.',
+    category: 'Privacy',
+    categoryColor: 'var(--violet)',
+    date: 'July 18, 2026',
+    readTime: '5 min',
+    content: `
+## France takes torrenting seriously
+
+France operates the most aggressive anti-piracy system in Europe. Since 2009, the HADOPI agency (now merged into Arcom) has monitored peer-to-peer file sharing and sent millions of warning notices to French internet users. Unlike most EU countries where piracy enforcement is theoretical, in France it results in real fines.
+
+## How the Arcom system works
+
+Arcom uses a three-strike graduated response:
+
+**Strike 1:** An email warning. Arcom monitors public torrent swarms, collects IP addresses of French users downloading copyrighted content, and sends a notice through your ISP.
+
+**Strike 2:** A registered letter. If you're caught again within six months, you receive a formal letter by post.
+
+**Strike 3:** Your case is referred to a judge. Penalties can include fines up to 1,500 euros and, in theory, internet suspension (though disconnection is rarely applied).
+
+Since 2010, Arcom and its predecessor have sent over 14 million first warnings and hundreds of thousands of second warnings. Thousands of cases have been referred for prosecution.
+
+## What Arcom monitors
+
+Arcom specifically monitors **peer-to-peer networks** (BitTorrent). When you download a torrent, your IP address is visible to everyone in the swarm, including Arcom's monitoring agents.
+
+**Monitored:**
+- BitTorrent downloads of copyrighted movies, music, TV shows, software, and games
+- Any P2P protocol where your IP is publicly visible
+
+**Not directly monitored:**
+- Direct downloads (file hosting sites)
+- Streaming sites
+- VPN-encrypted traffic (Arcom sees the VPN server's IP, not yours)
+
+## Why a VPN is the standard solution in France
+
+A VPN replaces your real IP address with the VPN server's IP address. When Arcom scans a torrent swarm, they see the VPN server's IP, not your home connection. Since the VPN server isn't a French ISP subscriber, Arcom can't send a warning.
+
+This is why France has one of the highest VPN adoption rates in Western Europe. It's not about ideology. It's about avoiding a 1,500-euro fine.
+
+## Choosing the right VPN for France
+
+Not all VPNs are equal for this use case:
+
+- **No-log policy is essential.** If Arcom requests logs from a VPN provider, a provider with no logs has nothing to hand over. IMBA keeps zero connection logs
+- **Server location matters.** Use servers in countries with no data retention agreements with France (Switzerland, Netherlands, Panama)
+- **Kill switch.** If your VPN connection drops for a second while torrenting, your real IP is exposed to the swarm. Happ includes a kill switch
+- **Speed.** Torrenting generates heavy traffic. VLESS Reality with XTLS has minimal speed overhead because it avoids double encryption
+
+## Legal context
+
+Using a VPN in France is completely legal. The French government has not banned VPNs, and there are no laws restricting their use. What's illegal is downloading copyrighted content without authorization, not the tool you use to do it.
+
+That said, a VPN is the practical reality of internet use in France for anyone who uses peer-to-peer networks.
+
+## Quick setup
+
+1. Sign up at [imba.live](https://www.imba.live/auth/register) and get 7 days free
+2. Install Happ on your device
+3. Connect to a Netherlands or Switzerland server
+4. Enable the kill switch in Happ settings
+5. Torrent normally. Arcom sees the VPN server, not you
+
+[Get IMBA VPN — no logs, no fines](/auth/register)
+    `.trim(),
+  },
+  {
+    slug: 'germany-privacy-vpn',
+    title: 'Why Germans Use VPNs More Than Anyone Else in Western Europe',
+    excerpt: 'Germany has the strongest privacy culture in Europe. Here\'s why millions of Germans use VPNs daily, and what the rest of Europe can learn.',
+    category: 'Privacy',
+    categoryColor: 'var(--violet)',
+    date: 'July 15, 2026',
+    readTime: '6 min',
+    content: `
+## Privacy is a German value
+
+Germany has the highest VPN adoption rate in Western Europe. This isn't accidental. It's the product of a specific history and a legal culture that treats privacy as a fundamental right, not a convenience.
+
+Two historical forces shaped this: the Gestapo's surveillance apparatus under Nazi Germany, and the Stasi's pervasive monitoring of East German citizens until 1989. When reunification happened, millions of people discovered their Stasi files and learned that neighbors, colleagues, and even family members had been informing on them. The lesson was visceral: surveillance infrastructure, once built, will be used.
+
+This history is why Germany's Federal Constitutional Court has recognized an explicit right to "informational self-determination" (informationelle Selbstbestimmung) since 1983. It's why Germany was the strongest EU voice against Chat Control. And it's why ordinary Germans are more likely to use privacy tools than citizens of any other Western European country.
+
+## The legal landscape
+
+Germany's privacy protections go beyond the GDPR:
+
+- **Bundesdatenschutzgesetz (BDSG):** Germany's federal data protection law adds requirements on top of the GDPR, particularly around employee monitoring and video surveillance
+- **Telecommunications Act (TKG):** ISPs must retain certain connection data, but content data is protected. Court challenges have repeatedly limited the scope of data retention
+- **Right to informational self-determination:** A constitutional right that limits what the government can collect about citizens, even for law enforcement purposes
+
+Despite these strong protections, German internet users are pragmatic. They know that legal protections are only as strong as their enforcement, and they use technical tools to back up legal guarantees.
+
+## What Germans use VPNs for
+
+German VPN usage isn't primarily about bypassing censorship (Germany has relatively few blocked websites). The motivations are different from Turkey or China:
+
+**Privacy from ISPs and advertisers:**
+German ISPs are required to retain connection metadata. A VPN prevents them from seeing which websites you visit, making it impossible to build a browsing profile.
+
+**Protection on public Wi-Fi:**
+Germany's extensive public Wi-Fi network in cafes, trains (Deutsche Bahn), and public spaces is convenient but unencrypted. A VPN encrypts all traffic on these networks.
+
+**Streaming access:**
+Germans pay some of the highest prices for streaming content in Europe, and many shows available on US Netflix or UK BBC iPlayer aren't available on German platforms. A VPN unlocks these libraries.
+
+**Professional requirements:**
+Germany's strong engineering and IT sector means many users need VPNs for work: accessing company resources, protecting client data during remote work, and maintaining confidentiality.
+
+**Abmahnung avoidance:**
+Germany has an aggressive copyright enforcement system. Law firms send "Abmahnungen" (cease-and-desist letters) demanding 500-1,500 euros from users caught downloading copyrighted material via torrents. Unlike France's government-run Arcom, this is a private industry: law firms monitor torrent swarms and send letters directly to ISP subscribers. VPN usage is the standard defense.
+
+## The Abmahnung industry
+
+Germany's copyright warning letter system is unique in Europe. Specialized law firms (Waldorf Frommer, Rasch, and others) monitor BitTorrent swarms, collect German IP addresses, obtain subscriber information from ISPs through court orders, and send demand letters.
+
+The typical demand: 500-1,500 euros for a single download, plus legal fees. The system processes hundreds of thousands of cases per year. Whether you actually downloaded the content, or someone on your Wi-Fi network did, you as the connection holder are liable under German law (Störerhaftung), though recent court decisions have limited this liability somewhat.
+
+A VPN prevents your IP from appearing in the torrent swarm. No IP, no court order, no letter.
+
+## VPN adoption by the numbers
+
+Germany consistently ranks as the #1 or #2 market for VPN services in Western Europe:
+
+| Country | VPN adoption (% of internet users) |
+|---|---|
+| Germany | 32-38% |
+| UK | 20-25% |
+| France | 25-30% |
+| Spain | 18-22% |
+| Italy | 15-20% |
+
+These numbers have been growing year over year, driven by increasing awareness of data collection practices and the political debate around Chat Control.
+
+## Why IMBA works well for German users
+
+- **No-log policy:** IMBA keeps zero connection logs, aligning with German privacy expectations
+- **VLESS Reality protocol:** indistinguishable from normal HTTPS, important as DPI technology becomes more common across European ISPs
+- **European servers with low latency:** connect to nearby servers for minimal speed impact
+- **Costa Rica jurisdiction:** outside EU data retention requirements and not subject to German or EU government data requests
+
+[Start your 7 days free](/auth/register)
+    `.trim(),
+  },
 ]
 
 export function getPost(slug: string): Post | undefined {
