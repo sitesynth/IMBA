@@ -2,12 +2,15 @@
 import { useEffect, useRef, useState } from 'react'
 import { api } from '@/lib/api-client'
 import { getFingerprint } from '@/lib/fingerprint'
+import { useLocale } from '@/lib/useLocale'
+import { t } from '@/lib/t'
 
 interface Props {
   onActivated: () => void
 }
 
 export function TelegramVerify({ onActivated }: Props) {
+  const locale = useLocale()
   const ref = useRef<HTMLDivElement>(null)
   const [error, setError] = useState('')
   const [done, setDone] = useState(false)
@@ -26,7 +29,7 @@ export function TelegramVerify({ onActivated }: Props) {
         setDone(true)
         if (res.vpn_activated) setTimeout(onActivated, 1200)
       } catch (e: unknown) {
-        setError((e as { message?: string })?.message || 'Ошибка привязки Telegram')
+        setError((e as { message?: string })?.message || t('tg.link_error', locale))
       } finally {
         setLoading(false)
       }
@@ -49,7 +52,7 @@ export function TelegramVerify({ onActivated }: Props) {
   if (done) {
     return (
       <p className="text-xs font-bold mt-4 mb-1 relative z-10" style={{ color: 'var(--green)' }}>
-        VPN 7 дней + eSIM 500 МБ активированы!
+        {t('dash.trial_activated', locale)}
       </p>
     )
   }
@@ -57,10 +60,10 @@ export function TelegramVerify({ onActivated }: Props) {
   return (
     <div className="mt-4 relative z-10">
       <p className="text-xs font-semibold text-white/50 mb-2">
-        Подтверди Telegram → получи 7 дней VPN + eSIM 500 МБ бесплатно
+        {t('tg.desc', locale)}
       </p>
       {loading ? (
-        <p className="text-xs text-white/40 font-semibold">Активируем…</p>
+        <p className="text-xs text-white/40 font-semibold">{t('tg.activating', locale)}</p>
       ) : (
         <div ref={ref} />
       )}

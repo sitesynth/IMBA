@@ -2,6 +2,8 @@
 import { useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { getFingerprint } from '@/lib/fingerprint'
+import { useLocale } from '@/lib/useLocale'
+import { t } from '@/lib/t'
 
 declare global {
   interface Window {
@@ -9,9 +11,11 @@ declare global {
   }
 }
 
-export function TelegramLoginButton({ label = 'Войти через Telegram' }: { label?: string }) {
+export function TelegramLoginButton({ label }: { label?: string }) {
+  const locale = useLocale()
   const ref = useRef<HTMLDivElement>(null)
   const router = useRouter()
+  const resolvedLabel = label ?? t('auth.tg_login', locale)
 
   useEffect(() => {
     window.onTelegramAuth = async (user) => {
@@ -45,7 +49,7 @@ export function TelegramLoginButton({ label = 'Войти через Telegram' }
   return (
     <div className="w-full flex flex-col items-center gap-2">
       <div ref={ref} className="w-full flex justify-center" />
-      <p className="text-xs text-ink/30 font-semibold">{label}</p>
+      <p className="text-xs text-ink/30 font-semibold">{resolvedLabel}</p>
     </div>
   )
 }

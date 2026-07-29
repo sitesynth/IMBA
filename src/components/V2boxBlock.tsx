@@ -1,5 +1,7 @@
 import { Monitor } from 'lucide-react'
 import { CopyButton } from '@/components/CopyButton'
+import { getLocale } from '@/lib/i18n'
+import { t } from '@/lib/t'
 
 async function fetchVlessUri(subUrl: string): Promise<string | null> {
   try {
@@ -20,6 +22,7 @@ async function fetchVlessUri(subUrl: string): Promise<string | null> {
 }
 
 export async function V2boxBlock({ subUrl }: { subUrl: string }) {
+  const locale = await getLocale()
   const vlessUri = await fetchVlessUri(subUrl)
 
   return (
@@ -27,7 +30,7 @@ export async function V2boxBlock({ subUrl }: { subUrl: string }) {
       <div className="flex items-center gap-2 mb-3">
         <Monitor className="w-4 h-4 text-ink/50" strokeWidth={2.5} />
         <div className="text-xs font-extrabold uppercase tracking-widest text-ink/50 flex-1">
-          v2box — прямой конфиг
+          {t('v2box.heading', locale)}
         </div>
         {vlessUri && <CopyButton text={vlessUri} />}
       </div>
@@ -38,9 +41,9 @@ export async function V2boxBlock({ subUrl }: { subUrl: string }) {
             {vlessUri}
           </p>
           <ol className="space-y-1 text-sm font-semibold text-ink/70">
-            <li>1. Скачай <strong>v2box</strong> (iOS / Android / Desktop)</li>
-            <li>2. Открой → «+» → «Импорт из буфера» — или вставь ссылку выше вручную</li>
-            <li>3. Подключись к <strong>🇵🇹 Лиссабон</strong></li>
+            <li dangerouslySetInnerHTML={{ __html: t('v2box.step1', locale) }} />
+            <li dangerouslySetInnerHTML={{ __html: t('v2box.step2_vless', locale) }} />
+            <li dangerouslySetInnerHTML={{ __html: t('v2box.step3_vless', locale) }} />
           </ol>
         </>
       ) : (
@@ -49,9 +52,9 @@ export async function V2boxBlock({ subUrl }: { subUrl: string }) {
             {subUrl}
           </p>
           <ol className="space-y-1 text-sm font-semibold text-ink/70">
-            <li>1. Скачай <strong>v2box</strong> (iOS / Android / Desktop)</li>
-            <li>2. Открой → «Добавить подписку» → вставь ссылку выше</li>
-            <li>3. Выбери сервер <strong>🇵🇹 Лиссабон</strong> (не Happ)</li>
+            <li dangerouslySetInnerHTML={{ __html: t('v2box.step1', locale) }} />
+            <li dangerouslySetInnerHTML={{ __html: t('v2box.step2_sub', locale) }} />
+            <li dangerouslySetInnerHTML={{ __html: t('v2box.step3_sub', locale) }} />
           </ol>
         </>
       )}

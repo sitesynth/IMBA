@@ -3,6 +3,8 @@ import { useEffect, useRef, useState } from 'react'
 import { Bell, BellRing, X } from 'lucide-react'
 import { createPortal } from 'react-dom'
 import { api } from '@/lib/api-client'
+import { useLocale } from '@/lib/useLocale'
+import { t } from '@/lib/t'
 
 // Module-level flag: only one instance auto-opens the dropdown
 let _autoOpenDone = false
@@ -15,15 +17,16 @@ interface Notification {
   created_at: string
 }
 
-function timeAgo(iso: string) {
+function timeAgo(iso: string, locale: 'ru' | 'en') {
   const diff = Math.floor((Date.now() - new Date(iso).getTime()) / 1000)
-  if (diff < 60) return 'только что'
-  if (diff < 3600) return `${Math.floor(diff / 60)} мин`
-  if (diff < 86400) return `${Math.floor(diff / 3600)} ч`
-  return new Date(iso).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' })
+  if (diff < 60) return t('notif.just_now', locale)
+  if (diff < 3600) return `${Math.floor(diff / 60)} ${locale === 'ru' ? 'мин' : 'min'}`
+  if (diff < 86400) return `${Math.floor(diff / 3600)} ${locale === 'ru' ? 'ч' : 'h'}`
+  return new Date(iso).toLocaleDateString(locale === 'ru' ? 'ru-RU' : 'en-US', { day: 'numeric', month: 'short' })
 }
 
 export function NotificationBell() {
+  const locale = useLocale()
   const [items, setItems] = useState<Notification[]>([])
   const [open, setOpen] = useState(false)
   const [dropdownPos, setDropdownPos] = useState<{ top: number; left?: number; right?: number; dropW: number }>({ top: 0, right: 0, dropW: 320 })
@@ -112,11 +115,11 @@ export function NotificationBell() {
       }}
     >
       <div className="flex items-center justify-between px-4 py-3 border-b-2 border-ink/10">
-        <span className="font-extrabold text-sm">Уведомления</span>
+        <span className="font-extrabold text-sm">{t('nav.notifications', locale)}</span>
         <div className="flex items-center gap-3">
           {count > 1 && (
             <button onClick={dismissAll} className="text-xs font-bold text-ink/40 hover:text-ink transition-colors">
-              Прочитать все
+              {t('notif.mark_read', locale)}
             </button>
           )}
           <button onClick={() => setOpen(false)} className="opacity-30 hover:opacity-80 transition-opacity">
@@ -125,7 +128,7 @@ export function NotificationBell() {
         </div>
       </div>
       {count === 0 ? (
-        <p className="px-4 py-8 text-center text-sm font-semibold text-ink/30">Нет новых уведомлений</p>
+        <p className="px-4 py-8 text-center text-sm font-semibold text-ink/30">{t('notif.empty', locale)}</p>
       ) : (
         <div className="divide-y divide-ink/5 max-h-72 overflow-y-auto">
           {items.map(n => (
@@ -135,7 +138,7 @@ export function NotificationBell() {
                 {n.message && (
                   <p className="text-xs font-semibold text-ink/60 mt-0.5 leading-snug">{n.message}</p>
                 )}
-                <p className="text-[10px] font-bold text-ink/30 mt-1">{timeAgo(n.created_at)}</p>
+                <p className="text-[10px] font-bold text-ink/30 mt-1">{timeAgo(n.created_at, locale)}</p>
               </div>
               <button
                 onClick={() => dismiss(n.id)}
@@ -157,7 +160,7 @@ export function NotificationBell() {
         ref={btnRef}
         onClick={openDropdown}
         className="relative w-9 h-9 flex items-center justify-center rounded-2xl border-2 border-transparent hover:border-ink hover:bg-cream transition-colors"
-        aria-label="Уведомления"
+        aria-label={t('nav.notifications', locale)}
       >
         {count > 0
           ? <BellRing className="w-4 h-4" strokeWidth={2.5} style={{ animation: 'bell-ring 2.4s ease-in-out infinite' }} />

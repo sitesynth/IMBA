@@ -1,11 +1,15 @@
 'use client'
 import { useState, useTransition } from 'react'
+import { useLocale } from '@/lib/useLocale'
+import { t } from '@/lib/t'
 
-const CURRENCIES = [
-  { code: 'USD', symbol: '$', label: 'Доллар' },
-  { code: 'EUR', symbol: '€', label: 'Евро' },
-  { code: 'RUB', symbol: '₽', label: 'Рубль' },
-]
+function getCurrencies(locale: 'ru' | 'en') {
+  return [
+    { code: 'USD', symbol: '$', label: t('currency.usd', locale) },
+    { code: 'EUR', symbol: '€', label: t('currency.eur', locale) },
+    { code: 'RUB', symbol: '₽', label: t('currency.rub', locale) },
+  ]
+}
 
 export function CurrencySelector({
   current,
@@ -14,6 +18,8 @@ export function CurrencySelector({
   current: string
   action: (currency: string) => Promise<void>
 }) {
+  const locale = useLocale()
+  const currencies = getCurrencies(locale)
   const [selected, setSelected] = useState(current || 'USD')
   const [pending, startTransition] = useTransition()
 
@@ -24,7 +30,7 @@ export function CurrencySelector({
 
   return (
     <div className="flex gap-2">
-      {CURRENCIES.map(({ code, symbol, label }) => (
+      {currencies.map(({ code, symbol, label }) => (
         <button
           key={code}
           onClick={() => pick(code)}

@@ -4,6 +4,9 @@ import { useState } from 'react'
 import { Zap, Smartphone, Download, Link, Terminal, Moon } from 'lucide-react'
 import { CopyButton } from '@/components/CopyButton'
 import type { VpnServer } from '@/lib/types'
+import { useLocale } from '@/lib/useLocale'
+import { t, type TKey } from '@/lib/t'
+import type { Locale } from '@/lib/i18n-shared'
 
 // Fallback shared credentials — used only for users without a per-user link (legacy/trial)
 const WDTT_FALLBACK_PASSWORD = 'CGFxnHnHXvpb'
@@ -59,7 +62,7 @@ interface Props {
   wdttLink?: string | null
 }
 
-function WdttInstructions({ platform, link }: { platform: Platform; link: string }) {
+function WdttInstructions({ platform, link, locale }: { platform: Platform; link: string; locale: Locale }) {
   const password = wdttPassword(link)
   const macCmd = `sudo ./client-darwin-arm64 -server ${WDTT_SERVER}:56000 -wg-port 56001 -password ${password} -hash ${WDTT_VK_HASH}`
   if (platform === 'android') return (
@@ -67,17 +70,17 @@ function WdttInstructions({ platform, link }: { platform: Platform; link: string
       <li className="flex items-start gap-2">
         <span className="font-extrabold text-ink/30 w-4 shrink-0">1.</span>
         <div>
-          Скачай <strong>qWDTT</strong> для Android:
+          <span dangerouslySetInnerHTML={{ __html: t('wdtt.download_android', locale) }} />
           <a href={URLS.apk} className="flex items-center gap-1.5 mt-1.5 pill pill-ink pill-sm w-fit text-xs">
-            <Download className="w-3.5 h-3.5" strokeWidth={2.5} /> Скачать APK
+            <Download className="w-3.5 h-3.5" strokeWidth={2.5} /> {t('wdtt.download_apk', locale)}
           </a>
-          <p className="text-xs text-ink/40 mt-1">Разреши установку из неизвестных источников</p>
+          <p className="text-xs text-ink/40 mt-1">{t('wdtt.allow_unknown', locale)}</p>
         </div>
       </li>
       <li className="flex items-start gap-2">
         <span className="font-extrabold text-ink/30 w-4 shrink-0">2.</span>
         <div className="flex-1">
-          <div className="mb-1">В приложении нажми <strong>«Импорт ссылки»</strong> и вставь:</div>
+          <div className="mb-1" dangerouslySetInnerHTML={{ __html: t('wdtt.import_link', locale) }} />
           <div className="flex items-center gap-2 mt-2 rounded-xl px-3 py-2" style={{ background: 'var(--blue-100)' }}>
             <p className="text-xs font-mono break-all text-ink/70 flex-1 select-all">{link}</p>
             <CopyButton text={link} />
@@ -86,7 +89,7 @@ function WdttInstructions({ platform, link }: { platform: Platform; link: string
       </li>
       <li className="flex items-start gap-2">
         <span className="font-extrabold text-ink/30 w-4 shrink-0">3.</span>
-        <span>Нажми <strong>Подключить</strong></span>
+        <span dangerouslySetInnerHTML={{ __html: t('wdtt.tap_connect', locale) }} />
       </li>
     </ol>
   )
@@ -96,9 +99,9 @@ function WdttInstructions({ platform, link }: { platform: Platform; link: string
       <li className="flex items-start gap-2">
         <span className="font-extrabold text-ink/30 w-4 shrink-0">1.</span>
         <div>
-          Установи <strong>VK Turn Proxy</strong> через TestFlight:
+          <span dangerouslySetInnerHTML={{ __html: t('wdtt.install_ios', locale) }} />
           <a href={URLS.testflight} className="flex items-center gap-1.5 mt-1.5 pill pill-ink pill-sm w-fit text-xs">
-            <Download className="w-3.5 h-3.5" strokeWidth={2.5} /> Открыть в TestFlight
+            <Download className="w-3.5 h-3.5" strokeWidth={2.5} /> {t('wdtt.open_testflight', locale)}
           </a>
         </div>
       </li>
@@ -106,7 +109,7 @@ function WdttInstructions({ platform, link }: { platform: Platform; link: string
         <span className="font-extrabold text-ink/30 w-4 shrink-0">2.</span>
         <div className="flex-1">
           <div className="mb-1">Settings → Server mode → <strong>SRTP-WRAP-A</strong></div>
-          <div className="mb-1">Нажми <strong>«Import from connection link»</strong> и вставь:</div>
+          <div className="mb-1" dangerouslySetInnerHTML={{ __html: t('wdtt.ios_import', locale) }} />
           <div className="flex items-center gap-2 mt-2 rounded-xl px-3 py-2" style={{ background: 'var(--blue-100)' }}>
             <p className="text-xs font-mono break-all text-ink/70 flex-1 select-all">{link}</p>
             <CopyButton text={link} />
@@ -115,7 +118,7 @@ function WdttInstructions({ platform, link }: { platform: Platform; link: string
       </li>
       <li className="flex items-start gap-2">
         <span className="font-extrabold text-ink/30 w-4 shrink-0">3.</span>
-        <span>Нажми <strong>Connect</strong></span>
+        <span dangerouslySetInnerHTML={{ __html: t('wdtt.tap_connect_en', locale) }} />
       </li>
     </ol>
   )
@@ -125,16 +128,16 @@ function WdttInstructions({ platform, link }: { platform: Platform; link: string
       <li className="flex items-start gap-2">
         <span className="font-extrabold text-ink/30 w-4 shrink-0">1.</span>
         <div>
-          Скачай <strong>wdtt.exe</strong> для Windows:
+          <span dangerouslySetInnerHTML={{ __html: t('wdtt.download_win', locale) }} />
           <a href={URLS.win} className="flex items-center gap-1.5 mt-1.5 pill pill-ink pill-sm w-fit text-xs">
-            <Download className="w-3.5 h-3.5" strokeWidth={2.5} /> Скачать wdtt.exe
+            <Download className="w-3.5 h-3.5" strokeWidth={2.5} /> {t('wdtt.download_exe', locale)}
           </a>
         </div>
       </li>
       <li className="flex items-start gap-2">
         <span className="font-extrabold text-ink/30 w-4 shrink-0">2.</span>
         <div className="flex-1">
-          <div className="mb-1">Запусти и вставь ссылку в поле <strong>«WDTT Link»</strong>:</div>
+          <div className="mb-1" dangerouslySetInnerHTML={{ __html: t('wdtt.paste_link_win', locale) }} />
           <div className="flex items-center gap-2 mt-2 rounded-xl px-3 py-2" style={{ background: 'var(--blue-100)' }}>
             <p className="text-xs font-mono break-all text-ink/70 flex-1 select-all">{link}</p>
             <CopyButton text={link} />
@@ -143,7 +146,7 @@ function WdttInstructions({ platform, link }: { platform: Platform; link: string
       </li>
       <li className="flex items-start gap-2">
         <span className="font-extrabold text-ink/30 w-4 shrink-0">3.</span>
-        <span>Нажми <strong>Connect</strong></span>
+        <span dangerouslySetInnerHTML={{ __html: t('wdtt.tap_connect_en', locale) }} />
       </li>
     </ol>
   )
@@ -153,7 +156,7 @@ function WdttInstructions({ platform, link }: { platform: Platform; link: string
       <li className="flex items-start gap-2">
         <span className="font-extrabold text-ink/30 w-4 shrink-0">1.</span>
         <div>
-          Скачай клиент для macOS:
+          {t('wdtt.download_macos', locale)}
           <div className="flex gap-2 mt-1.5 flex-wrap">
             <a href={URLS.macArm} className="flex items-center gap-1.5 pill pill-ink pill-sm w-fit text-xs">
               <Download className="w-3.5 h-3.5" strokeWidth={2.5} /> Apple Silicon (M1/M2/M3)
@@ -167,18 +170,18 @@ function WdttInstructions({ platform, link }: { platform: Platform; link: string
       <li className="flex items-start gap-2">
         <span className="font-extrabold text-ink/30 w-4 shrink-0">2.</span>
         <div className="flex-1">
-          <div className="mb-2">Открой терминал в папке с файлом и запусти:</div>
+          <div className="mb-2">{t('wdtt.open_terminal', locale)}</div>
           <div className="flex items-center gap-2 rounded-xl px-3 py-2" style={{ background: 'var(--blue-100)' }}>
             <Terminal className="w-3.5 h-3.5 text-ink/40 shrink-0" strokeWidth={2} />
             <p className="text-xs font-mono break-all text-ink/70 flex-1 select-all">{macCmd}</p>
             <CopyButton text={macCmd} />
           </div>
-          <p className="text-xs text-ink/40 mt-1">Нужен sudo — создаёт WireGuard-интерфейс</p>
+          <p className="text-xs text-ink/40 mt-1">{t('wdtt.sudo_note', locale)}</p>
         </div>
       </li>
       <li className="flex items-start gap-2">
         <span className="font-extrabold text-ink/30 w-4 shrink-0">3.</span>
-        <span>В системных настройках разреши VPN — трафик пойдёт через VK</span>
+        <span>{t('wdtt.allow_vpn_macos', locale)}</span>
       </li>
     </ol>
   )
@@ -189,16 +192,16 @@ function WdttInstructions({ platform, link }: { platform: Platform; link: string
       <li className="flex items-start gap-2">
         <span className="font-extrabold text-ink/30 w-4 shrink-0">1.</span>
         <div>
-          Скачай <strong>PWDTT</strong> для Linux:
+          <span dangerouslySetInnerHTML={{ __html: t('wdtt.download_linux', locale) }} />
           <a href={URLS.linux} className="flex items-center gap-1.5 mt-1.5 pill pill-ink pill-sm w-fit text-xs">
-            <Download className="w-3.5 h-3.5" strokeWidth={2.5} /> Скачать (amd64)
+            <Download className="w-3.5 h-3.5" strokeWidth={2.5} /> {t('wdtt.download_amd64', locale)}
           </a>
         </div>
       </li>
       <li className="flex items-start gap-2">
         <span className="font-extrabold text-ink/30 w-4 shrink-0">2.</span>
         <div className="flex-1">
-          <div className="mb-2">Дай права и запусти, затем вставь ссылку в <strong>«Import link»</strong>:</div>
+          <div className="mb-2" dangerouslySetInnerHTML={{ __html: t('wdtt.chmod_run', locale) }} />
           <div className="flex items-center gap-2 rounded-xl px-3 py-2 mb-2" style={{ background: 'var(--blue-100)' }}>
             <Terminal className="w-3.5 h-3.5 text-ink/40 shrink-0" strokeWidth={2} />
             <p className="text-xs font-mono text-ink/70 flex-1 select-all">chmod +x pwdtt-linux-amd64 && sudo ./pwdtt-linux-amd64</p>
@@ -211,13 +214,14 @@ function WdttInstructions({ platform, link }: { platform: Platform; link: string
       </li>
       <li className="flex items-start gap-2">
         <span className="font-extrabold text-ink/30 w-4 shrink-0">3.</span>
-        <span>Нажми <strong>Connect</strong> в трее</span>
+        <span dangerouslySetInnerHTML={{ __html: t('wdtt.connect_tray', locale) }} />
       </li>
     </ol>
   )
 }
 
 export function VpnServersPanel({ servers, vlessMap, serverKey, hasActive, wdttLink }: Props) {
+  const locale = useLocale()
   const [selectedPanel, setSelectedPanel] = useState<'happ' | 'wdtt'>('happ')
   const [platform, setPlatform] = useState<Platform>('android')
   const activeWdttLink = wdttLink ?? WDTT_FALLBACK_LINK
@@ -236,7 +240,7 @@ export function VpnServersPanel({ servers, vlessMap, serverKey, hasActive, wdttL
           <div className="flex items-center gap-2 mb-4">
             <Smartphone className="w-4 h-4 text-ink/50" strokeWidth={2.5} />
             <div className="text-xs font-extrabold uppercase tracking-widest text-ink/50 flex-1">
-              WhiteList Unblocker — инструкция
+              {t('vpn.wl_heading', locale)}
             </div>
           </div>
 
@@ -257,10 +261,10 @@ export function VpnServersPanel({ servers, vlessMap, serverKey, hasActive, wdttL
             ))}
           </div>
 
-          <WdttInstructions platform={platform} link={activeWdttLink} />
+          <WdttInstructions platform={platform} link={activeWdttLink} locale={locale} />
 
           <div className="rounded-xl px-3 py-2 text-xs font-bold" style={{ background: 'var(--green-100)', color: 'var(--ink)' }}>
-            ✓ Трафик идёт через VK — оператор видит звонок ВКонтакте, не VPN
+            {t('vpn.wl_desc', locale)}
           </div>
         </div>
       )}
@@ -271,7 +275,7 @@ export function VpnServersPanel({ servers, vlessMap, serverKey, hasActive, wdttL
               <div className="flex items-center gap-2 mb-3">
                 <Smartphone className="w-4 h-4 text-ink/50" strokeWidth={2.5} />
                 <div className="text-xs font-extrabold uppercase tracking-widest text-ink/50 flex-1">
-                  Happ — ссылка подписки
+                  {t('vpn.happ_heading', locale)}
                 </div>
                 <CopyButton text={serverKey} />
               </div>
@@ -281,7 +285,7 @@ export function VpnServersPanel({ servers, vlessMap, serverKey, hasActive, wdttL
                 <li className="flex items-start gap-2">
                   <span className="font-extrabold text-ink/30 w-4 shrink-0">1.</span>
                   <div className="flex-1">
-                    <div className="mb-3">Скачай <strong>Happ</strong>:</div>
+                    <div className="mb-3"><span dangerouslySetInnerHTML={{ __html: t('vpn.download_happ', locale) }} /></div>
 
                     {/* Android */}
                     <div className="mb-3">
@@ -294,7 +298,7 @@ export function VpnServersPanel({ servers, vlessMap, serverKey, hasActive, wdttL
                           <Download className="w-3.5 h-3.5" strokeWidth={2.5} /> APK Beta
                         </a>
                         <a href={URLS.happMirror} className="flex items-center gap-1.5 pill pill-paper pill-sm w-fit text-xs border-2 border-ink/20">
-                          <Download className="w-3.5 h-3.5" strokeWidth={2.5} /> Зеркало
+                          <Download className="w-3.5 h-3.5" strokeWidth={2.5} /> {t('vpn.mirror', locale)}
                         </a>
                       </div>
                     </div>
@@ -320,7 +324,7 @@ export function VpnServersPanel({ servers, vlessMap, serverKey, hasActive, wdttL
                           <Download className="w-3.5 h-3.5" strokeWidth={2.5} /> Setup x64 .exe
                         </a>
                         <a href={URLS.happWinMirror} className="flex items-center gap-1.5 pill pill-paper pill-sm w-fit text-xs border-2 border-ink/20">
-                          <Download className="w-3.5 h-3.5" strokeWidth={2.5} /> Зеркало
+                          <Download className="w-3.5 h-3.5" strokeWidth={2.5} /> {t('vpn.mirror', locale)}
                         </a>
                       </div>
                     </div>
@@ -336,7 +340,7 @@ export function VpnServersPanel({ servers, vlessMap, serverKey, hasActive, wdttL
                           <Download className="w-3.5 h-3.5" strokeWidth={2.5} /> Mac App Store
                         </a>
                         <a href={URLS.happMacMirror} className="flex items-center gap-1.5 pill pill-paper pill-sm w-fit text-xs border-2 border-ink/20">
-                          <Download className="w-3.5 h-3.5" strokeWidth={2.5} /> Зеркало
+                          <Download className="w-3.5 h-3.5" strokeWidth={2.5} /> {t('vpn.mirror', locale)}
                         </a>
                       </div>
                     </div>
@@ -358,38 +362,38 @@ export function VpnServersPanel({ servers, vlessMap, serverKey, hasActive, wdttL
                     </div>
 
                     <p className="text-xs text-ink/40 mt-2">
-                      В RU App Store и Google Play нет — используй APK или зарубежный аккаунт.
+                      {t('vpn.not_in_store', locale)}
                     </p>
                   </div>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="font-extrabold text-ink/30 w-4 shrink-0">2.</span>
-                  <div>Открой Happ → нажми <strong>«+»</strong> → <strong>«Добавить подписку»</strong> → вставь ссылку выше</div>
+                  <div dangerouslySetInnerHTML={{ __html: t('vpn.happ_step1', locale) }} />
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="font-extrabold text-ink/30 w-4 shrink-0">3.</span>
-                  <div>Зайди в настройки сервера → найди <strong>Mux</strong> → <strong>выключи</strong></div>
+                  <div>{t('vpn.happ_mux', locale)}</div>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="font-extrabold text-ink/30 w-4 shrink-0">4.</span>
-                  <div>Нажми <strong>Подключить</strong> — готово!</div>
+                  <div>{t('vpn.happ_connect', locale)}</div>
                 </li>
               </ol>
 
               <div className="rounded-xl px-3 py-2 text-xs font-bold mb-3" style={{ background: 'var(--yellow)', color: 'var(--ink)' }}>
-                ⚠️ Mux <strong>обязательно</strong> отключить в настройках сервера — иначе VPN не работает.
+                {t('vpn.happ_mux_warning', locale)}
               </div>
               <a href={URLS.happGuide} className="flex items-center gap-1.5 text-xs font-bold text-ink/50 hover:text-ink transition-colors">
-                <Link className="w-3.5 h-3.5" strokeWidth={2.5} /> Полная инструкция по настройке Happ
+                <Link className="w-3.5 h-3.5" strokeWidth={2.5} /> {t('vpn.happ_full_guide', locale)}
               </a>
         </div>
       )}
 
       {/* Server grid */}
       <div>
-        <h2 className="display text-2xl md:text-3xl mb-1">Серверы</h2>
+        <h2 className="display text-2xl md:text-3xl mb-1">{t('vpn.servers', locale)}</h2>
         <p className="font-semibold text-ink/60 mb-5 text-sm">
-          {hasActive ? 'Входят в подписку' : '5 локаций включены в тариф'}
+          {hasActive ? t('vpn.servers_included', locale) : t('vpn.servers_count', locale)}
         </p>
 
         <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
@@ -412,7 +416,7 @@ export function VpnServersPanel({ servers, vlessMap, serverKey, hasActive, wdttL
                 <div className="flex items-center gap-2">
                   {s.ping ? (
                     <span className="chip whitespace-nowrap" style={{ background: 'var(--green-100)' }}>
-                      <Zap className="w-3 h-3 shrink-0" strokeWidth={3} /> ~{s.ping} мс
+                      <Zap className="w-3 h-3 shrink-0" strokeWidth={3} /> ~{s.ping} {t('vpn.ms', locale)}
                     </span>
                   ) : (
                     <span className="chip whitespace-nowrap" style={{ background: '#d0d0d0' }}>
@@ -450,13 +454,13 @@ export function VpnServersPanel({ servers, vlessMap, serverKey, hasActive, wdttL
               </svg>
               <div>
                 <div className="display text-lg leading-tight">WhiteList Unblocker</div>
-                <div className="text-xs font-bold text-ink/40">Lisbon · Tele2 / МТС</div>
+                <div className="text-xs font-bold text-ink/40">{locale === 'ru' ? 'Lisbon · Tele2 / МТС' : 'Lisbon · Tele2 / MTS'}</div>
               </div>
             </div>
             <div className="flex items-center gap-2">
               {lisbonPing && (
                 <span className="chip text-xs whitespace-nowrap" style={{ background: 'var(--green-100)' }}>
-                  <Zap className="w-3 h-3 shrink-0" strokeWidth={3} /> ~{lisbonPing} мс
+                  <Zap className="w-3 h-3 shrink-0" strokeWidth={3} /> ~{lisbonPing} {t('vpn.ms', locale)}
                 </span>
               )}
               <span className="pill pill-yellow pill-sm whitespace-nowrap">

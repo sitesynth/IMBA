@@ -4,6 +4,8 @@ import { Mail, User as UserIcon, Calendar, Globe } from 'lucide-react'
 import { getCurrentUser, logout } from '@/lib/auth'
 import { apiFetch } from '@/lib/api'
 import { CurrencySelector } from '@/components/CurrencySelector'
+import { getLocale } from '@/lib/i18n'
+import { t } from '@/lib/t'
 
 async function updateCurrency(currency: string) {
   'use server'
@@ -15,35 +17,36 @@ async function updateCurrency(currency: string) {
 }
 
 export default async function SettingsPage() {
+  const locale = await getLocale()
   const user = await getCurrentUser()
   if (!user) redirect('/auth/login')
 
   return (
     <div className="fade-up space-y-6">
       <div>
-        <h1 className="display text-4xl md:text-5xl mb-1">Настройки</h1>
-        <p className="font-semibold text-ink/60">Профиль, язык, безопасность</p>
+        <h1 className="display text-4xl md:text-5xl mb-1">{t('settings.title', locale)}</h1>
+        <p className="font-semibold text-ink/60">{t('settings.subtitle', locale)}</p>
       </div>
 
       <div className="panel" style={{ background: 'var(--paper)' }}>
-        <h2 className="display text-xl md:text-2xl mb-4">Валюта</h2>
+        <h2 className="display text-xl md:text-2xl mb-4">{t('settings.currency', locale)}</h2>
         <p className="font-semibold text-ink/60 text-sm mb-4">
-          В какой валюте отображать баланс и цены
+          {t('settings.currency_desc', locale)}
         </p>
         <CurrencySelector current={user.currency ?? 'USD'} action={updateCurrency} />
       </div>
 
       <div className="panel" style={{ background: 'var(--paper)' }}>
-        <h2 className="display text-xl md:text-2xl mb-5">Профиль</h2>
+        <h2 className="display text-xl md:text-2xl mb-5">{t('settings.profile', locale)}</h2>
 
         <div className="space-y-3">
           {[
-            { icon: UserIcon, label: 'Имя', value: user.name || '—' },
+            { icon: UserIcon, label: t('settings.name', locale), value: user.name || '—' },
             { icon: Mail, label: 'Email', value: user.email },
-            { icon: Globe, label: 'Язык', value: user.language === 'ru' ? 'Русский' : user.language },
+            { icon: Globe, label: t('settings.language', locale), value: user.language === 'ru' ? t('settings.language_value', locale) : user.language },
             {
               icon: Calendar,
-              label: 'Аккаунт создан',
+              label: t('settings.created', locale),
               value: new Date(user.created_at).toLocaleDateString('ru-RU'),
             },
           ].map(({ icon: Icon, label, value }) => (
@@ -69,13 +72,13 @@ export default async function SettingsPage() {
       </div>
 
       <div className="panel" style={{ background: 'var(--violet-100)' }}>
-        <h2 className="display text-xl md:text-2xl mb-2">Поддержка</h2>
+        <h2 className="display text-xl md:text-2xl mb-2">{t('settings.support', locale)}</h2>
         <p className="font-semibold text-ink/60 text-sm mb-4">
-          Если что-то не работает — мы рядом. Среднее время ответа — 12 минут.
+          {t('settings.support_desc', locale)}
         </p>
         <div className="flex flex-wrap gap-2">
           <a href="mailto:hello@imba.live" className="pill pill-ink pill-sm">
-            Написать в поддержку
+            {t('settings.contact_support', locale)}
           </a>
           <a href="https://telegram.dog/imbasupport" className="pill pill-paper pill-sm">
             Telegram
@@ -84,13 +87,13 @@ export default async function SettingsPage() {
       </div>
 
       <div className="panel" style={{ background: 'var(--cream)' }}>
-        <h2 className="display text-xl md:text-2xl mb-2">Аккаунт</h2>
+        <h2 className="display text-xl md:text-2xl mb-2">{t('settings.account', locale)}</h2>
         <p className="font-semibold text-ink/60 text-sm mb-4">
-          Выйти из аккаунта на этом устройстве
+          {t('settings.logout_desc', locale)}
         </p>
         <form action={logout}>
           <button type="submit" className="pill pill-paper pill-sm">
-            Выйти из аккаунта
+            {t('settings.logout', locale)}
           </button>
         </form>
       </div>

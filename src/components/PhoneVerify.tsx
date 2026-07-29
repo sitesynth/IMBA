@@ -3,12 +3,15 @@ import { useState } from 'react'
 import { Phone, ArrowRight } from 'lucide-react'
 import { api } from '@/lib/api-client'
 import { getFingerprint } from '@/lib/fingerprint'
+import { useLocale } from '@/lib/useLocale'
+import { t } from '@/lib/t'
 
 interface Props {
   onActivated: () => void
 }
 
 export function PhoneVerify({ onActivated }: Props) {
+  const locale = useLocale()
   const [phone, setPhone] = useState('')
   const [code, setCode] = useState('')
   const [step, setStep] = useState<'phone' | 'code' | 'done'>('phone')
@@ -23,7 +26,7 @@ export function PhoneVerify({ onActivated }: Props) {
       await api.post('/v1/me/phone/send-code', { phone })
       setStep('code')
     } catch (e: unknown) {
-      setError((e as { message?: string })?.message || 'Ошибка отправки SMS')
+      setError((e as { message?: string })?.message || t('phone.sms_error', locale))
     } finally {
       setLoading(false)
     }
@@ -39,7 +42,7 @@ export function PhoneVerify({ onActivated }: Props) {
       setStep('done')
       if (res.vpn_activated) setTimeout(onActivated, 1200)
     } catch (e: unknown) {
-      setError((e as { message?: string })?.message || 'Неверный код')
+      setError((e as { message?: string })?.message || t('phone.wrong_code', locale))
     } finally {
       setLoading(false)
     }
@@ -48,7 +51,7 @@ export function PhoneVerify({ onActivated }: Props) {
   if (step === 'done') {
     return (
       <p className="text-xs font-bold mt-4 mb-1 relative z-10" style={{ color: 'var(--green)' }}>
-        VPN 7 дней + eSIM 500 МБ активированы!
+        {t('dash.trial_activated', locale)}
       </p>
     )
   }
@@ -57,8 +60,8 @@ export function PhoneVerify({ onActivated }: Props) {
     <div className="mt-4 relative z-10">
       <p className="text-xs font-semibold text-white/50 mb-2">
         {step === 'phone'
-          ? 'Подтверди номер телефона → получи 7 дней VPN + eSIM 500 МБ бесплатно'
-          : `SMS с кодом отправлен на ${phone}`}
+          ? t('phone.desc', locale)
+          : `${locale === 'ru' ? 'SMS с кодом отправлен на' : 'Code sent to'} ${phone}`}
       </p>
       <div className="flex gap-2">
         {step === 'phone' ? (
@@ -79,7 +82,7 @@ export function PhoneVerify({ onActivated }: Props) {
               disabled={loading || !phone.trim()}
               className="pill pill-yellow pill-sm shrink-0"
             >
-              {loading ? '...' : 'Получить код'}
+              {loading ? '...' : t('phone.get_code', locale)}
             </button>
           </>
         ) : (
@@ -113,7 +116,7 @@ export function PhoneVerify({ onActivated }: Props) {
           onClick={() => { setStep('phone'); setCode(''); setError('') }}
           className="text-xs text-white/30 mt-2 hover:text-white/60 transition-colors"
         >
-          Изменить номер
+          {t('phone.change_number', locale)}
         </button>
       )}
     </div>

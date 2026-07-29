@@ -4,6 +4,8 @@ import { useState, useTransition } from 'react'
 import { ArrowRight, Zap, Loader2, ExternalLink, Delete } from 'lucide-react'
 import { convertAmount } from '@/lib/format'
 import type { PaymentProvider, FxRates } from '@/lib/types'
+import { useLocale } from '@/lib/useLocale'
+import { t } from '@/lib/t'
 
 const CURRENCY_SYMBOL: Record<string, string> = { USD: '$', EUR: '€', RUB: '₽' }
 const CARD_COLORS = ['var(--yellow-100)', 'var(--violet-100)', 'var(--cream)']
@@ -20,6 +22,7 @@ export function TopupFlow({
   rates?: FxRates
   createInvoice: (provider: string, amount_usd: number, amount_rub?: number) => Promise<{ payment_url: string; payment_id: string }>
 }) {
+  const locale = useLocale()
   const [rawAmount, setRawAmount] = useState('')
   const [paying, setPaying] = useState<string | null>(null)
   const [paymentUrl, setPaymentUrl] = useState<string | null>(null)
@@ -58,7 +61,7 @@ export function TopupFlow({
           window.open(result.payment_url, '_blank')
         }
       } catch (e: unknown) {
-        setError((e as Error).message || 'Ошибка создания платежа')
+        setError((e as Error).message || t('topup.error', locale))
       } finally {
         setPaying(null)
       }
@@ -70,7 +73,7 @@ export function TopupFlow({
       {/* Desktop: regular input */}
       <div className="hidden md:block">
         <div className="text-xs font-extrabold uppercase tracking-widest text-ink/40 mb-2">
-          Сумма пополнения
+          {t('topup.amount_label', locale)}
         </div>
         <div className="relative">
           <span className="absolute left-5 top-1/2 -translate-y-1/2 font-extrabold text-ink/40 text-2xl pointer-events-none">{sym}</span>
@@ -117,7 +120,7 @@ export function TopupFlow({
       {hasAmount && (
         <div id="pay-methods" className="fade-up">
           <div className="text-xs font-extrabold uppercase tracking-widest text-ink/40 mb-3">
-            Способ оплаты
+            {t('topup.method', locale)}
           </div>
           <div className="space-y-3">
             {providers.map((p, i) => {
@@ -146,7 +149,7 @@ export function TopupFlow({
                       </div>
                       {outOfRange && (
                         <p className="text-xs font-semibold text-ink/40 mt-2">
-                          Лимит: {sym}{minDisplay} – {sym}{maxDisplay.toLocaleString()}
+                          {t('topup.limit', locale)} {sym}{minDisplay} – {sym}{maxDisplay.toLocaleString()}
                         </p>
                       )}
                     </div>
@@ -178,7 +181,7 @@ export function TopupFlow({
           className="pill pill-paper w-full justify-center"
         >
           <ExternalLink className="w-4 h-4" strokeWidth={2.5} />
-          Открыть страницу оплаты
+          {t('topup.open_payment', locale)}
         </a>
       )}
     </div>

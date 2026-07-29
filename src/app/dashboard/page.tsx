@@ -4,6 +4,9 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowRight, Wallet, Plus, Clock } from 'lucide-react'
 import { api } from '@/lib/api-client'
+import { useLocale } from '@/lib/useLocale'
+import { getDateLocale, pluralDays } from '@/lib/i18n-shared'
+import { t } from '@/lib/t'
 import { LottieSticker } from '@/components/LottieSticker'
 import { PinnedBanner } from '@/components/PinnedBanner'
 import { TrialBlock, PromoInputRow } from '@/components/TrialBlock'
@@ -16,6 +19,7 @@ export default function DashboardPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const addToast = useToast()
+  const locale = useLocale()
   const [user, setUser] = useState<UserProfile | null>(null)
   const [esims, setEsims] = useState<Esim[]>([])
   const [vpns, setVpns] = useState<VpnSubscription[]>([])
@@ -29,10 +33,10 @@ export default function DashboardPage() {
     const error = searchParams.get('error')
     const promoError = searchParams.get('promo_error')
     const promoClaimed = searchParams.get('promo')
-    if (activated === 'vk' || activated === 'trial') addToast('VPN 7 дней + eSIM 500 МБ активированы!', 'success')
+    if (activated === 'vk' || activated === 'trial') addToast(t('dash.trial_activated', locale), 'success')
     if (error) addToast(decodeURIComponent(error), 'error')
     if (promoError) addToast(decodeURIComponent(promoError), 'error')
-    if (promoClaimed === 'claimed') addToast('Промокод успешно применён!', 'success')
+    if (promoClaimed === 'claimed') addToast(t('dash.promo_applied', locale), 'success')
   }, [])
 
   useEffect(() => {
@@ -71,7 +75,7 @@ export default function DashboardPage() {
   const safeUser = {
     ...user,
     balance: typeof user.balance === 'number' ? user.balance : 0,
-    plan_name: user.plan_name || 'План IMBA',
+    plan_name: user.plan_name || t('dash.plan', locale),
   }
   const rates: FxRates = user.rates ?? { EUR: 0.92, RUB: 90 }
   const cur = user.currency ?? 'USD'
@@ -85,7 +89,7 @@ export default function DashboardPage() {
   const daysLeft = planExpiresAt ? Math.max(0, Math.ceil((planExpiresAt.getTime() - Date.now()) / 86400000)) : null
 
   const hour = new Date().getHours()
-  const greeting = hour < 12 ? 'Доброе утро' : hour < 18 ? 'Добрый день' : 'Добрый вечер'
+  const greeting = hour < 12 ? t('dash.greeting.morning', locale) : hour < 18 ? t('dash.greeting.afternoon', locale) : t('dash.greeting.evening', locale)
   const firstName = (safeUser.name || safeUser.email.split('@')[0]).split(' ')[0]
 
   return (
@@ -94,7 +98,7 @@ export default function DashboardPage() {
       <div className="flex items-end justify-between gap-4 flex-wrap">
         <div>
           <h1 className="display text-4xl md:text-5xl mb-1">{greeting}, {firstName} 👋</h1>
-          <p className="font-semibold text-ink/60">Вот что происходит с твоими сервисами</p>
+          <p className="font-semibold text-ink/60">{t('dash.subtitle', locale)}</p>
         </div>
         <Link href="/dashboard/billing" className="pill pill-ink pill-sm">
           <Wallet className="w-4 h-4" strokeWidth={2.5} /> {fmtBalance}
@@ -112,12 +116,12 @@ export default function DashboardPage() {
             <Clock className="w-5 h-5 shrink-0" strokeWidth={3} />
             <span className="font-extrabold text-sm">
               {daysLeft === 1
-                ? 'Завтра заканчивается пробный период!'
-                : `Пробный период заканчивается через ${daysLeft} дня`}
+                ? t('dash.trial_tomorrow', locale)
+                : locale === 'ru' ? `Пробный период заканчивается через ${daysLeft} ${pluralDays(daysLeft, locale)}` : `Trial ends in ${daysLeft} ${pluralDays(daysLeft, locale)}`}
             </span>
           </div>
           <Link href="/dashboard/billing" className="pill pill-ink pill-sm shrink-0">
-            Продлить <ArrowRight className="w-4 h-4" strokeWidth={2.5} />
+            {t('dash.extend', locale)} <ArrowRight className="w-4 h-4" strokeWidth={2.5} />
           </Link>
         </div>
       )}
@@ -135,7 +139,7 @@ export default function DashboardPage() {
             <div className="display text-5xl md:text-6xl mb-1" style={{ color: 'var(--yellow)' }}>
               {fmtBalance}
             </div>
-            <div className="text-sm font-semibold opacity-60">Доступный баланс</div>
+            <div className="text-sm font-semibold opacity-60">{t('dash.balance', locale)}</div>
           </div>
           <div className="flex flex-col items-end gap-3">
             <LottieSticker name="rocket" size={88} className="hidden md:block" />
@@ -143,17 +147,17 @@ export default function DashboardPage() {
               <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-extrabold" style={{ background: daysLeft <= 1 ? 'var(--red, #ef4444)' : 'var(--yellow)', color: 'var(--ink)' }}>
                 <Clock className="w-3.5 h-3.5" strokeWidth={3} />
                 {daysLeft === 0
-                  ? 'Истёк'
+                  ? t('dash.expired', locale)
                   : daysLeft > 365
-                  ? `до ${planExpiresAt!.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short', year: 'numeric' })}`
-                  : `${daysLeft} ${daysLeft === 1 ? 'день' : daysLeft < 5 ? 'дня' : 'дней'}`}
+                  ? `${t('dash.until', locale)} ${planExpiresAt!.toLocaleDateString(getDateLocale(locale), { day: 'numeric', month: 'short', year: 'numeric' })}`
+                  : `${daysLeft} ${pluralDays(daysLeft, locale)}`}
               </span>
             )}
           </div>
         </div>
         <div className="flex flex-wrap gap-2 mt-5 relative z-10">
           <Link href="/dashboard/billing/topup" className="pill pill-paper pill-sm">
-            <Plus className="w-4 h-4" strokeWidth={2.5} /> Пополнить
+            <Plus className="w-4 h-4" strokeWidth={2.5} /> {t('dash.topup', locale)}
           </Link>
           {safeUser.plan_slug !== 'pro' && safeUser.plan_slug !== 'business' && (
             <Link href="/dashboard/billing" className="pill pill-sm" style={{ background: '#FFD731', color: '#111111', boxShadow: '0 4px 0 0 rgba(17,17,17,0.2)' }}>
@@ -189,8 +193,8 @@ export default function DashboardPage() {
               <div className="display text-2xl mb-1">{activeEsim.label || activeEsim.country}</div>
               <div className="text-xs font-bold text-ink/60 mb-3">{activeEsim.country}</div>
               <div className="flex justify-between text-xs font-bold mb-1.5">
-                <span>{activeEsim.used_gb.toFixed(1)} ГБ</span>
-                <span className="text-ink/50">из {activeEsim.data_gb} ГБ</span>
+                <span>{activeEsim.used_gb.toFixed(1)} {t('dash.gb', locale)}</span>
+                <span className="text-ink/50">{t('dash.of_gb', locale)} {activeEsim.data_gb} {t('dash.gb', locale)}</span>
               </div>
               <div className="h-2.5 bg-paper border-2 border-ink rounded-full overflow-hidden">
                 <div
@@ -201,8 +205,8 @@ export default function DashboardPage() {
             </>
           ) : (
             <>
-              <div className="display text-xl mb-2">Купить eSIM</div>
-              <p className="text-xs font-semibold text-ink/60">190+ стран, активация по QR</p>
+              <div className="display text-xl mb-2">{t('dash.buy_esim', locale)}</div>
+              <p className="text-xs font-semibold text-ink/60">{t('dash.esim_subtitle', locale)}</p>
             </>
           )}
         </Link>
@@ -217,13 +221,13 @@ export default function DashboardPage() {
             <>
               <div className="display text-2xl mb-2 capitalize">{activeVpn.plan}</div>
               <span className="chip bg-paper">
-                <span className="w-2 h-2 rounded-full bg-green-500 inline-block" /> Активен
+                <span className="w-2 h-2 rounded-full bg-green-500 inline-block" /> {t('dash.active', locale)}
               </span>
             </>
           ) : (
             <>
-              <div className="display text-xl mb-2">Включить VPN</div>
-              <p className="text-xs font-semibold text-ink/60">VPN на каждый день, без лагов и логов</p>
+              <div className="display text-xl mb-2">{t('dash.enable_vpn', locale)}</div>
+              <p className="text-xs font-semibold text-ink/60">{t('dash.vpn_subtitle', locale)}</p>
             </>
           )}
         </Link>
@@ -231,7 +235,7 @@ export default function DashboardPage() {
         {/* Card */}
         <Link href="/dashboard/card" className="panel group" style={{ background: 'var(--green-100)' }}>
           <div className="flex items-center justify-between mb-4">
-            <span className="chip bg-paper">Карта</span>
+            <span className="chip bg-paper">{t('dash.card_chip', locale)}</span>
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" strokeWidth={2.5} />
           </div>
           {card ? (
@@ -244,7 +248,7 @@ export default function DashboardPage() {
             </>
           ) : (
             <>
-              <div className="display text-xl mb-2">Выпустить карту</div>
+              <div className="display text-xl mb-2">{t('dash.issue_card', locale)}</div>
               <p className="text-xs font-semibold text-ink/60">Visa/Mastercard, USD · EUR · AED</p>
             </>
           )}
@@ -255,9 +259,9 @@ export default function DashboardPage() {
       {recentTx.length > 0 && card && (
         <div className="panel">
           <div className="flex items-center justify-between mb-5">
-            <h2 className="display text-xl md:text-2xl">Последние операции</h2>
+            <h2 className="display text-xl md:text-2xl">{t('dash.recent_ops', locale)}</h2>
             <Link href="/dashboard/card" className="text-sm font-extrabold hover:opacity-60">
-              Все →
+              {t('dash.all', locale)}
             </Link>
           </div>
           <div className="space-y-1">
@@ -269,7 +273,7 @@ export default function DashboardPage() {
                 <div>
                   <div className="font-extrabold text-sm">{tx.merchant}</div>
                   <div className="text-xs font-semibold text-ink/40">
-                    {new Date(tx.created_at).toLocaleDateString('ru-RU')}
+                    {new Date(tx.created_at).toLocaleDateString(getDateLocale(locale))}
                   </div>
                 </div>
                 <div className={`font-extrabold ${tx.type === 'credit' ? 'text-green-600' : ''}`}>

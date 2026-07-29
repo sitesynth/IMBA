@@ -7,6 +7,8 @@ import { LottieSticker } from '@/components/LottieSticker'
 import { AnimatedBalance } from '@/components/AnimatedBalance'
 import { formatMoney } from '@/lib/format'
 import { VpnServersPanel } from '@/components/VpnServersPanel'
+import { getLocale, getDateLocale } from '@/lib/i18n'
+import { t } from '@/lib/t'
 import type { VpnSubscription, VpnServer } from '@/lib/types'
 
 const DEFAULT_SERVER_ID = 'c973f18c-36df-4926-b369-05ebc0604579'
@@ -56,6 +58,7 @@ async function activateVpn() {
 export default async function VpnPage() {
   const user = await getCurrentUser()
   if (!user) redirect('/auth/login')
+  const locale = await getLocale()
 
   const [vpns, servers] = await Promise.all([
     api.get<VpnSubscription[]>('/v1/me/vpn').catch(() => [] as VpnSubscription[]),
@@ -75,12 +78,12 @@ export default async function VpnPage() {
       <div className="flex items-end justify-between gap-4 flex-wrap">
         <div>
           <h1 className="display text-4xl md:text-5xl mb-1">VPN</h1>
-          <p className="font-semibold text-ink/60">VPN на всех ваших устройствах без лагов и логов!</p>
+          <p className="font-semibold text-ink/60">{t('vpn.subtitle', locale)}</p>
         </div>
         <div className="flex items-center gap-3">
           {active && (
             <span className="chip" style={{ background: 'var(--green)' }}>
-              <span className="w-2 h-2 rounded-full bg-ink inline-block" /> Активен
+              <span className="w-2 h-2 rounded-full bg-ink inline-block" /> {t('dash.active', locale)}
             </span>
           )}
           <span className="chip" style={{ background: 'var(--yellow)' }}>
@@ -96,11 +99,11 @@ export default async function VpnPage() {
           <div className="panel" style={{ background: 'var(--blue-100)' }}>
             <div className="flex items-start justify-between gap-4">
               <div>
-                <div className="text-xs font-extrabold uppercase tracking-widest text-ink/50 mb-1">План</div>
+                <div className="text-xs font-extrabold uppercase tracking-widest text-ink/50 mb-1">{t('vpn.plan', locale)}</div>
                 <div className="display text-3xl capitalize">{active.plan}</div>
                 {active.expires_at && (
                   <div className="text-xs font-semibold text-ink/60 mt-2">
-                    До: {new Date(active.expires_at).toLocaleDateString('ru-RU')}
+                    {t('vpn.until', locale)} {new Date(active.expires_at).toLocaleDateString(getDateLocale(locale))}
                   </div>
                 )}
               </div>
@@ -122,17 +125,17 @@ export default async function VpnPage() {
           <div className="flex items-center gap-5 mb-5">
             <LottieSticker name="lock" size={80} />
             <div>
-              <div className="display text-2xl mb-1">VPN не подключён</div>
+              <div className="display text-2xl mb-1">{t('vpn.not_connected', locale)}</div>
               <p className="font-semibold text-ink/60 text-sm">
                 {vpnIncluded
-                  ? 'Входит в вашу подписку — активация бесплатна'
-                  : '5 локаций · без лагов · без логов'}
+                  ? t('vpn.included', locale)
+                  : t('vpn.locations', locale)}
               </p>
             </div>
           </div>
           {!vpnIncluded && (
             <div className="rounded-2xl px-5 py-4 border-2 border-ink flex items-center justify-between mb-4" style={{ background: 'var(--paper)' }}>
-              <span className="text-sm font-extrabold text-ink/60">Твой баланс</span>
+              <span className="text-sm font-extrabold text-ink/60">{t('vpn.your_balance', locale)}</span>
               <AnimatedBalance balance={user.balance} className="display text-2xl" />
             </div>
           )}
@@ -140,20 +143,20 @@ export default async function VpnPage() {
             <form action={activateVpn}>
               <button className="pill pill-ink w-full justify-center text-base">
                 <Wifi className="w-5 h-5" strokeWidth={2.5} />
-                Активировать VPN
+                {t('vpn.activate', locale)}
               </button>
             </form>
           ) : user.balance >= VPN_PRICE_USD ? (
             <form action={activateVpn}>
               <button className="pill pill-ink w-full justify-center text-base">
                 <Wifi className="w-5 h-5" strokeWidth={2.5} />
-                Подключить VPN — {vpnPrice}/мес
+                {t('vpn.activate', locale)} — {vpnPrice}/{locale === 'ru' ? 'мес' : 'mo'}
               </button>
             </form>
           ) : (
             <a href="/dashboard/billing/topup?after=activate_vpn" className="pill pill-ink w-full justify-center text-base">
               <Wallet className="w-5 h-5" strokeWidth={2.5} />
-              Пополнить и подключить VPN — {vpnPrice}/мес
+              {t('dash.topup', locale)} & {t('vpn.activate', locale).toLowerCase()} — {vpnPrice}/{locale === 'ru' ? 'мес' : 'mo'}
             </a>
           )}
         </div>

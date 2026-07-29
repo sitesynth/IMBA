@@ -2,6 +2,9 @@
 
 import { useState } from 'react'
 import { AlertCircle, CheckCircle2, TrendingUp } from 'lucide-react'
+import { useLocale } from '@/lib/useLocale'
+import { t } from '@/lib/t'
+import { getDateLocale } from '@/lib/i18n-shared'
 
 export type DiagnosticData = {
   host: string
@@ -49,6 +52,7 @@ export function NodeDiagnostics({
   fetchDiagnostic: (host: string) => Promise<DiagnosticData>
   fetchReport: (host: string, hours: number) => Promise<AttackReport>
 }) {
+  const locale = useLocale()
   const [diag, setDiag] = useState<DiagnosticData | null>(null)
   const [report, setReport] = useState<AttackReport | null>(null)
   const [loading, setLoading] = useState(false)
@@ -118,7 +122,7 @@ export function NodeDiagnostics({
       {activeTab === 'health' && (
         <div className="space-y-4">
           {!diag && !loading && (
-            <p className="text-xs text-gray-400">Нажми Refresh для диагностики</p>
+            <p className="text-xs text-gray-400">{t('diag.refresh_prompt', locale)}</p>
           )}
 
           {diag && (
@@ -158,7 +162,7 @@ export function NodeDiagnostics({
               <div className="grid md:grid-cols-2 gap-3">
                 {/* Traffic */}
                 <div className="panel" style={{ background: 'var(--paper)' }}>
-                  <p className="text-xs font-bold text-ink/60 mb-2">Трафик</p>
+                  <p className="text-xs font-bold text-ink/60 mb-2">{t('diag.traffic', locale)}</p>
                   {diag.traffic_limit_gb ? (
                     <>
                       <div className="mb-1 flex justify-between text-xs font-bold">
@@ -175,7 +179,7 @@ export function NodeDiagnostics({
                       </div>
                     </>
                   ) : (
-                    <p className="text-sm font-bold">{diag.traffic_used_gb} GB использовано</p>
+                    <p className="text-sm font-bold">{diag.traffic_used_gb} GB {t('diag.used', locale)}</p>
                   )}
                 </div>
 
@@ -194,9 +198,9 @@ export function NodeDiagnostics({
                 {/* Last status change */}
                 {diag.last_status_change && (
                   <div className="panel md:col-span-2" style={{ background: 'var(--paper)' }}>
-                    <p className="text-xs font-bold text-ink/60 mb-1">Последнее изменение</p>
+                    <p className="text-xs font-bold text-ink/60 mb-1">{t('diag.last_change', locale)}</p>
                     <p className="text-xs font-mono font-bold">
-                      {new Date(diag.last_status_change).toLocaleString('ru-RU')}
+                      {new Date(diag.last_status_change).toLocaleString(getDateLocale(locale))}
                     </p>
                   </div>
                 )}
@@ -210,7 +214,7 @@ export function NodeDiagnostics({
       {activeTab === 'attacks' && (
         <div className="space-y-4">
           {!report && !loading && (
-            <p className="text-xs text-gray-400">Нажми Refresh для загрузки отчёта</p>
+            <p className="text-xs text-gray-400">{t('diag.load_prompt', locale)}</p>
           )}
 
           {report && (

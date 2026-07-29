@@ -6,6 +6,8 @@ import { getCurrentUser } from '@/lib/auth'
 import { api, apiFetch, ApiError } from '@/lib/api'
 import { LottieSticker } from '@/components/LottieSticker'
 import { formatMoney } from '@/lib/format'
+import { getLocale, getDateLocale } from '@/lib/i18n'
+import { t } from '@/lib/t'
 import type { BillingInfo, PaymentProvider, PaymentRecord } from '@/lib/types'
 
 async function topup(formData: FormData) {
@@ -39,37 +41,41 @@ async function upgradePlan(formData: FormData) {
   revalidatePath('/dashboard')
 }
 
-const PLANS = [
-  {
-    slug: 'start',
-    name: 'Старт',
-    priceUsd: 0,
-    bg: 'var(--paper)',
-    feats: ['1 eSIM профиль', 'VPN базовый (подключить отдельно)', '1 виртуальная карта'],
-  },
-  {
-    slug: 'pro',
-    name: 'IMBA COMBO',
-    priceUsd: 9.99,
-    bg: 'var(--yellow)',
-    hot: true,
-    feats: ['VPN Pro включён (50+ серверов)', '3 eSIM профиля', '3 виртуальные карты', 'Приоритетная поддержка'],
-  },
-  {
-    slug: 'business',
-    name: 'Бизнес',
-    priceUsd: 24.99,
-    bg: 'var(--violet-100)',
-    feats: ['VPN безлимит включён', '10 eSIM профилей', '10 виртуальных карт', 'API доступ'],
-  },
-]
+function getPLANS(locale: 'ru' | 'en') {
+  return [
+    {
+      slug: 'start',
+      name: t('plan.start', locale),
+      priceUsd: 0,
+      bg: 'var(--paper)',
+      feats: t('plan.start_features', locale).split('|'),
+    },
+    {
+      slug: 'pro',
+      name: 'IMBA COMBO',
+      priceUsd: 9.99,
+      bg: 'var(--yellow)',
+      hot: true,
+      feats: t('plan.pro_features', locale).split('|'),
+    },
+    {
+      slug: 'business',
+      name: t('plan.business', locale),
+      priceUsd: 24.99,
+      bg: 'var(--violet-100)',
+      feats: t('plan.business_features', locale).split('|'),
+    },
+  ]
+}
 
 const QUICK_AMOUNTS_USD = [10, 25, 50, 100, 250]
 
 
 export default async function BillingPage() {
+  const locale = await getLocale()
   const user = await getCurrentUser()
   if (!user) redirect('/auth/login')
+  const PLANS = getPLANS(locale)
 
   const [billing, providers, history] = await Promise.all([
     api.get<BillingInfo>('/v1/me/billing').catch(() => null as BillingInfo | null),
@@ -84,15 +90,15 @@ export default async function BillingPage() {
   return (
     <div className="fade-up space-y-6">
       <div>
-        <h1 className="display text-4xl md:text-5xl mb-1">Биллинг</h1>
-        <p className="font-semibold text-ink/60">Баланс, план и платежи</p>
+        <h1 className="display text-4xl md:text-5xl mb-1">{t('billing.title', locale)}</h1>
+        <p className="font-semibold text-ink/60">{t('billing.subtitle', locale)}</p>
       </div>
 
       {/* Balance + plan */}
       <div className="grid md:grid-cols-2 gap-5">
         <div className="panel relative overflow-hidden" style={{ background: 'var(--ink)', color: 'var(--paper)' }}>
           <div className="text-xs font-extrabold uppercase tracking-widest opacity-60 mb-2">
-            Текущий баланс
+            {t('billing.current_balance', locale)}
           </div>
           <div className="display text-5xl md:text-6xl mb-1" style={{ color: 'var(--yellow)' }}>
             {formatMoney(balanceUsd, cur, rates)}
@@ -102,7 +108,7 @@ export default async function BillingPage() {
               ≈ ${balanceUsd.toFixed(2)} USD
             </div>
           )}
-          <div className="text-sm font-semibold opacity-60 mb-5">Используется для покупок и подписок</div>
+          <div className="text-sm font-semibold opacity-60 mb-5">{t('billing.balance_desc', locale)}</div>
           <LottieSticker
             name="rocket"
             size={72}
@@ -113,17 +119,17 @@ export default async function BillingPage() {
 
         <div className="panel" style={{ background: 'var(--yellow-100)' }}>
           <div className="text-xs font-extrabold uppercase tracking-widest text-ink/50 mb-2">
-            Текущий план
+            {t('billing.current_plan', locale)}
           </div>
-          <div className="display text-3xl mb-1">{billing?.plan_name || user.plan_name || 'Старт'}</div>
+          <div className="display text-3xl mb-1">{billing?.plan_name || user.plan_name || t('plan.start', locale)}</div>
           <div className="font-bold text-sm text-ink/60 mb-3">
             {billing?.plan_price
               ? `${formatMoney(billing.plan_price, cur, rates)}/мес`
-              : 'Бесплатно'}
+              : t('billing.free', locale)}
           </div>
           {billing?.subscription_expires && billing.plan_price && billing.plan_price > 0 && (
             <div className="text-xs font-semibold text-ink/60">
-              Активен до: {new Date(billing.subscription_expires).toLocaleDateString('ru-RU')}
+              {t('billing.active_until', locale)} {new Date(billing.subscription_expires).toLocaleDateString(getDateLocale(locale))}
             </div>
           )}
         </div>
@@ -132,7 +138,7 @@ export default async function BillingPage() {
       {/* Topup button */}
       {providers.length > 0 && (
         <a href="/dashboard/billing/topup" className="pill pill-ink inline-flex">
-          <Plus className="w-4 h-4" strokeWidth={2.5} /> Пополнить баланс
+          <Plus className="w-4 h-4" strokeWidth={2.5} /> {t('billing.topup_balance', locale)}
         </a>
       )}
 
@@ -140,11 +146,11 @@ export default async function BillingPage() {
       {providers.length === 0 && (
         <div className="panel">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="display text-xl md:text-2xl">Пополнить баланс</h2>
+            <h2 className="display text-xl md:text-2xl">{t('billing.topup_balance', locale)}</h2>
             <span className="chip" style={{ background: 'var(--cream)' }}>Demo</span>
           </div>
           <p className="font-semibold text-ink/60 text-sm mb-5">
-            Demo-режим: мгновенное зачисление без оплаты. Для теста.
+            {t('billing.demo_notice', locale)}
           </p>
 
         <div className="flex flex-wrap gap-2 mb-4">
@@ -165,12 +171,12 @@ export default async function BillingPage() {
             step="0.01"
             min="1"
             max="10000"
-            placeholder="Сумма в USD"
+            placeholder={t('billing.amount_placeholder', locale)}
             required
             className="flex-1 px-4 py-3 rounded-2xl border-2 border-ink bg-paper font-extrabold text-sm"
           />
           <button type="submit" className="pill pill-ink">
-            <Plus className="w-4 h-4" strokeWidth={2.5} /> Пополнить
+            <Plus className="w-4 h-4" strokeWidth={2.5} /> {t('dash.topup', locale)}
           </button>
         </form>
       </div>
@@ -184,16 +190,16 @@ export default async function BillingPage() {
         return (
           <div>
             <h2 className="display text-2xl md:text-3xl mb-1">IMBA COMBO</h2>
-            <p className="font-semibold text-ink/60 mb-5 text-sm">VPN + eSIM + виртуальная карта — всё в одной подписке, с первого дня</p>
+            <p className="font-semibold text-ink/60 mb-5 text-sm">{t('billing.combo_desc', locale)}</p>
             <div className="panel relative flex flex-col md:flex-row gap-6 p-6 md:p-8" style={{ background: 'var(--yellow)' }}>
               <div className="flex-1">
                 {isCurrent && (
                   <span className="chip flex items-center gap-1 w-fit mb-3" style={{ background: 'var(--green)' }}>
-                    <Check className="w-3 h-3" strokeWidth={3} /> Активен
+                    <Check className="w-3 h-3" strokeWidth={3} /> {t('dash.active', locale)}
                   </span>
                 )}
                 <div className="display text-4xl md:text-5xl mb-1">{priceLabel}</div>
-                <p className="font-semibold text-ink/60 text-sm mb-5">Списывается с баланса раз в месяц</p>
+                <p className="font-semibold text-ink/60 text-sm mb-5">{t('billing.monthly', locale)}</p>
                 <ul className="space-y-2.5 font-semibold text-sm">
                   {combo.feats.map((f) => (
                     <li key={f} className="flex items-center gap-2">
@@ -210,7 +216,7 @@ export default async function BillingPage() {
                     disabled={isCurrent}
                     className={`pill whitespace-nowrap ${isCurrent ? 'pill-paper opacity-60 cursor-not-allowed' : 'pill-ink'}`}
                   >
-                    {isCurrent ? 'Подключено' : 'Подключить COMBO →'}
+                    {isCurrent ? t('billing.connected', locale) : t('billing.connect_combo', locale)}
                   </button>
                 </form>
               </div>
@@ -221,20 +227,20 @@ export default async function BillingPage() {
 
       {/* Individual plans */}
       <div>
-        <h2 className="display text-2xl md:text-3xl mb-1">Другие тарифы</h2>
-        <p className="font-semibold text-ink/60 mb-5 text-sm">Или начни бесплатно — подключи услуги по отдельности</p>
+        <h2 className="display text-2xl md:text-3xl mb-1">{t('billing.other_plans', locale)}</h2>
+        <p className="font-semibold text-ink/60 mb-5 text-sm">{t('billing.other_plans_desc', locale)}</p>
         <div className="grid md:grid-cols-2 gap-5">
           {PLANS.filter(p => p.slug !== 'pro').map((p) => {
             const isCurrent = (billing?.plan_slug || user.plan_slug) === p.slug
             const priceLabel = p.priceUsd === 0
-              ? 'Бесплатно'
+              ? t('billing.free', locale)
               : `${formatMoney(p.priceUsd, cur, rates)}/мес`
             return (
               <div key={p.slug} className="panel relative flex flex-col p-5 md:p-7" style={{ background: p.bg }}>
                 {isCurrent && (
                   <div className="flex justify-center mb-3">
                     <span className="chip flex items-center gap-1" style={{ background: 'var(--green)' }}>
-                      <Check className="w-3 h-3" strokeWidth={3} /> Активен
+                      <Check className="w-3 h-3" strokeWidth={3} /> {t('dash.active', locale)}
                     </span>
                   </div>
                 )}
@@ -256,7 +262,7 @@ export default async function BillingPage() {
                       isCurrent ? 'pill-paper opacity-60 cursor-not-allowed' : 'pill-paper'
                     }`}
                   >
-                    {isCurrent ? 'Текущий план' : `Перейти на ${p.name}`}
+                    {isCurrent ? t('billing.current', locale) : `${locale === 'ru' ? 'Перейти на' : 'Switch to'} ${p.name}`}
                   </button>
                 </form>
               </div>
@@ -268,26 +274,26 @@ export default async function BillingPage() {
       {/* Payment history */}
       {history.length > 0 && (
         <div>
-          <h2 className="display text-2xl md:text-3xl mb-1">История платежей</h2>
-          <p className="font-semibold text-ink/60 mb-5 text-sm">Последние 20 транзакций</p>
+          <h2 className="display text-2xl md:text-3xl mb-1">{t('billing.history', locale)}</h2>
+          <p className="font-semibold text-ink/60 mb-5 text-sm">{t('billing.history_desc', locale)}</p>
           <div className="panel p-0 overflow-hidden">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b-2 border-ink/10">
-                  <th className="text-left px-5 py-3 font-extrabold text-xs uppercase tracking-widest text-ink/40">№ заказа</th>
-                  <th className="text-left px-5 py-3 font-extrabold text-xs uppercase tracking-widest text-ink/40">Дата</th>
-                  <th className="text-left px-5 py-3 font-extrabold text-xs uppercase tracking-widest text-ink/40">Провайдер</th>
-                  <th className="text-right px-5 py-3 font-extrabold text-xs uppercase tracking-widest text-ink/40">Сумма</th>
-                  <th className="text-right px-5 py-3 font-extrabold text-xs uppercase tracking-widest text-ink/40">Статус</th>
+                  <th className="text-left px-5 py-3 font-extrabold text-xs uppercase tracking-widest text-ink/40">{t('billing.order', locale)}</th>
+                  <th className="text-left px-5 py-3 font-extrabold text-xs uppercase tracking-widest text-ink/40">{t('billing.date', locale)}</th>
+                  <th className="text-left px-5 py-3 font-extrabold text-xs uppercase tracking-widest text-ink/40">{t('billing.provider', locale)}</th>
+                  <th className="text-right px-5 py-3 font-extrabold text-xs uppercase tracking-widest text-ink/40">{t('billing.amount', locale)}</th>
+                  <th className="text-right px-5 py-3 font-extrabold text-xs uppercase tracking-widest text-ink/40">{t('billing.status', locale)}</th>
                 </tr>
               </thead>
               <tbody>
                 {history.map((p) => {
                   const STATUS_LABEL: Record<string, string> = {
-                    confirmed: 'Зачислено',
-                    pending: 'Ожидание',
-                    failed: 'Ошибка',
-                    expired: 'Истёк',
+                    confirmed: t('billing.credited', locale),
+                    pending: t('billing.pending', locale),
+                    failed: t('billing.error', locale),
+                    expired: t('dash.expired', locale),
                   }
                   const STATUS_COLOR: Record<string, string> = {
                     confirmed: 'var(--green)',
@@ -301,7 +307,7 @@ export default async function BillingPage() {
                         #{p.order_id}
                       </td>
                       <td className="px-5 py-3 font-semibold text-ink/60 whitespace-nowrap">
-                        {new Date(p.created_at).toLocaleDateString('ru-RU', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                        {new Date(p.created_at).toLocaleDateString(getDateLocale(locale), { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
                       </td>
                       <td className="px-5 py-3 font-bold capitalize">{p.provider}</td>
                       <td className="px-5 py-3 font-extrabold text-right">{formatMoney(p.amount, cur, rates)}</td>

@@ -2,6 +2,8 @@
 import { useEffect, useState } from 'react'
 import { X, Info, AlertTriangle, CheckCircle } from 'lucide-react'
 import { api } from '@/lib/api-client'
+import { useLocale } from '@/lib/useLocale'
+import { t } from '@/lib/t'
 
 interface PinnedMessage {
   id: string
@@ -17,6 +19,7 @@ const KIND = {
 }
 
 export function PinnedBanner() {
+  const locale = useLocale()
   const [msg, setMsg] = useState<PinnedMessage | null | 'loading'>('loading')
 
   useEffect(() => {
@@ -58,7 +61,7 @@ export function PinnedBanner() {
         onClick={dismiss}
         className="shrink-0 mt-0.5 transition-opacity hover:opacity-70"
         style={{ color: text, opacity: 0.4 }}
-        aria-label="Закрыть"
+        aria-label={t('nav.close', locale)}
       >
         <X className="w-4 h-4" strokeWidth={2.5} />
       </button>

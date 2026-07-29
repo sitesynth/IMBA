@@ -2,6 +2,8 @@
 import { useEffect, useState } from 'react'
 import { X, BellRing } from 'lucide-react'
 import { api } from '@/lib/api-client'
+import { useLocale } from '@/lib/useLocale'
+import { t } from '@/lib/t'
 
 interface Notification {
   id: string
@@ -13,15 +15,16 @@ interface Notification {
   data: Record<string, unknown>
 }
 
-function timeAgo(iso: string): string {
+function timeAgo(iso: string, locale: 'ru' | 'en'): string {
   const diff = Math.floor((Date.now() - new Date(iso).getTime()) / 1000)
-  if (diff < 60) return 'только что'
-  if (diff < 3600) return `${Math.floor(diff / 60)} мин назад`
-  if (diff < 86400) return `${Math.floor(diff / 3600)} ч назад`
-  return new Date(iso).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' })
+  if (diff < 60) return t('notif.just_now', locale)
+  if (diff < 3600) return `${Math.floor(diff / 60)} ${locale === 'ru' ? 'мин назад' : 'min ago'}`
+  if (diff < 86400) return `${Math.floor(diff / 3600)} ${locale === 'ru' ? 'ч назад' : 'h ago'}`
+  return new Date(iso).toLocaleDateString(locale === 'ru' ? 'ru-RU' : 'en-US', { day: 'numeric', month: 'short' })
 }
 
 export function NotificationPanel() {
+  const locale = useLocale()
   const [items, setItems] = useState<Notification[]>([])
 
   useEffect(() => {
@@ -54,14 +57,14 @@ export function NotificationPanel() {
           <div className="flex-1 min-w-0">
             <div className="flex items-start justify-between gap-2">
               <p className="font-extrabold text-sm leading-tight">{n.title}</p>
-              <span className="text-xs text-ink/40 shrink-0">{timeAgo(n.created_at)}</span>
+              <span className="text-xs text-ink/40 shrink-0">{timeAgo(n.created_at, locale)}</span>
             </div>
             <p className="text-sm font-semibold text-ink/60 mt-1 leading-snug">{n.message}</p>
           </div>
           <button
             onClick={() => dismiss(n.id)}
             className="shrink-0 mt-0.5 opacity-30 hover:opacity-70 transition-opacity"
-            aria-label="Закрыть"
+            aria-label={t('nav.close', locale)}
           >
             <X className="w-4 h-4" strokeWidth={2.5} />
           </button>
@@ -73,7 +76,7 @@ export function NotificationPanel() {
           onClick={dismissAll}
           className="pill pill-paper pill-sm w-full justify-center text-ink/50"
         >
-          Прочитать все
+          {t('notif.mark_read', locale)}
         </button>
       )}
     </div>

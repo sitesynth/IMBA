@@ -3,6 +3,8 @@
 import { useState, useMemo, useRef, useEffect, useTransition } from 'react'
 import { Search, X, Loader2, CheckCircle2, AlertCircle } from 'lucide-react'
 import type { EsimCatalog } from '@/lib/types'
+import { useLocale } from '@/lib/useLocale'
+import { t } from '@/lib/t'
 
 const POPULAR = ['TR','TH','AE','EG','DE','JP','CN','US','SG','GE','AM','KZ','IL','IN','ID','GB','FR','IT','ES','KR']
 
@@ -14,6 +16,7 @@ interface Props {
 type BuyState = 'idle' | 'loading' | 'ok' | 'error'
 
 export function EsimShop({ catalog, userBalance }: Props) {
+  const locale = useLocale()
   const [query, setQuery]       = useState('')
   const [selected, setSelected] = useState<string | null>(null)
   const [open, setOpen]         = useState(false)
@@ -74,7 +77,7 @@ export function EsimShop({ catalog, userBalance }: Props) {
       })
       if (!res.ok) {
         const data = await res.json().catch(() => ({}))
-        const msg = data?.detail || (res.status === 402 ? 'Недостаточно средств' : `Ошибка ${res.status}`)
+        const msg = data?.detail || (res.status === 402 ? t('esim.insufficient', locale) : `${locale === 'ru' ? 'Ошибка' : 'Error'} ${res.status}`)
         setBuyState(s => ({ ...s, [key]: 'error' }))
         setBuyError(s => ({ ...s, [key]: msg }))
         return
@@ -86,7 +89,7 @@ export function EsimShop({ catalog, userBalance }: Props) {
       }, 1500)
     } catch {
       setBuyState(s => ({ ...s, [key]: 'error' }))
-      setBuyError(s => ({ ...s, [key]: 'Нет соединения' }))
+      setBuyError(s => ({ ...s, [key]: t('esim.no_connection', locale) }))
     }
   }
 
@@ -106,7 +109,7 @@ export function EsimShop({ catalog, userBalance }: Props) {
             <input
               ref={inputRef}
               type="text"
-              placeholder="Введи страну назначения..."
+              placeholder={t('esim.search_placeholder', locale)}
               value={query}
               onChange={e => { setQuery(e.target.value); setOpen(true) }}
               onFocus={() => setOpen(true)}
@@ -136,7 +139,7 @@ export function EsimShop({ catalog, userBalance }: Props) {
                 <span className="text-2xl">{info.flag}</span>
                 <span className="font-extrabold text-sm">{info.country}</span>
                 <span className="ml-auto text-xs font-bold text-ink/40">
-                  от ${Math.min(...Object.values(info.prices)).toFixed(2)}
+                  {t('esim.from', locale)} ${Math.min(...Object.values(info.prices)).toFixed(2)}
                 </span>
               </button>
             ))}
@@ -148,13 +151,13 @@ export function EsimShop({ catalog, userBalance }: Props) {
       {selected && selectedInfo && (
         <div className="panel" style={{ background: 'var(--violet-100)' }}>
           <p className="text-xs font-extrabold uppercase tracking-widest text-ink/40 mb-4">
-            Пакеты данных — {selectedInfo.country}
+            {t('esim.packages', locale)} — {selectedInfo.country}
           </p>
           <div className="space-y-2">
             {Object.entries(selectedInfo.prices).map(([gb, price]) => {
               const gbNum = Number(gb)
-              const label = gbNum < 1 ? `${Math.round(gbNum * 1000)} МБ` : `${gbNum} ГБ`
-              const perGb = gbNum >= 1 ? `$${(price / gbNum).toFixed(2)}/ГБ` : ''
+              const label = gbNum < 1 ? `${Math.round(gbNum * 1000)} ${t('esim.mb', locale)}` : `${gbNum} ${t('dash.gb', locale)}`
+              const perGb = gbNum >= 1 ? `$${(price / gbNum).toFixed(2)}${t('esim.per_gb', locale)}` : ''
               const key = `${selected}-${gb}`
               const state = buyState[key] ?? 'idle'
               const err   = buyError[key] ?? ''
@@ -176,16 +179,16 @@ export function EsimShop({ catalog, userBalance }: Props) {
                   <button
                     onClick={() => buy(selected, gbNum, key)}
                     disabled={state === 'loading' || state === 'ok' || noFunds}
-                    title={noFunds ? `Пополни баланс (нужно $${price.toFixed(2)})` : ''}
+                    title={noFunds ? (locale === 'ru' ? `Пополни баланс (нужно $${price.toFixed(2)})` : `Top up (need $${price.toFixed(2)})`) : ''}
                     className="pill pill-ink pill-sm disabled:opacity-40 min-w-[80px] justify-center"
                   >
                     {state === 'loading' && <Loader2 className="w-4 h-4 animate-spin" />}
                     {state === 'ok'      && <CheckCircle2 className="w-4 h-4" />}
                     {state === 'error'   && <AlertCircle className="w-4 h-4" />}
-                    {state === 'idle'    && (noFunds ? 'Мало' : 'Купить')}
-                    {state === 'loading' && 'Покупаем…'}
-                    {state === 'ok'      && 'Куплено!'}
-                    {state === 'error'   && 'Ошибка'}
+                    {state === 'idle'    && (noFunds ? t('esim.low_balance', locale) : t('esim.buy_btn', locale))}
+                    {state === 'loading' && t('esim.buying', locale)}
+                    {state === 'ok'      && t('esim.bought', locale)}
+                    {state === 'error'   && t('trial.error', locale)}
                   </button>
                 </div>
               )
@@ -193,7 +196,7 @@ export function EsimShop({ catalog, userBalance }: Props) {
           </div>
           {userBalance < Math.min(...Object.values(selectedInfo.prices)) && (
             <p className="text-xs font-bold text-ink/40 mt-3 text-center">
-              Баланс ${userBalance.toFixed(2)} — пополни чтобы купить
+              {locale === 'ru' ? `Баланс $${userBalance.toFixed(2)} — пополни чтобы купить` : `Balance $${userBalance.toFixed(2)} — top up to buy`}
             </p>
           )}
         </div>
@@ -203,7 +206,7 @@ export function EsimShop({ catalog, userBalance }: Props) {
       {!selected && (
         <div>
           <p className="text-xs font-extrabold uppercase tracking-widest text-ink/40 mb-3">
-            Популярные направления
+            {t('esim.popular', locale)}
           </p>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
             {popular.map(code => {
@@ -220,7 +223,7 @@ export function EsimShop({ catalog, userBalance }: Props) {
                   <span className="text-2xl shrink-0">{info.flag}</span>
                   <div className="min-w-0">
                     <div className="font-extrabold text-sm truncate">{info.country}</div>
-                    <div className="text-xs font-bold text-ink/40">от ${cheapest.toFixed(2)}</div>
+                    <div className="text-xs font-bold text-ink/40">{t('esim.from', locale)} ${cheapest.toFixed(2)}</div>
                   </div>
                 </button>
               )

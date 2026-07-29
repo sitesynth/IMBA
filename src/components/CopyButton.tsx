@@ -2,8 +2,11 @@
 
 import { useState } from 'react'
 import { Copy, Check } from 'lucide-react'
+import { useLocale } from '@/lib/useLocale'
+import { t } from '@/lib/t'
 
 export function CopyButton({ text, className, label }: { text: string; className?: string; label?: string }) {
+  const locale = useLocale()
   const [copied, setCopied] = useState(false)
 
   async function handleCopy() {
@@ -19,7 +22,7 @@ export function CopyButton({ text, className, label }: { text: string; className
       ) : (
         <Copy className="w-4 h-4" strokeWidth={2.5} />
       )}
-      {copied ? 'Скопировано' : (label ?? 'Копировать')}
+      {copied ? t('copy.copied', locale) : (label ?? t('copy.copy', locale))}
     </button>
   )
 }

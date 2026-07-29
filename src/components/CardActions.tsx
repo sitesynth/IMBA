@@ -4,6 +4,8 @@ import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { Eye, EyeOff, Snowflake, Sun, Plus, Copy, Check, Loader2 } from 'lucide-react'
 import type { VirtualCard } from '@/lib/types'
+import { useLocale } from '@/lib/useLocale'
+import { t } from '@/lib/t'
 
 interface Props {
   card: VirtualCard
@@ -14,6 +16,7 @@ type BuyState = 'idle' | 'loading' | 'ok' | 'error'
 
 export function CardActions({ card, userBalance }: Props) {
   const router = useRouter()
+  const locale = useLocale()
   const [, startTransition] = useTransition()
   const [topupOpen, setTopupOpen]   = useState(false)
   const [amount, setAmount]          = useState('')
@@ -38,15 +41,15 @@ export function CardActions({ card, userBalance }: Props) {
     })
     if (!res.ok) {
       const data = await res.json().catch(() => ({}))
-      throw new Error(data?.detail || `Ошибка ${res.status}`)
+      throw new Error(data?.detail || `${locale === 'ru' ? 'Ошибка' : 'Error'} ${res.status}`)
     }
     return res.json()
   }
 
   function handleTopup() {
     const n = parseFloat(amount)
-    if (!n || n <= 0) { setError('Введи сумму'); return }
-    if (n > userBalance) { setError(`Недостаточно средств (баланс $${userBalance.toFixed(2)})`); return }
+    if (!n || n <= 0) { setError(t('card.enter_amount', locale)); return }
+    if (n > userBalance) { setError(`${t('card.insufficient', locale)} ($${userBalance.toFixed(2)})`); return }
     setError('')
     setState('loading')
     apiCall('/topup', 'POST', { amount: n })
@@ -93,7 +96,7 @@ export function CardActions({ card, userBalance }: Props) {
           disabled={busy || isFrozen}
           className="pill pill-ink pill-sm disabled:opacity-40"
         >
-          <Plus className="w-4 h-4" strokeWidth={2.5} /> Пополнить
+          <Plus className="w-4 h-4" strokeWidth={2.5} /> {t('card.topup', locale)}
         </button>
 
         <button
@@ -106,7 +109,7 @@ export function CardActions({ card, userBalance }: Props) {
             : revealed
             ? <EyeOff className="w-4 h-4" strokeWidth={2.5} />
             : <Eye className="w-4 h-4" strokeWidth={2.5} />}
-          {revealed ? 'Скрыть' : 'Реквизиты'}
+          {revealed ? t('card.hide', locale) : t('card.show_details', locale)}
         </button>
 
         <button
@@ -119,7 +122,7 @@ export function CardActions({ card, userBalance }: Props) {
             : isFrozen
             ? <Sun className="w-4 h-4" strokeWidth={2.5} />
             : <Snowflake className="w-4 h-4" strokeWidth={2.5} />}
-          {isFrozen ? 'Разморозить' : 'Заморозить'}
+          {isFrozen ? t('card.unfreeze', locale) : t('card.freeze', locale)}
         </button>
       </div>
 
@@ -127,7 +130,7 @@ export function CardActions({ card, userBalance }: Props) {
       {topupOpen && (
         <div className="panel" style={{ background: 'var(--green-100)' }}>
           <p className="text-xs font-extrabold uppercase tracking-widest text-ink/40 mb-3">
-            Пополнение карты *{card.last4}
+            {t('card.topup_heading', locale)} *{card.last4}
           </p>
           <div className="flex gap-2 flex-wrap">
             {[10, 25, 50, 100].map(v => (
@@ -145,7 +148,7 @@ export function CardActions({ card, userBalance }: Props) {
               type="number" min="1" max="5000" step="1"
               value={amount}
               onChange={e => setAmount(e.target.value)}
-              placeholder="Сумма USD"
+              placeholder={t('card.amount_placeholder', locale)}
               className="flex-1 px-4 py-3 rounded-2xl border-2 border-ink bg-paper font-extrabold text-sm focus:outline-none"
             />
             <button
@@ -153,11 +156,11 @@ export function CardActions({ card, userBalance }: Props) {
               disabled={busy}
               className="pill pill-ink disabled:opacity-50 min-w-[120px] justify-center"
             >
-              {busy ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Пополнить'}
+              {busy ? <Loader2 className="w-4 h-4 animate-spin" /> : t('card.topup', locale)}
             </button>
           </div>
           <p className="text-xs font-semibold text-ink/40 mt-2">
-            Доступно на балансе: ${userBalance.toFixed(2)}
+            {t('card.available', locale)}: ${userBalance.toFixed(2)}
           </p>
         </div>
       )}
@@ -166,13 +169,13 @@ export function CardActions({ card, userBalance }: Props) {
       {revealed && (
         <div className="panel" style={{ background: 'var(--violet-100)' }}>
           <p className="text-xs font-extrabold uppercase tracking-widest text-ink/40 mb-3">
-            Реквизиты карты — никому не передавай
+            {t('card.details_heading', locale)}
           </p>
           <div className="space-y-2">
             {[
-              { label: 'Номер карты', value: revealed.number.replace(/(.{4})/g, '$1 ').trim(), key: 'number' },
+              { label: t('card.number', locale), value: revealed.number.replace(/(.{4})/g, '$1 ').trim(), key: 'number' },
               { label: 'CVV',         value: revealed.cvv,    key: 'cvv' },
-              { label: 'Срок',        value: revealed.expiry, key: 'expiry' },
+              { label: t('card.expiry', locale),        value: revealed.expiry, key: 'expiry' },
             ].map(({ label, value, key }) => (
               <div key={key} className="flex items-center justify-between bg-paper rounded-xl px-4 py-2.5 border-2 border-ink/10">
                 <div>

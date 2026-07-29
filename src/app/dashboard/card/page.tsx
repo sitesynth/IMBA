@@ -5,6 +5,8 @@ import { getCurrentUser } from '@/lib/auth'
 import { api, apiFetch } from '@/lib/api'
 import { LottieSticker } from '@/components/LottieSticker'
 import { CardActions } from '@/components/CardActions'
+import { getLocale, getDateLocale } from '@/lib/i18n'
+import { t } from '@/lib/t'
 import type { VirtualCard, Transaction } from '@/lib/types'
 
 // ── Server actions ────────────────────────────────────────────────────────────
@@ -27,7 +29,7 @@ async function issueCard(formData: FormData) {
 
 // ── Card visual (server component) ───────────────────────────────────────────
 
-function CardVisual({ card }: { card: VirtualCard }) {
+function CardVisual({ card, locale }: { card: VirtualCard; locale: import('@/lib/i18n').Locale }) {
   const isFrozen = card.status === 'frozen'
   return (
     <div
@@ -58,15 +60,15 @@ function CardVisual({ card }: { card: VirtualCard }) {
         </div>
         <div className="flex items-end justify-between gap-4 flex-wrap">
           <div>
-            <div className="text-[10px] font-bold uppercase opacity-50 tracking-widest">Держатель</div>
+            <div className="text-[10px] font-bold uppercase opacity-50 tracking-widest">{t('card.holder', locale)}</div>
             <div className="font-extrabold tracking-wider text-sm">{card.card_holder}</div>
           </div>
           <div>
-            <div className="text-[10px] font-bold uppercase opacity-50 tracking-widest">Баланс</div>
+            <div className="text-[10px] font-bold uppercase opacity-50 tracking-widest">{t('card.balance', locale)}</div>
             <div className="font-extrabold text-sm">${card.balance.toFixed(2)} {card.currency}</div>
           </div>
           <div>
-            <div className="text-[10px] font-bold uppercase opacity-50 tracking-widest">Срок</div>
+            <div className="text-[10px] font-bold uppercase opacity-50 tracking-widest">{t('card.expiry', locale)}</div>
             <div className="font-extrabold tracking-wider text-sm font-mono">
               {String(card.expiry_month).padStart(2, '0')}/{String(card.expiry_year).slice(-2)}
             </div>
@@ -82,6 +84,7 @@ function CardVisual({ card }: { card: VirtualCard }) {
 export default async function CardPage() {
   const user = await getCurrentUser()
   if (!user) redirect('/auth/login')
+  const locale = await getLocale()
 
   const cards     = await api.get<VirtualCard[]>('/v1/me/cards').catch(() => [] as VirtualCard[])
   const cardSlots = Math.max((user as any).card_slots as number ?? 0, 1)
@@ -97,8 +100,8 @@ export default async function CardPage() {
       {/* Header */}
       <div className="flex items-end justify-between gap-4 flex-wrap">
         <div>
-          <h1 className="display text-4xl md:text-5xl mb-1">Виртуальная карта</h1>
-          <p className="font-semibold text-ink/60">Visa для оплаты зарубежных сервисов</p>
+          <h1 className="display text-4xl md:text-5xl mb-1">{t('card.title', locale)}</h1>
+          <p className="font-semibold text-ink/60">{t('card.subtitle', locale)}</p>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
           <span className="chip" style={{ background: 'var(--paper)', border: '2px solid var(--ink)', fontSize: '0.9rem' }}>
@@ -108,7 +111,7 @@ export default async function CardPage() {
           {cards.length > 0 && (
             <span className="chip" style={{ background: 'var(--green-100)' }}>
               <CreditCard className="w-3.5 h-3.5 inline mr-1" strokeWidth={2.5} />
-              {cards.filter(c => c.status === 'active').length} активных
+              {cards.filter(c => c.status === 'active').length} {t('card.active_count', locale)}
             </span>
           )}
         </div>
@@ -130,14 +133,14 @@ export default async function CardPage() {
               }}
             >
               {card.status === 'active'
-                ? '● Активна'
+                ? t('card.status_active', locale)
                 : card.status === 'frozen'
-                ? '❄ Заморожена'
-                : 'Истекла'}
+                ? t('card.status_frozen', locale)
+                : t('card.status_expired', locale)}
             </span>
           </div>
 
-          <CardVisual card={card} />
+          <CardVisual card={card} locale={locale} />
 
           <CardActions
             card={card}
@@ -153,28 +156,28 @@ export default async function CardPage() {
             <div className="flex items-start gap-5 mb-5">
               <LottieSticker name="cards" size={88} />
               <div>
-                <div className="display text-2xl md:text-3xl mb-2">Открой карту IMBA</div>
+                <div className="display text-2xl md:text-3xl mb-2">{t('card.issue_heading', locale)}</div>
                 <p className="font-semibold text-ink/70 text-sm mb-3">
-                  Моментальный выпуск. Оплата Netflix, Spotify, ChatGPT, Adobe и любых зарубежных сервисов.
+                  {t('card.issue_desc', locale)}
                 </p>
                 <ul className="space-y-1.5 font-bold text-sm">
                   <li className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-ink" /> Visa / Mastercard</li>
                   <li className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-ink" /> USD / EUR / AED</li>
-                  <li className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-ink" /> Выпуск бесплатно</li>
+                  <li className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-ink" /> {t('card.issue_free', locale)}</li>
                 </ul>
               </div>
             </div>
           )}
 
           {cards.length > 0 && (
-            <div className="display text-xl mb-4">Ещё одна карта</div>
+            <div className="display text-xl mb-4">{t('card.another', locale)}</div>
           )}
 
           <form action={issueCard} className="space-y-3">
             <div className="flex flex-col md:flex-row gap-3">
               <input
                 name="card_holder"
-                placeholder="Имя на карте (латиницей)"
+                placeholder={t('card.name_placeholder', locale)}
                 defaultValue={((user as any).name || 'IMBA USER').toUpperCase()}
                 className="flex-1 px-4 py-3 rounded-2xl border-2 border-ink bg-paper font-extrabold text-sm focus:outline-none"
               />
@@ -188,7 +191,7 @@ export default async function CardPage() {
               </select>
             </div>
             <button type="submit" className="pill pill-ink">
-              <Plus className="w-4 h-4" strokeWidth={2.5} /> Выпустить карту бесплатно
+              <Plus className="w-4 h-4" strokeWidth={2.5} /> {t('card.issue_btn', locale)}
             </button>
           </form>
         </div>
@@ -198,7 +201,7 @@ export default async function CardPage() {
       {txs.length > 0 && (
         <div className="panel">
           <div className="flex items-center justify-between mb-5">
-            <h2 className="display text-xl md:text-2xl">Операции</h2>
+            <h2 className="display text-xl md:text-2xl">{t('card.transactions', locale)}</h2>
             <span className="chip">{txs.length}</span>
           </div>
           <div className="space-y-1">
@@ -217,7 +220,7 @@ export default async function CardPage() {
                   <div>
                     <div className="font-extrabold text-sm">{tx.merchant}</div>
                     <div className="text-xs font-semibold text-ink/40">
-                      {new Date(tx.created_at).toLocaleDateString('ru-RU')}
+                      {new Date(tx.created_at).toLocaleDateString(getDateLocale(locale))}
                     </div>
                   </div>
                 </div>

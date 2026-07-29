@@ -3,6 +3,8 @@ import { headers } from 'next/headers'
 import { getCurrentUser } from '@/lib/auth'
 import { api, apiFetch } from '@/lib/api'
 import { TopupFlow } from '@/components/TopupFlow'
+import { getLocale, getDateLocale } from '@/lib/i18n'
+import { t } from '@/lib/t'
 import type { PaymentProvider } from '@/lib/types'
 
 // 'after' is the first arg so callers can use .bind(null, after) — Next.js 15 requires
@@ -28,7 +30,7 @@ async function createInvoice(after: string | undefined, provider: string, amount
     )
     return { payment_id: result.payment_id, payment_url: result.payment_url }
   } catch (e) {
-    throw new Error(e instanceof Error ? e.message : 'Ошибка создания платежа')
+    throw new Error(e instanceof Error ? e.message : 'Payment creation error')
   }
 }
 
@@ -37,6 +39,7 @@ interface Props {
 }
 
 export default async function TopupPage({ searchParams }: Props) {
+  const locale = await getLocale()
   const user = await getCurrentUser()
   if (!user) redirect('/auth/login')
 
@@ -54,11 +57,11 @@ export default async function TopupPage({ searchParams }: Props) {
     <div className="fade-up max-w-lg space-y-6">
       <div>
         <a href={backHref} className="pill pill-paper pill-sm inline-flex mb-6">
-          ← Назад
+          {t('topup.back', locale)}
         </a>
-        <h1 className="display text-4xl mb-1">Пополнить баланс</h1>
+        <h1 className="display text-4xl mb-1">{t('topup.title', locale)}</h1>
         <p className="font-semibold text-ink/60">
-          {after === 'activate_vpn' ? 'После оплаты VPN активируется автоматически' : 'Мгновенное зачисление после оплаты'}
+          {after === 'activate_vpn' ? t('topup.vpn_auto', locale) : t('topup.instant', locale)}
         </p>
       </div>
 

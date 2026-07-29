@@ -1,5 +1,8 @@
 'use client'
 
+import { useLocale } from '@/lib/useLocale'
+import { t } from '@/lib/t'
+
 const VK_APP_ID = Number(process.env.NEXT_PUBLIC_VK_CLIENT_ID || '0')
 
 function b64url(buf: ArrayBuffer): string {
@@ -55,16 +58,17 @@ interface Props {
 }
 
 export function VKIDButton({ mode, onError, label = 'VK ID', className = 'pill pill-sm', overlay = false }: Props) {
+  const locale = useLocale()
   if (!VK_APP_ID) return null
 
-  const handleClick = () => redirectToVK(mode).catch(err => onError?.(err.message || 'VK ошибка'))
+  const handleClick = () => redirectToVK(mode).catch(err => onError?.(err.message || t('auth.vk_error', locale)))
 
   if (overlay) {
     return (
       <div
         onClick={handleClick}
         style={{ position: 'absolute', inset: 0, cursor: 'pointer', zIndex: 1 }}
-        aria-label="Войти через ВКонтакте"
+        aria-label={t('auth.vk_login', locale)}
         role="button"
       />
     )

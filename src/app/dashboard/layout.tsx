@@ -8,20 +8,26 @@ import { AnimatedBalance } from '@/components/AnimatedBalance'
 import { NotificationBell } from '@/components/NotificationBell'
 import { ToastProvider } from '@/components/ToastProvider'
 import { formatMoney } from '@/lib/format'
+import { getLocale } from '@/lib/i18n'
+import { t } from '@/lib/t'
 
-const navItems = [
-  { href: '/dashboard', label: 'Обзор', icon: LayoutDashboard, color: 'var(--paper)' },
-  { href: '/dashboard/esim', label: 'eSIM', icon: Wifi, color: 'var(--violet-100)' },
-  { href: '/dashboard/vpn', label: 'VPN', icon: Shield, color: 'var(--blue-100)' },
-  { href: '/dashboard/card', label: 'Карта', icon: CreditCard, color: 'var(--green-100)' },
-  { href: '/dashboard/billing', label: 'Биллинг', icon: Wallet, color: 'var(--yellow-100)' },
-  { href: '/dashboard/referrals', label: 'Друзья', icon: Users, color: 'var(--green-100)' },
-  { href: '/dashboard/settings', label: 'Настройки', icon: Settings, color: 'var(--cream)' },
-]
+function getNavItems(locale: 'ru' | 'en') {
+  return [
+    { href: '/dashboard', label: t('nav.overview', locale), icon: LayoutDashboard, color: 'var(--paper)' },
+    { href: '/dashboard/esim', label: 'eSIM', icon: Wifi, color: 'var(--violet-100)' },
+    { href: '/dashboard/vpn', label: 'VPN', icon: Shield, color: 'var(--blue-100)' },
+    { href: '/dashboard/card', label: t('nav.card', locale), icon: CreditCard, color: 'var(--green-100)' },
+    { href: '/dashboard/billing', label: t('nav.billing', locale), icon: Wallet, color: 'var(--yellow-100)' },
+    { href: '/dashboard/referrals', label: t('nav.friends', locale), icon: Users, color: 'var(--green-100)' },
+    { href: '/dashboard/settings', label: t('nav.settings', locale), icon: Settings, color: 'var(--cream)' },
+  ]
+}
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const user = await getCurrentUser()
   if (!user) redirect('/auth/login')
+  const locale = await getLocale()
+  const navItems = getNavItems(locale)
 
   const initials = (user.name || user.email)
     .split(/\s+/)
@@ -35,7 +41,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
     <div className="min-h-screen flex flex-col gap-1.5" style={{ background: 'var(--ink)', padding: '5px' }}>
       <Marquee
         bg="var(--yellow)"
-        items={['ТВОЙ КАБИНЕТ IMBA', 'eSIM · VPN · КАРТА', 'БЕЗ ГРАНИЦ', 'БЕЗ ЛИШНИХ ВОПРОСОВ', `БАЛАНС ${formatMoney(user.balance, user.currency, user.rates ?? { EUR: 0.92, RUB: 90 })}`]}
+        items={[t('dash.marquee.cabinet', locale), t('dash.marquee.products', locale), t('dash.marquee.borders', locale), t('dash.marquee.questions', locale), `${locale === 'ru' ? 'БАЛАНС' : 'BALANCE'} ${formatMoney(user.balance, user.currency, user.rates ?? { EUR: 0.92, RUB: 90 })}`]}
       />
 
       {/* Mobile top bar (above the row) */}
@@ -44,11 +50,11 @@ export default async function DashboardLayout({ children }: { children: React.Re
         <div className="flex items-center gap-2">
           <NotificationBell />
           <span className="chip" style={{ background: 'var(--yellow)' }}><AnimatedBalance balance={user.balance} currency={user.currency} rates={user.rates} /></span>
-          <Link href="/dashboard/settings" className="pill pill-paper pill-sm" aria-label="Настройки">
+          <Link href="/dashboard/settings" className="pill pill-paper pill-sm" aria-label={t('nav.settings', locale)}>
             <Settings className="w-4 h-4" strokeWidth={2.5} />
           </Link>
           <form action={logout}>
-            <button type="submit" className="pill pill-paper pill-sm" aria-label="Выйти">
+            <button type="submit" className="pill pill-paper pill-sm" aria-label={t('nav.logout', locale)}>
               <LogOut className="w-4 h-4" strokeWidth={2.5} />
             </button>
           </form>
@@ -99,7 +105,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
                   className="flex items-center gap-3 w-full px-3.5 py-3 rounded-2xl text-sm font-extrabold text-ink/60 border-2 border-transparent hover:border-ink transition-colors"
                 >
                   <LogOut className="w-4 h-4" strokeWidth={2.5} />
-                  Выйти
+                  {t('nav.logout', locale)}
                 </button>
               </form>
             </div>
