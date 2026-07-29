@@ -80,5 +80,17 @@ export async function GET(request: NextRequest) {
 
   const { token } = await apiRes.json()
   await setApiToken(token)
-  return NextResponse.redirect(`${origin}/dashboard`)
+
+  const response = NextResponse.redirect(`${origin}/dashboard`)
+  const refCode = request.cookies.get('imba_ref')?.value
+  if (refCode && /^[a-zA-Z0-9_-]{4,30}$/.test(refCode)) {
+    try {
+      await fetch(`${apiUrl()}/v1/promotions/referral/apply/${refCode}`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+      })
+    } catch {}
+    response.cookies.set('imba_ref', '', { maxAge: 0, path: '/' })
+  }
+  return response
 }

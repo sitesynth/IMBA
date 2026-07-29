@@ -30,7 +30,19 @@ export async function GET(request: NextRequest) {
     if (!res.ok) throw new Error('backend google auth failed')
     const { token } = await res.json()
     await setApiToken(token)
-    return NextResponse.redirect(new URL('/dashboard', origin))
+
+    const response = NextResponse.redirect(new URL('/dashboard', origin))
+    const refCode = cookieStore.get('imba_ref')?.value
+    if (refCode && /^[a-zA-Z0-9_-]{4,30}$/.test(refCode)) {
+      try {
+        await fetch(`${apiUrl()}/v1/promotions/referral/apply/${refCode}`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+        })
+      } catch {}
+      response.cookies.set('imba_ref', '', { maxAge: 0, path: '/' })
+    }
+    return response
   } catch {
     return NextResponse.redirect(new URL('/auth/login?error=google_failed', origin))
   }
