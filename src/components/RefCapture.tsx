@@ -7,7 +7,8 @@ export function RefCapture() {
   useEffect(() => {
     const ref = params.get('ref')
     if (ref && /^[a-zA-Z0-9_-]{4,30}$/.test(ref)) {
-      document.cookie = `imba_ref=${ref}; path=/; max-age=${30 * 24 * 3600}; SameSite=Lax`
+      const baseDomain = window.location.hostname.replace(/^www\./, '')
+      document.cookie = `imba_ref=${ref}; path=/; max-age=${30 * 24 * 3600}; SameSite=Lax; domain=.${baseDomain}`
     }
   }, [params])
   return null
