@@ -3,8 +3,8 @@
   "configurations": [
     {
       "name": "imba",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
+      "runtimeExecutable": "/Users/miguelaprossine/IMBA/esim-vpn-card/node_modules/.bin/next",
+      "runtimeArgs": ["dev", "--port", "3100"],
       "port": 3100
     }
   ]
