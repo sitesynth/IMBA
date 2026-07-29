@@ -153,6 +153,17 @@ tr:last-child td{border-bottom:none}
       <div class="stat-card"><div class="stat-val" id="s-due">—</div><div class="stat-lbl">К выплате</div></div>
     </div>
 
+    <div class="card" id="setup-link-card" style="display:none">
+      <div class="card-header"><span class="card-title">Ссылка для приглашения партнёров</span></div>
+      <div class="card-body">
+        <div class="link-row">
+          <code id="my-setup-link">—</code>
+          <button class="btn btn-outline btn-sm" onclick="copySetupLink()">Копировать</button>
+        </div>
+        <p style="font-size:.72rem;color:#9ca3af;margin-top:.5rem">Отправьте эту ссылку человеку, чтобы он создал свой партнёрский кабинет под вами.</p>
+      </div>
+    </div>
+
     <div class="card">
       <div class="card-header"><span class="card-title">Ваша реферальная ссылка</span></div>
       <div class="card-body">
@@ -283,6 +294,7 @@ function fmtDate(iso) {
 function copy(text) { navigator.clipboard.writeText(text).then(() => showToast('Скопировано')); }
 function maskWallet(w) { return !w || w.length <= 12 ? (w || '—') : w.slice(0, 6) + '…' + w.slice(-4); }
 function copyMyLink() { copy(document.getElementById('my-link').textContent); }
+function copySetupLink() { copy(document.getElementById('my-setup-link').textContent); }
 function formatDiscount(type, value) {
   if (type === 'vpn_trial') return `${value} дн. VPN`;
   if (type === 'percent') return `${value}%`;
@@ -377,6 +389,10 @@ async function loadDashboard() {
     document.getElementById('s-earned').textContent = '$' + d.total_earned.toFixed(2);
     document.getElementById('s-due').textContent = '$' + d.pending_payout.toFixed(2);
     document.getElementById('my-link').textContent = d.referral_link;
+    if (d.setup_link) {
+      document.getElementById('setup-link-card').style.display = '';
+      document.getElementById('my-setup-link').textContent = d.setup_link;
+    }
     document.getElementById('r-l1').textContent = 'L1 · ' + d.l1_pct + '%';
     document.getElementById('r-l2').textContent = 'L2 · ' + d.l2_pct + '%';
     document.getElementById('r-l3').textContent = 'L3 · ' + d.l3_pct + '%';
