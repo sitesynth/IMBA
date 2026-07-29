@@ -165,11 +165,21 @@ tr:last-child td{border-bottom:none}
     </div>
 
     <div class="card">
-      <div class="card-header"><span class="card-title">Ваша реферальная ссылка</span></div>
+      <div class="card-header"><span class="card-title">Ваши реферальные ссылки</span></div>
       <div class="card-body">
-        <div class="link-row">
-          <code id="my-link">—</code>
-          <button class="btn btn-outline btn-sm" onclick="copyMyLink()">Копировать</button>
+        <div style="margin-bottom:.75rem">
+          <span style="font-size:.7rem;color:#9ca3af;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.35rem;display:block">Европа (imba.live)</span>
+          <div class="link-row">
+            <code id="my-link">—</code>
+            <button class="btn btn-outline btn-sm" onclick="copyMyLink()">Копировать</button>
+          </div>
+        </div>
+        <div>
+          <span style="font-size:.7rem;color:#9ca3af;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.35rem;display:block">Россия (imba.run)</span>
+          <div class="link-row">
+            <code id="my-link-ru">—</code>
+            <button class="btn btn-outline btn-sm" onclick="copyMyLinkRu()">Копировать</button>
+          </div>
         </div>
         <div style="margin-top:.9rem;display:flex;gap:.5rem;align-items:center;flex-wrap:wrap">
           <span style="font-size:.7rem;color:#9ca3af;text-transform:uppercase;letter-spacing:.06em">Ваши ставки:</span>
@@ -294,6 +304,7 @@ function fmtDate(iso) {
 function copy(text) { navigator.clipboard.writeText(text).then(() => showToast('Скопировано')); }
 function maskWallet(w) { return !w || w.length <= 12 ? (w || '—') : w.slice(0, 6) + '…' + w.slice(-4); }
 function copyMyLink() { copy(document.getElementById('my-link').textContent); }
+function copyMyLinkRu() { copy(document.getElementById('my-link-ru').textContent); }
 function copySetupLink() { copy(document.getElementById('my-setup-link').textContent); }
 function formatDiscount(type, value) {
   if (type === 'vpn_trial') return `${value} дн. VPN`;
@@ -389,6 +400,7 @@ async function loadDashboard() {
     document.getElementById('s-earned').textContent = '$' + d.total_earned.toFixed(2);
     document.getElementById('s-due').textContent = '$' + d.pending_payout.toFixed(2);
     document.getElementById('my-link').textContent = d.referral_link;
+    document.getElementById('my-link-ru').textContent = d.referral_link_ru || d.referral_link.replace('imba.live', 'imba.run');
     if (d.setup_link) {
       document.getElementById('setup-link-card').style.display = '';
       document.getElementById('my-setup-link').textContent = d.setup_link;
