@@ -115,7 +115,7 @@ export default function ReferralsPage() {
             ? 'Приведи 12 друзей — получи 12 месяцев VPN бесплатно'
             : 'Refer 12 friends — get 12 months of VPN for free'}
         </p>
-        <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
           {Array.from({ length: 12 }, (_, i) => {
             const coupon = stats?.reward_coupons?.[i]
             if (coupon) {
@@ -156,9 +156,11 @@ export default function ReferralsPage() {
           })}
         </div>
         <p className="text-xs font-semibold text-ink/45">
-          {locale === 'ru'
-            ? 'Введите купон в разделе «Промокод» чтобы активировать VPN'
-            : 'Enter the coupon in the Promo Code section to activate VPN'}
+          {locale === 'ru' ? (
+            <>Купон можно применить в{' '}<a href="/dashboard/vpn#promo" className="underline text-ink/70 hover:text-ink">разделе VPN</a></>
+          ) : (
+            <>Apply the coupon in the{' '}<a href="/dashboard/vpn#promo" className="underline text-ink/70 hover:text-ink">VPN section</a></>
+          )}
         </p>
       </div>
 

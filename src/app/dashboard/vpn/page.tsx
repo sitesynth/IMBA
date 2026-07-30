@@ -9,6 +9,7 @@ import { formatMoney } from '@/lib/format'
 import { VpnServersPanel } from '@/components/VpnServersPanel'
 import { getLocale, getDateLocale } from '@/lib/i18n'
 import { t } from '@/lib/t'
+import { VpnPromoInput } from '@/components/VpnPromoInput'
 import type { VpnSubscription, VpnServer } from '@/lib/types'
 
 const DEFAULT_SERVER_ID = 'c973f18c-36df-4926-b369-05ebc0604579'
@@ -97,7 +98,7 @@ export default async function VpnPage() {
         <>
           {/* Plan info */}
           <div className="panel" style={{ background: 'var(--blue-100)' }}>
-            <div className="flex items-start justify-between gap-4">
+            <div className="flex items-start justify-between gap-4 mb-4">
               <div>
                 <div className="text-xs font-extrabold uppercase tracking-widest text-ink/50 mb-1">{t('vpn.plan', locale)}</div>
                 <div className="display text-3xl capitalize">{active.plan}</div>
@@ -109,6 +110,7 @@ export default async function VpnPage() {
               </div>
               <LottieSticker name="lock" size={84} className="hidden md:block" />
             </div>
+            <VpnPromoInput locale={locale} />
           </div>
 
           <VpnServersPanel
