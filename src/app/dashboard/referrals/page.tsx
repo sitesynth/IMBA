@@ -6,13 +6,6 @@ import { useLocale } from '@/lib/useLocale'
 import { t } from '@/lib/t'
 import { getDateLocale } from '@/lib/i18n-shared'
 
-interface ReferralLink {
-  referral_code: string
-  referrer_bonus: number
-  referee_bonus: number
-  is_active: boolean
-}
-
 interface ReferralStats {
   referral_code: string
   total_referrals: number
@@ -23,16 +16,17 @@ interface ReferralStats {
 
 export default function ReferralsPage() {
   const locale = useLocale()
-  const [link, setLink] = useState<ReferralLink | null>(null)
+  const [refCode, setRefCode] = useState<string | null>(null)
   const [stats, setStats] = useState<ReferralStats | null>(null)
   const [copied, setCopied] = useState(false)
 
   useEffect(() => {
-    api.get<ReferralLink>('/v1/promotions/referral/link').then(setLink).catch(() => null)
+    api.get<string>('/v1/promotions/referral/link').then(setRefCode).catch(() => null)
     api.get<ReferralStats>('/v1/promotions/referral/stats').then(setStats).catch(() => null)
   }, [])
 
-  const refUrl = link ? `https://imba.live/?ref=${link.referral_code}` : ''
+  const baseDomain = typeof window !== 'undefined' ? window.location.hostname.replace(/^www\./, '') : 'imba.live'
+  const refUrl = refCode ? `https://${baseDomain}/?ref=${refCode}` : ''
 
   function copyLink() {
     if (!refUrl) return
@@ -58,7 +52,7 @@ export default function ReferralsPage() {
           <span className="font-extrabold text-sm uppercase tracking-wide">{t('ref.your_link', locale)}</span>
         </div>
 
-        {link ? (
+        {refCode ? (
           <div className="flex gap-2">
             <div
               className="flex-1 px-4 py-3 rounded-2xl border-2 border-ink text-sm font-semibold truncate select-all"
