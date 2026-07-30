@@ -33,8 +33,10 @@ export default function ReferralsPage() {
     api.get<ReferralStats>('/v1/promotions/referral/stats').then(setStats).catch(() => null)
   }, [])
 
-  const baseDomain = typeof window !== 'undefined' ? window.location.hostname.replace(/^www\./, '') : 'imba.live'
-  const refUrl = refCode ? `https://${baseDomain}/?ref=${refCode}` : ''
+  const baseDomain = typeof window !== 'undefined'
+    ? window.location.hostname.split('.').slice(-2).join('.')
+    : 'imba.live'
+  const refUrl = refCode ? `https://${baseDomain}/auth/register?ref=${refCode}` : ''
 
   function copyLink() {
     if (!refUrl) return
