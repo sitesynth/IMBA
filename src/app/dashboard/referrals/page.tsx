@@ -100,47 +100,65 @@ export default function ReferralsPage() {
         ))}
       </div>
 
-      {/* Reward coupons */}
-      {stats?.reward_coupons && stats.reward_coupons.length > 0 && (
-        <div className="panel p-6 space-y-4" style={{ background: 'var(--paper)' }}>
-          <div className="flex items-center gap-2 mb-1">
-            <Ticket className="w-5 h-5" strokeWidth={2.5} />
-            <span className="font-extrabold text-sm uppercase tracking-wide">
-              {locale === 'ru' ? 'Ваши купоны' : 'Your coupons'}
-            </span>
-          </div>
-          <div className="space-y-2">
-            {stats.reward_coupons.map(c => (
-              <div
-                key={c.code}
-                className={`flex items-center justify-between px-4 py-3 rounded-2xl border-2 ${c.used ? 'border-ink/10 opacity-50' : 'border-ink'}`}
-                style={{ background: c.used ? 'var(--cream)' : 'var(--yellow)' }}
-              >
-                <div>
-                  <span className={`font-bold text-sm tracking-wide ${c.used ? 'line-through' : ''}`}>{c.code}</span>
-                  <span className="text-xs font-semibold text-ink/50 ml-3">
-                    {c.days} {locale === 'ru' ? 'дн. VPN' : 'days VPN'}
+      {/* 12 coupon slots */}
+      <div className="panel p-6 space-y-4" style={{ background: 'var(--paper)' }}>
+        <div className="flex items-center gap-2 mb-1">
+          <Ticket className="w-5 h-5" strokeWidth={2.5} />
+          <span className="font-extrabold text-sm uppercase tracking-wide">
+            {locale === 'ru' ? 'Твой VPN на год!' : 'Your VPN for a year!'}
+          </span>
+        </div>
+        <p className="text-xs font-semibold text-ink/45">
+          {locale === 'ru'
+            ? 'Приведи 12 друзей — получи 12 месяцев VPN бесплатно'
+            : 'Refer 12 friends — get 12 months of VPN for free'}
+        </p>
+        <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+          {Array.from({ length: 12 }, (_, i) => {
+            const coupon = stats?.reward_coupons?.[i]
+            if (coupon) {
+              return (
+                <div
+                  key={coupon.code}
+                  className={`relative rounded-2xl border-2 p-3 flex flex-col items-center justify-center text-center min-h-[90px] ${coupon.used ? 'border-ink/10 opacity-50' : 'border-ink'}`}
+                  style={{ background: coupon.used ? 'var(--cream)' : 'var(--yellow)' }}
+                >
+                  <span className="text-[10px] font-semibold text-ink/40 mb-1">
+                    {new Date(coupon.created_at).toLocaleDateString(locale === 'ru' ? 'ru-RU' : 'en-US')}
                   </span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-xs font-semibold text-ink/40">
-                    {new Date(c.created_at).toLocaleDateString(locale === 'ru' ? 'ru-RU' : 'en-US')}
+                  <span className={`font-bold text-xs tracking-wide ${coupon.used ? 'line-through' : ''}`}>
+                    {coupon.code}
                   </span>
-                  {c.used
-                    ? <span className="text-xs font-bold text-ink/40">{locale === 'ru' ? 'Использован' : 'Used'}</span>
-                    : <CopyCouponButton code={c.code} locale={locale} />
+                  <span className="text-[10px] font-semibold text-ink/50 mt-0.5">
+                    {coupon.days} {locale === 'ru' ? 'дн. VPN' : 'days VPN'}
+                  </span>
+                  {coupon.used
+                    ? <span className="text-[10px] font-bold text-ink/40 mt-1">{locale === 'ru' ? 'Использован' : 'Used'}</span>
+                    : <CopyCouponButton code={coupon.code} locale={locale} />
                   }
                 </div>
+              )
+            }
+            return (
+              <div
+                key={`empty-${i}`}
+                className="rounded-2xl border-2 border-dashed border-ink/15 p-3 flex flex-col items-center justify-center text-center min-h-[90px]"
+                style={{ background: 'var(--cream)' }}
+              >
+                <span className="display text-lg text-ink/15">{i + 1}</span>
+                <span className="text-[10px] font-semibold text-ink/25 mt-1">
+                  {locale === 'ru' ? 'Приведи друга' : 'Refer a friend'}
+                </span>
               </div>
-            ))}
-          </div>
-          <p className="text-xs font-semibold text-ink/45">
-            {locale === 'ru'
-              ? 'Введите купон в разделе «Промокод» чтобы активировать VPN'
-              : 'Enter the coupon in the Promo Code section to activate VPN'}
-          </p>
+            )
+          })}
         </div>
-      )}
+        <p className="text-xs font-semibold text-ink/45">
+          {locale === 'ru'
+            ? 'Введите купон в разделе «Промокод» чтобы активировать VPN'
+            : 'Enter the coupon in the Promo Code section to activate VPN'}
+        </p>
+      </div>
 
       {/* How it works */}
       <div className="panel p-6 space-y-4" style={{ background: 'var(--paper)' }}>
