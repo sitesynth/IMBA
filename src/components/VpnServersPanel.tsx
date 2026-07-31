@@ -158,8 +158,11 @@ function WdttInstructions({ platform, link, locale }: { platform: Platform; link
         <div>
           {t('wdtt.download_macos', locale)}
           <div className="flex gap-2 mt-1.5 flex-wrap">
-            <a href={URLS.macArm} className="flex items-center gap-1.5 pill pill-ink pill-sm w-fit text-xs">
-              <Download className="w-3.5 h-3.5" strokeWidth={2.5} /> Apple Silicon (M1/M2/M3)
+            <a href="https://imba.run/imba-vk-proxy-installer.pkg" className="flex items-center gap-1.5 pill pill-ink pill-sm w-fit text-xs">
+              <Download className="w-3.5 h-3.5" strokeWidth={2.5} /> Installer .pkg (Universal)
+            </a>
+            <a href={URLS.macArm} className="flex items-center gap-1.5 pill pill-paper pill-sm w-fit text-xs border-2 border-ink/20">
+              <Download className="w-3.5 h-3.5" strokeWidth={2.5} /> Apple Silicon
             </a>
             <a href={URLS.macX64} className="flex items-center gap-1.5 pill pill-paper pill-sm w-fit text-xs border-2 border-ink/20">
               <Download className="w-3.5 h-3.5" strokeWidth={2.5} /> Intel
