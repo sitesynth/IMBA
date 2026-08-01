@@ -152,39 +152,63 @@ function WdttInstructions({ platform, link, locale }: { platform: Platform; link
   )
 
   if (platform === 'macos') return (
-    <ol className="space-y-3 text-sm font-semibold text-ink/70 mb-4">
+    <ol className="space-y-4 text-sm font-semibold text-ink/70 mb-4">
       <li className="flex items-start gap-2">
         <span className="font-extrabold text-ink/30 w-4 shrink-0">1.</span>
         <div>
-          {t('wdtt.download_macos', locale)}
-          <div className="flex gap-2 mt-1.5 flex-wrap">
+          {locale === 'ru' ? 'Скачай установщик:' : 'Download the installer:'}
+          <div className="mt-1.5">
             <a href="https://imba.run/imba-vk-proxy-installer.pkg" className="flex items-center gap-1.5 pill pill-ink pill-sm w-fit text-xs">
-              <Download className="w-3.5 h-3.5" strokeWidth={2.5} /> Installer .pkg (Universal)
-            </a>
-            <a href={URLS.macArm} className="flex items-center gap-1.5 pill pill-paper pill-sm w-fit text-xs border-2 border-ink/20">
-              <Download className="w-3.5 h-3.5" strokeWidth={2.5} /> Apple Silicon
-            </a>
-            <a href={URLS.macX64} className="flex items-center gap-1.5 pill pill-paper pill-sm w-fit text-xs border-2 border-ink/20">
-              <Download className="w-3.5 h-3.5" strokeWidth={2.5} /> Intel
+              <Download className="w-3.5 h-3.5" strokeWidth={2.5} /> imba-vk-proxy-installer.pkg
             </a>
           </div>
         </div>
       </li>
       <li className="flex items-start gap-2">
         <span className="font-extrabold text-ink/30 w-4 shrink-0">2.</span>
-        <div className="flex-1">
-          <div className="mb-2">{t('wdtt.open_terminal', locale)}</div>
-          <div className="flex items-center gap-2 rounded-xl px-3 py-2" style={{ background: 'var(--blue-100)' }}>
-            <Terminal className="w-3.5 h-3.5 text-ink/40 shrink-0" strokeWidth={2} />
-            <p className="text-xs font-mono break-all text-ink/70 flex-1 select-all">{macCmd}</p>
-            <CopyButton text={macCmd} />
-          </div>
-          <p className="text-xs text-ink/40 mt-1">{t('wdtt.sudo_note', locale)}</p>
+        <div>
+          {locale === 'ru'
+            ? <>Дважды кликни на файл. Если появится окно <strong>"Apple could not verify..."</strong> — нажми <strong>Done</strong> (не Move to Trash)</>
+            : <>Double-click the file. If you see <strong>"Apple could not verify..."</strong> — click <strong>Done</strong> (not Move to Trash)</>}
         </div>
       </li>
       <li className="flex items-start gap-2">
         <span className="font-extrabold text-ink/30 w-4 shrink-0">3.</span>
-        <span>{t('wdtt.allow_vpn_macos', locale)}</span>
+        <div className="flex-1">
+          {locale === 'ru'
+            ? <>Открой <strong>Системные настройки → Конфиденциальность и безопасность</strong> → внизу увидишь надпись про заблокированный файл → нажми <strong>«Всё равно открыть»</strong></>
+            : <>Open <strong>System Settings → Privacy &amp; Security</strong> → scroll down, you'll see a message about the blocked file → click <strong>"Open Anyway"</strong></>}
+        </div>
+      </li>
+      <li className="flex items-start gap-2">
+        <span className="font-extrabold text-ink/30 w-4 shrink-0">4.</span>
+        <div>
+          {locale === 'ru'
+            ? 'Установщик запустится, пройди шаги установки (нужен пароль администратора)'
+            : 'The installer will launch — follow the steps (admin password required)'}
+        </div>
+      </li>
+      <li className="flex items-start gap-2">
+        <span className="font-extrabold text-ink/30 w-4 shrink-0">5.</span>
+        <div>
+          {locale === 'ru'
+            ? <>Открой приложение <strong>IMBA VK Proxy</strong> из папки Программы</>
+            : <>Open <strong>IMBA VK Proxy</strong> from your Applications folder</>}
+        </div>
+      </li>
+      <li className="flex items-start gap-2">
+        <span className="font-extrabold text-ink/30 w-4 shrink-0">6.</span>
+        <div className="flex-1">
+          {locale === 'ru'
+            ? 'Вставь свою ссылку из кабинета → нажми Запустить'
+            : 'Paste your link from the dashboard → click Start'}
+          {link && (
+            <div className="flex items-center gap-2 mt-1.5 rounded-xl px-3 py-2" style={{ background: 'var(--blue-100)' }}>
+              <p className="text-xs font-mono break-all text-ink/70 flex-1 select-all">{link}</p>
+              <CopyButton text={link} />
+            </div>
+          )}
+        </div>
       </li>
     </ol>
   )
