@@ -12,7 +12,7 @@ const CARD_COLORS = ['var(--yellow-100)', 'var(--violet-100)', 'var(--cream)']
 const PAD = ['1','2','3','4','5','6','7','8','9','→','0','⌫']
 
 const MirIcon = () => (
-  <svg viewBox="0 0 400 120" width="44" height="14" xmlns="http://www.w3.org/2000/svg">
+  <svg viewBox="0 0 400 120" width="56" height="17" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <linearGradient id="mirGrd" x1="370" x2="290" gradientUnits="userSpaceOnUse">
         <stop stopColor="#1F5CD7"/>
@@ -37,20 +37,38 @@ const SbpIcon = () => (
   </svg>
 )
 
-const UsdtTrc20Icon = () => (
-  <svg viewBox="30 225 540 455" width="24" height="24" xmlns="http://www.w3.org/2000/svg">
+const UsdtBody = () => (
+  <>
     <path d="M137.378 237.452L45.111 433.146 296.633 676.509 546.892 433.146 453.361 237.452z" fill="#45b68d"/>
     <path d="M417.694 300.174H174.031v58.384h92.419v85.813h58.825v-85.813h92.419z" fill="#ffffff"/>
     <path d="m296.611 453.918c-76.452 0-138.434-12.009-138.434-26.825 0-14.813 61.979-26.824 138.434-26.824 76.451 0 138.431 12.011 138.431 26.824 0 14.816-61.98 26.825-138.431 26.825zm155.438-22.353c0-19.103-69.592-34.588-155.438-34.588-85.845 0-155.441 15.485-155.441 34.588 0 16.823 53.964 30.84 125.472 33.945v123.188h58.82V465.559c72.059-3.009 126.587-17.084 126.587-33.994z" fill="#ffffff"/>
+  </>
+)
+
+const UsdtTrc20Icon = () => (
+  <svg viewBox="30 225 540 455" width="24" height="24" xmlns="http://www.w3.org/2000/svg">
+    <UsdtBody />
     <circle cx="454.5" cy="547.5" r="109.5" fill="#ff060a" stroke="#ffffff" strokeWidth="8"/>
     <path d="m524.833 528.336c-6.594-6.088-15.715-15.385-23.144-21.979l-.44-.308c-.731-.587-1.556-1.048-2.439-1.362-17.913-3.341-101.28-18.924-102.907-18.727-.456.064-.891.229-1.275.484l-.417.33c-.514.522-.905 1.153-1.143 1.846l-.11.286v1.802c9.385 26.133 46.442 111.742 53.739 131.831.44 1.363 1.275 3.956 2.835 4.088h.352c.835 0 4.396-4.704 4.396-4.704s63.652-77.19 70.091-85.411c.834-1.012 1.57-2.101 2.198-3.252.161-.901.085-1.828-.219-2.691-.304-.863-.827-1.632-1.517-2.233zm-54.223 8.99l27.167-22.529 15.935 14.682zm-10.55-1.473l-46.771-38.332 75.674 13.957zm4.22 10.045l47.871-7.715-54.728 65.937zm-57.343-44.552l49.211 41.76-7.121 61.058z" fill="#ffffff"/>
   </svg>
 )
 
+const UsdtErc20Icon = () => (
+  <svg viewBox="30 225 540 455" width="24" height="24" xmlns="http://www.w3.org/2000/svg">
+    <UsdtBody />
+    <circle cx="454.5" cy="547.5" r="109.5" fill="#627EEA" stroke="#ffffff" strokeWidth="8"/>
+    <polygon points="454.5,455 404,545 454.5,572 505,545" fill="rgba(255,255,255,0.75)"/>
+    <polygon points="454.5,455 404,545 454.5,518 505,545" fill="#ffffff"/>
+    <polygon points="454.5,640 404,560 454.5,572 505,560" fill="#ffffff"/>
+    <polygon points="454.5,640 404,560 454.5,614 505,560" fill="rgba(255,255,255,0.75)"/>
+  </svg>
+)
+
 const FK_METHODS = [
-  { id: 36,  label: 'Card RU',    icon: <MirIcon />,       min_usd: 0 },
-  { id: 42,  label: 'SBP',        icon: <SbpIcon />,       min_usd: 0 },
-  { id: 15,  label: 'USDT TRC20', icon: <UsdtTrc20Icon />, min_usd: 2.5 },
+  { id: 36,  label: 'Card RU',     icon: <MirIcon />,        min_usd: 0 },
+  { id: 42,  label: 'SBP',         icon: <SbpIcon />,        min_usd: 0 },
+  { id: 15,  label: 'USDT TRC20',  icon: <UsdtTrc20Icon />,  min_usd: 2.5 },
+  { id: 14,  label: 'USDT ERC20',  icon: <UsdtErc20Icon />,  min_usd: 2.5 },
 ]
 
 export function TopupFlow({
@@ -195,7 +213,7 @@ export function TopupFlow({
                         {p.speed}
                       </div>
                     </div>
-                    <div className="grid grid-cols-3 gap-2">
+                    <div className="grid grid-cols-2 gap-2">
                       {FK_METHODS.map((m) => {
                         const key = `${p.name}_${m.id}`
                         const isLoading = paying === key
@@ -206,16 +224,18 @@ export function TopupFlow({
                             key={m.id}
                             onClick={() => !btnDisabled && pay(p, m.id)}
                             disabled={btnDisabled}
-                            title={belowMin ? `Min ${m.min_usd} USDT` : undefined}
-                            className="flex flex-col items-center gap-1 py-3 px-2 rounded-2xl border-2 border-ink font-extrabold text-sm transition active:scale-95 hover:bg-ink hover:text-paper disabled:opacity-40 disabled:cursor-not-allowed"
+                            title={belowMin ? `Min $${m.min_usd}` : undefined}
+                            className="flex flex-col items-center gap-1.5 py-3 px-2 rounded-2xl border-2 border-ink font-extrabold text-sm transition-all duration-150 active:scale-95 hover:scale-[1.03] hover:shadow-md disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-none"
                             style={{ background: 'var(--paper)' }}
                           >
-                            {isLoading
-                              ? <Loader2 className="w-5 h-5 animate-spin" />
-                              : <span className="leading-none flex items-center justify-center">{m.icon}</span>
-                            }
+                            <span className="h-7 flex items-center justify-center">
+                              {isLoading
+                                ? <Loader2 className="w-5 h-5 animate-spin" />
+                                : m.icon
+                              }
+                            </span>
                             <span className="text-xs leading-tight text-center">{m.label}</span>
-                            {belowMin && <span className="text-[9px] leading-tight text-center opacity-60">min $2.5</span>}
+                            {belowMin && <span className="text-[9px] leading-tight text-center opacity-50">min ${m.min_usd}</span>}
                           </button>
                         )
                       })}
