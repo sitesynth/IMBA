@@ -66,7 +66,7 @@ const UsdtErc20Icon = () => (
 
 const FK_METHODS = [
   { id: 36,  label: 'Card RU',     icon: <MirIcon />,        min_usd: 0 },
-  { id: 42,  label: 'SBP',         icon: <SbpIcon />,        min_usd: 0 },
+  { id: 44,  label: 'SBP',         icon: <SbpIcon />,        min_usd: 0 },
   { id: 15,  label: 'USDT TRC20',  icon: <UsdtTrc20Icon />,  min_usd: 2.5 },
   { id: 14,  label: 'USDT ERC20',  icon: <UsdtErc20Icon />,  min_usd: 10 },
 ]
