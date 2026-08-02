@@ -204,7 +204,7 @@ export function TopupFlow({
                         <div className="text-sm font-semibold text-ink/60">Карта РФ, СБП, USDT TRC20, USDT ERC20</div>
                         {outOfRange && (
                           <p className="text-xs font-semibold text-ink/40 mt-1">
-                            Лимит: {sym}{minDisplay} – {sym}{maxDisplay.toLocaleString()}
+                            {t('topup.limit', locale)} {sym}{minDisplay} – {sym}{maxDisplay.toLocaleString()}
                           </p>
                         )}
                       </div>
