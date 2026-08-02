@@ -67,7 +67,7 @@ export default async function TopupPage({ searchParams }: Props) {
         providers={providers}
         currency={cur}
         rates={rates}
-        createInvoice={createInvoice.bind(null, after) as (provider: string, amount_usd: number, amount_rub?: number) => Promise<{ payment_url: string; payment_id: string }>}
+        createInvoice={createInvoice.bind(null, after) as (provider: string, amount_usd: number, amount_rub?: number, payment_system_id?: number) => Promise<{ payment_url: string; payment_id: string }>}
       />
     </div>
   )

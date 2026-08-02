@@ -14,13 +14,13 @@ const PAD = ['1','2','3','4','5','6','7','8','9','→','0','⌫']
 const MirIcon = () => (
   <svg viewBox="0 0 400 120" width="56" height="17" xmlns="http://www.w3.org/2000/svg">
     <defs>
-      <linearGradient id="mirGrd" x1="370" x2="290" gradientUnits="userSpaceOnUse">
+      <linearGradient id="mirGrdRu" x1="370" x2="290" gradientUnits="userSpaceOnUse">
         <stop stopColor="#1F5CD7"/>
         <stop stopColor="#02AEFF" offset="1"/>
       </linearGradient>
     </defs>
     <path d="m31 13h33c3 0 12-1 16 13 3 9 7 23 13 44h2c6-22 11-37 13-44 4-14 14-13 18-13h31v96h-32v-57h-2l-17 57h-24l-17-57h-3v57h-31m139-96h32v57h3l21-47c4-9 13-10 13-10h30v96h-32v-57h-2l-21 47c-4 9-14 10-14 10h-30m142-29v29h-30v-50h98c-4 12-18 21-34 21" fill="#0f754e"/>
-    <path d="m382 53c4-18-8-40-34-40h-68c2 21 20 40 39 40" fill="url(#mirGrd)"/>
+    <path d="m382 53c4-18-8-40-34-40h-68c2 21 20 40 39 40" fill="url(#mirGrdRu)"/>
   </svg>
 )
 
@@ -65,10 +65,10 @@ const UsdtErc20Icon = () => (
 )
 
 const FK_METHODS = [
-  { id: 36,  label: 'Card RU',     icon: <MirIcon />,        min_usd: 0 },
-  { id: 42,  label: 'SBP',         icon: <SbpIcon />,        min_usd: 0 },
-  { id: 15,  label: 'USDT TRC20',  icon: <UsdtTrc20Icon />,  min_usd: 2.5 },
-  { id: 14,  label: 'USDT ERC20',  icon: <UsdtErc20Icon />,  min_usd: 10 },
+  { id: 36,  label: 'Карта РФ',   icon: <MirIcon />,        min_usd: 0 },
+  { id: 42,  label: 'СБП',        icon: <SbpIcon />,        min_usd: 0 },
+  { id: 15,  label: 'USDT TRC20', icon: <UsdtTrc20Icon />,  min_usd: 2.5 },
+  { id: 14,  label: 'USDT ERC20', icon: <UsdtErc20Icon />,  min_usd: 10 },
 ]
 
 export function TopupFlow({
@@ -201,7 +201,7 @@ export function TopupFlow({
                       <span className="text-4xl leading-none">{p.icon}</span>
                       <div className="flex-1 min-w-0">
                         <div className="display text-xl">{p.display_name}</div>
-                        <div className="text-sm font-semibold text-ink/60">{p.description}</div>
+                        <div className="text-sm font-semibold text-ink/60">Карта РФ, СБП, USDT TRC20, USDT ERC20</div>
                         {outOfRange && (
                           <p className="text-xs font-semibold text-ink/40 mt-1">
                             Лимит: {sym}{minDisplay} – {sym}{maxDisplay.toLocaleString()}
@@ -210,7 +210,7 @@ export function TopupFlow({
                       </div>
                       <div className="flex items-center gap-1 text-xs font-semibold text-ink/50 shrink-0">
                         <Zap className="w-3 h-3" strokeWidth={3} />
-                        {p.speed}
+                        Мгновенно
                       </div>
                     </div>
                     <div className="grid grid-cols-2 gap-2">
@@ -224,7 +224,7 @@ export function TopupFlow({
                             key={m.id}
                             onClick={() => !btnDisabled && pay(p, m.id)}
                             disabled={btnDisabled}
-                            title={belowMin ? `Min $${m.min_usd}` : undefined}
+                            title={belowMin ? `Мин $${m.min_usd}` : undefined}
                             className="flex flex-col items-center gap-1.5 py-3 px-2 rounded-2xl border-2 border-ink font-extrabold text-sm transition-all duration-150 active:scale-95 hover:scale-[1.03] hover:shadow-md disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-none"
                             style={{ background: 'var(--paper)' }}
                           >
@@ -235,7 +235,7 @@ export function TopupFlow({
                               }
                             </span>
                             <span className="text-xs leading-tight text-center">{m.label}</span>
-                            {belowMin && <span className="text-[9px] leading-tight text-center opacity-50">min ${m.min_usd}</span>}
+                            {belowMin && <span className="text-[9px] leading-tight text-center opacity-50">мин ${m.min_usd}</span>}
                           </button>
                         )
                       })}
