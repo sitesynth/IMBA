@@ -11,6 +11,12 @@ const CURRENCY_SYMBOL: Record<string, string> = { USD: '$', EUR: '€', RUB: '�
 const CARD_COLORS = ['var(--yellow-100)', 'var(--violet-100)', 'var(--cream)']
 const PAD = ['1','2','3','4','5','6','7','8','9','→','0','⌫']
 
+const FK_METHODS = [
+  { id: 36,  label: 'Карта РФ',   icon: '💳' },
+  { id: 42,  label: 'СБП',        icon: '⚡' },
+  { id: 15,  label: 'USDT TRC20', icon: '💵' },
+]
+
 export function TopupFlow({
   providers,
   currency = 'USD',
@@ -20,7 +26,7 @@ export function TopupFlow({
   providers: PaymentProvider[]
   currency?: string
   rates?: FxRates
-  createInvoice: (provider: string, amount_usd: number, amount_rub?: number) => Promise<{ payment_url: string; payment_id: string }>
+  createInvoice: (provider: string, amount_usd: number, amount_rub?: number, payment_system_id?: number) => Promise<{ payment_url: string; payment_id: string }>
 }) {
   const locale = useLocale()
   const [rawAmount, setRawAmount] = useState('')
@@ -48,14 +54,15 @@ export function TopupFlow({
     })
   }
 
-  function pay(provider: PaymentProvider) {
+  function pay(provider: PaymentProvider, paymentSystemId?: number) {
     setError(null)
     setPaymentUrl(null)
-    setPaying(provider.name)
+    const key = paymentSystemId ? `${provider.name}_${paymentSystemId}` : provider.name
+    setPaying(key)
     startTransition(async () => {
       try {
         const amountRub = currency === 'RUB' ? numAmount : undefined
-        const result = await createInvoice(provider.name, Math.round(amountUsd * 100) / 100, amountRub)
+        const result = await createInvoice(provider.name, Math.round(amountUsd * 100) / 100, amountRub, paymentSystemId)
         if (result.payment_url) {
           setPaymentUrl(result.payment_url)
           window.open(result.payment_url, '_blank')
@@ -127,15 +134,64 @@ export function TopupFlow({
               const minDisplay = convertAmount(p.min_usd, currency, rates)
               const maxDisplay = convertAmount(p.max_usd, currency, rates)
               const outOfRange = amountUsd < p.min_usd || amountUsd > p.max_usd
-              const isLoading = paying === p.name
+              const cardBg = outOfRange ? 'var(--paper)' : CARD_COLORS[i % CARD_COLORS.length]
 
+              if (p.name === 'freekassa') {
+                return (
+                  <div
+                    key={p.name}
+                    className="panel"
+                    style={{ background: cardBg, opacity: outOfRange ? 0.4 : 1 }}
+                  >
+                    <div className="flex items-start gap-4 mb-4">
+                      <span className="text-4xl leading-none">{p.icon}</span>
+                      <div className="flex-1 min-w-0">
+                        <div className="display text-xl">{p.display_name}</div>
+                        <div className="text-sm font-semibold text-ink/60">{p.description}</div>
+                        {outOfRange && (
+                          <p className="text-xs font-semibold text-ink/40 mt-1">
+                            Лимит: {sym}{minDisplay} – {sym}{maxDisplay.toLocaleString()}
+                          </p>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-1 text-xs font-semibold text-ink/50 shrink-0">
+                        <Zap className="w-3 h-3" strokeWidth={3} />
+                        {p.speed}
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2">
+                      {FK_METHODS.map((m) => {
+                        const key = `${p.name}_${m.id}`
+                        const isLoading = paying === key
+                        return (
+                          <button
+                            key={m.id}
+                            onClick={() => !outOfRange && pay(p, m.id)}
+                            disabled={outOfRange || paying !== null}
+                            className="flex flex-col items-center gap-1 py-3 px-2 rounded-2xl border-2 border-ink font-extrabold text-sm transition active:scale-95 hover:bg-ink hover:text-paper disabled:opacity-40 disabled:cursor-not-allowed"
+                            style={{ background: 'var(--paper)' }}
+                          >
+                            {isLoading
+                              ? <Loader2 className="w-5 h-5 animate-spin" />
+                              : <span className="text-xl leading-none">{m.icon}</span>
+                            }
+                            <span className="text-xs leading-tight text-center">{m.label}</span>
+                          </button>
+                        )
+                      })}
+                    </div>
+                  </div>
+                )
+              }
+
+              const isLoading = paying === p.name
               return (
                 <button
                   key={p.name}
                   onClick={() => !outOfRange && pay(p)}
                   disabled={outOfRange || paying !== null}
                   className="panel w-full text-left transition hover:shadow-md hover:scale-[1.01] disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-none"
-                  style={{ background: outOfRange ? 'var(--paper)' : CARD_COLORS[i % CARD_COLORS.length] }}
+                  style={{ background: cardBg }}
                 >
                   <div className="flex items-center gap-4">
                     <span className="text-4xl leading-none">{p.icon}</span>
