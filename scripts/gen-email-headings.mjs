@@ -39,6 +39,47 @@ async function gen(slug, lines) {
   console.log(`✓ h-${slug}.png`)
 }
 
+// English variants — same slug + "-en" suffix, same two-line/color layout per slug.
+await gen('verify-en', [
+  { text: 'CONFIRM', color: BLACK, size: 68 },
+  { text: 'YOUR EMAIL', color: PURPLE, size: 60 },
+])
+
+await gen('topup-en', [
+  { text: 'CREDIT', color: BLACK, size: 72 },
+  { text: 'ADDED', color: BLACK, size: 68 },
+])
+
+await gen('trial-en', [
+  { text: '7 DAYS', color: PURPLE, size: 72 },
+  { text: 'FREE VPN', color: BLACK, size: 66 },
+])
+
+await gen('expiring-en', [
+  { text: 'SUBSCRIPTION', color: BLACK, size: 52 },
+  { text: 'EXPIRING', color: RED, size: 68 },
+])
+
+await gen('expired-en', [
+  { text: 'SUBSCRIPTION', color: BLACK, size: 52 },
+  { text: 'EXPIRED', color: RED, size: 68 },
+])
+
+await gen('receipt-en', [
+  { text: 'BALANCE', color: BLACK, size: 68 },
+  { text: 'TOPPED UP', color: PURPLE, size: 60 },
+])
+
+await gen('renewed-en', [
+  { text: 'SUBSCRIPTION', color: BLACK, size: 52 },
+  { text: 'RENEWED', color: PURPLE, size: 68 },
+])
+
+await gen('reset-en', [
+  { text: 'RESET', color: BLACK, size: 72 },
+  { text: 'PASSWORD', color: PURPLE, size: 60 },
+])
+
 await gen('verify', [
   { text: 'ПОДТВЕРДИТЕ', color: BLACK, size: 68 },
   { text: 'ПОЧТУ', color: PURPLE, size: 68 },
