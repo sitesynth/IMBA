@@ -98,6 +98,14 @@ export type PaymentRecord = {
   confirmed_at: string | null
 }
 
+export type VpnTariff = {
+  months: number
+  price_rub: number
+  total_rub: number
+  total_usd: number
+  badge: 'popular' | 'best_value' | null
+}
+
 export type BillingInfo = {
   balance: number
   plan_slug: string | null

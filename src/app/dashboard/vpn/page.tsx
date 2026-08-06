@@ -1,19 +1,17 @@
 import { redirect } from 'next/navigation'
-import { revalidatePath } from 'next/cache'
-import { Wallet, Wifi } from 'lucide-react'
+import { Wallet } from 'lucide-react'
 import { getCurrentUser } from '@/lib/auth'
-import { api, apiFetch, ApiError } from '@/lib/api'
+import { api } from '@/lib/api'
 import { LottieSticker } from '@/components/LottieSticker'
 import { AnimatedBalance } from '@/components/AnimatedBalance'
-import { formatMoney } from '@/lib/format'
 import { VpnServersPanel } from '@/components/VpnServersPanel'
+import { VpnTariffGrid } from '@/components/VpnTariffGrid'
+import { VpnPromoInput } from '@/components/VpnPromoInput'
 import { getLocale, getDateLocale } from '@/lib/i18n'
 import { t } from '@/lib/t'
-import { VpnPromoInput } from '@/components/VpnPromoInput'
-import type { VpnSubscription, VpnServer } from '@/lib/types'
+import type { VpnSubscription, VpnServer, VpnTariff } from '@/lib/types'
 
 const DEFAULT_SERVER_ID = 'c973f18c-36df-4926-b369-05ebc0604579'
-const VPN_PRICE_USD = 4.99
 
 async function fetchVlessUris(subUrl: string): Promise<string[]> {
   try {
@@ -30,11 +28,9 @@ async function fetchVlessUris(subUrl: string): Promise<string[]> {
   }
 }
 
-// Match VLESS URIs to servers by host IP — robust across city name translations
 function buildVlessMap(uris: string[]): Record<string, string> {
   const map: Record<string, string> = {}
   for (const uri of uris) {
-    // vless://UUID@HOST:PORT?...#remark
     const atPart = uri.split('@')[1] || ''
     const host = atPart.split(':')[0] || atPart.split('?')[0]
     if (host) map[host] = uri
@@ -42,28 +38,15 @@ function buildVlessMap(uris: string[]): Record<string, string> {
   return map
 }
 
-async function activateVpn() {
-  'use server'
-  try {
-    await apiFetch('/v1/me/vpn/activate', {
-      method: 'POST',
-      body: JSON.stringify({ plan: 'pro', server_id: DEFAULT_SERVER_ID }),
-    })
-  } catch (e) {
-    if (e instanceof ApiError) console.error('VPN activate failed:', e.message)
-  }
-  revalidatePath('/dashboard/vpn')
-  revalidatePath('/dashboard')
-}
-
 export default async function VpnPage() {
   const user = await getCurrentUser()
   if (!user) redirect('/auth/login')
   const locale = await getLocale()
 
-  const [vpns, servers] = await Promise.all([
+  const [vpns, servers, tariffs] = await Promise.all([
     api.get<VpnSubscription[]>('/v1/me/vpn').catch(() => [] as VpnSubscription[]),
     api.get<VpnServer[]>('/v1/me/vpn/servers').catch(() => [] as VpnServer[]),
+    api.get<VpnTariff[]>('/v1/me/vpn/tariffs').catch(() => [] as VpnTariff[]),
   ])
 
   const active = vpns.find((v) => v.status === 'active')
@@ -71,8 +54,7 @@ export default async function VpnPage() {
   const vlessMap = buildVlessMap(vlessUris)
 
   const rates = user.rates ?? { EUR: 0.92, RUB: 90 }
-  const vpnPrice = formatMoney(VPN_PRICE_USD, user.currency, rates)
-  const vpnIncluded = user.plan_slug === 'pro' || user.plan_slug === 'business'
+  const defaultServerId = servers[0]?.id ?? DEFAULT_SERVER_ID
 
   return (
     <div className="fade-up space-y-6">
@@ -96,7 +78,7 @@ export default async function VpnPage() {
 
       {active ? (
         <>
-          {/* Plan info */}
+          {/* Active plan panel */}
           <div className="panel" style={{ background: 'var(--blue-100)' }}>
             <div className="flex items-start justify-between gap-4 mb-4">
               <div>
@@ -113,6 +95,16 @@ export default async function VpnPage() {
             <VpnPromoInput locale={locale} />
           </div>
 
+          {/* Renew — directly below plan panel */}
+          <div>
+            <h2 className="display text-2xl mb-3">{t('vpn.renew', locale)}</h2>
+            <VpnTariffGrid
+              tariffs={tariffs}
+              serverId={active.server_id ?? defaultServerId}
+              trialAvailable={false}
+            />
+          </div>
+
           <VpnServersPanel
             servers={servers}
             vlessMap={vlessMap}
@@ -122,57 +114,34 @@ export default async function VpnPage() {
           />
         </>
       ) : (
-        /* Not connected — single connect button */
-        <div className="panel" style={{ background: 'var(--blue-100)' }}>
-          <div className="flex items-center gap-5 mb-5">
-            <LottieSticker name="lock" size={80} />
-            <div>
-              <div className="display text-2xl mb-1">{t('vpn.not_connected', locale)}</div>
-              <p className="font-semibold text-ink/60 text-sm">
-                {vpnIncluded
-                  ? t('vpn.included', locale)
-                  : t('vpn.locations', locale)}
-              </p>
+        <>
+          <div className="panel" style={{ background: 'var(--blue-100)' }}>
+            <div className="flex items-center gap-5">
+              <LottieSticker name="lock" size={80} />
+              <div>
+                <div className="display text-2xl mb-1">{t('vpn.not_connected', locale)}</div>
+                <p className="font-semibold text-ink/60 text-sm">{t('vpn.locations', locale)}</p>
+              </div>
             </div>
           </div>
-          {!vpnIncluded && (
-            <div className="rounded-2xl px-5 py-4 border-2 border-ink flex items-center justify-between mb-4" style={{ background: 'var(--paper)' }}>
-              <span className="text-sm font-extrabold text-ink/60">{t('vpn.your_balance', locale)}</span>
-              <AnimatedBalance balance={user.balance} className="display text-2xl" />
-            </div>
-          )}
-          {vpnIncluded ? (
-            <form action={activateVpn}>
-              <button className="pill pill-ink w-full justify-center text-base">
-                <Wifi className="w-5 h-5" strokeWidth={2.5} />
-                {t('vpn.activate', locale)}
-              </button>
-            </form>
-          ) : user.balance >= VPN_PRICE_USD ? (
-            <form action={activateVpn}>
-              <button className="pill pill-ink w-full justify-center text-base">
-                <Wifi className="w-5 h-5" strokeWidth={2.5} />
-                {t('vpn.activate', locale)} — {vpnPrice}/{locale === 'ru' ? 'мес' : 'mo'}
-              </button>
-            </form>
-          ) : (
-            <a href="/dashboard/billing/topup?after=activate_vpn" className="pill pill-ink w-full justify-center text-base">
-              <Wallet className="w-5 h-5" strokeWidth={2.5} />
-              {t('dash.topup', locale)} & {t('vpn.activate', locale).toLowerCase()} — {vpnPrice}/{locale === 'ru' ? 'мес' : 'mo'}
-            </a>
-          )}
-        </div>
-      )}
 
-      {/* Server cards — shown only when not active (active state handled by VpnServersPanel above) */}
-      {!active && (
-        <VpnServersPanel
-          servers={servers}
-          vlessMap={vlessMap}
-          serverKey={null}
-          hasActive={false}
-          wdttLink={null}
-        />
+          <div>
+            <h2 className="display text-2xl mb-3">{t('vpn.choose_plan', locale)}</h2>
+            <VpnTariffGrid
+              tariffs={tariffs}
+              serverId={defaultServerId}
+              trialAvailable={!user.trial_activated}
+            />
+          </div>
+
+          <VpnServersPanel
+            servers={servers}
+            vlessMap={vlessMap}
+            serverKey={null}
+            hasActive={false}
+            wdttLink={null}
+          />
+        </>
       )}
     </div>
   )

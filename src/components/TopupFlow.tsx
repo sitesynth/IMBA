@@ -75,15 +75,17 @@ export function TopupFlow({
   providers,
   currency = 'USD',
   rates = { EUR: 0.92, RUB: 90 },
+  defaultAmount,
   createInvoice,
 }: {
   providers: PaymentProvider[]
   currency?: string
   rates?: FxRates
+  defaultAmount?: string
   createInvoice: (provider: string, amount_usd: number, amount_rub?: number, payment_system_id?: number) => Promise<{ payment_url: string; payment_id: string }>
 }) {
   const locale = useLocale()
-  const [rawAmount, setRawAmount] = useState('')
+  const [rawAmount, setRawAmount] = useState(defaultAmount ?? '')
   const [paying, setPaying] = useState<string | null>(null)
   const [paymentUrl, setPaymentUrl] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)

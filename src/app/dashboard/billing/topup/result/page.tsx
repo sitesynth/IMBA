@@ -42,6 +42,7 @@ export default async function TopupResultPage({ searchParams }: Props) {
   }
 
   // Auto-execute deferred action after successful payment
+  const buyVpnMatch = after?.match(/^buy_vpn:(\d+):(.+)$/)
   let afterError: string | null = null
   if (isSuccess && after === 'activate_vpn') {
     try {
@@ -54,12 +55,24 @@ export default async function TopupResultPage({ searchParams }: Props) {
       afterError = e instanceof Error ? e.message : t('topup.activation_error', locale)
     }
     if (!afterError) redirect('/dashboard/vpn')
+  } else if (isSuccess && buyVpnMatch) {
+    const [, months, serverId] = buyVpnMatch
+    try {
+      await apiFetch('/v1/me/vpn/purchase', {
+        method: 'POST',
+        body: JSON.stringify({ months: Number(months), server_id: serverId }),
+      })
+      revalidatePath('/dashboard/vpn')
+    } catch (e: unknown) {
+      afterError = e instanceof Error ? e.message : t('topup.activation_error', locale)
+    }
+    if (!afterError) redirect('/dashboard/vpn')
   }
 
   const afterLabel: Record<string, string> = {
     activate_vpn: 'VPN',
   }
-  const serviceName = after ? afterLabel[after] : null
+  const serviceName = buyVpnMatch ? 'VPN' : after ? afterLabel[after] : null
 
   return (
     <div className="fade-up max-w-md mx-auto pt-8 pb-12 text-center">

@@ -33,7 +33,7 @@ async function createInvoice(after: string | undefined, provider: string, amount
 }
 
 interface Props {
-  searchParams: Promise<{ after?: string }>
+  searchParams: Promise<{ after?: string; amount_usd?: string }>
 }
 
 export default async function TopupPage({ searchParams }: Props) {
@@ -41,7 +41,7 @@ export default async function TopupPage({ searchParams }: Props) {
   const user = await getCurrentUser()
   if (!user) redirect('/auth/login')
 
-  const { after } = await searchParams
+  const { after, amount_usd } = await searchParams
 
   const providers = await api.get<PaymentProvider[]>('/v1/payments/providers').catch(() => [])
   if (providers.length === 0) redirect('/dashboard/billing')
@@ -49,7 +49,17 @@ export default async function TopupPage({ searchParams }: Props) {
   const rates = user.rates ?? { EUR: 0.92, RUB: 90 }
   const cur = user.currency ?? 'USD'
 
-  const backHref = after ? `/dashboard/${after.split('_')[1] ?? 'billing'}` : '/dashboard/billing'
+  // Pre-fill amount when coming from tariff grid
+  let defaultAmount: string | undefined
+  if (amount_usd) {
+    const usd = parseFloat(amount_usd)
+    if (!isNaN(usd)) {
+      const { convertAmount } = await import('@/lib/format')
+      defaultAmount = String(Math.round(convertAmount(usd, cur, rates) * 100) / 100)
+    }
+  }
+
+  const backHref = after?.startsWith('buy_vpn:') ? '/dashboard/vpn' : after ? `/dashboard/${after.split('_')[1] ?? 'billing'}` : '/dashboard/billing'
 
   return (
     <div className="fade-up max-w-lg space-y-6">
@@ -67,6 +77,7 @@ export default async function TopupPage({ searchParams }: Props) {
         providers={providers}
         currency={cur}
         rates={rates}
+        defaultAmount={defaultAmount}
         createInvoice={createInvoice.bind(null, after) as (provider: string, amount_usd: number, amount_rub?: number, payment_system_id?: number) => Promise<{ payment_url: string; payment_id: string }>}
       />
     </div>

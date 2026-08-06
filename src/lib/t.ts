@@ -107,6 +107,17 @@ const dict = {
   'vpn.servers_included': { ru: 'Входят в подписку', en: 'Included in plan' },
   'vpn.servers_count': { ru: '5 локаций включены в тариф', en: '5 locations included' },
   'vpn.ms': { ru: 'мс', en: 'ms' },
+  'vpn.tariff_month': { ru: 'месяц|месяца|месяцев', en: 'month|months|months' },
+  'vpn.per_month': { ru: '/мес', en: '/mo' },
+  'vpn.total': { ru: 'Total', en: 'Total' },
+  'vpn.badge_popular': { ru: '🔥 Популярный', en: '🔥 Popular' },
+  'vpn.badge_best_value': { ru: '✨ Выгоднее всех', en: '✨ Best Value' },
+  'vpn.select': { ru: 'Выбрать', en: 'Select' },
+  'vpn.trial_label': { ru: '7 дней — бесплатно', en: '7 days — free' },
+  'vpn.trial_sub': { ru: 'Один раз на аккаунт, без карты', en: 'Once per account, no card required' },
+  'vpn.trial_btn': { ru: 'Активировать', en: 'Activate' },
+  'vpn.renew': { ru: 'Продлить подписку', en: 'Renew subscription' },
+  'vpn.choose_plan': { ru: 'Выбери тариф', en: 'Choose a plan' },
 
   // ── eSIM ───────────────────────────────────────────────────────────────────
   'esim.title': { ru: 'Твои eSIM', en: 'Your eSIMs' },
