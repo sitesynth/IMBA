@@ -322,6 +322,16 @@ const dict = {
   'auth.vk_login': { ru: 'Войти через VK ID', en: 'Sign in with VK' },
   'auth.tg_login': { ru: 'Войти через Telegram', en: 'Sign in with Telegram' },
   'auth.vk_error': { ru: 'VK ошибка', en: 'VK error' },
+
+  // ── Support widget ────────────────────────────────────────────────────────
+  'support.title': { ru: 'Поддержка IMBA', en: 'IMBA Support' },
+  'support.subtitle': { ru: 'Обычно отвечаем быстро', en: 'We usually reply fast' },
+  'support.aria': { ru: 'Поддержка', en: 'Support' },
+  'support.loading': { ru: 'Загрузка…', en: 'Loading…' },
+  'support.greeting': { ru: 'Что-то сломалось?', en: 'Something broken?' },
+  'support.greeting_sub': { ru: 'Опиши проблему — и мы разберёмся.', en: 'Describe the issue and we’ll sort it out.' },
+  'support.placeholder': { ru: 'Опиши проблему…', en: 'Describe the issue…' },
+  'support.send_error': { ru: 'Не удалось отправить сообщение. Попробуй ещё раз.', en: 'Could not send the message. Please try again.' },
 } as const
 
 export type TKey = keyof typeof dict

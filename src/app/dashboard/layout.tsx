@@ -6,6 +6,7 @@ import { Logo } from '@/components/Logo'
 import { Marquee } from '@/components/Marquee'
 import { AnimatedBalance } from '@/components/AnimatedBalance'
 import { NotificationBell } from '@/components/NotificationBell'
+import { SupportWidget } from '@/components/SupportWidget'
 import { ToastProvider } from '@/components/ToastProvider'
 import { formatMoney } from '@/lib/format'
 import { getLocale } from '@/lib/i18n'
@@ -134,6 +135,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
           </Link>
         ))}
       </nav>
+
+      <SupportWidget />
     </div>
     </ToastProvider>
   )

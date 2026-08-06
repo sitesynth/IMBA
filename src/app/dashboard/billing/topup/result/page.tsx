@@ -25,6 +25,22 @@ export default async function TopupResultPage({ searchParams }: Props) {
     redirect('/dashboard/billing')
   }
 
+  // FreeKassa doesn't reliably deliver its webhook, so poll it here: the backend
+  // checks this user's own pending orders against the FK API and credits any paid ones.
+  let credited: string | null = null
+  if (isSuccess) {
+    try {
+      const res = await apiFetch<{ status: string; credited?: string }>('/v1/payments/verify')
+      if (res.status === 'credited' && res.credited) {
+        credited = res.credited
+        revalidatePath('/dashboard/billing')
+        revalidatePath('/dashboard')
+      }
+    } catch {
+      // Best-effort; the webhook or background reconciler may still land
+    }
+  }
+
   // Auto-execute deferred action after successful payment
   let afterError: string | null = null
   if (isSuccess && after === 'activate_vpn') {
@@ -56,6 +72,12 @@ export default async function TopupResultPage({ searchParams }: Props) {
               {locale === 'ru'
                 ? `Средства зачислены, но при активации ${serviceName} возникла ошибка: ${afterError}`
                 : `Funds credited, but an error occurred activating ${serviceName}: ${afterError}`}
+            </p>
+          ) : credited ? (
+            <p className="text-ink/60 font-semibold mb-8">
+              {locale === 'ru'
+                ? <>Баланс пополнен на <span className="text-ink font-extrabold">${credited}</span>. Спасибо!</>
+                : <>Balance topped up by <span className="text-ink font-extrabold">${credited}</span>. Thank you!</>}
             </p>
           ) : (
             <p className="text-ink/60 font-semibold mb-8">
