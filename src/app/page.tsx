@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { LandingPricingGrid } from '@/components/LandingPricingGrid'
 import { FireIcon } from '@/components/FireIcon'
 import { Marquee } from '@/components/Marquee'
 import { LottieSticker } from '@/components/LottieSticker'
@@ -201,6 +202,8 @@ export default function HomePage() {
           <Link href="/auth/register" className="pill pill-ink text-base">Get 7 Days Free →</Link>
         </div>
       </section>
+
+      <LandingPricingGrid />
 
       {/* What you get */}
       <section className="rounded-xl px-5 md:px-12 py-12 md:py-16" style={{ background: 'var(--paper)' }}>
