@@ -63,7 +63,7 @@ export function SpeedBadge({ cacheKey = 'default', probeUrl = PROBE }: Props) {
       const res = await fetch(`${probeUrl}/garbage?ckSize=10&t=${Date.now()}`, { cache: 'no-store' })
       const buf = await res.arrayBuffer()
       const secs = (performance.now() - t0) / 1000
-      const measuredSpeed = Math.round((buf.byteLength / secs / 1024 / 1024) * 10) / 10
+      const measuredSpeed = Math.round((buf.byteLength * 8 / secs / 1024 / 1024) * 10) / 10
 
       setSpeed(measuredSpeed)
       writeCache(cacheKey, { ping: measuredPing, speed: measuredSpeed, ts: Date.now() })
@@ -128,7 +128,7 @@ export function SpeedBadge({ cacheKey = 'default', probeUrl = PROBE }: Props) {
       </button>
       {speed !== null && (
         <span className="chip whitespace-nowrap" style={{ background: 'var(--green-100)' }}>
-          <span className="text-xs font-bold tabular-nums">↓ {speed} MB/s</span>
+          <span className="text-xs font-bold tabular-nums">↓ {speed} Mbps</span>
         </span>
       )}
     </div>
