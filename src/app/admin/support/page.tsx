@@ -1,8 +1,16 @@
 'use client'
 import { useEffect, useRef, useState, useCallback } from 'react'
-import { Send, Loader2, Paperclip, X, CheckCircle } from 'lucide-react'
+import { Send, Loader2, X, CheckCircle } from 'lucide-react'
+
+function PaperclipIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66L9.41 17.41a2 2 0 0 1-2.83-2.83l8.49-8.48" />
+    </svg>
+  )
+}
 import {
-  getSupport, getSupportTicket, replySupportTicket, setSupportStatus, uploadSupportImage,
+  getSupport, getSupportTicket, replySupportTicket, setSupportStatus,
   SupportTicket, SupportTicketDetail, AdminApiError,
 } from '@/lib/admin-api'
 
@@ -21,7 +29,14 @@ const STATUS_STYLE: Record<string, string> = {
 
 const STATUS_OPTIONS = ['open', 'in_progress', 'closed']
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'https://api.imba.live'
+function fileToDataUrl(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => resolve(reader.result as string)
+    reader.onerror = reject
+    reader.readAsDataURL(file)
+  })
+}
 
 export default function AdminSupport() {
   // ── List state ───────────────────────────────────────────────
@@ -111,8 +126,7 @@ export default function AdminSupport() {
     try {
       let imageUrl: string | undefined
       if (pendingImage) {
-        const { url } = await uploadSupportImage(selectedId, pendingImage)
-        imageUrl = url
+        imageUrl = await fileToDataUrl(pendingImage)
         clearImage()
       }
       const res = await replySupportTicket(selectedId, reply.trim() || ' ', imageUrl)
@@ -135,11 +149,6 @@ export default function AdminSupport() {
     } catch (e) {
       setChatError(e instanceof AdminApiError ? e.message : (e as Error).message)
     }
-  }
-
-  function resolveImageUrl(url: string) {
-    if (url.startsWith('http')) return url
-    return `${API_BASE}${url}`
   }
 
   return (
@@ -256,14 +265,27 @@ export default function AdminSupport() {
                     }`}
                   >
                     {m.image_url && (
-                      <a href={resolveImageUrl(m.image_url)} target="_blank" rel="noopener noreferrer">
-                        <img
-                          src={resolveImageUrl(m.image_url)}
-                          alt="attachment"
-                          className="max-w-full rounded-lg mb-2 cursor-pointer hover:opacity-90"
-                          style={{ maxHeight: 300 }}
-                        />
-                      </a>
+                      m.image_url.startsWith('data:application/pdf') ? (
+                        <a
+                          href={m.image_url}
+                          download="attachment.pdf"
+                          className={`flex items-center gap-1.5 text-xs font-medium underline mb-2 ${m.role === 'admin' ? 'text-white/80' : 'text-blue-600'}`}
+                        >
+                          <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+                          </svg>
+                          PDF attachment
+                        </a>
+                      ) : (
+                        <a href={m.image_url} target="_blank" rel="noopener noreferrer">
+                          <img
+                            src={m.image_url}
+                            alt="attachment"
+                            className="max-w-full rounded-lg mb-2 cursor-pointer hover:opacity-90"
+                            style={{ maxHeight: 300 }}
+                          />
+                        </a>
+                      )
                     )}
                     {m.text.trim() && <p className="whitespace-pre-wrap">{m.text}</p>}
                     <p className={`text-[10px] mt-1 ${m.role === 'admin' ? 'text-white/50' : 'text-gray-400'}`}>
@@ -297,7 +319,7 @@ export default function AdminSupport() {
                 <input
                   ref={fileInputRef}
                   type="file"
-                  accept="image/*"
+                  accept="image/png,image/jpeg,application/pdf"
                   className="hidden"
                   onChange={(e) => {
                     const f = e.target.files?.[0]
@@ -307,9 +329,9 @@ export default function AdminSupport() {
                 <button
                   onClick={() => fileInputRef.current?.click()}
                   className="self-end p-2 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
-                  title="Attach image (or paste screenshot)"
+                  title="Attach image or PDF (or paste screenshot)"
                 >
-                  <Paperclip className="w-4 h-4" />
+                  <PaperclipIcon className="w-4 h-4" />
                 </button>
 
                 <textarea

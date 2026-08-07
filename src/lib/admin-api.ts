@@ -648,17 +648,6 @@ export function replySupportTicket(ticketId: string, message: string, image_url?
   )
 }
 
-export async function uploadSupportImage(ticketId: string, file: File): Promise<{ url: string }> {
-  const token = getAdminToken()
-  const form = new FormData()
-  form.append('file', file)
-  const res = await fetch(
-    `${BASE}/v1/admin/support/${ticketId}/upload-image`,
-    { method: 'POST', headers: token ? { Authorization: `Bearer ${token}` } : {}, body: form },
-  )
-  if (!res.ok) throw new AdminApiError(res.status, await res.text())
-  return res.json()
-}
 
 export function setSupportStatus(ticketId: string, status: string) {
   return adminReq<{ ticket_id: string; status: string }>(
