@@ -111,6 +111,24 @@ export interface SupportTicket {
   updated_at: string
 }
 
+export interface SupportMessage {
+  role: 'user' | 'admin'
+  text: string
+  at: string
+}
+
+export interface SupportTicketDetail {
+  ticket_id: string
+  user_id?: string
+  email?: string | null
+  name?: string | null
+  status: string
+  subject: string
+  transcript: SupportMessage[]
+  created_at: string
+  updated_at: string
+}
+
 export interface Esim {
   esim_id: string
   country: string
@@ -616,4 +634,22 @@ export function togglePromocode(promoId: string) {
   return adminReq<{ is_active: boolean }>(`/v1/admin/promocodes/${promoId}/toggle`, {
     method: "POST",
   })
+}
+
+export function getSupportTicket(ticketId: string) {
+  return adminReq<SupportTicketDetail>(`/v1/admin/support/${ticketId}`)
+}
+
+export function replySupportTicket(ticketId: string, message: string) {
+  return adminReq<{ ticket_id: string; status: string; transcript: SupportMessage[] }>(
+    `/v1/admin/support/${ticketId}/reply`,
+    { method: "POST", body: JSON.stringify({ message }) },
+  )
+}
+
+export function setSupportStatus(ticketId: string, status: string) {
+  return adminReq<{ ticket_id: string; status: string }>(
+    `/v1/admin/support/${ticketId}/status`,
+    { method: "PATCH", body: JSON.stringify({ status }) },
+  )
 }
