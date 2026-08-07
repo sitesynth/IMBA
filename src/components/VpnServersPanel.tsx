@@ -9,6 +9,23 @@ import { useLocale } from '@/lib/useLocale'
 import { t, type TKey } from '@/lib/t'
 import type { Locale } from '@/lib/i18n-shared'
 
+const CITY_EN: Record<string, string> = {
+  'Берлин': 'Berlin', 'Лиссабон': 'Lisbon', 'Нью-Йорк': 'New York',
+  'Москва': 'Moscow', 'Лондон': 'London', 'Париж': 'Paris',
+  'Амстердам': 'Amsterdam', 'Варшава': 'Warsaw', 'Прага': 'Prague',
+  'Стокгольм': 'Stockholm', 'Хельсинки': 'Helsinki', 'Вена': 'Vienna',
+}
+const COUNTRY_EN: Record<string, string> = {
+  'Германия': 'Germany', 'Португалия': 'Portugal', 'США': 'US',
+  'Россия': 'Russia', 'Великобритания': 'UK', 'Франция': 'France',
+  'Нидерланды': 'Netherlands', 'Польша': 'Poland', 'Чехия': 'Czechia',
+  'Швеция': 'Sweden', 'Финляндия': 'Finland', 'Австрия': 'Austria',
+}
+
+function loc(map: Record<string, string>, value: string, locale: string): string {
+  return locale === 'en' ? (map[value] ?? value) : value
+}
+
 // Fallback shared credentials — used only for users without a per-user link (legacy/trial)
 const WDTT_FALLBACK_PASSWORD = 'CGFxnHnHXvpb'
 const WDTT_VK_HASH = 'WFNnNWAeRPkesAmtYkf40YIh-Zo-jJe_TfNeZ7jrCv8'
@@ -443,8 +460,8 @@ export function VpnServersPanel({ servers, vlessMap, serverKey, hasActive, wdttL
                 <div className="flex items-center gap-3 mb-4">
                   <span className="text-3xl">{s.flag}</span>
                   <div>
-                    <div className="display text-lg leading-tight">{s.city}</div>
-                    <div className="text-xs font-bold text-ink/40">{s.country}</div>
+                    <div className="display text-lg leading-tight">{loc(CITY_EN, s.city, locale)}</div>
+                    <div className="text-xs font-bold text-ink/40">{loc(COUNTRY_EN, s.country, locale)}</div>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 flex-wrap">
