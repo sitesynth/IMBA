@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { Zap, Smartphone, Download, Link, Terminal, Moon } from 'lucide-react'
 import { CopyButton } from '@/components/CopyButton'
+import { SpeedBadge } from '@/components/SpeedBadge'
 import type { VpnServer } from '@/lib/types'
 import { useLocale } from '@/lib/useLocale'
 import { t, type TKey } from '@/lib/t'
@@ -440,16 +441,8 @@ export function VpnServersPanel({ servers, vlessMap, serverKey, hasActive, wdttL
                     <div className="text-xs font-bold text-ink/40">{s.country}</div>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  {s.ping ? (
-                    <span className="chip whitespace-nowrap" style={{ background: 'var(--green-100)' }}>
-                      <Zap className="w-3 h-3 shrink-0" strokeWidth={3} /> ~{s.ping} {t('vpn.ms', locale)}
-                    </span>
-                  ) : (
-                    <span className="chip whitespace-nowrap" style={{ background: '#d0d0d0' }}>
-                      <Moon className="w-3 h-3 shrink-0" strokeWidth={2.5} /> -/-
-                    </span>
-                  )}
+                <div className="flex items-center gap-2 flex-wrap">
+                  <SpeedBadge cacheKey={s.id} />
                   {hasActive && vlessUri ? (
                     <CopyButton text={vlessUri} label="v2box" className="pill pill-paper pill-sm text-xs" />
                   ) : (

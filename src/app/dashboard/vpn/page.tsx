@@ -7,7 +7,6 @@ import { AnimatedBalance } from '@/components/AnimatedBalance'
 import { VpnServersPanel } from '@/components/VpnServersPanel'
 import { VpnTariffGrid } from '@/components/VpnTariffGrid'
 import { VpnPromoInput } from '@/components/VpnPromoInput'
-import { ServerSpeedTest } from '@/components/ServerSpeedTest'
 import { getLocale, getDateLocale } from '@/lib/i18n'
 import { t } from '@/lib/t'
 import type { VpnSubscription, VpnServer, VpnTariff } from '@/lib/types'
@@ -92,9 +91,6 @@ export default async function VpnPage() {
                 )}
               </div>
               <LottieSticker name="lock" size={84} className="hidden md:block" />
-            </div>
-            <div className="mb-4">
-              <ServerSpeedTest />
             </div>
             <VpnPromoInput locale={locale} />
           </div>
