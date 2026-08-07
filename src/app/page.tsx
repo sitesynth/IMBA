@@ -47,7 +47,7 @@ async function fetchVpnServers(): Promise<VpnServer[]> {
 export default async function HomePage() {
   const vpnServers = await fetchVpnServers()
   return (
-    <div className="flex flex-col gap-3 p-3 md:gap-4 md:p-4 min-h-screen">
+    <div className="min-h-screen flex flex-col gap-1.5" style={{ background: 'var(--ink)', padding: '5px' }}>
 
       <Marquee
         bg="var(--ink)"
