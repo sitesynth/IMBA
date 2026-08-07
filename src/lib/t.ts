@@ -343,6 +343,10 @@ const dict = {
   'support.greeting_sub': { ru: 'Опиши проблему — и мы разберёмся.', en: 'Describe the issue and we’ll sort it out.' },
   'support.placeholder': { ru: 'Опиши проблему…', en: 'Describe the issue…' },
   'support.send_error': { ru: 'Не удалось отправить сообщение. Попробуй ещё раз.', en: 'Could not send the message. Please try again.' },
+  'support.event_opened': { ru: 'Тикет создан', en: 'Ticket opened' },
+  'support.event_closed': { ru: 'Тикет закрыт', en: 'Ticket closed' },
+  'support.event_closed_sub': { ru: 'Напиши сюда, если понадобится ещё что-то — тикет откроется снова.', en: 'Write here if you need anything else and the ticket reopens.' },
+  'support.event_reopened': { ru: 'Тикет открыт снова', en: 'Ticket reopened' },
 } as const
 
 export type TKey = keyof typeof dict

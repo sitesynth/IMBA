@@ -45,7 +45,7 @@ export async function LandingPricingGrid() {
         <h2 className="display text-3xl md:text-5xl mb-2">VPN plans</h2>
         <p className="text-base font-medium text-ink/60 mb-8">Pick a plan — longer = cheaper per month</p>
 
-        <div className="grid sm:grid-cols-2 gap-3 max-w-2xl">
+        <div className="grid sm:grid-cols-2 gap-3 max-w-3xl mx-auto">
           {tariffs.map((t) => {
             const pricePerMonth = (t.total_usd / t.months).toFixed(2)
             const cardBg = t.badge ? CARD_BG[t.badge] : 'var(--paper)'

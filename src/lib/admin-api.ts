@@ -112,7 +112,8 @@ export interface SupportTicket {
 }
 
 export interface SupportMessage {
-  role: 'user' | 'admin'
+  role: 'user' | 'admin' | 'system'
+  event?: 'opened' | 'closed' | 'reopened'
   text: string
   at: string
   image_url?: string
@@ -650,7 +651,7 @@ export function replySupportTicket(ticketId: string, message: string, image_url?
 
 
 export function setSupportStatus(ticketId: string, status: string) {
-  return adminReq<{ ticket_id: string; status: string }>(
+  return adminReq<{ ticket_id: string; status: string; transcript: SupportMessage[] }>(
     `/v1/admin/support/${ticketId}/status`,
     { method: "PATCH", body: JSON.stringify({ status }) },
   )

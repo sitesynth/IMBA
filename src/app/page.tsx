@@ -10,6 +10,7 @@ import { SiteHeader } from '@/components/SiteHeader'
 import { Logo } from '@/components/Logo'
 import type { Metadata } from 'next'
 import { SITE_URL } from '@/lib/site'
+import { CITY_EN, COUNTRY_CODE_EN, FLAG_BY_CODE } from '@/lib/geo-names'
 
 export const metadata: Metadata = {
   title: 'IMBA — VPN, eSIM & Virtual Card. Internet Without Borders.',
@@ -18,18 +19,6 @@ export const metadata: Metadata = {
 }
 
 type VpnServer = { id: string; city: string; country: string; flag: string; ping?: number }
-
-const COUNTRY_NAMES: Record<string, string> = {
-  DE: 'GERMANY', PT: 'PORTUGAL', US: 'USA', NL: 'NETHERLANDS', FR: 'FRANCE',
-  GB: 'UK', FI: 'FINLAND', TR: 'TURKEY', JP: 'JAPAN', SG: 'SINGAPORE',
-  UA: 'UKRAINE', PL: 'POLAND', CZ: 'CZECHIA', SE: 'SWEDEN', NO: 'NORWAY',
-}
-
-const FLAG_MAP: Record<string, string> = {
-  DE: '🇩🇪', PT: '🇵🇹', US: '🇺🇸', NL: '🇳🇱', FR: '🇫🇷',
-  GB: '🇬🇧', FI: '🇫🇮', TR: '🇹🇷', JP: '🇯🇵', SG: '🇸🇬',
-  UA: '🇺🇦', PL: '🇵🇱', CZ: '🇨🇿', SE: '🇸🇪', NO: '🇳🇴',
-}
 
 const FALLBACK_SERVERS: VpnServer[] = [
   { id: 'de', flag: '🇩🇪', city: 'Berlin',   country: 'DE', ping: 41 },
@@ -45,9 +34,9 @@ async function fetchVpnServers(): Promise<VpnServer[]> {
     const data = await res.json() as Array<{ id: string; city: string; country: string; flag?: string; ping?: number }>
     return data.map((s) => ({
       id: s.id,
-      city: s.city,
+      city: CITY_EN[s.city] ?? s.city,
       country: s.country,
-      flag: s.flag ?? FLAG_MAP[s.country] ?? '🌐',
+      flag: s.flag ?? FLAG_BY_CODE[s.country] ?? '🌐',
       ping: s.ping,
     }))
   } catch {
@@ -191,7 +180,7 @@ export default async function HomePage() {
               <div key={srv.id} className="panel flex flex-col gap-1.5 p-4 md:p-5" style={{ background: 'var(--paper)' }}>
                 <div className="font-black text-base md:text-lg">{srv.flag} {srv.city}</div>
                 <div className="text-[11px] font-bold tracking-widest text-ink/40">
-                  {srv.country} · {COUNTRY_NAMES[srv.country] ?? srv.country}
+                  {srv.country} · {COUNTRY_CODE_EN[srv.country] ?? srv.country}
                 </div>
                 <span className="chip mt-2 w-fit text-xs" style={{ background: 'var(--violet-100)', borderColor: 'var(--ink)' }}>
                   {srv.ping ? `⚡ ~${srv.ping} ms` : 'VLESS Reality'}

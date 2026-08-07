@@ -8,9 +8,16 @@ import { useLocale } from '@/lib/useLocale'
 import { t } from '@/lib/t'
 
 interface SupportMessage {
-  role: 'user' | 'admin'
+  role: 'user' | 'admin' | 'system'
+  event?: 'opened' | 'closed' | 'reopened'
   text: string
   at: string
+}
+
+const EVENT_STYLE: Record<string, { icon: string; bg: string }> = {
+  opened:   { icon: '🎫', bg: 'var(--violet-100)' },
+  closed:   { icon: '✅', bg: 'var(--green-100, #dcfce7)' },
+  reopened: { icon: '↩️', bg: 'var(--yellow-100, #fefce8)' },
 }
 
 interface TicketSummary {
@@ -118,19 +125,43 @@ export function SupportWidget() {
             <p className="text-xs font-semibold text-ink/40 mt-1">{t('support.greeting_sub', locale)}</p>
           </div>
         ) : (
-          ticket.transcript.map((m, i) => (
-            <div key={i} className={`flex ${m.role === 'admin' ? 'justify-start' : 'justify-end'}`}>
-              <div
-                className="max-w-[80%] rounded-2xl px-3.5 py-2.5 text-sm font-semibold"
-                style={{
-                  background: m.role === 'admin' ? 'var(--cream)' : 'var(--ink)',
-                  color: m.role === 'admin' ? 'var(--ink)' : 'var(--paper)',
-                }}
-              >
-                <p className="whitespace-pre-wrap leading-snug">{m.text}</p>
+          ticket.transcript.map((m, i) => {
+            if (m.role === 'system') {
+              const ev = m.event ?? 'opened'
+              const style = EVENT_STYLE[ev] ?? EVENT_STYLE.opened
+              return (
+                <div key={i} className="flex justify-center py-1">
+                  <div
+                    className="max-w-[85%] rounded-2xl border-2 border-ink/10 px-3.5 py-2 text-center"
+                    style={{ background: style.bg }}
+                  >
+                    <p className="text-xs font-extrabold">
+                      <span className="mr-1">{style.icon}</span>
+                      {t(`support.event_${ev}`, locale)}
+                    </p>
+                    {ev === 'closed' && (
+                      <p className="text-[11px] font-semibold text-ink/50 mt-0.5 leading-snug">
+                        {t('support.event_closed_sub', locale)}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              )
+            }
+            return (
+              <div key={i} className={`flex ${m.role === 'admin' ? 'justify-start' : 'justify-end'}`}>
+                <div
+                  className="max-w-[80%] rounded-2xl px-3.5 py-2.5 text-sm font-semibold"
+                  style={{
+                    background: m.role === 'admin' ? 'var(--cream)' : 'var(--ink)',
+                    color: m.role === 'admin' ? 'var(--ink)' : 'var(--paper)',
+                  }}
+                >
+                  <p className="whitespace-pre-wrap leading-snug">{m.text}</p>
+                </div>
               </div>
-            </div>
-          ))
+            )
+          })
         )}
         <div ref={bottomRef} />
       </div>

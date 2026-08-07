@@ -9,22 +9,7 @@ import { useLocale } from '@/lib/useLocale'
 import { t, type TKey } from '@/lib/t'
 import type { Locale } from '@/lib/i18n-shared'
 
-const CITY_EN: Record<string, string> = {
-  'Берлин': 'Berlin', 'Лиссабон': 'Lisbon', 'Нью-Йорк': 'New York',
-  'Москва': 'Moscow', 'Лондон': 'London', 'Париж': 'Paris',
-  'Амстердам': 'Amsterdam', 'Варшава': 'Warsaw', 'Прага': 'Prague',
-  'Стокгольм': 'Stockholm', 'Хельсинки': 'Helsinki', 'Вена': 'Vienna',
-}
-const COUNTRY_EN: Record<string, string> = {
-  'Германия': 'Germany', 'Португалия': 'Portugal', 'США': 'US',
-  'Россия': 'Russia', 'Великобритания': 'UK', 'Франция': 'France',
-  'Нидерланды': 'Netherlands', 'Польша': 'Poland', 'Чехия': 'Czechia',
-  'Швеция': 'Sweden', 'Финляндия': 'Finland', 'Австрия': 'Austria',
-}
-
-function loc(map: Record<string, string>, value: string, locale: string): string {
-  return locale === 'en' ? (map[value] ?? value) : value
-}
+import { CITY_EN, COUNTRY_EN, loc } from '@/lib/geo-names'
 
 // Fallback shared credentials — used only for users without a per-user link (legacy/trial)
 const WDTT_FALLBACK_PASSWORD = 'CGFxnHnHXvpb'

@@ -29,6 +29,12 @@ const STATUS_STYLE: Record<string, string> = {
 
 const STATUS_OPTIONS = ['open', 'in_progress', 'closed']
 
+const SYSTEM_EVENT: Record<string, { icon: string; label: string; cls: string }> = {
+  opened:   { icon: '🎫', label: 'Ticket opened',   cls: 'bg-gray-100 text-gray-600' },
+  closed:   { icon: '✅', label: 'Ticket closed',   cls: 'bg-green-100 text-green-800' },
+  reopened: { icon: '↩️', label: 'Ticket reopened', cls: 'bg-yellow-100 text-yellow-800' },
+}
+
 function fileToDataUrl(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
@@ -143,8 +149,8 @@ export default function AdminSupport() {
   async function changeStatus(status: string) {
     if (!ticket || !selectedId) return
     try {
-      await setSupportStatus(selectedId, status)
-      setTicket((prev) => prev ? { ...prev, status } : prev)
+      const res = await setSupportStatus(selectedId, status)
+      setTicket((prev) => prev ? { ...prev, status, transcript: res.transcript ?? prev.transcript } : prev)
       setTickets((prev) => prev.map((t) => t.ticket_id === selectedId ? { ...t, status } : t))
     } catch (e) {
       setChatError(e instanceof AdminApiError ? e.message : (e as Error).message)
@@ -257,7 +263,15 @@ export default function AdminSupport() {
 
             {/* Messages */}
             <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
-              {ticket.transcript.map((m, i) => (
+              {ticket.transcript.map((m, i) => m.role === 'system' ? (
+                <div key={i} className="flex justify-center">
+                  <div className={`flex items-center gap-1.5 text-[11px] font-medium px-3 py-1 rounded-full ${SYSTEM_EVENT[m.event ?? 'opened']?.cls ?? 'bg-gray-100 text-gray-600'}`}>
+                    <span>{SYSTEM_EVENT[m.event ?? 'opened']?.icon}</span>
+                    {SYSTEM_EVENT[m.event ?? 'opened']?.label ?? m.event}
+                    <span className="opacity-50">· {new Date(m.at).toLocaleString()}</span>
+                  </div>
+                </div>
+              ) : (
                 <div key={i} className={`flex ${m.role === 'admin' ? 'justify-end' : 'justify-start'}`}>
                   <div
                     className={`max-w-[70%] rounded-xl px-3 py-2 text-sm ${
