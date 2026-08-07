@@ -115,6 +115,7 @@ export interface SupportMessage {
   role: 'user' | 'admin'
   text: string
   at: string
+  image_url?: string
 }
 
 export interface SupportTicketDetail {
@@ -640,11 +641,23 @@ export function getSupportTicket(ticketId: string) {
   return adminReq<SupportTicketDetail>(`/v1/admin/support/${ticketId}`)
 }
 
-export function replySupportTicket(ticketId: string, message: string) {
+export function replySupportTicket(ticketId: string, message: string, image_url?: string) {
   return adminReq<{ ticket_id: string; status: string; transcript: SupportMessage[] }>(
     `/v1/admin/support/${ticketId}/reply`,
-    { method: "POST", body: JSON.stringify({ message }) },
+    { method: "POST", body: JSON.stringify({ message, image_url }) },
   )
+}
+
+export async function uploadSupportImage(ticketId: string, file: File): Promise<{ url: string }> {
+  const token = getAdminToken()
+  const form = new FormData()
+  form.append('file', file)
+  const res = await fetch(
+    `${BASE}/v1/admin/support/${ticketId}/upload-image`,
+    { method: 'POST', headers: token ? { Authorization: `Bearer ${token}` } : {}, body: form },
+  )
+  if (!res.ok) throw new AdminApiError(res.status, await res.text())
+  return res.json()
 }
 
 export function setSupportStatus(ticketId: string, status: string) {

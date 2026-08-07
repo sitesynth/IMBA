@@ -1,8 +1,8 @@
 'use client'
 import { useEffect, useRef, useState, useCallback } from 'react'
-import { Send, Loader2 } from 'lucide-react'
+import { Send, Loader2, Paperclip, X, CheckCircle } from 'lucide-react'
 import {
-  getSupport, getSupportTicket, replySupportTicket, setSupportStatus,
+  getSupport, getSupportTicket, replySupportTicket, setSupportStatus, uploadSupportImage,
   SupportTicket, SupportTicketDetail, AdminApiError,
 } from '@/lib/admin-api'
 
@@ -21,6 +21,8 @@ const STATUS_STYLE: Record<string, string> = {
 
 const STATUS_OPTIONS = ['open', 'in_progress', 'closed']
 
+const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'https://api.imba.live'
+
 export default function AdminSupport() {
   // ── List state ───────────────────────────────────────────────
   const [tickets, setTickets] = useState<SupportTicket[]>([])
@@ -35,7 +37,10 @@ export default function AdminSupport() {
   const [chatError, setChatError] = useState('')
   const [reply, setReply] = useState('')
   const [sending, setSending] = useState(false)
+  const [pendingImage, setPendingImage] = useState<File | null>(null)
+  const [pendingPreview, setPendingPreview] = useState<string | null>(null)
   const bottomRef = useRef<HTMLDivElement>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   // ── Load list ────────────────────────────────────────────────
   useEffect(() => {
@@ -69,13 +74,50 @@ export default function AdminSupport() {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [ticket?.transcript.length])
 
+  // ── Paste handler ─────────────────────────────────────────────
+  useEffect(() => {
+    function onPaste(e: ClipboardEvent) {
+      if (!selectedId) return
+      const items = e.clipboardData?.items
+      if (!items) return
+      for (const item of Array.from(items)) {
+        if (item.type.startsWith('image/')) {
+          const file = item.getAsFile()
+          if (file) attachImage(file)
+          break
+        }
+      }
+    }
+    window.addEventListener('paste', onPaste)
+    return () => window.removeEventListener('paste', onPaste)
+  }, [selectedId])
+
+  function attachImage(file: File) {
+    setPendingImage(file)
+    setPendingPreview(URL.createObjectURL(file))
+  }
+
+  function clearImage() {
+    if (pendingPreview) URL.revokeObjectURL(pendingPreview)
+    setPendingImage(null)
+    setPendingPreview(null)
+    if (fileInputRef.current) fileInputRef.current.value = ''
+  }
+
   // ── Send reply ───────────────────────────────────────────────
   async function send() {
-    if (!reply.trim() || sending || !selectedId) return
+    if ((!reply.trim() && !pendingImage) || sending || !selectedId) return
     setSending(true)
     try {
-      const res = await replySupportTicket(selectedId, reply.trim())
+      let imageUrl: string | undefined
+      if (pendingImage) {
+        const { url } = await uploadSupportImage(selectedId, pendingImage)
+        imageUrl = url
+        clearImage()
+      }
+      const res = await replySupportTicket(selectedId, reply.trim() || ' ', imageUrl)
       setTicket((prev) => prev ? { ...prev, status: res.status, transcript: res.transcript } : prev)
+      setTickets((prev) => prev.map((t) => t.ticket_id === selectedId ? { ...t, status: res.status } : t))
       setReply('')
     } catch (e) {
       setChatError(e instanceof AdminApiError ? e.message : (e as Error).message)
@@ -93,6 +135,11 @@ export default function AdminSupport() {
     } catch (e) {
       setChatError(e instanceof AdminApiError ? e.message : (e as Error).message)
     }
+  }
+
+  function resolveImageUrl(url: string) {
+    if (url.startsWith('http')) return url
+    return `${API_BASE}${url}`
   }
 
   return (
@@ -173,15 +220,30 @@ export default function AdminSupport() {
                   {ticket.email || ticket.user_id}{ticket.name ? ` · ${ticket.name}` : ''}
                 </div>
               </div>
-              <select
-                value={ticket.status}
-                onChange={(e) => changeStatus(e.target.value)}
-                className={`text-xs font-medium px-2 py-1 rounded-lg border-0 cursor-pointer shrink-0 ${STATUS_STYLE[ticket.status] ?? 'bg-gray-100 text-gray-700'}`}
-              >
-                {STATUS_OPTIONS.map((s) => (
-                  <option key={s} value={s}>{s}</option>
-                ))}
-              </select>
+              <div className="flex items-center gap-2 shrink-0">
+                <span className={`text-xs font-semibold px-2 py-1 rounded-full ${STATUS_STYLE[ticket.status] ?? 'bg-gray-100 text-gray-700'}`}>
+                  {ticket.status}
+                </span>
+                <select
+                  value={ticket.status}
+                  onChange={(e) => changeStatus(e.target.value)}
+                  className="text-xs px-2 py-1 rounded-lg border border-gray-200 bg-white text-gray-700 cursor-pointer"
+                >
+                  {STATUS_OPTIONS.map((s) => (
+                    <option key={s} value={s}>{s}</option>
+                  ))}
+                </select>
+                {ticket.status !== 'closed' && (
+                  <button
+                    onClick={() => changeStatus('closed')}
+                    className="flex items-center gap-1 text-xs px-2.5 py-1 rounded-lg bg-green-600 text-white font-medium hover:bg-green-700 transition-colors"
+                    title="Close ticket"
+                  >
+                    <CheckCircle className="w-3.5 h-3.5" />
+                    Close
+                  </button>
+                )}
+              </div>
             </div>
 
             {/* Messages */}
@@ -193,7 +255,17 @@ export default function AdminSupport() {
                       m.role === 'admin' ? 'bg-gray-900 text-white' : 'bg-white border border-gray-200 text-gray-900'
                     }`}
                   >
-                    <p className="whitespace-pre-wrap">{m.text}</p>
+                    {m.image_url && (
+                      <a href={resolveImageUrl(m.image_url)} target="_blank" rel="noopener noreferrer">
+                        <img
+                          src={resolveImageUrl(m.image_url)}
+                          alt="attachment"
+                          className="max-w-full rounded-lg mb-2 cursor-pointer hover:opacity-90"
+                          style={{ maxHeight: 300 }}
+                        />
+                      </a>
+                    )}
+                    {m.text.trim() && <p className="whitespace-pre-wrap">{m.text}</p>}
                     <p className={`text-[10px] mt-1 ${m.role === 'admin' ? 'text-white/50' : 'text-gray-400'}`}>
                       {new Date(m.at).toLocaleString()}
                     </p>
@@ -206,20 +278,53 @@ export default function AdminSupport() {
             {/* Reply box */}
             <div className="bg-white border-t border-gray-200 px-4 py-3 shrink-0">
               {chatError && <p className="text-xs text-red-500 mb-2">{chatError}</p>}
-              <div className="flex gap-2">
+
+              {/* Image preview */}
+              {pendingPreview && (
+                <div className="relative inline-block mb-2">
+                  <img src={pendingPreview} alt="pending" className="h-20 rounded-lg border border-gray-200" />
+                  <button
+                    onClick={clearImage}
+                    className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-gray-800 text-white rounded-full flex items-center justify-center hover:bg-gray-600"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </div>
+              )}
+
+              <div className="flex gap-2 items-end">
+                {/* Hidden file input */}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const f = e.target.files?.[0]
+                    if (f) attachImage(f)
+                  }}
+                />
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  className="self-end p-2 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+                  title="Attach image (or paste screenshot)"
+                >
+                  <Paperclip className="w-4 h-4" />
+                </button>
+
                 <textarea
                   value={reply}
                   onChange={(e) => setReply(e.target.value)}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send() }
                   }}
-                  placeholder="Type a reply… (Enter to send)"
+                  placeholder="Type a reply… (Enter to send, paste screenshot)"
                   rows={2}
                   className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-gray-900"
                 />
                 <button
                   onClick={send}
-                  disabled={!reply.trim() || sending}
+                  disabled={(!reply.trim() && !pendingImage) || sending}
                   className="self-end px-4 py-2 rounded-lg bg-gray-900 text-white text-sm font-medium disabled:opacity-40 flex items-center gap-1.5"
                 >
                   {sending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
