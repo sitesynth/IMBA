@@ -17,18 +17,46 @@ export const metadata: Metadata = {
   alternates: { canonical: SITE_URL },
 }
 
-const vpnServers = [
-  { id: 'de1', flag: '🇩🇪', city: 'Frankfurt',  country: 'DE', ping: 42  },
-  { id: 'nl1', flag: '🇳🇱', city: 'Amsterdam',  country: 'NL', ping: 48  },
-  { id: 'gb1', flag: '🇬🇧', city: 'London',     country: 'GB', ping: 55  },
-  { id: 'us1', flag: '🇺🇸', city: 'New York',   country: 'US', ping: 110 },
-  { id: 'fi1', flag: '🇫🇮', city: 'Helsinki',   country: 'FI', ping: 60  },
-  { id: 'pt1', flag: '🇵🇹', city: 'Lisbon',     country: 'PT', ping: 77  },
-  { id: 'tr1', flag: '🇹🇷', city: 'Istanbul',   country: 'TR', ping: 68  },
-  { id: 'jp1', flag: '🇯🇵', city: 'Tokyo',      country: 'JP', ping: 190 },
+type VpnServer = { id: string; city: string; country: string; flag: string; ping?: number }
+
+const COUNTRY_NAMES: Record<string, string> = {
+  DE: 'GERMANY', PT: 'PORTUGAL', US: 'USA', NL: 'NETHERLANDS', FR: 'FRANCE',
+  GB: 'UK', FI: 'FINLAND', TR: 'TURKEY', JP: 'JAPAN', SG: 'SINGAPORE',
+  UA: 'UKRAINE', PL: 'POLAND', CZ: 'CZECHIA', SE: 'SWEDEN', NO: 'NORWAY',
+}
+
+const FLAG_MAP: Record<string, string> = {
+  DE: '🇩🇪', PT: '🇵🇹', US: '🇺🇸', NL: '🇳🇱', FR: '🇫🇷',
+  GB: '🇬🇧', FI: '🇫🇮', TR: '🇹🇷', JP: '🇯🇵', SG: '🇸🇬',
+  UA: '🇺🇦', PL: '🇵🇱', CZ: '🇨🇿', SE: '🇸🇪', NO: '🇳🇴',
+}
+
+const FALLBACK_SERVERS: VpnServer[] = [
+  { id: 'de', flag: '🇩🇪', city: 'Berlin',   country: 'DE', ping: 41 },
+  { id: 'pt', flag: '🇵🇹', city: 'Lisbon',   country: 'PT', ping: 82 },
+  { id: 'us', flag: '🇺🇸', city: 'New York', country: 'US', ping: 121 },
 ]
 
-export default function HomePage() {
+async function fetchVpnServers(): Promise<VpnServer[]> {
+  try {
+    const apiUrl = process.env.IMBA_API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? 'https://api.imba.live'
+    const res = await fetch(`${apiUrl}/v1/me/vpn/servers`, { next: { revalidate: 60 } })
+    if (!res.ok) return FALLBACK_SERVERS
+    const data = await res.json() as Array<{ id: string; city: string; country: string; flag?: string; ping?: number }>
+    return data.map((s) => ({
+      id: s.id,
+      city: s.city,
+      country: s.country,
+      flag: s.flag ?? FLAG_MAP[s.country] ?? '🌐',
+      ping: s.ping,
+    }))
+  } catch {
+    return FALLBACK_SERVERS
+  }
+}
+
+export default async function HomePage() {
+  const vpnServers = await fetchVpnServers()
   return (
     <div className="flex flex-col gap-3 p-3 md:gap-4 md:p-4 min-h-screen">
 
@@ -162,7 +190,9 @@ export default function HomePage() {
             {vpnServers.map((srv) => (
               <div key={srv.id} className="panel flex flex-col gap-1.5 p-4 md:p-5" style={{ background: 'var(--paper)' }}>
                 <div className="font-black text-base md:text-lg">{srv.flag} {srv.city}</div>
-                <div className="text-[11px] font-bold tracking-widest text-ink/40">{srv.country}</div>
+                <div className="text-[11px] font-bold tracking-widest text-ink/40">
+                  {srv.country} · {COUNTRY_NAMES[srv.country] ?? srv.country}
+                </div>
                 <span className="chip mt-2 w-fit text-xs" style={{ background: 'var(--violet-100)', borderColor: 'var(--ink)' }}>
                   {srv.ping ? `⚡ ~${srv.ping} ms` : 'VLESS Reality'}
                 </span>
