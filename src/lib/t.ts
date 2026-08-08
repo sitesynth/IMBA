@@ -97,6 +97,8 @@ const dict = {
   // ── VPN ────────────────────────────────────────────────────────────────────
   'vpn.subtitle': { ru: 'VPN на всех ваших устройствах без лагов и логов!', en: 'VPN on all your devices — no lag, no logs!' },
   'vpn.plan': { ru: 'План', en: 'Plan' },
+  'vpn.plan_pro': { ru: 'VPN Про', en: 'VPN Pro' },
+  'vpn.plan_trial': { ru: 'VPN Trial', en: 'VPN Trial' },
   'vpn.until': { ru: 'До:', en: 'Until:' },
   'vpn.not_connected': { ru: 'VPN не подключён', en: 'VPN not connected' },
   'vpn.included': { ru: 'Входит в вашу подписку — активация бесплатна', en: 'Included in your plan — free activation' },
