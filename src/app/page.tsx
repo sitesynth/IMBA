@@ -216,7 +216,7 @@ export default async function HomePage() {
             </Link>
           </div>
           <p className="text-sm md:text-base font-medium text-ink/75 mb-6 max-w-3xl">
-            How to activate: register → follow IMBA on Telegram → activate <strong>IMBA Start</strong> in your dashboard — VPN + 500 MB eSIM for 7 days. Got a promo code? Apply it in the dashboard too.
+            How to activate: register → follow IMBA on Telegram → activate <strong>IMBA Start</strong> in your dashboard — VPN free for 7 days. Got a promo code? Apply it in the dashboard too.
           </p>
           <Link href="/auth/register" className="pill pill-ink text-base">Get 7 Days Free →</Link>
         </div>
@@ -268,7 +268,7 @@ export default async function HomePage() {
             {[
               {
                 n: '01', t: '7 days free',
-                d: <>Email only. Follow IMBA on Telegram and activate Start: VPN + 500 MB eSIM for 7 days. No card required.</>,
+                d: <>Email only. Follow IMBA on Telegram and activate Start: VPN free for 7 days. No card required.</>,
               },
               {
                 n: '02', t: 'Install Happ',
@@ -343,14 +343,17 @@ export default async function HomePage() {
         <h2 className="display text-3xl md:text-7xl text-center mb-3 md:mb-4">Simple pricing</h2>
         <p className="text-center text-sm md:text-lg font-semibold text-ink/60 mb-8 md:mb-14">Pay only for what you use</p>
 
-        <div className="grid md:grid-cols-3 gap-4 md:gap-6 max-w-6xl mx-auto">
+        <div className="grid md:grid-cols-2 gap-4 md:gap-6 max-w-4xl mx-auto">
           {[
             { name: 'Start', price: 'Free', bg: 'var(--paper)', feats: ['1 eSIM profile', 'VPN as separate add-on', '1 virtual card'], cta: 'Get started' },
-            { name: 'IMBA COMBO', price: '$9.99/mo', bg: 'var(--yellow)', hot: true, feats: ['VPN Pro included (50+ servers)', '3 eSIM profiles', '3 virtual cards', 'Everything from day one'], cta: 'Get COMBO' },
-            { name: 'Business', price: '$24.99/mo', bg: 'var(--violet-100)', feats: ['Unlimited VPN included', 'Unlimited eSIM', '10 virtual cards', 'API access'], cta: 'Contact us' },
+            { name: 'IMBA COMBO', price: '$9.99/mo', bg: 'var(--yellow)', hot: true, soon: true, feats: ['VPN Pro included (50+ servers)', '3 eSIM profiles', '3 virtual cards', 'Everything from day one'], cta: 'Coming soon' },
           ].map((p) => (
             <div key={p.name} className={`panel relative flex flex-col p-5 md:p-7${p.hot ? ' mt-4 md:mt-0' : ''}`} style={{ background: p.bg }}>
-              {p.hot && (
+              {p.soon ? (
+                <span className="chip bg-ink absolute -top-6 left-1/2 -translate-x-1/2" style={{ color: '#fff' }}>
+                  SOON
+                </span>
+              ) : p.hot && (
                 <span className="chip bg-ink absolute -top-6 left-1/2 -translate-x-1/2 flex items-center gap-1" style={{ color: '#fff' }}>
                   <FireIcon size={28} /> Most popular
                 </span>
@@ -364,14 +367,20 @@ export default async function HomePage() {
                   </li>
                 ))}
               </ul>
-              <Link href="/auth/register" className={`pill w-full justify-center ${p.hot ? 'pill-ink' : 'pill-paper'}`}>
-                {p.cta}
-              </Link>
+              {p.soon ? (
+                <span className="pill w-full justify-center pill-ink opacity-40 cursor-not-allowed select-none">
+                  {p.cta}
+                </span>
+              ) : (
+                <Link href="/auth/register" className={`pill w-full justify-center ${p.hot ? 'pill-ink' : 'pill-paper'}`}>
+                  {p.cta}
+                </Link>
+              )}
             </div>
           ))}
         </div>
         <p className="text-center text-sm md:text-base font-medium text-ink/60 mt-8 max-w-3xl mx-auto">
-          Start free: after signing up, follow IMBA on Telegram and activate the Start plan — VPN + 500 MB eSIM for 7 days. No payment, no card required. Upgrade anytime.
+          Start free: after signing up, follow IMBA on Telegram and activate the Start plan — VPN free for 7 days. No payment, no card required. Upgrade anytime.
         </p>
       </section>
 
@@ -383,7 +392,7 @@ export default async function HomePage() {
         <div className="max-w-3xl mx-auto">
           <FaqAccordion items={[
             { q: 'Does IMBA VPN work in China, UAE, and Turkey?', a: 'Yes. The primary protocol is VLESS Reality, whose traffic is indistinguishable from regular HTTPS. It passes DPI systems deployed in China\'s Great Firewall, UAE, Turkey, and other highly censored networks. 50+ servers across 30+ countries.', color: 'var(--violet-100)' },
-            { q: 'Is there a free VPN trial?', a: 'Yes: after signing up, follow IMBA on Telegram and activate the Start plan — 7 days free with full VPN access on VLESS Reality plus 500 MB eSIM. No ads, no data selling, no overcrowded servers.', color: 'var(--blue-100)' },
+            { q: 'Is there a free VPN trial?', a: 'Yes: after signing up, follow IMBA on Telegram and activate the Start plan — 7 days free with full VPN access on VLESS Reality. No ads, no data selling, no overcrowded servers.', color: 'var(--blue-100)' },
             { q: 'Will VPN slow down my internet?', a: 'Minimally. XTLS Reality adds almost no overhead: YouTube in 4K, video calls, and gaming work just like without a VPN.', color: 'var(--green-100)' },
             { q: 'Which devices are supported?', a: 'iPhone, iPad, Android, Windows, macOS, Linux, Android TV. One subscription covers multiple devices simultaneously.', color: 'var(--paper)' },
             { q: 'Do you keep logs?', a: 'No. We don\'t record browsing history, IP addresses, or connection timestamps. Zero-knowledge architecture: there\'s simply no data to hand over.', color: 'var(--violet-100)' },
@@ -411,7 +420,7 @@ export default async function HomePage() {
         '@type': 'FAQPage',
         mainEntity: [
           { '@type': 'Question', name: 'Does IMBA VPN work in China, UAE, and Turkey?', acceptedAnswer: { '@type': 'Answer', text: 'Yes. The primary protocol is VLESS Reality, whose traffic is indistinguishable from regular HTTPS. It passes DPI systems in China, UAE, Turkey, and other censored networks. 50+ servers across 30+ countries.' } },
-          { '@type': 'Question', name: 'Is there a free VPN trial?', acceptedAnswer: { '@type': 'Answer', text: 'Yes: follow IMBA on Telegram after signing up and activate the Start plan — 7 days free with full VPN access on VLESS Reality plus 500 MB eSIM. No ads, no data selling.' } },
+          { '@type': 'Question', name: 'Is there a free VPN trial?', acceptedAnswer: { '@type': 'Answer', text: 'Yes: follow IMBA on Telegram after signing up and activate the Start plan — 7 days free with full VPN access on VLESS Reality. No ads, no data selling.' } },
           { '@type': 'Question', name: 'Will VPN slow down my internet?', acceptedAnswer: { '@type': 'Answer', text: 'Minimally. XTLS Reality adds almost no overhead: YouTube in 4K, video calls, and gaming work just like without a VPN.' } },
           { '@type': 'Question', name: 'Which devices are supported?', acceptedAnswer: { '@type': 'Answer', text: 'iPhone, iPad, Android, Windows, macOS, Linux, Android TV. One subscription covers multiple devices simultaneously.' } },
           { '@type': 'Question', name: 'Do you keep logs?', acceptedAnswer: { '@type': 'Answer', text: 'No. We don\'t record browsing history, IP addresses, or connection timestamps. Zero-knowledge architecture — there\'s simply no data to hand over.' } },

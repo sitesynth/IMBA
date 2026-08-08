@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import { Loader2, Gift } from 'lucide-react'
+import { Loader2, Gift, Wallet } from 'lucide-react'
 import { useLocale } from '@/lib/useLocale'
 import { t } from '@/lib/t'
 import type { VpnTariff } from '@/lib/types'
@@ -20,21 +20,45 @@ export function VpnTariffGrid({
   tariffs,
   serverId,
   trialAvailable,
+  balance = 0,
 }: {
   tariffs: VpnTariff[]
   serverId: string
   trialAvailable: boolean
+  balance?: number
 }) {
   const locale = useLocale()
   const [trialLoading, setTrialLoading] = useState(false)
+  const [buyLoading, setBuyLoading] = useState<number | null>(null)
   const [error, setError] = useState<string | null>(null)
 
-  function buyTariff(tariff: VpnTariff) {
-    const params = new URLSearchParams({
-      after: `buy_vpn:${tariff.months}:${serverId}`,
-      amount_usd: String(tariff.total_usd),
-    })
-    window.location.href = `/dashboard/billing/topup?${params}`
+  async function buyTariff(tariff: VpnTariff) {
+    if (balance >= tariff.total_usd) {
+      setError(null)
+      setBuyLoading(tariff.months)
+      try {
+        const res = await fetch('/api/action/vpn-buy', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ months: tariff.months, server_id: serverId }),
+        })
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({}))
+          throw new Error(data.detail ?? 'Ошибка активации')
+        }
+        window.location.reload()
+      } catch (e: unknown) {
+        setError((e as Error).message || 'Ошибка активации')
+      } finally {
+        setBuyLoading(null)
+      }
+    } else {
+      const params = new URLSearchParams({
+        after: `buy_vpn:${tariff.months}:${serverId}`,
+        amount_usd: String(tariff.total_usd),
+      })
+      window.location.href = `/dashboard/billing/topup?${params}`
+    }
   }
 
   async function activateTrial() {
@@ -68,7 +92,8 @@ export function VpnTariffGrid({
             <button
               key={tariff.months}
               onClick={() => buyTariff(tariff)}
-              className="relative text-left rounded-3xl border-2 border-ink p-5 transition-transform hover:-translate-y-0.5"
+              disabled={buyLoading === tariff.months}
+              className="relative text-left rounded-3xl border-2 border-ink p-5 transition-transform hover:-translate-y-0.5 disabled:opacity-60"
               style={{
                 background: highlighted ? 'var(--green-100)' : tariff.badge === 'popular' ? 'var(--yellow-100)' : 'var(--paper)',
                 boxShadow: highlighted ? '4px 4px 0 #111' : undefined,
@@ -92,8 +117,12 @@ export function VpnTariffGrid({
               <div className="text-xs font-semibold text-ink/50 mb-4">
                 {t('vpn.total', locale)} ${tariff.total_usd.toFixed(2)}
               </div>
-              <div className="pill pill-ink w-full justify-center text-sm">
-                {t('vpn.select', locale)}
+              <div className="pill pill-ink w-full justify-center text-sm gap-1.5">
+                {buyLoading === tariff.months ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : balance >= tariff.total_usd ? (
+                  <><Wallet className="w-3.5 h-3.5" /> {t('vpn.select', locale)}</>
+                ) : t('vpn.select', locale)}
               </div>
             </button>
           )

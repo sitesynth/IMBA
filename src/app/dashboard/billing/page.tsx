@@ -58,13 +58,6 @@ function getPLANS(locale: 'ru' | 'en') {
       hot: true,
       feats: t('plan.pro_features', locale).split('|'),
     },
-    {
-      slug: 'business',
-      name: t('plan.business', locale),
-      priceUsd: 24.99,
-      bg: 'var(--violet-100)',
-      feats: t('plan.business_features', locale).split('|'),
-    },
   ]
 }
 

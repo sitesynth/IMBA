@@ -102,6 +102,7 @@ export default async function VpnPage() {
               tariffs={tariffs}
               serverId={active.server_id ?? defaultServerId}
               trialAvailable={false}
+              balance={user.balance}
             />
           </div>
 
@@ -131,6 +132,7 @@ export default async function VpnPage() {
               tariffs={tariffs}
               serverId={defaultServerId}
               trialAvailable={!user.trial_activated}
+              balance={user.balance}
             />
           </div>
 
