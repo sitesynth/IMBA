@@ -84,7 +84,7 @@ export default async function VpnPage() {
             <div className="flex items-start justify-between gap-4 mb-4">
               <div>
                 <div className="text-xs font-extrabold uppercase tracking-widest text-ink/50 mb-1">{t('vpn.plan', locale)}</div>
-                <div className="display text-3xl capitalize">{active.plan}</div>
+                <div className="display text-3xl">{active.plan === 'basic' ? 'VPN Trial' : 'VPN Про'}</div>
                 {active.expires_at && (
                   <div className="text-xs font-semibold text-ink/60 mt-2">
                     {t('vpn.until', locale)} {new Date(active.expires_at).toLocaleDateString(getDateLocale(locale))}
