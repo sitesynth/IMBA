@@ -7,6 +7,7 @@ import { AnimatedBalance } from '@/components/AnimatedBalance'
 import { VpnServersPanel } from '@/components/VpnServersPanel'
 import { VpnTariffGrid } from '@/components/VpnTariffGrid'
 import { VpnPromoInput } from '@/components/VpnPromoInput'
+import { SocialVerifyWrapper } from '@/components/SocialVerifyWrapper'
 import { getLocale, getDateLocale } from '@/lib/i18n'
 import { t } from '@/lib/t'
 import type { VpnSubscription, VpnServer, VpnTariff } from '@/lib/types'
@@ -117,14 +118,15 @@ export default async function VpnPage() {
         </>
       ) : (
         <>
-          <div className="panel" style={{ background: 'var(--blue-100)' }}>
+          <div className="panel" style={{ background: 'var(--ink)', color: 'var(--paper)' }}>
             <div className="flex items-center gap-5">
               <LottieSticker name="lock" size={80} />
               <div>
                 <div className="display text-2xl mb-1">{t('vpn.not_connected', locale)}</div>
-                <p className="font-semibold text-ink/60 text-sm">{t('vpn.locations', locale)}</p>
+                <p className="font-semibold opacity-60 text-sm">{t('vpn.locations', locale)}</p>
               </div>
             </div>
+            {!user.trial_activated && <SocialVerifyWrapper />}
           </div>
 
           <div>
