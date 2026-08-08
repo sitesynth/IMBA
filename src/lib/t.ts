@@ -119,6 +119,7 @@ const dict = {
   'vpn.trial_sub': { ru: 'Один раз на аккаунт, без карты', en: 'Once per account, no card required' },
   'vpn.trial_btn': { ru: 'Активировать', en: 'Activate' },
   'vpn.renew': { ru: 'Продлить подписку', en: 'Renew subscription' },
+  'vpn.upgrade_to_pro': { ru: 'Активировать VPN Про', en: 'Activate VPN Pro' },
   'vpn.choose_plan': { ru: 'Выбери тариф', en: 'Choose a plan' },
 
   // ── eSIM ───────────────────────────────────────────────────────────────────

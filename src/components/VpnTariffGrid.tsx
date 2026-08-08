@@ -21,13 +21,13 @@ export function VpnTariffGrid({
   serverId,
   trialAvailable,
   balance = 0,
-  hasActive = false,
+  activePlan,
 }: {
   tariffs: VpnTariff[]
   serverId: string
   trialAvailable: boolean
   balance?: number
-  hasActive?: boolean
+  activePlan?: string | null
 }) {
   const locale = useLocale()
   const [trialLoading, setTrialLoading] = useState(false)
@@ -123,8 +123,8 @@ export function VpnTariffGrid({
                 {buyLoading === tariff.months ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
                 ) : balance >= tariff.total_usd ? (
-                  <><Wallet className="w-3.5 h-3.5" /> {hasActive ? t('vpn.renew_btn', locale) : t('vpn.buy_btn', locale)}</>
-                ) : hasActive ? t('vpn.renew_btn', locale) : t('vpn.buy_btn', locale)}
+                  <><Wallet className="w-3.5 h-3.5" /> {activePlan === 'pro' ? t('vpn.renew_btn', locale) : t('vpn.buy_btn', locale)}</>
+                ) : activePlan === 'pro' ? t('vpn.renew_btn', locale) : t('vpn.buy_btn', locale)}
               </div>
             </button>
           )

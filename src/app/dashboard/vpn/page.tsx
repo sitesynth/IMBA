@@ -96,15 +96,17 @@ export default async function VpnPage() {
             <VpnPromoInput locale={locale} />
           </div>
 
-          {/* Renew — directly below plan panel */}
+          {/* Renew/Upgrade — directly below plan panel */}
           <div>
-            <h2 className="display text-2xl mb-3">{t('vpn.renew', locale)}</h2>
+            <h2 className="display text-2xl mb-3">
+              {active.plan === 'pro' ? t('vpn.renew', locale) : t('vpn.upgrade_to_pro', locale)}
+            </h2>
             <VpnTariffGrid
               tariffs={tariffs}
               serverId={active.server_id ?? defaultServerId}
               trialAvailable={false}
               balance={user.balance}
-              hasActive={true}
+              activePlan={active.plan}
             />
           </div>
 
