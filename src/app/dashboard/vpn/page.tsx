@@ -103,6 +103,7 @@ export default async function VpnPage() {
               serverId={active.server_id ?? defaultServerId}
               trialAvailable={false}
               balance={user.balance}
+              hasActive={true}
             />
           </div>
 

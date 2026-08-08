@@ -42,7 +42,7 @@ const dict = {
 
   // ── Dashboard trial ───────────────────────────────────────────────────────
   'dash.trial_tomorrow': { ru: 'Завтра заканчивается пробный период!', en: 'Trial ends tomorrow!' },
-  'dash.trial_activated': { ru: 'VPN 7 дней + eSIM 500 МБ активированы!', en: 'VPN 7 days + eSIM 500 MB activated!' },
+  'dash.trial_activated': { ru: 'VPN на 7 дней активирован!', en: 'VPN activated for 7 days!' },
   'dash.promo_applied': { ru: 'Промокод успешно применён!', en: 'Promo code applied!' },
 
   // ── Settings ──────────────────────────────────────────────────────────────
@@ -113,6 +113,8 @@ const dict = {
   'vpn.badge_popular': { ru: '🔥 Популярный', en: '🔥 Popular' },
   'vpn.badge_best_value': { ru: '✨ Выгоднее всех', en: '✨ Best Value' },
   'vpn.select': { ru: 'Выбрать', en: 'Select' },
+  'vpn.buy_btn': { ru: 'Купить', en: 'Buy' },
+  'vpn.renew_btn': { ru: 'Продлить', en: 'Renew' },
   'vpn.trial_label': { ru: '7 дней — бесплатно', en: '7 days — free' },
   'vpn.trial_sub': { ru: 'Один раз на аккаунт, без карты', en: 'Once per account, no card required' },
   'vpn.trial_btn': { ru: 'Активировать', en: 'Activate' },
@@ -227,7 +229,7 @@ const dict = {
 
   // ── Trial block ───────────────────────────────────────────────────────────
   'trial.heading': { ru: '7 дней вокруг света', en: '7 days around the world' },
-  'trial.desc': { ru: 'Выбери ВКонтакте или Telegram, подпишись на наши соцсети и активируй IMBA Старт: VPN и eSIM 500 МБ на 7 дней!', en: 'Follow us on Telegram and activate IMBA Start: VPN + 500 MB eSIM for 7 days!' },
+  'trial.desc': { ru: 'Выбери ВКонтакте или Telegram, подпишись на наши соцсети и активируй IMBA Старт: VPN бесплатно на 7 дней!', en: 'Follow us on Telegram and activate IMBA Start: VPN free for 7 days!' },
   'trial.vk': { ru: 'ВКонтакте', en: 'VKontakte' },
   'trial.vk_done': { ru: 'Вступи в группу — триал придёт автоматически ✓', en: 'Join the group — trial activates automatically ✓' },
   'trial.vk_auth_done': { ru: 'Авторизация пройдена — вступи в группу', en: 'Auth complete — join the group' },
@@ -251,18 +253,18 @@ const dict = {
   'social.after_join': { ru: 'После вступления нажми кнопку ниже', en: 'After joining, click the button below' },
   'social.checking': { ru: 'Проверяем…', en: 'Checking…' },
   'social.verify_btn': { ru: 'Я вступил → Активировать VPN', en: 'I joined → Activate VPN' },
-  'social.cta': { ru: 'Вступи в VK-сообщество или Telegram-канал — и получи 7 дней VPN + eSIM 500 МБ', en: 'Join our VK or Telegram — get 7 days VPN + 500 MB eSIM' },
+  'social.cta': { ru: 'Вступи в VK-сообщество или Telegram-канал — и получи 7 дней VPN бесплатно', en: 'Join our VK or Telegram — get 7 days of VPN free' },
 
   // ── Phone verify ──────────────────────────────────────────────────────────
   'phone.sms_error': { ru: 'Ошибка отправки SMS', en: 'SMS sending error' },
   'phone.wrong_code': { ru: 'Неверный код', en: 'Wrong code' },
-  'phone.desc': { ru: 'Подтверди номер телефона → получи 7 дней VPN + eSIM 500 МБ бесплатно', en: 'Verify phone → get 7 days VPN + 500 MB eSIM free' },
+  'phone.desc': { ru: 'Подтверди номер телефона → получи 7 дней VPN бесплатно', en: 'Verify phone → get 7 days of VPN free' },
   'phone.get_code': { ru: 'Получить код', en: 'Get code' },
   'phone.change_number': { ru: 'Изменить номер', en: 'Change number' },
 
   // ── Telegram verify ───────────────────────────────────────────────────────
   'tg.link_error': { ru: 'Ошибка привязки Telegram', en: 'Telegram linking error' },
-  'tg.desc': { ru: 'Подтверди Telegram → получи 7 дней VPN + eSIM 500 МБ бесплатно', en: 'Verify Telegram → get 7 days VPN + 500 MB eSIM free' },
+  'tg.desc': { ru: 'Подтверди Telegram → получи 7 дней VPN бесплатно', en: 'Verify Telegram → get 7 days of VPN free' },
   'tg.activating': { ru: 'Активируем…', en: 'Activating…' },
 
   // ── VPN servers panel ─────────────────────────────────────────────────────

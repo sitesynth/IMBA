@@ -168,6 +168,7 @@ export default async function BillingPage() {
             serverId={vpnServerId}
             trialAvailable={false}
             balance={balanceUsd}
+            hasActive={!!activeVpn}
           />
         </div>
       )}
