@@ -19,6 +19,7 @@ function AdminSidebar({ onClose }: { onClose?: () => void }) {
       items: [
         { href: '/admin/users', label: 'Users' },
         { href: '/admin/vpn', label: 'VPN' },
+        { href: '/admin/tariffs', label: 'Тарифы' },
         { href: '/admin/plans', label: 'Plans' },
         { href: '/admin/esim', label: 'eSIM' },
         { href: '/admin/cards', label: 'Cards' },

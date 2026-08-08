@@ -102,7 +102,10 @@ export type VpnTariff = {
   months: number
   price_rub: number
   total_rub: number
+  price_usd: number
   total_usd: number
+  price_eur: number
+  total_eur: number
   badge: 'popular' | 'best_value' | null
 }
 

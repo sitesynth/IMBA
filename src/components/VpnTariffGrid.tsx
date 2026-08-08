@@ -3,7 +3,6 @@ import { useState } from 'react'
 import { Loader2, Gift, Wallet } from 'lucide-react'
 import { useLocale } from '@/lib/useLocale'
 import { t } from '@/lib/t'
-import { formatMoney } from '@/lib/format'
 import type { VpnTariff, FxRates } from '@/lib/types'
 
 function monthsLabel(n: number, locale: string): string {
@@ -17,6 +16,22 @@ function monthsLabel(n: number, locale: string): string {
   return n === 1 ? 'month' : 'months'
 }
 
+function tariffDisplay(tariff: VpnTariff, currency: string): { per: string; total: string } {
+  const cur = currency?.toUpperCase() || 'USD'
+  if (cur === 'RUB') return {
+    per: `${Math.round(tariff.price_rub)} ₽`,
+    total: `${Math.round(tariff.total_rub)} ₽`,
+  }
+  if (cur === 'EUR') return {
+    per: `€${tariff.price_eur.toFixed(2)}`,
+    total: `€${tariff.total_eur.toFixed(2)}`,
+  }
+  return {
+    per: `$${tariff.price_usd.toFixed(2)}`,
+    total: `$${tariff.total_usd.toFixed(2)}`,
+  }
+}
+
 export function VpnTariffGrid({
   tariffs,
   serverId,
@@ -24,7 +39,6 @@ export function VpnTariffGrid({
   balance = 0,
   activePlan,
   currency = 'USD',
-  rates = { EUR: 0.92, RUB: 90 },
 }: {
   tariffs: VpnTariff[]
   serverId: string
@@ -118,11 +132,11 @@ export function VpnTariffGrid({
                 {tariff.months} {monthsLabel(tariff.months, locale)}
               </div>
               <div className="flex items-baseline gap-1.5 mb-1">
-                <span className="display text-3xl">{formatMoney(tariff.total_usd / tariff.months, currency, rates)}</span>
+                <span className="display text-3xl">{tariffDisplay(tariff, currency).per}</span>
                 <span className="text-sm font-bold text-ink/40">{t('vpn.per_month', locale)}</span>
               </div>
               <div className="text-xs font-semibold text-ink/50 mb-4">
-                {t('vpn.total', locale)} {formatMoney(tariff.total_usd, currency, rates)}
+                {t('vpn.total', locale)} {tariffDisplay(tariff, currency).total}
               </div>
               <div className="pill pill-ink w-full justify-center text-sm gap-1.5">
                 {buyLoading === tariff.months ? (

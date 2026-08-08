@@ -539,6 +539,28 @@ export function revokeVpnAdmin(vpnId: string) {
   return adminReq<{ id: string; status: string }>(`/v1/admin/vpn/${vpnId}/revoke`, { method: "POST" })
 }
 
+export interface AdminVpnTariff {
+  months: number
+  price_rub: number
+  total_rub: number
+  price_usd: number
+  total_usd: number
+  price_eur: number
+  total_eur: number
+  badge: string | null
+}
+
+export function getAdminVpnTariffs() {
+  return adminReq<AdminVpnTariff[]>('/v1/admin/vpn-tariffs')
+}
+
+export function updateAdminVpnTariffs(rows: { months: number; total_rub?: number; total_usd?: number; total_eur?: number }[]) {
+  return adminReq<AdminVpnTariff[]>('/v1/admin/vpn-tariffs', {
+    method: 'PUT',
+    body: JSON.stringify(rows),
+  })
+}
+
 // ---------------------------------------------------------------------------
 // Analytics
 // ---------------------------------------------------------------------------
