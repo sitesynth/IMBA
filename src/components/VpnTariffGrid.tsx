@@ -3,7 +3,8 @@ import { useState } from 'react'
 import { Loader2, Gift, Wallet } from 'lucide-react'
 import { useLocale } from '@/lib/useLocale'
 import { t } from '@/lib/t'
-import type { VpnTariff } from '@/lib/types'
+import { formatMoney } from '@/lib/format'
+import type { VpnTariff, FxRates } from '@/lib/types'
 
 function monthsLabel(n: number, locale: string): string {
   if (locale === 'ru') {
@@ -22,12 +23,16 @@ export function VpnTariffGrid({
   trialAvailable,
   balance = 0,
   activePlan,
+  currency = 'USD',
+  rates = { EUR: 0.92, RUB: 90 },
 }: {
   tariffs: VpnTariff[]
   serverId: string
   trialAvailable: boolean
   balance?: number
   activePlan?: string | null
+  currency?: string
+  rates?: FxRates
 }) {
   const locale = useLocale()
   const [trialLoading, setTrialLoading] = useState(false)
@@ -113,11 +118,11 @@ export function VpnTariffGrid({
                 {tariff.months} {monthsLabel(tariff.months, locale)}
               </div>
               <div className="flex items-baseline gap-1.5 mb-1">
-                <span className="display text-3xl">${(tariff.total_usd / tariff.months).toFixed(2)}</span>
+                <span className="display text-3xl">{formatMoney(tariff.total_usd / tariff.months, currency, rates)}</span>
                 <span className="text-sm font-bold text-ink/40">{t('vpn.per_month', locale)}</span>
               </div>
               <div className="text-xs font-semibold text-ink/50 mb-4">
-                {t('vpn.total', locale)} ${tariff.total_usd.toFixed(2)}
+                {t('vpn.total', locale)} {formatMoney(tariff.total_usd, currency, rates)}
               </div>
               <div className="pill pill-ink w-full justify-center text-sm gap-1.5">
                 {buyLoading === tariff.months ? (

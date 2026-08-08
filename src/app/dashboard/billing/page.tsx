@@ -169,6 +169,8 @@ export default async function BillingPage() {
             trialAvailable={false}
             balance={balanceUsd}
             activePlan={activeVpn?.plan ?? null}
+            currency={cur}
+            rates={rates}
           />
         </div>
       )}
