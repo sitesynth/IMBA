@@ -148,6 +148,10 @@ export interface VpnSubscription {
   server_id: string
   status: string
   expires_at: string
+  used_traffic_bytes?: number
+  lifetime_traffic_bytes?: number
+  traffic_limit_bytes?: number
+  remnawave_uuid?: string
 }
 
 export interface VirtualCard {
@@ -658,6 +662,13 @@ export function togglePromocode(promoId: string) {
   return adminReq<{ is_active: boolean }>(`/v1/admin/promocodes/${promoId}/toggle`, {
     method: "POST",
   })
+}
+
+export function setUserVpnTrafficLimit(userId: string, limitGb: number) {
+  return adminReq<{ ok: boolean; updated: number; limit_bytes: number }>(
+    `/v1/admin/users/${userId}/vpn-traffic-limit`,
+    { method: 'POST', body: JSON.stringify({ limit_gb: limitGb }) },
+  )
 }
 
 export function getSupportTicket(ticketId: string) {

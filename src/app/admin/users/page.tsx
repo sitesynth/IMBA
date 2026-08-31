@@ -1,7 +1,13 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { ChevronDown, ChevronUp } from 'lucide-react'
-import { getUsers, getUser, addBalance, toggleUser, deleteUser, AdminUser, AdminUserDetail } from '@/lib/admin-api'
+import { getUsers, getUser, addBalance, toggleUser, deleteUser, setUserVpnTrafficLimit, AdminUser, AdminUserDetail } from '@/lib/admin-api'
+
+function fmtBytes(bytes: number): string {
+  if (!bytes) return '0 MB'
+  if (bytes >= 1e9) return (bytes / 1e9).toFixed(1) + ' GB'
+  return (bytes / 1e6).toFixed(0) + ' MB'
+}
 
 function UserRow({ u, index, onRefresh, onDeleted, selected, onSelect }: { u: AdminUser; index: number; onRefresh: () => void; onDeleted: (id: string) => void; selected: boolean; onSelect: (e: React.MouseEvent) => void }) {
   const [open, setOpen] = useState(false)
@@ -150,7 +156,16 @@ function UserRow({ u, index, onRefresh, onDeleted, selected, onSelect }: { u: Ad
                         <div>
                           <div className="text-xs font-semibold text-gray-500 uppercase mb-1">VPN ({detail.vpns.length})</div>
                           {detail.vpns.map(v => (
-                            <div key={v.vpn_id} className="text-xs text-gray-600">{v.status} · expires {new Date(v.expires_at).toLocaleDateString()}</div>
+                            <div key={v.vpn_id} className="text-xs text-gray-600 space-y-0.5">
+                              <div>{v.status} · expires {v.expires_at ? new Date(v.expires_at).toLocaleDateString() : '—'}</div>
+                              {(v.used_traffic_bytes !== undefined) && (
+                                <div className="text-gray-400">
+                                  Traffic: <span className="font-mono text-gray-600">{fmtBytes(v.used_traffic_bytes)}</span>
+                                  {v.lifetime_traffic_bytes ? <span> (lifetime: {fmtBytes(v.lifetime_traffic_bytes)})</span> : null}
+                                  {v.traffic_limit_bytes ? <span className="text-orange-500"> / limit: {fmtBytes(v.traffic_limit_bytes)}</span> : <span className="text-green-600"> / no limit</span>}
+                                </div>
+                              )}
+                            </div>
                           ))}
                         </div>
                       )}
@@ -179,6 +194,26 @@ function UserRow({ u, index, onRefresh, onDeleted, selected, onSelect }: { u: Ad
                     >
                       {u.is_active ? 'Block' : 'Unblock'}
                     </button>
+                    {detail?.vpns?.length > 0 && (() => {
+                      const hasLimit = detail.vpns.some(v => (v.traffic_limit_bytes ?? 0) > 0)
+                      return hasLimit ? (
+                        <button
+                          onClick={async e => { e.stopPropagation(); await setUserVpnTrafficLimit(u.user_id, 0); setDetail(await getUser(u.user_id)) }}
+                          className="px-3 py-1.5 bg-green-100 text-green-700 rounded-lg text-xs font-semibold hover:bg-green-200"
+                          title="Снять лимит трафика"
+                        >
+                          Remove limit
+                        </button>
+                      ) : (
+                        <button
+                          onClick={async e => { e.stopPropagation(); await setUserVpnTrafficLimit(u.user_id, 100); setDetail(await getUser(u.user_id)) }}
+                          className="px-3 py-1.5 bg-orange-100 text-orange-700 rounded-lg text-xs font-semibold hover:bg-orange-200"
+                          title="Ограничить трафик до 100 GB"
+                        >
+                          Limit 100GB
+                        </button>
+                      )
+                    })()}
                     <button
                       onClick={e => { e.stopPropagation(); setShowDelete(true); setDeleteError('') }}
                       className="px-3 py-1.5 bg-red-100 text-red-700 rounded-lg text-xs font-semibold hover:bg-red-200"
@@ -256,6 +291,7 @@ export default function AdminUsers() {
   const [saving, setSaving] = useState(false)
   const [sortKey, setSortKey] = useState<string>('created_at')
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc')
+  const [bulkLimitSaving, setBulkLimitSaving] = useState(false)
 
   function handleSort(key: string) {
     if (sortKey === key) setSortDir(d => d === 'asc' ? 'desc' : 'asc')
@@ -348,18 +384,40 @@ export default function AdminUsers() {
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-3xl font-bold text-gray-900">Users</h1>
         {selected.size > 0 && (
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             <button
               onClick={() => { setAmount(''); setNote(''); setBulkModal(true) }}
               className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-semibold hover:bg-green-700"
             >
-              + Balance for {selected.size} selected
+              + Balance for {selected.size}
+            </button>
+            <button
+              disabled={bulkLimitSaving}
+              onClick={async () => {
+                setBulkLimitSaving(true)
+                try { await Promise.all([...selected].map(id => setUserVpnTrafficLimit(id, 100))) }
+                finally { setBulkLimitSaving(false) }
+              }}
+              className="px-4 py-2 bg-orange-500 text-white rounded-lg text-sm font-semibold hover:bg-orange-600 disabled:opacity-50"
+            >
+              {bulkLimitSaving ? 'Setting...' : `Limit 100GB (${selected.size})`}
+            </button>
+            <button
+              disabled={bulkLimitSaving}
+              onClick={async () => {
+                setBulkLimitSaving(true)
+                try { await Promise.all([...selected].map(id => setUserVpnTrafficLimit(id, 0))) }
+                finally { setBulkLimitSaving(false) }
+              }}
+              className="px-4 py-2 bg-blue-500 text-white rounded-lg text-sm font-semibold hover:bg-blue-600 disabled:opacity-50"
+            >
+              Remove limit ({selected.size})
             </button>
             <button
               onClick={() => { setBulkDeletePassword(''); setBulkDeleteError(''); setBulkDeleteModal(true) }}
               className="px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-semibold hover:bg-red-700"
             >
-              Delete {selected.size} selected
+              Delete {selected.size}
             </button>
           </div>
         )}
