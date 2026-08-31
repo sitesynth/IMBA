@@ -1,15 +1,15 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { ChevronDown, ChevronUp } from 'lucide-react'
-import { getUsers, getUser, addBalance, toggleUser, deleteUser, setUserVpnTrafficLimit, AdminUser, AdminUserDetail } from '@/lib/admin-api'
+import { getUsers, getUser, addBalance, toggleUser, deleteUser, setUserVpnTrafficLimit, getVpnTrafficStats, AdminUser, AdminUserDetail, VpnTrafficStat } from '@/lib/admin-api'
 
 function fmtBytes(bytes: number): string {
-  if (!bytes) return '0 MB'
+  if (!bytes) return '—'
   if (bytes >= 1e9) return (bytes / 1e9).toFixed(1) + ' GB'
   return (bytes / 1e6).toFixed(0) + ' MB'
 }
 
-function UserRow({ u, index, onRefresh, onDeleted, selected, onSelect }: { u: AdminUser; index: number; onRefresh: () => void; onDeleted: (id: string) => void; selected: boolean; onSelect: (e: React.MouseEvent) => void }) {
+function UserRow({ u, index, onRefresh, onDeleted, selected, onSelect, trafficBytes }: { u: AdminUser; index: number; onRefresh: () => void; onDeleted: (id: string) => void; selected: boolean; onSelect: (e: React.MouseEvent) => void; trafficBytes?: number }) {
   const [open, setOpen] = useState(false)
   const [detail, setDetail] = useState<AdminUserDetail | null>(null)
   const [loadingDetail, setLoadingDetail] = useState(false)
@@ -84,6 +84,7 @@ function UserRow({ u, index, onRefresh, onDeleted, selected, onSelect }: { u: Ad
         <td className="px-4 py-3 text-sm text-gray-700">{u.plan || '—'}</td>
         <td className="px-4 py-3 text-sm text-gray-900 font-mono">${u.balance?.toFixed(2)}</td>
         <td className="px-4 py-3 text-sm font-mono text-green-700">${(u.total_paid ?? 0).toFixed(2)}</td>
+        <td className="px-4 py-3 text-xs font-mono tabular-nums text-gray-500">{fmtBytes(trafficBytes ?? 0)}</td>
         <td className="px-4 py-3 text-xs text-gray-500">{u.source || '—'}</td>
         <td className="px-4 py-3 text-xs text-gray-500">{u.city || '—'}</td>
         <td className="px-4 py-3 text-sm">
@@ -99,7 +100,7 @@ function UserRow({ u, index, onRefresh, onDeleted, selected, onSelect }: { u: Ad
 
       {open && (
         <tr>
-          <td colSpan={12} className="px-0 py-0 border-b border-blue-100">
+          <td colSpan={13} className="px-0 py-0 border-b border-blue-100">
             <div className="bg-blue-50 px-6 py-5 space-y-5">
               {loadingDetail ? (
                 <p className="text-sm text-gray-500">Loading...</p>
@@ -292,6 +293,7 @@ export default function AdminUsers() {
   const [sortKey, setSortKey] = useState<string>('created_at')
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc')
   const [bulkLimitSaving, setBulkLimitSaving] = useState(false)
+  const [trafficMap, setTrafficMap] = useState<Map<string, number>>(new Map())
 
   function handleSort(key: string) {
     if (sortKey === key) setSortDir(d => d === 'asc' ? 'desc' : 'asc')
@@ -310,7 +312,17 @@ export default function AdminUsers() {
     }
   }
 
-  useEffect(() => { load() }, [])
+  useEffect(() => {
+    load()
+    getVpnTrafficStats().then(stats => {
+      const m = new Map<string, number>()
+      stats.forEach(s => {
+        const cur = m.get(s.user_id) ?? 0
+        m.set(s.user_id, cur + s.used_traffic_bytes)
+      })
+      setTrafficMap(m)
+    }).catch(() => {})
+  }, [])
 
   function toggleSelect(id: string, e: React.MouseEvent) {
     e.stopPropagation()
@@ -357,8 +369,14 @@ export default function AdminUsers() {
   }
 
   const sortedUsers = [...users].sort((a, b) => {
-    const av = (a as unknown as Record<string, unknown>)[sortKey] ?? ''
-    const bv = (b as unknown as Record<string, unknown>)[sortKey] ?? ''
+    let av: unknown, bv: unknown
+    if (sortKey === 'traffic') {
+      av = trafficMap.get(a.user_id) ?? 0
+      bv = trafficMap.get(b.user_id) ?? 0
+    } else {
+      av = (a as unknown as Record<string, unknown>)[sortKey] ?? ''
+      bv = (b as unknown as Record<string, unknown>)[sortKey] ?? ''
+    }
     const cmp = typeof av === 'number' && typeof bv === 'number'
       ? av - bv
       : String(av).localeCompare(String(bv))
@@ -465,6 +483,7 @@ export default function AdminUsers() {
                 <SortTh col="plan" label="Plan" />
                 <SortTh col="balance" label="Balance" />
                 <SortTh col="total_paid" label="Total paid" />
+                <SortTh col="traffic" label="VPN Traffic" />
                 <SortTh col="source" label="Source" />
                 <SortTh col="city" label="City" />
                 <SortTh col="is_active" label="Status" />
@@ -474,7 +493,7 @@ export default function AdminUsers() {
             </thead>
             <tbody className="divide-y divide-gray-200">
               {loading ? (
-                <tr><td colSpan={12} className="px-4 py-8 text-center text-gray-500">Loading...</td></tr>
+                <tr><td colSpan={13} className="px-4 py-8 text-center text-gray-500">Loading...</td></tr>
               ) : sortedUsers.map((u, i) => (
                 <UserRow
                   key={u.user_id}
@@ -484,6 +503,7 @@ export default function AdminUsers() {
                   onDeleted={(id) => setUsers(prev => prev.filter(x => x.user_id !== id))}
                   selected={selected.has(u.user_id)}
                   onSelect={(e) => toggleSelect(u.user_id, e)}
+                  trafficBytes={trafficMap.get(u.user_id)}
                 />
               ))}
             </tbody>

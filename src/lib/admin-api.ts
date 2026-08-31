@@ -671,6 +671,18 @@ export function setUserVpnTrafficLimit(userId: string, limitGb: number) {
   )
 }
 
+export interface VpnTrafficStat {
+  user_id: string
+  vpn_id: string
+  used_traffic_bytes: number
+  lifetime_traffic_bytes: number
+  traffic_limit_bytes: number
+}
+
+export function getVpnTrafficStats() {
+  return adminReq<VpnTrafficStat[]>('/v1/admin/vpn-traffic-stats')
+}
+
 export function getSupportTicket(ticketId: string) {
   return adminReq<SupportTicketDetail>(`/v1/admin/support/${ticketId}`)
 }
