@@ -84,7 +84,7 @@ function UserRow({ u, index, onRefresh, onDeleted, selected, onSelect, trafficBy
         <td className="px-4 py-3 text-sm text-gray-700">{u.plan || '—'}</td>
         <td className="px-4 py-3 text-sm text-gray-900 font-mono">${u.balance?.toFixed(2)}</td>
         <td className="px-4 py-3 text-sm font-mono text-green-700">${(u.total_paid ?? 0).toFixed(2)}</td>
-        <td className="px-4 py-3 text-xs font-mono tabular-nums text-gray-500">{fmtBytes(trafficBytes ?? 0)}</td>
+        <td className="px-4 py-3 text-xs font-mono tabular-nums text-gray-500" title="VPN traffic this month">{fmtBytes(trafficBytes ?? 0)}</td>
         <td className="px-4 py-3 text-xs text-gray-500">{u.source || '—'}</td>
         <td className="px-4 py-3 text-xs text-gray-500">{u.city || '—'}</td>
         <td className="px-4 py-3 text-sm">
@@ -161,9 +161,9 @@ function UserRow({ u, index, onRefresh, onDeleted, selected, onSelect, trafficBy
                               <div>{v.status} · expires {v.expires_at ? new Date(v.expires_at).toLocaleDateString() : '—'}</div>
                               {(v.used_traffic_bytes !== undefined) && (
                                 <div className="text-gray-400">
-                                  Traffic: <span className="font-mono text-gray-600">{fmtBytes(v.used_traffic_bytes)}</span>
-                                  {v.lifetime_traffic_bytes ? <span> (lifetime: {fmtBytes(v.lifetime_traffic_bytes)})</span> : null}
-                                  {v.traffic_limit_bytes ? <span className="text-orange-500"> / limit: {fmtBytes(v.traffic_limit_bytes)}</span> : <span className="text-green-600"> / no limit</span>}
+                                  Month: <span className="font-mono text-gray-600">{fmtBytes(v.used_traffic_bytes)}</span>
+                                  {v.lifetime_traffic_bytes ? <span> · Lifetime: <span className="font-mono">{fmtBytes(v.lifetime_traffic_bytes)}</span></span> : null}
+                                  {v.traffic_limit_bytes ? <span className="text-orange-500"> · limit: {fmtBytes(v.traffic_limit_bytes)}</span> : null}
                                 </div>
                               )}
                             </div>
