@@ -142,6 +142,11 @@ export interface Esim {
   expires_at: string
 }
 
+export interface VpnTrafficHistoryEntry {
+  period: string    // "2026-08"
+  bytes: number | null  // null = month not closed yet
+}
+
 export interface VpnSubscription {
   vpn_id: string
   plan: string
@@ -152,6 +157,7 @@ export interface VpnSubscription {
   lifetime_traffic_bytes?: number
   traffic_limit_bytes?: number
   remnawave_uuid?: string
+  traffic_history?: VpnTrafficHistoryEntry[]
 }
 
 export interface VirtualCard {

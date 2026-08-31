@@ -160,10 +160,21 @@ function UserRow({ u, index, onRefresh, onDeleted, selected, onSelect, trafficBy
                             <div key={v.vpn_id} className="text-xs text-gray-600 space-y-0.5">
                               <div>{v.status} · expires {v.expires_at ? new Date(v.expires_at).toLocaleDateString() : '—'}</div>
                               {(v.used_traffic_bytes !== undefined) && (
-                                <div className="text-gray-400">
-                                  Month: <span className="font-mono text-gray-600">{fmtBytes(v.used_traffic_bytes)}</span>
-                                  {v.lifetime_traffic_bytes ? <span> · Lifetime: <span className="font-mono">{fmtBytes(v.lifetime_traffic_bytes)}</span></span> : null}
-                                  {v.traffic_limit_bytes ? <span className="text-orange-500"> · limit: {fmtBytes(v.traffic_limit_bytes)}</span> : null}
+                                <div className="text-gray-400 space-y-0.5">
+                                  <div>
+                                    Month: <span className="font-mono text-gray-600">{fmtBytes(v.used_traffic_bytes)}</span>
+                                    {v.lifetime_traffic_bytes ? <span> · Lifetime: <span className="font-mono">{fmtBytes(v.lifetime_traffic_bytes)}</span></span> : null}
+                                    {v.traffic_limit_bytes ? <span className="text-orange-500"> · limit: {fmtBytes(v.traffic_limit_bytes)}</span> : null}
+                                  </div>
+                                  {v.traffic_history && v.traffic_history.length > 0 && (
+                                    <div className="text-gray-400 text-[11px]">
+                                      {v.traffic_history.map(h => (
+                                        <span key={h.period} className="mr-2">
+                                          {h.period}: <span className="font-mono text-gray-500">{h.bytes !== null ? fmtBytes(h.bytes) : '...'}</span>
+                                        </span>
+                                      ))}
+                                    </div>
+                                  )}
                                 </div>
                               )}
                             </div>
