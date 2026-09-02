@@ -71,18 +71,39 @@ const FK_METHODS = [
   { id: 14,  label: 'USDT ERC20',  icon: <UsdtErc20Icon />,  min_usd: 10 },
 ]
 
+async function createInvoiceGet(
+  provider: string,
+  amount_usd: number,
+  after: string | undefined,
+  amount_rub?: number,
+  payment_system_id?: number,
+): Promise<{ payment_url: string; payment_id: string }> {
+  const origin = window.location.origin
+  const afterParam = after ? `&after=${after}` : ''
+  const successUrl = `${origin}/dashboard/billing/topup/result?status=success&provider=${provider}${afterParam}`
+  const failUrl = `${origin}/dashboard/billing/topup/result?status=failed&provider=${provider}`
+  const params = new URLSearchParams({ provider, success_url: successUrl, fail_url: failUrl })
+  if (amount_rub !== undefined) params.set('amount_rub', String(amount_rub))
+  else params.set('amount_usd', String(amount_usd))
+  if (payment_system_id !== undefined) params.set('payment_system_id', String(payment_system_id))
+  const res = await fetch(`/api/action/create-invoice?${params}`)
+  const data = await res.json()
+  if (!res.ok) throw new Error(data?.detail || 'Payment creation error')
+  return data
+}
+
 export function TopupFlow({
   providers,
   currency = 'USD',
   rates = { EUR: 0.92, RUB: 90 },
   defaultAmount,
-  createInvoice,
+  after,
 }: {
   providers: PaymentProvider[]
   currency?: string
   rates?: FxRates
   defaultAmount?: string
-  createInvoice: (provider: string, amount_usd: number, amount_rub?: number, payment_system_id?: number) => Promise<{ payment_url: string; payment_id: string }>
+  after?: string
 }) {
   const locale = useLocale()
   const [rawAmount, setRawAmount] = useState(defaultAmount ?? '')
@@ -118,7 +139,7 @@ export function TopupFlow({
     startTransition(async () => {
       try {
         const amountRub = currency === 'RUB' ? numAmount : undefined
-        const result = await createInvoice(provider.name, Math.round(amountUsd * 100) / 100, amountRub, paymentSystemId)
+        const result = await createInvoiceGet(provider.name, Math.round(amountUsd * 100) / 100, after, amountRub, paymentSystemId)
         if (result.payment_url) {
           setPaymentUrl(result.payment_url)
           window.open(result.payment_url, '_blank')

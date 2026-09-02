@@ -1,36 +1,10 @@
 import { redirect } from 'next/navigation'
-import { headers } from 'next/headers'
 import { getCurrentUser } from '@/lib/auth'
-import { api, apiFetch } from '@/lib/api'
+import { api } from '@/lib/api'
 import { TopupFlow } from '@/components/TopupFlow'
-import { getLocale, getDateLocale } from '@/lib/i18n'
+import { getLocale } from '@/lib/i18n'
 import { t } from '@/lib/t'
 import type { PaymentProvider } from '@/lib/types'
-
-// 'after' is the first arg so callers can use .bind(null, after) — Next.js 15 requires
-// Server Actions passed to Client Components to be serializable (no plain closures).
-async function createInvoice(after: string | undefined, provider: string, amount_usd: number, amount_rub?: number, payment_system_id?: number) {
-  'use server'
-  const hdrs = await headers()
-  const host = hdrs.get('x-real-host') || hdrs.get('x-forwarded-host') || 'imba.live'
-  const baseUrl = `https://${host}`
-  const afterParam = after ? `&after=${after}` : ''
-  const success_url = `${baseUrl}/dashboard/billing/topup/result?status=success&provider=${provider}${afterParam}`
-  const fail_url = `${baseUrl}/dashboard/billing/topup/result?status=failed&provider=${provider}`
-  const body: Record<string, unknown> = amount_rub !== undefined
-    ? { provider, amount_rub, success_url, fail_url }
-    : { provider, amount_usd, success_url, fail_url }
-  if (payment_system_id) body.payment_system_id = payment_system_id
-  try {
-    const result = await apiFetch<{ payment_id: string; payment_url: string }>(
-      '/v1/payments/invoice',
-      { method: 'POST', body: JSON.stringify(body) },
-    )
-    return { payment_id: result.payment_id, payment_url: result.payment_url }
-  } catch (e) {
-    throw new Error(e instanceof Error ? e.message : 'Payment creation error')
-  }
-}
 
 interface Props {
   searchParams: Promise<{ after?: string; amount_usd?: string }>
@@ -78,7 +52,7 @@ export default async function TopupPage({ searchParams }: Props) {
         currency={cur}
         rates={rates}
         defaultAmount={defaultAmount}
-        createInvoice={createInvoice.bind(null, after) as (provider: string, amount_usd: number, amount_rub?: number, payment_system_id?: number) => Promise<{ payment_url: string; payment_id: string }>}
+        after={after}
       />
     </div>
   )
