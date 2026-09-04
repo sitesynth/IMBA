@@ -42,7 +42,11 @@ function MagicLinkVerify() {
   if (error) {
     return (
       <div className="panel" style={{ textAlign: 'center' }}>
-        <div className="mb-4 text-2xl">⏱️</div>
+        <div className="mb-4 flex justify-center">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="opacity-40">
+            <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+          </svg>
+        </div>
         <p className="font-bold text-sm mb-2">Ссылка устарела</p>
         <p className="text-sm text-ink/60 mb-6">{error}</p>
         <Link href="/auth/login" className="pill pill-ink inline-flex">Запросить новую →</Link>
@@ -52,7 +56,11 @@ function MagicLinkVerify() {
 
   return (
     <div className="panel" style={{ textAlign: 'center' }}>
-      <div className="mb-4 text-2xl">🔑</div>
+      <div className="mb-4 flex justify-center">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="opacity-40 animate-pulse">
+            <circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/>
+          </svg>
+        </div>
       <p className="font-bold text-sm">Вхожу в аккаунт…</p>
     </div>
   )
