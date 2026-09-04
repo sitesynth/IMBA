@@ -1,9 +1,9 @@
 'use client'
-import { useEffect, useRef, useState } from 'react'
+import { Suspense, useEffect, useRef, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 
-export default function MagicLinkPage() {
+function MagicLinkVerify() {
   const router = useRouter()
   const params = useSearchParams()
   const token = params.get('token')
@@ -55,5 +55,17 @@ export default function MagicLinkPage() {
       <div className="mb-4 text-2xl">🔑</div>
       <p className="font-bold text-sm">Вхожу в аккаунт…</p>
     </div>
+  )
+}
+
+export default function MagicLinkPage() {
+  return (
+    <Suspense fallback={
+      <div className="panel" style={{ textAlign: 'center' }}>
+        <p className="font-bold text-sm">Loading…</p>
+      </div>
+    }>
+      <MagicLinkVerify />
+    </Suspense>
   )
 }
