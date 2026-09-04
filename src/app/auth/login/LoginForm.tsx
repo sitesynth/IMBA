@@ -1,10 +1,9 @@
 'use client'
 import Link from 'next/link'
-import { useActionState } from 'react'
+import { useActionState, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { login } from '@/lib/auth'
 import { GoogleButton, AuthError, OrDivider } from '@/components/GoogleButton'
-import { VKLoginButton } from '@/components/VKLoginButton'
 
 export function LoginForm() {
   const [state, action, pending] = useActionState(login, undefined)
@@ -17,7 +16,7 @@ export function LoginForm() {
       <AuthError code={errorCode} />
       <div className="space-y-2.5">
         <GoogleButton />
-        <VKLoginButton />
+        <MagicLinkSection />
       </div>
       <OrDivider />
       <form action={action} className="space-y-4">
@@ -40,6 +39,66 @@ export function LoginForm() {
         </button>
       </form>
     </div>
+  )
+}
+
+function MagicLinkSection() {
+  const [email, setEmail] = useState('')
+  const [status, setStatus] = useState<'idle' | 'loading' | 'sent' | 'error'>('idle')
+  const [errMsg, setErrMsg] = useState('')
+
+  async function handleSend(e: React.FormEvent) {
+    e.preventDefault()
+    if (!email.trim()) return
+    setStatus('loading')
+    try {
+      const res = await fetch('/api/auth/magic-link', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'request', email: email.trim() }),
+      })
+      if (res.ok) {
+        setStatus('sent')
+      } else {
+        const err = await res.json().catch(() => ({}))
+        setErrMsg(err.error || 'Ошибка. Попробуй ещё раз.')
+        setStatus('error')
+      }
+    } catch {
+      setErrMsg('Ошибка соединения.')
+      setStatus('error')
+    }
+  }
+
+  if (status === 'sent') {
+    return (
+      <div className="border-2 border-ink rounded-2xl px-4 py-3 text-sm font-bold text-center" style={{ background: '#FFF9CC' }}>
+        📬 Письмо отправлено! Проверь почту — ссылка действует 15 минут.
+      </div>
+    )
+  }
+
+  return (
+    <form onSubmit={handleSend} className="flex gap-2">
+      <input
+        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        placeholder="Email для входа без пароля"
+        required
+        className="flex-1 px-4 py-3 border-2 border-ink rounded-2xl font-semibold text-sm bg-cream focus:bg-paper transition-colors min-w-0"
+      />
+      <button
+        type="submit"
+        disabled={status === 'loading'}
+        className="pill pill-ink whitespace-nowrap disabled:opacity-60 shrink-0"
+      >
+        {status === 'loading' ? '…' : '→'}
+      </button>
+      {status === 'error' && (
+        <p className="text-red-600 text-xs font-bold mt-1 absolute">{errMsg}</p>
+      )}
+    </form>
   )
 }
 
