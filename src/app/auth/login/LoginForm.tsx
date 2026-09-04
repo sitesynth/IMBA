@@ -74,7 +74,7 @@ function MagicLinkSection() {
 
   if (status === 'sent') {
     return (
-      <div className="mt-1 border-2 border-ink rounded-full px-5 py-3 text-sm font-bold text-center flex items-center justify-center gap-2" style={{ background: '#FFF9CC' }}>
+      <div className="mt-1 border-2 border-ink rounded-full px-5 py-3 text-xs font-semibold text-center flex items-center justify-center gap-2" style={{ background: '#FFF9CC' }}>
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <rect x="2" y="4" width="20" height="16" rx="2"/>
           <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
@@ -100,7 +100,11 @@ function MagicLinkSection() {
           disabled={status === 'loading'}
           className="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-ink text-cream flex items-center justify-center disabled:opacity-60"
         >
-          {status === 'loading' ? '…' : '→'}
+          {status === 'loading' ? '…' : (
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M3 8h10M9 4l4 4-4 4"/>
+            </svg>
+          )}
         </button>
       </form>
       {status === 'error' && (
