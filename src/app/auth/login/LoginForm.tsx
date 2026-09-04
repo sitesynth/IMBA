@@ -4,6 +4,7 @@ import { useActionState, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { login } from '@/lib/auth'
 import { GoogleButton, AuthError, OrDivider } from '@/components/GoogleButton'
+import { VKLoginButton } from '@/components/VKLoginButton'
 
 export function LoginForm() {
   const [state, action, pending] = useActionState(login, undefined)
@@ -16,6 +17,7 @@ export function LoginForm() {
       <AuthError code={errorCode} />
       <div className="space-y-2.5">
         <GoogleButton />
+        <VKLoginButton />
         <MagicLinkSection />
       </div>
       <OrDivider />
