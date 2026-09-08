@@ -66,10 +66,12 @@ const UsdtErc20Icon = () => (
 
 const FK_METHODS = [
   { id: 36,  label: 'Card RU',     icon: <MirIcon />,        min_usd: 0 },
-  { id: 42,  label: 'SBP',         icon: <SbpIcon />,        min_usd: 0 },
   { id: 15,  label: 'USDT TRC20',  icon: <UsdtTrc20Icon />,  min_usd: 2.5 },
   { id: 14,  label: 'USDT ERC20',  icon: <UsdtErc20Icon />,  min_usd: 10 },
 ]
+
+// CardLink SBP — separate provider, shown alongside FreeKassa methods
+const CL_SBP = { label: 'СБП', icon: <SbpIcon />, provider: 'cardlink' }
 
 async function createInvoiceGet(
   provider: string,
@@ -237,6 +239,45 @@ export function TopupFlow({
                       </div>
                     </div>
                     <div className="grid grid-cols-2 gap-2">
+                      {/* СБП через CardLink */}
+                      {(() => {
+                        const key = `cardlink_sbp`
+                        const isLoading = paying === key
+                        const btnDisabled = outOfRange || paying !== null
+                        return (
+                          <button
+                            key="cardlink_sbp"
+                            onClick={() => {
+                              if (btnDisabled) return
+                              setError(null)
+                              setPaymentUrl(null)
+                              setPaying(key)
+                              startTransition(async () => {
+                                try {
+                                  const amountRub = currency === 'RUB' ? numAmount : undefined
+                                  const result = await createInvoiceGet('cardlink', Math.round(amountUsd * 100) / 100, after, amountRub)
+                                  if (result.payment_url) {
+                                    setPaymentUrl(result.payment_url)
+                                    window.open(result.payment_url, '_blank')
+                                  }
+                                } catch (e: unknown) {
+                                  setError((e as Error).message || t('topup.error', locale))
+                                } finally {
+                                  setPaying(null)
+                                }
+                              })
+                            }}
+                            disabled={btnDisabled}
+                            className="flex flex-col items-center gap-1.5 py-3 px-2 rounded-2xl border-2 border-ink font-extrabold text-sm transition-all duration-150 active:scale-95 hover:scale-[1.03] hover:shadow-md disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-none"
+                            style={{ background: 'var(--paper)' }}
+                          >
+                            <span className="h-7 flex items-center justify-center">
+                              {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : CL_SBP.icon}
+                            </span>
+                            <span className="text-xs leading-tight text-center">{CL_SBP.label}</span>
+                          </button>
+                        )
+                      })()}
                       {FK_METHODS.map((m) => {
                         const key = `${p.name}_${m.id}`
                         const isLoading = paying === key
