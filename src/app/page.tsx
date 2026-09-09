@@ -27,6 +27,17 @@ const FALLBACK_SERVERS: VpnServer[] = [
   { id: 'us', flag: '🇺🇸', city: 'New York', country: 'US', ping: 121 },
 ]
 
+async function fetchMinVpnPriceUsd(): Promise<number | null> {
+  try {
+    const apiUrl = process.env.IMBA_API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? 'https://api.imba.live'
+    const res = await fetch(`${apiUrl}/v1/me/vpn/tariffs`, { next: { revalidate: 300 } })
+    if (!res.ok) return null
+    const tariffs = await res.json() as Array<{ price_usd: number }>
+    const prices = tariffs.map(t => t.price_usd).filter(p => p > 0)
+    return prices.length ? Math.min(...prices) : null
+  } catch { return null }
+}
+
 async function fetchVpnServers(): Promise<VpnServer[]> {
   try {
     const apiUrl = process.env.IMBA_API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? 'https://api.imba.live'
@@ -46,7 +57,7 @@ async function fetchVpnServers(): Promise<VpnServer[]> {
 }
 
 export default async function HomePage() {
-  const vpnServers = await fetchVpnServers()
+  const [vpnServers, minVpnPriceUsd] = await Promise.all([fetchVpnServers(), fetchMinVpnPriceUsd()])
   return (
     <>
     <div className="min-h-screen flex flex-col gap-1.5" style={{ background: 'var(--ink)', padding: '5px' }}>
@@ -345,10 +356,11 @@ export default async function HomePage() {
         <h2 className="display text-3xl md:text-7xl text-center mb-3 md:mb-4">Simple pricing</h2>
         <p className="text-center text-sm md:text-lg font-semibold text-ink/60 mb-8 md:mb-14">Pay only for what you use</p>
 
-        <div className="grid md:grid-cols-2 gap-4 md:gap-6">
+        <div className="grid md:grid-cols-3 gap-4 md:gap-6">
           {[
             { name: 'Start', price: 'Free', bg: 'var(--paper)', feats: ['VPN: 1 week free', { text: 'eSIM World 500 MB', soon: true as const }, { text: 'Virtual card 7 days', soon: true as const }], cta: 'Get started' },
             { name: 'IMBA COMBO', price: '$9.99/mo', bg: 'var(--yellow)', hot: true, soon: true, feats: ['VPN Pro unlimited', { text: 'eSIM 15 GB worldwide', soon: true as const }, { text: '3 virtual cards', soon: true as const }], cta: 'Coming soon' },
+            { name: 'VPN Pro', price: minVpnPriceUsd ? `from $${minVpnPriceUsd.toFixed(2)}/mo` : 'from $1.99/mo', bg: 'var(--blue-100)', feats: ['Europe, US, Asia', 'No logs or slowdowns', 'Unlimited traffic', 'Any device', 'Bypass censorship'], cta: 'Get VPN' },
           ].map((p) => (
             <div key={p.name} className="panel relative flex flex-col p-5 md:p-7" style={{ background: p.bg }}>
               {p.soon ? (
