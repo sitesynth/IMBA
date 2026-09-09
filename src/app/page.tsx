@@ -8,6 +8,7 @@ import { RainbowImbaLogo } from '@/components/RainbowImbaLogo'
 import { FaqAccordion } from '@/components/FaqAccordion'
 import { SiteHeader } from '@/components/SiteHeader'
 import { Logo } from '@/components/Logo'
+import { PublicSupportWidget } from '@/components/PublicSupportWidget'
 import type { Metadata } from 'next'
 import { SITE_URL } from '@/lib/site'
 import { CITY_EN, COUNTRY_CODE_EN, FLAG_BY_CODE } from '@/lib/geo-names'
@@ -47,6 +48,7 @@ async function fetchVpnServers(): Promise<VpnServer[]> {
 export default async function HomePage() {
   const vpnServers = await fetchVpnServers()
   return (
+    <>
     <div className="min-h-screen flex flex-col gap-1.5" style={{ background: 'var(--ink)', padding: '5px' }}>
 
       <Marquee
@@ -471,5 +473,7 @@ export default async function HomePage() {
         </div>
       </footer>
     </div>
+    <PublicSupportWidget />
+    </>
   )
 }

@@ -352,6 +352,12 @@ const dict = {
   'support.event_closed': { ru: 'Тикет закрыт', en: 'Ticket closed' },
   'support.event_closed_sub': { ru: 'Напиши сюда, если понадобится ещё что-то — тикет откроется снова.', en: 'Write here if you need anything else and the ticket reopens.' },
   'support.event_reopened': { ru: 'Тикет открыт снова', en: 'Ticket reopened' },
+  'support.guest_identify': { ru: 'Как к тебе обращаться?', en: 'How should we address you?' },
+  'support.guest_identify_sub': { ru: 'Чтобы мы могли ответить', en: 'So we can get back to you' },
+  'support.guest_name': { ru: 'Имя', en: 'Name' },
+  'support.guest_contact': { ru: 'Email или Telegram (@username)', en: 'Email or Telegram (@username)' },
+  'support.guest_next': { ru: 'Далее →', en: 'Next →' },
+  'support.guest_greeting': { ru: 'Привет', en: 'Hi' },
 } as const
 
 export type TKey = keyof typeof dict
