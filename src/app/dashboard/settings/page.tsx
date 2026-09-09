@@ -4,6 +4,7 @@ import { Mail, User as UserIcon, Calendar, Globe } from 'lucide-react'
 import { getCurrentUser, logout } from '@/lib/auth'
 import { apiFetch } from '@/lib/api'
 import { CurrencySelector } from '@/components/CurrencySelector'
+import { OpenSupportButton } from '@/components/OpenSupportButton'
 import { getLocale } from '@/lib/i18n'
 import { t } from '@/lib/t'
 
@@ -77,12 +78,7 @@ export default async function SettingsPage() {
           {t('settings.support_desc', locale)}
         </p>
         <div className="flex flex-wrap gap-2">
-          <a href="mailto:hello@imba.live" className="pill pill-ink pill-sm">
-            {t('settings.contact_support', locale)}
-          </a>
-          <a href="https://telegram.dog/imbasupport" className="pill pill-paper pill-sm">
-            Telegram
-          </a>
+          <OpenSupportButton label={t('settings.contact_support', locale)} />
         </div>
       </div>
 
