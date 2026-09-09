@@ -345,7 +345,7 @@ export default async function HomePage() {
         <h2 className="display text-3xl md:text-7xl text-center mb-3 md:mb-4">Simple pricing</h2>
         <p className="text-center text-sm md:text-lg font-semibold text-ink/60 mb-8 md:mb-14">Pay only for what you use</p>
 
-        <div className="grid md:grid-cols-2 gap-4 md:gap-6 max-w-4xl mx-auto">
+        <div className="grid md:grid-cols-2 gap-4 md:gap-6">
           {[
             { name: 'Start', price: 'Free', bg: 'var(--paper)', feats: ['VPN: 1 week free', { text: 'eSIM World 500 MB', soon: true as const }, { text: 'Virtual card 7 days', soon: true as const }], cta: 'Get started' },
             { name: 'IMBA COMBO', price: '$9.99/mo', bg: 'var(--yellow)', hot: true, soon: true, feats: ['VPN Pro unlimited', { text: 'eSIM 15 GB worldwide', soon: true as const }, { text: '3 virtual cards', soon: true as const }], cta: 'Coming soon' },
