@@ -347,27 +347,33 @@ export default async function HomePage() {
 
         <div className="grid md:grid-cols-2 gap-4 md:gap-6 max-w-4xl mx-auto">
           {[
-            { name: 'Start', price: 'Free', bg: 'var(--paper)', feats: ['1 eSIM profile', 'VPN as separate add-on', '1 virtual card'], cta: 'Get started' },
-            { name: 'IMBA COMBO', price: '$9.99/mo', bg: 'var(--yellow)', hot: true, soon: true, feats: ['VPN Pro included (50+ servers)', '3 eSIM profiles', '3 virtual cards', 'Everything from day one'], cta: 'Coming soon' },
+            { name: 'Start', price: 'Free', bg: 'var(--paper)', feats: ['VPN: 1 week free', { text: 'eSIM World 500 MB', soon: true as const }, { text: 'Virtual card 7 days', soon: true as const }], cta: 'Get started' },
+            { name: 'IMBA COMBO', price: '$9.99/mo', bg: 'var(--yellow)', hot: true, soon: true, feats: ['VPN Pro unlimited', { text: 'eSIM 15 GB worldwide', soon: true as const }, { text: '3 virtual cards', soon: true as const }], cta: 'Coming soon' },
           ].map((p) => (
-            <div key={p.name} className={`panel relative flex flex-col p-5 md:p-7${p.hot ? ' mt-4 md:mt-0' : ''}`} style={{ background: p.bg }}>
+            <div key={p.name} className="panel relative flex flex-col p-5 md:p-7" style={{ background: p.bg }}>
               {p.soon ? (
-                <span className="chip bg-ink absolute -top-6 left-1/2 -translate-x-1/2" style={{ color: '#fff' }}>
+                <span className="chip bg-ink self-start mb-3" style={{ color: '#fff' }}>
                   SOON
                 </span>
               ) : p.hot && (
-                <span className="chip bg-ink absolute -top-6 left-1/2 -translate-x-1/2 flex items-center gap-1" style={{ color: '#fff' }}>
+                <span className="chip bg-ink self-start mb-3 flex items-center gap-1" style={{ color: '#fff' }}>
                   <FireIcon size={28} /> Most popular
                 </span>
               )}
               <div className="display text-lg md:text-xl mb-1 md:mb-2">{p.name}</div>
               <div className="display text-2xl md:text-4xl mb-4 md:mb-6">{p.price}</div>
               <ul className="space-y-2.5 font-semibold text-sm mb-7 flex-1">
-                {p.feats.map((f) => (
-                  <li key={f} className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-ink" /> {f}
-                  </li>
-                ))}
+                {p.feats.map((f) => {
+                  const text = typeof f === 'string' ? f : f.text
+                  const isSoon = typeof f !== 'string' && f.soon
+                  return (
+                    <li key={text} className="flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-ink flex-shrink-0" />
+                      <span>{text}</span>
+                      {isSoon && <span className="ml-1 text-[10px] font-extrabold uppercase tracking-wide px-1.5 py-0.5 rounded-full border border-ink/20 text-ink/40">soon</span>}
+                    </li>
+                  )
+                })}
               </ul>
               {p.soon ? (
                 <span className="pill w-full justify-center pill-ink opacity-40 cursor-not-allowed select-none">
