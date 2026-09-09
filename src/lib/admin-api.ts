@@ -104,6 +104,7 @@ export interface SupportTicket {
   ticket_id: string
   user_id?: string
   email?: string
+  name?: string
   status: string
   subject: string
   messages?: number

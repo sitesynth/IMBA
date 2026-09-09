@@ -203,7 +203,9 @@ export default function AdminSupport() {
                     {t.status}
                   </span>
                 </div>
-                <div className="text-xs text-gray-500 truncate">{t.email || t.user_id}</div>
+                <div className="text-xs text-gray-500 truncate">
+                  {t.name ? `${t.name} · ` : ''}{t.email || t.user_id || 'Guest'}
+                </div>
                 <div className="text-[10px] text-gray-400 mt-1">
                   {new Date(t.updated_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
                 </div>
