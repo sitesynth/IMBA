@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { ChevronDown, ChevronUp } from 'lucide-react'
-import { getUsers, getUser, addBalance, toggleUser, deleteUser, setUserVpnTrafficLimit, getVpnTrafficStats, AdminUser, AdminUserDetail, VpnTrafficStat } from '@/lib/admin-api'
+import { getUsers, getUser, addBalance, toggleUser, deleteUser, setUserVpnTrafficLimit, toggleVpnUnlimited, getVpnTrafficStats, AdminUser, AdminUserDetail, VpnTrafficStat } from '@/lib/admin-api'
 
 function fmtBytes(bytes: number): string {
   if (!bytes) return '—'
@@ -205,6 +205,17 @@ function UserRow({ u, index, onRefresh, onDeleted, selected, onSelect, trafficBy
                       className="px-3 py-1.5 bg-yellow-100 text-yellow-700 rounded-lg text-xs font-semibold hover:bg-yellow-200"
                     >
                       {u.is_active ? 'Block' : 'Unblock'}
+                    </button>
+                    <button
+                      onClick={async e => { e.stopPropagation(); await toggleVpnUnlimited(u.user_id); setDetail(await getUser(u.user_id)) }}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold ${
+                        detail?.vpn_unlimited
+                          ? 'bg-purple-600 text-white hover:bg-purple-700'
+                          : 'bg-purple-100 text-purple-700 hover:bg-purple-200'
+                      }`}
+                      title="Исключение из стандартного лимита 300ГБ/мес — переживает продления и покупки"
+                    >
+                      {detail?.vpn_unlimited ? '✓ Unlimited' : 'Unlimited'}
                     </button>
                     {detail?.vpns?.length > 0 && (() => {
                       const hasLimit = detail.vpns.some(v => (v.traffic_limit_bytes ?? 0) > 0)

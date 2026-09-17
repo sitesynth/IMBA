@@ -68,6 +68,7 @@ export interface AdminUser {
 
 export interface AdminUserDetail extends AdminUser {
   is_admin: boolean
+  vpn_unlimited: boolean
   payments: Payment[]
   esims: Esim[]
   vpns: VpnSubscription[]
@@ -675,6 +676,13 @@ export function setUserVpnTrafficLimit(userId: string, limitGb: number) {
   return adminReq<{ ok: boolean; updated: number; limit_bytes: number }>(
     `/v1/admin/users/${userId}/vpn-traffic-limit`,
     { method: 'POST', body: JSON.stringify({ limit_gb: limitGb }) },
+  )
+}
+
+export function toggleVpnUnlimited(userId: string) {
+  return adminReq<{ ok: boolean; vpn_unlimited: boolean }>(
+    `/v1/admin/users/${userId}/vpn-unlimited`,
+    { method: 'POST' },
   )
 }
 
