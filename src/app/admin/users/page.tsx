@@ -206,17 +206,27 @@ function UserRow({ u, index, onRefresh, onDeleted, selected, onSelect, trafficBy
                     >
                       {u.is_active ? 'Block' : 'Unblock'}
                     </button>
-                    <button
-                      onClick={async e => { e.stopPropagation(); await toggleVpnUnlimited(u.user_id); setDetail(await getUser(u.user_id)) }}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold ${
-                        detail?.vpn_unlimited
-                          ? 'bg-purple-600 text-white hover:bg-purple-700'
-                          : 'bg-purple-100 text-purple-700 hover:bg-purple-200'
-                      }`}
+                    <label
+                      className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold bg-gray-50 border border-gray-200 cursor-pointer"
+                      onClick={e => e.stopPropagation()}
                       title="Исключение из стандартного лимита 300ГБ/мес — переживает продления и покупки"
                     >
-                      {detail?.vpn_unlimited ? '✓ Unlimited' : 'Unlimited'}
-                    </button>
+                      <span className="text-gray-700">Unlimited</span>
+                      <button
+                        role="switch"
+                        aria-checked={!!detail?.vpn_unlimited}
+                        onClick={async () => { await toggleVpnUnlimited(u.user_id); setDetail(await getUser(u.user_id)) }}
+                        className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
+                          detail?.vpn_unlimited ? 'bg-purple-600' : 'bg-gray-300'
+                        }`}
+                      >
+                        <span
+                          className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${
+                            detail?.vpn_unlimited ? 'translate-x-[18px]' : 'translate-x-0.5'
+                          }`}
+                        />
+                      </button>
+                    </label>
                     {detail?.vpns?.length > 0 && (() => {
                       const hasLimit = detail.vpns.some(v => (v.traffic_limit_bytes ?? 0) > 0)
                       return hasLimit ? (
