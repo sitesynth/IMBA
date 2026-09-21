@@ -7,7 +7,7 @@ import { getAdminToken } from '@/lib/admin-api'
 const VPN_NODES = [
   { host: '31.70.101.181', city: '🇩🇪 Berlin' },
   { host: '38.19.201.176', city: '🇵🇹 Lisbon' },
-  { host: '209.151.155.228', city: '🇺🇸 New York' },
+  { host: '155.103.216.71', city: '🇺🇸 Jacksonville' },
 ]
 
 // Route through the Next.js proxy (/api/v1/…) to avoid CORS and inject auth
