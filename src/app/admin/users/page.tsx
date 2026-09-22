@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { ChevronDown, ChevronUp } from 'lucide-react'
-import { getUsers, getUser, addBalance, toggleUser, deleteUser, setUserVpnTrafficLimit, getVpnTrafficStats, AdminUser, AdminUserDetail, VpnTrafficStat } from '@/lib/admin-api'
+import { getUsers, getUser, addBalance, toggleUser, deleteUser, toggleVpnUnlimited, getVpnTrafficStats, AdminUser, AdminUserDetail, VpnTrafficStat } from '@/lib/admin-api'
 
 function fmtBytes(bytes: number): string {
   if (!bytes) return '—'
@@ -206,26 +206,27 @@ function UserRow({ u, index, onRefresh, onDeleted, selected, onSelect, trafficBy
                     >
                       {u.is_active ? 'Block' : 'Unblock'}
                     </button>
-                    {detail?.vpns?.length > 0 && (() => {
-                      const hasLimit = detail.vpns.some(v => (v.traffic_limit_bytes ?? 0) > 0)
-                      return hasLimit ? (
-                        <button
-                          onClick={async e => { e.stopPropagation(); await setUserVpnTrafficLimit(u.user_id, 0); setDetail(await getUser(u.user_id)) }}
-                          className="px-3 py-1.5 bg-green-100 text-green-700 rounded-lg text-xs font-semibold hover:bg-green-200"
-                          title="Снять лимит трафика"
-                        >
-                          Remove limit
-                        </button>
-                      ) : (
-                        <button
-                          onClick={async e => { e.stopPropagation(); await setUserVpnTrafficLimit(u.user_id, 100); setDetail(await getUser(u.user_id)) }}
-                          className="px-3 py-1.5 bg-orange-100 text-orange-700 rounded-lg text-xs font-semibold hover:bg-orange-200"
-                          title="Ограничить трафик до 100 GB"
-                        >
-                          Limit 100GB
-                        </button>
-                      )
-                    })()}
+                    <label
+                      className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold bg-gray-50 border border-gray-200 cursor-pointer"
+                      onClick={e => e.stopPropagation()}
+                      title="Исключение из стандартного лимита 300ГБ/мес — переживает продления и покупки"
+                    >
+                      <span className="text-gray-700">Unlimited</span>
+                      <button
+                        role="switch"
+                        aria-checked={!!detail?.vpn_unlimited}
+                        onClick={async () => { await toggleVpnUnlimited(u.user_id); setDetail(await getUser(u.user_id)) }}
+                        className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
+                          detail?.vpn_unlimited ? 'bg-purple-600' : 'bg-gray-300'
+                        }`}
+                      >
+                        <span
+                          className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${
+                            detail?.vpn_unlimited ? 'translate-x-[18px]' : 'translate-x-0.5'
+                          }`}
+                        />
+                      </button>
+                    </label>
                     <button
                       onClick={e => { e.stopPropagation(); setShowDelete(true); setDeleteError('') }}
                       className="px-3 py-1.5 bg-red-100 text-red-700 rounded-lg text-xs font-semibold hover:bg-red-200"
@@ -303,7 +304,6 @@ export default function AdminUsers() {
   const [saving, setSaving] = useState(false)
   const [sortKey, setSortKey] = useState<string>('created_at')
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc')
-  const [bulkLimitSaving, setBulkLimitSaving] = useState(false)
   const [trafficMap, setTrafficMap] = useState<Map<string, number>>(new Map())
 
   function handleSort(key: string) {
@@ -419,28 +419,6 @@ export default function AdminUsers() {
               className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-semibold hover:bg-green-700"
             >
               + Balance for {selected.size}
-            </button>
-            <button
-              disabled={bulkLimitSaving}
-              onClick={async () => {
-                setBulkLimitSaving(true)
-                try { await Promise.all([...selected].map(id => setUserVpnTrafficLimit(id, 100))) }
-                finally { setBulkLimitSaving(false) }
-              }}
-              className="px-4 py-2 bg-orange-500 text-white rounded-lg text-sm font-semibold hover:bg-orange-600 disabled:opacity-50"
-            >
-              {bulkLimitSaving ? 'Setting...' : `Limit 100GB (${selected.size})`}
-            </button>
-            <button
-              disabled={bulkLimitSaving}
-              onClick={async () => {
-                setBulkLimitSaving(true)
-                try { await Promise.all([...selected].map(id => setUserVpnTrafficLimit(id, 0))) }
-                finally { setBulkLimitSaving(false) }
-              }}
-              className="px-4 py-2 bg-blue-500 text-white rounded-lg text-sm font-semibold hover:bg-blue-600 disabled:opacity-50"
-            >
-              Remove limit ({selected.size})
             </button>
             <button
               onClick={() => { setBulkDeletePassword(''); setBulkDeleteError(''); setBulkDeleteModal(true) }}

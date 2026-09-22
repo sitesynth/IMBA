@@ -2,7 +2,7 @@
 // the English locale renders them through these maps.
 
 export const CITY_EN: Record<string, string> = {
-  'Берлин': 'Berlin', 'Лиссабон': 'Lisbon', 'Нью-Йорк': 'New York',
+  'Берлин': 'Berlin', 'Лиссабон': 'Lisbon', 'Нью-Йорк': 'New York', 'Джексонвилл': 'Jacksonville',
   'Москва': 'Moscow', 'Лондон': 'London', 'Париж': 'Paris',
   'Амстердам': 'Amsterdam', 'Варшава': 'Warsaw', 'Прага': 'Prague',
   'Стокгольм': 'Stockholm', 'Хельсинки': 'Helsinki', 'Вена': 'Vienna',

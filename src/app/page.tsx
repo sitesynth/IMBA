@@ -24,7 +24,7 @@ type VpnServer = { id: string; city: string; country: string; flag: string; ping
 const FALLBACK_SERVERS: VpnServer[] = [
   { id: 'de', flag: '🇩🇪', city: 'Berlin',   country: 'DE', ping: 41 },
   { id: 'pt', flag: '🇵🇹', city: 'Lisbon',   country: 'PT', ping: 82 },
-  { id: 'us', flag: '🇺🇸', city: 'New York', country: 'US', ping: 121 },
+  { id: 'us', flag: '🇺🇸', city: 'Jacksonville', country: 'US' },
 ]
 
 async function fetchMinVpnPriceUsd(): Promise<number | null> {
@@ -140,7 +140,7 @@ export default async function HomePage() {
             {[
               ['VLESS Reality', ' — primary protocol: stable on any ISP, in any country with internet censorship'],
               ['WireGuard', ' — fallback option for networks where it still works'],
-              ['50+ servers in 30+ countries', ' — Berlin, Lisbon, New York and more, with latency from 42 ms'],
+              ['50+ servers in 30+ countries', ' — Berlin, Lisbon, Jacksonville and more, with latency from 42 ms'],
               ['Zero-knowledge', ' — we store no logs and have no technical ability to see your traffic'],
             ].map(([b, rest]) => (
               <li key={b} className="flex gap-2">
@@ -186,7 +186,7 @@ export default async function HomePage() {
         <div className="max-w-5xl mx-auto">
           <h2 className="display text-3xl md:text-5xl mb-4">50+ servers. Unlimited traffic.</h2>
           <p className="text-base md:text-lg font-medium text-ink/75 leading-relaxed mb-8 max-w-3xl">
-            Your account works across all servers: Frankfurt for streaming, New York for AI tools. Dedicated servers for torrents. Switch in one tap — no location limits, no data caps. Server ports run at 10 Gbps.
+            Your account works across all servers: Frankfurt for streaming, Jacksonville for AI tools. Dedicated servers for torrents. Switch in one tap — no location limits, no data caps. Server ports run at 10 Gbps.
           </p>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {vpnServers.map((srv) => (
