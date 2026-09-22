@@ -317,6 +317,14 @@ export function VpnServersPanel({ servers, vlessMap, serverKey, hasActive, wdttL
               </div>
               <p className="text-sm font-mono break-all text-ink/70 select-all mb-4">{serverKey}</p>
 
+              <a
+                href={`https://imba.run/go?url=${encodeURIComponent(`happ://add/${serverKey}`)}`}
+                className="flex items-center justify-center gap-1.5 pill pill-ink pill-sm w-full text-xs mb-4"
+              >
+                <Download className="w-3.5 h-3.5" strokeWidth={2.5} />
+                {locale === 'en' ? 'Install in Happ, one tap' : 'Установить в Happ одним тапом'}
+              </a>
+
               <ol className="space-y-4 text-sm font-semibold text-ink/70 mb-4">
                 <li className="flex items-start gap-2">
                   <span className="font-extrabold text-ink/30 w-4 shrink-0">1.</span>
