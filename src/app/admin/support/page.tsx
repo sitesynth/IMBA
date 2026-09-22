@@ -64,31 +64,38 @@ export default function AdminSupport() {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   // ── Load list ────────────────────────────────────────────────
-  useEffect(() => {
-    setListLoading(true)
-    getSupport({ limit: 100, status: statusFilter || undefined })
+  const loadList = useCallback((silent = false) => {
+    if (!silent) setListLoading(true)
+    return getSupport({ limit: 100, status: statusFilter || undefined })
       .then(setTickets)
-      .catch((e) => setListError((e as Error).message))
-      .finally(() => setListLoading(false))
+      .catch((e) => { if (!silent) setListError((e as Error).message) })
+      .finally(() => { if (!silent) setListLoading(false) })
   }, [statusFilter])
 
+  useEffect(() => {
+    loadList()
+    const interval = setInterval(() => loadList(true), 8000)
+    return () => clearInterval(interval)
+  }, [loadList])
+
   // ── Load chat ────────────────────────────────────────────────
-  const loadTicket = useCallback(async (id: string) => {
-    setChatLoading(true)
-    setChatError('')
-    setTicket(null)
+  const loadTicket = useCallback(async (id: string, silent = false) => {
+    if (!silent) { setChatLoading(true); setChatError(''); setTicket(null) }
     try {
       const data = await getSupportTicket(id)
       setTicket(data)
     } catch (e) {
-      setChatError(e instanceof AdminApiError ? e.message : (e as Error).message)
+      if (!silent) setChatError(e instanceof AdminApiError ? e.message : (e as Error).message)
     } finally {
-      setChatLoading(false)
+      if (!silent) setChatLoading(false)
     }
   }, [])
 
   useEffect(() => {
-    if (selectedId) loadTicket(selectedId)
+    if (!selectedId) return
+    loadTicket(selectedId)
+    const interval = setInterval(() => loadTicket(selectedId, true), 4000)
+    return () => clearInterval(interval)
   }, [selectedId, loadTicket])
 
   useEffect(() => {
