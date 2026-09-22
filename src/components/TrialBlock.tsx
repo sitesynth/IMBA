@@ -2,16 +2,13 @@
 import { useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Tag } from 'lucide-react'
-import { VKIDButton } from './VKIDButton'
 import { getFingerprint } from '@/lib/fingerprint'
 import { useLocale } from '@/lib/useLocale'
 import { t } from '@/lib/t'
 
-
 const VK_GROUP_URL = 'https://vk.com/club239876488'
-
-type VKPhase = 'idle' | 'join'
-type TGPhase = 'idle' | 'links'
+const TG_CHANNEL_URL = 'https://telegram.dog/imba_live'
+const DEFAULT_SERVER_ID = 'c973f18c-36df-4926-b369-05ebc0604579'
 
 interface Props {
   onActivated: () => void
@@ -22,69 +19,38 @@ export function TrialBlock({ onActivated, onPromoApplied }: Props) {
   const locale = useLocale()
   const searchParams = useSearchParams()
 
-  const [vkPhase, setVkPhase] = useState<VKPhase>('idle')
-  const [vkPolling, setVkPolling] = useState(false)
-  const [tgPhase, setTgPhase] = useState<TGPhase>('idle')
-  const [tgLoading, setTgLoading] = useState(false)
-  const [vkError, setVkError] = useState('')
+  const [claiming, setClaiming] = useState(false)
+  const [claimError, setClaimError] = useState('')
+  const [needsTopup, setNeedsTopup] = useState(false)
   const [promoCode, setPromoCode] = useState('')
   const [promoState, setPromoState] = useState<'idle' | 'loading' | 'ok' | 'error'>('idle')
   const [promoMsg, setPromoMsg] = useState('')
 
   useEffect(() => {
-    if (searchParams.get('trial_vk') === 'join') { setVkPhase('join'); startVkPolling() }
-    if (searchParams.get('trial_vk') === 'error') {
-      const msg = searchParams.get('msg') || t('trial.vk_auth_error', locale)
-      setVkError(msg)
-    }
     if (searchParams.get('activated') === 'trial') { onActivated() }
   }, [])
 
-  function startVkPolling() {
-    setVkPolling(true)
-    setVkError('')
-    window.open(VK_GROUP_URL, '_blank')
-
-    const doCheck = async () => {
-      let token = '', vkId = ''
-      try { token = sessionStorage.getItem('vk_trial_token') || ''; vkId = sessionStorage.getItem('vk_trial_id') || '' } catch {}
-      if (!token || !vkId) return false
-      const fp = await getFingerprint()
-      const res = await fetch('/api/v1/me/trial/activate-vk', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include',
-        body: JSON.stringify({ vk_id: Number(vkId), access_token: token, fingerprint: fp }),
-      })
-      if (res.ok) { onActivated(); return true }
-      return false
-    }
-
-    const interval = setInterval(async () => {
-      const done = await doCheck()
-      if (done) { clearInterval(interval); setVkPolling(false) }
-    }, 3000)
-    setTimeout(() => { clearInterval(interval); setVkPolling(false) }, 300000)
-  }
-
-  async function selectTG() {
-    if (tgPhase !== 'idle') return
-    setTgLoading(true)
+  async function claimFirstMonth() {
+    if (claiming) return
+    setClaiming(true)
+    setClaimError('')
+    setNeedsTopup(false)
     try {
-      const res = await fetch('/api/v1/me/trial/tg-link', { method: 'POST', credentials: 'include' })
-      if (!res.ok) return
-      const data = await res.json()
-      window.open(data.bot_url, '_blank')
-      setTgPhase('links')
-      const interval = setInterval(async () => {
-        try {
-          const r = await fetch('/api/v1/me', { credentials: 'include' })
-          if (!r.ok) return
-          const u = await r.json()
-          if (u.trial_activated) { clearInterval(interval); onActivated() }
-        } catch {}
-      }, 3000)
-      setTimeout(() => clearInterval(interval), 600000)
+      const res = await fetch('/api/v1/me/vpn/first-month', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include',
+        body: JSON.stringify({}),
+      })
+      if (res.status === 402) { setNeedsTopup(true); return }
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        setClaimError(data.detail || (locale === 'ru' ? 'Не удалось активировать' : 'Activation failed'))
+        return
+      }
+      onActivated()
+    } catch {
+      setClaimError(locale === 'ru' ? 'Ошибка сети' : 'Network error')
     } finally {
-      setTgLoading(false)
+      setClaiming(false)
     }
   }
 
@@ -100,7 +66,9 @@ export function TrialBlock({ onActivated, onPromoApplied }: Props) {
       const data = await res.json()
       if (!res.ok) { setPromoState('error'); setPromoMsg(data.detail || t('trial.error', locale)); return }
       setPromoState('ok')
-      const msg = data.vpn_trial_days ? `VPN ${data.vpn_trial_days} ${locale === 'ru' ? 'дн' : 'days'} + eSIM ${locale === 'ru' ? 'активированы' : 'activated'}!` : `+$${data.credited?.toFixed(2)} ${locale === 'ru' ? 'зачислено' : 'credited'}!`
+      const msg = data.vpn_trial_days
+        ? `VPN ${data.vpn_trial_days} ${locale === 'ru' ? 'дн' : 'days'} + eSIM ${locale === 'ru' ? 'активированы' : 'activated'}!`
+        : `+$${data.credited?.toFixed(2)} ${locale === 'ru' ? 'зачислено' : 'credited'}!`
       setPromoMsg(msg); onPromoApplied(msg)
     } catch { setPromoState('error'); setPromoMsg(t('trial.network_error', locale)) }
   }
@@ -114,19 +82,9 @@ export function TrialBlock({ onActivated, onPromoApplied }: Props) {
     cursor: 'pointer',
     textAlign: 'left' as const,
     transition: 'all 0.12s',
-    boxShadow: 'none',
     position: 'relative',
     overflow: 'hidden',
   }
-
-  const btnActive: React.CSSProperties = {
-    ...btnBase,
-    border: '2px solid #FFD731',
-    background: 'rgba(255,215,49,0.07)',
-    boxShadow: '3px 3px 0 #FFD731',
-  }
-
-  const tgActive = tgPhase !== 'idle'
 
   return (
     <div className="relative z-10" style={{ marginTop: 20 }}>
@@ -150,58 +108,61 @@ export function TrialBlock({ onActivated, onPromoApplied }: Props) {
         {t('trial.desc', locale)}
       </p>
 
-      {/* VK + TG cards — clickable buttons */}
-      <div className="flex gap-2 mb-3">
+      <button
+        onClick={claimFirstMonth}
+        disabled={claiming}
+        className="w-full mb-3"
+        style={{
+          padding: '14px 16px', borderRadius: 16, border: 'none',
+          background: '#FFD731', color: '#111', fontWeight: 800, fontSize: 14,
+          cursor: claiming ? 'default' : 'pointer', opacity: claiming ? 0.6 : 1,
+        }}
+      >
+        {claiming
+          ? (locale === 'ru' ? 'Активируем…' : 'Activating…')
+          : t('trial.claim_btn', locale)}
+      </button>
 
-        {/* VK card */}
-        <div className="trial-card select-none active:scale-[0.97] active:brightness-75"
-          style={vkPhase === 'join' ? btnActive : btnBase}
-          role={vkPhase === 'idle' ? 'button' : undefined}>
+      {needsTopup && (
+        <p style={{ fontSize: 12, fontWeight: 700, color: '#FFD731', marginBottom: 8 }}>
+          {t('trial.topup_hint', locale)}
+          {' '}<a href="/dashboard/billing/topup?amount_usd=0.30" style={{ color: '#FFD731', textDecoration: 'underline' }}>
+            {locale === 'ru' ? 'Пополнить' : 'Top up'}
+          </a>
+        </p>
+      )}
+      {claimError && (
+        <p style={{ fontSize: 12, fontWeight: 700, color: '#f87171', marginBottom: 8 }}>{claimError}</p>
+      )}
+
+      <p style={{ color: 'rgba(255,255,255,0.35)', fontSize: 11, fontWeight: 700, marginBottom: 6 }}>
+        {t('trial.social_hint', locale)}
+      </p>
+
+      {/* VK + TG — plain links, no longer gate the VPN discount */}
+      <div className="flex gap-2 mb-3">
+        <a href={VK_GROUP_URL} target="_blank" rel="noopener noreferrer"
+          className="trial-card select-none active:scale-[0.97] active:brightness-75" style={btnBase}>
           <div className="flex items-center gap-2 mb-1">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill={vkPhase === 'join' ? '#FFD731' : 'rgba(255,255,255,0.65)'}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="rgba(255,255,255,0.65)">
               <path d="M12.785 16.241s.288-.032.436-.194c.136-.148.132-.427.132-.427s-.02-1.304.587-1.496c.598-.19 1.365 1.26 2.179 1.815.615.422 1.08.33 1.08.33l2.17-.03s1.135-.07.597-.963c-.044-.073-.314-.661-1.616-1.869-1.364-1.265-1.181-1.06.462-3.248.999-1.33 1.398-2.142 1.273-2.49-.12-.332-.852-.244-.852-.244l-2.44.015s-.181-.025-.315.055c-.132.078-.216.26-.216.26s-.387 1.03-.903 1.905c-1.088 1.848-1.524 1.947-1.702 1.832-.414-.268-.31-1.074-.31-1.648 0-1.793.272-2.54-.529-2.733-.265-.064-.46-.106-1.138-.113-.87-.009-1.606.003-2.022.207-.277.135-.49.437-.36.454.16.021.525.098.718.362.248.341.24 1.107.24 1.107s.143 2.1-.333 2.372c-.326.18-.774-.187-1.733-1.863-.49-.847-.861-1.786-.861-1.786s-.071-.176-.201-.27c-.158-.115-.378-.151-.378-.151l-2.32.015s-.348.01-.476.161c-.114.135-.009.414-.009.414s1.816 4.25 3.872 6.391c1.886 1.965 4.026 1.836 4.026 1.836h.97z"/>
             </svg>
-            <span style={{ fontSize: 13, fontWeight: 800, color: vkPhase === 'join' ? '#FFD731' : 'rgba(255,255,255,0.85)' }}>{t('trial.vk', locale)}</span>
+            <span style={{ fontSize: 13, fontWeight: 800, color: 'rgba(255,255,255,0.85)' }}>{t('trial.vk', locale)}</span>
           </div>
+          <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.38)', margin: 0 }}>{t('trial.vk_join', locale)}</p>
+        </a>
 
-          {vkPhase === 'join' ? (
-            <p style={{ fontSize: 12, color: '#FFD731', fontWeight: 700, margin: 0 }}>
-              {vkPolling ? t('trial.vk_done', locale) : t('trial.vk_auth_done', locale)}
-            </p>
-          ) : (
-            <>
-              <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.38)', margin: 0 }}>{t('trial.vk_join', locale)}</p>
-              <VKIDButton mode="trial" overlay onError={setVkError} />
-            </>
-          )}
-        </div>
-
-        {/* TG */}
-        <div className="trial-card select-none active:scale-[0.97] active:brightness-75"
-          style={tgActive ? btnActive : btnBase} onClick={selectTG} role="button">
+        <a href={TG_CHANNEL_URL} target="_blank" rel="noopener noreferrer"
+          className="trial-card select-none active:scale-[0.97] active:brightness-75" style={btnBase}>
           <div className="flex items-center gap-2 mb-1">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill={tgActive ? '#FFD731' : 'rgba(255,255,255,0.65)'}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="rgba(255,255,255,0.65)">
               <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.31 14.42l-2.965-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.843.139z"/>
             </svg>
-            <span style={{ fontSize: 13, fontWeight: 800, color: tgActive ? '#FFD731' : 'rgba(255,255,255,0.85)' }}>Telegram</span>
+            <span style={{ fontSize: 13, fontWeight: 800, color: 'rgba(255,255,255,0.85)' }}>Telegram</span>
           </div>
-
-          {tgLoading ? (
-            <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', margin: 0 }}>{t('trial.tg_loading', locale)}</p>
-          ) : tgPhase === 'links' ? (
-            <p style={{ fontSize: 12, color: '#FFD731', fontWeight: 700, margin: 0 }}>
-              {t('trial.tg_done', locale)}
-            </p>
-          ) : (
-            <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.38)', margin: 0 }}>{t('trial.tg_subscribe', locale)}</p>
-          )}
-        </div>
-
+          <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.38)', margin: 0 }}>{t('trial.tg_subscribe', locale)}</p>
+        </a>
       </div>
-
-      {vkError && (
-        <p style={{ fontSize: 12, fontWeight: 700, color: '#f87171', marginBottom: 8 }}>{vkError}</p>
-      )}
 
       {/* Promo */}
       <div className="flex gap-2">
@@ -254,7 +215,9 @@ export function PromoInputRow() {
       const data = await res.json()
       if (!res.ok) { setState('error'); setMsg(data.detail || t('trial.invalid_promo', locale)); return }
       setState('ok')
-      setMsg(data.vpn_trial_days ? `VPN ${data.vpn_trial_days} ${locale === 'ru' ? 'дн' : 'days'} ${locale === 'ru' ? 'активированы' : 'activated'}!` : `+$${data.credited?.toFixed(2)} ${locale === 'ru' ? 'зачислено' : 'credited'}!`)
+      setMsg(data.vpn_trial_days
+        ? `VPN ${data.vpn_trial_days} ${locale === 'ru' ? 'дн' : 'days'} ${locale === 'ru' ? 'активированы' : 'activated'}!`
+        : `+$${data.credited?.toFixed(2)} ${locale === 'ru' ? 'зачислено' : 'credited'}!`)
     } catch { setState('error'); setMsg(t('trial.network_error', locale)) }
   }
 

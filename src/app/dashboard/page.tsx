@@ -205,8 +205,9 @@ export default function DashboardPage() {
             </>
           ) : (
             <>
-              <div className="display text-xl mb-2">{t('dash.buy_esim', locale)}</div>
-              <p className="text-xs font-semibold text-ink/60">{t('dash.esim_subtitle', locale)}</p>
+              <div className="display text-xl mb-2">{t('dash.no_esim', locale)}</div>
+              <p className="text-xs font-semibold text-ink/60 mb-3">{t('dash.esim_subtitle', locale)}</p>
+              <span className="pill pill-ink pill-sm inline-block">{t('dash.buy_esim', locale)}</span>
             </>
           )}
         </Link>

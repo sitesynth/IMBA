@@ -30,6 +30,7 @@ const dict = {
   'dash.extend': { ru: 'Продлить', en: 'Extend' },
   'dash.gb': { ru: 'ГБ', en: 'GB' },
   'dash.of_gb': { ru: 'из', en: 'of' },
+  'dash.no_esim': { ru: 'eSIM не активен', en: 'No active eSIM' },
   'dash.buy_esim': { ru: 'Купить eSIM', en: 'Buy eSIM' },
   'dash.esim_subtitle': { ru: '190+ стран, активация по QR', en: '190+ countries, QR activation' },
   'dash.active': { ru: 'Активен', en: 'Active' },
@@ -231,8 +232,11 @@ const dict = {
   'notif.empty': { ru: 'Нет новых уведомлений', en: 'No new notifications' },
 
   // ── Trial block ───────────────────────────────────────────────────────────
-  'trial.heading': { ru: '7 дней вокруг света', en: '7 days around the world' },
-  'trial.desc': { ru: 'Выбери ВКонтакте или Telegram, подпишись на наши соцсети и активируй IMBA Старт: VPN бесплатно на 7 дней!', en: 'Follow us on Telegram and activate IMBA Start: VPN free for 7 days!' },
+  'trial.heading': { ru: 'Первый месяц −90%', en: 'First month −90%' },
+  'trial.desc': { ru: 'Активируй IMBA Старт: месяц VPN за 26 ₽ вместо 249 ₽, без ограничений по трафику.', en: 'Activate IMBA Start: 1 month VPN for ₽26 instead of ₽249, no traffic limits.' },
+  'trial.claim_btn': { ru: 'Забрать месяц за 26 ₽ →', en: 'Get first month for ₽26 →' },
+  'trial.topup_hint': { ru: 'На балансе не хватает 26 ₽ — пополни и нажми снова.', en: 'Balance too low — top up ₽26 and try again.' },
+  'trial.social_hint': { ru: 'Подпишись, чтобы быть в курсе — призы, скидки и новости IMBA (не обязательно для VPN):', en: 'Follow us for news, prizes & discounts (not required for VPN):' },
   'trial.vk': { ru: 'ВКонтакте', en: 'VKontakte' },
   'trial.vk_done': { ru: 'Вступи в группу — триал придёт автоматически ✓', en: 'Join the group — trial activates automatically ✓' },
   'trial.vk_auth_done': { ru: 'Авторизация пройдена — вступи в группу', en: 'Auth complete — join the group' },
