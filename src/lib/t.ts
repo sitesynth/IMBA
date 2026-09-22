@@ -233,9 +233,9 @@ const dict = {
 
   // ── Trial block ───────────────────────────────────────────────────────────
   'trial.heading': { ru: 'Первый месяц −90%', en: 'First month −90%' },
-  'trial.desc': { ru: 'Активируй IMBA Старт: месяц VPN за 26 ₽ вместо 249 ₽, без ограничений по трафику.', en: 'Activate IMBA Start: 1 month VPN for ₽26 instead of ₽249, no traffic limits.' },
-  'trial.claim_btn': { ru: 'Забрать месяц за 26 ₽ →', en: 'Get first month for ₽26 →' },
-  'trial.topup_hint': { ru: 'На балансе не хватает 26 ₽ — пополни и нажми снова.', en: 'Balance too low — top up ₽26 and try again.' },
+  'trial.desc': { ru: 'Активируй IMBA Старт: месяц VPN за 50 ₽ вместо 249 ₽, без ограничений по трафику.', en: 'Activate IMBA Start: 1 month VPN for ₽50 instead of ₽249, no traffic limits.' },
+  'trial.claim_btn': { ru: 'Забрать месяц за 50 ₽ →', en: 'Get first month for ₽50 →' },
+  'trial.topup_hint': { ru: 'На балансе не хватает 50 ₽ — пополни и нажми снова.', en: 'Balance too low — top up ₽50 and try again.' },
   'trial.social_hint': { ru: 'Подпишись, чтобы быть в курсе — призы, скидки и новости IMBA (не обязательно для VPN):', en: 'Follow us for news, prizes & discounts (not required for VPN):' },
   'trial.vk': { ru: 'ВКонтакте', en: 'VKontakte' },
   'trial.vk_done': { ru: 'Вступи в группу — триал придёт автоматически ✓', en: 'Join the group — trial activates automatically ✓' },

@@ -126,7 +126,7 @@ export function TrialBlock({ onActivated, onPromoApplied }: Props) {
       {needsTopup && (
         <p style={{ fontSize: 12, fontWeight: 700, color: '#FFD731', marginBottom: 8 }}>
           {t('trial.topup_hint', locale)}
-          {' '}<a href="/dashboard/billing/topup?amount_usd=0.30" style={{ color: '#FFD731', textDecoration: 'underline' }}>
+          {' '}<a href="/dashboard/billing/topup?amount_usd=0.56" style={{ color: '#FFD731', textDecoration: 'underline' }}>
             {locale === 'ru' ? 'Пополнить' : 'Top up'}
           </a>
         </p>
