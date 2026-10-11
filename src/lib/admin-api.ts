@@ -272,6 +272,43 @@ export function getBuyers(days = 30) {
   return adminReq<BuyersData>(`/v1/admin/buyers?days=${days}`)
 }
 
+export interface AdRow {
+  tag: string
+  source: string | null
+  campaign: string | null
+  creative: string | null
+  starts: number
+  registered: number
+  buyers: number
+  payments: number
+  revenue_usd: number
+  start_to_reg_pct: number | null
+  reg_to_buy_pct: number | null
+  buyers_all_time: number
+  revenue_usd_all_time: number
+  spend_usd: number | null
+  cpa_usd: number | null
+  roi_pct: number | null
+}
+
+export interface AdsData {
+  days: number
+  rows: AdRow[]
+  totals: { starts: number; registered: number; buyers: number; revenue_usd: number; spend_usd: number }
+  tracking_since: string | null
+}
+
+export function getAds(days = 30) {
+  return adminReq<AdsData>(`/v1/admin/ads?days=${days}`)
+}
+
+export function setAdSpend(tag: string, spend_usd: number) {
+  return adminReq<{ ok: boolean }>(`/v1/admin/ads/spend`, {
+    method: 'PUT',
+    body: JSON.stringify({ tag, spend_usd }),
+  })
+}
+
 export function getTransactions(params?: { limit?: number; offset?: number; status?: string; currency?: string; provider?: string }) {
   const q = new URLSearchParams()
   if (params?.limit != null) q.set("limit", String(params.limit))

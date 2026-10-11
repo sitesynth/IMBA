@@ -25,6 +25,7 @@ function AdminSidebar({ onClose }: { onClose?: () => void }) {
         { href: '/admin/cards', label: 'Cards' },
         { href: '/admin/payments', label: 'Payments' },
         { href: '/admin/buyers', label: 'Покупатели' },
+        { href: '/admin/ads', label: 'Реклама' },
         { href: '/admin/transactions', label: 'Transactions' },
         { href: '/admin/support', label: 'Support' },
       ],
