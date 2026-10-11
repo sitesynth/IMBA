@@ -1,7 +1,59 @@
 'use client'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { getVpnSubs, recreateVpn, revokeVpnAdmin, AdminVpnSub } from '@/lib/admin-api'
+import { getVpnSubs, recreateVpn, revokeVpnAdmin, adminReq, AdminVpnSub } from '@/lib/admin-api'
+
+function TrafficSettings() {
+  const [limitGb, setLimitGb] = useState('300')
+  const [speedMbit, setSpeedMbit] = useState('10')
+  const [saving, setSaving] = useState(false)
+  const [saved, setSaved] = useState(false)
+
+  useEffect(() => {
+    adminReq<{ vpn_traffic_limit_gb?: string; vpn_throttle_speed_mbit?: string }>('/v1/admin/settings')
+      .then(d => {
+        if (d.vpn_traffic_limit_gb) setLimitGb(d.vpn_traffic_limit_gb)
+        if (d.vpn_throttle_speed_mbit) setSpeedMbit(d.vpn_throttle_speed_mbit)
+      }).catch(() => {})
+  }, [])
+
+  async function save() {
+    setSaving(true)
+    try {
+      await adminReq('/v1/admin/settings', {
+        method: 'PATCH',
+        body: JSON.stringify({ vpn_traffic_limit_gb: limitGb, vpn_throttle_speed_mbit: speedMbit }),
+      })
+      setSaved(true)
+      setTimeout(() => setSaved(false), 2000)
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  return (
+    <div className="bg-white rounded-lg border border-gray-200 p-4 mb-6">
+      <h2 className="text-sm font-semibold text-gray-700 mb-3">Лимит трафика и шейпинг</h2>
+      <div className="flex flex-wrap gap-4 items-end">
+        <div>
+          <label className="block text-xs text-gray-500 mb-1">Лимит трафика (GB)</label>
+          <input type="number" min="1" value={limitGb} onChange={e => setLimitGb(e.target.value)}
+            className="w-28 text-sm border border-gray-200 rounded-lg px-3 py-2" />
+        </div>
+        <div>
+          <label className="block text-xs text-gray-500 mb-1">Скорость после лимита (Мбит)</label>
+          <input type="number" min="1" value={speedMbit} onChange={e => setSpeedMbit(e.target.value)}
+            className="w-28 text-sm border border-gray-200 rounded-lg px-3 py-2" />
+        </div>
+        <button onClick={save} disabled={saving}
+          className="text-sm bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50">
+          {saving ? 'Сохраняю…' : saved ? '✓ Сохранено' : 'Сохранить'}
+        </button>
+        <p className="text-xs text-gray-400 self-center">Применяется cron-задачей каждый час</p>
+      </div>
+    </div>
+  )
+}
 
 function ProviderBadge({ provider }: { provider: string }) {
   if (provider === 'remnawave') return (
@@ -88,6 +140,8 @@ export default function AdminVpnPage() {
         <h1 className="text-3xl font-bold text-gray-900">VPN Subscriptions</h1>
         <button onClick={load} className="text-sm text-blue-600 hover:underline">Refresh</button>
       </div>
+
+      <TrafficSettings />
 
       {/* Summary cards */}
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6">

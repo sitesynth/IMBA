@@ -221,6 +221,57 @@ export function deleteUser(id: string, password: string) {
   })
 }
 
+export interface BuyerRow {
+  user_id: string
+  email: string | null
+  name: string | null
+  registered_at: string | null
+  balance_usd: number
+  first_paid_at: string
+  last_paid_at: string
+  is_new: boolean
+  payments: number
+  total_usd: number
+  providers: string[]
+  original: Record<string, number>
+}
+
+export interface BuyersProviderStat {
+  provider: string
+  invoices_created: number
+  invoices_paid: number
+  conversion_pct: number
+  payments: number
+  buyers: number
+  revenue_usd: number
+}
+
+export interface BuyersData {
+  stats: {
+    days: number
+    buyers_period: number
+    new_buyers_period: number
+    buyers_all_time: number
+    repeat_buyers_all_time: number
+    users_total: number
+    buyer_share_pct: number
+    payments_period: number
+    revenue_usd_period: number
+    revenue_by_currency_period: Record<string, number>
+    avg_check_usd: number
+    invoices_created_period: number
+    invoices_paid_period: number
+    conversion_pct: number
+  }
+  by_provider: BuyersProviderStat[]
+  by_day: { date: string; payments: number; revenue_usd: number }[]
+  buyers: BuyerRow[]
+}
+
+export function getBuyers(days = 30) {
+  return adminReq<BuyersData>(`/v1/admin/buyers?days=${days}`)
+}
+
 export function getTransactions(params?: { limit?: number; offset?: number; status?: string; currency?: string; provider?: string }) {
   const q = new URLSearchParams()
   if (params?.limit != null) q.set("limit", String(params.limit))

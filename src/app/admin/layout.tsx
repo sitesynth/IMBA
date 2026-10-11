@@ -24,6 +24,7 @@ function AdminSidebar({ onClose }: { onClose?: () => void }) {
         { href: '/admin/esim', label: 'eSIM' },
         { href: '/admin/cards', label: 'Cards' },
         { href: '/admin/payments', label: 'Payments' },
+        { href: '/admin/buyers', label: 'Покупатели' },
         { href: '/admin/transactions', label: 'Transactions' },
         { href: '/admin/support', label: 'Support' },
       ],
