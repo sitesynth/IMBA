@@ -1,6 +1,6 @@
 'use client'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { getAds, setAdSpend, AdsData, AdRow } from '@/lib/admin-api'
+import { getAds, setAdSpend, syncAdsSpend, AdsData, AdRow } from '@/lib/admin-api'
 
 const PERIODS = [
   { days: 7, label: '7 дней' },
@@ -27,6 +27,8 @@ interface Agg {
   buyers: number
   revenue: number
   spend: number | null
+  spendAuto: boolean // spend comes from Telegram Ads (read-only); false if any part was typed in
+  native: Record<string, number>
   buyersAll: number
   revenueAll: number
 }
@@ -42,7 +44,7 @@ function aggregate(rows: AdRow[], group: Group): Agg[] {
     const label = organic ? 'Без метки (органика)' : key
     const a = map.get(key) ?? {
       key, label, tag: group === 'tag' && !organic ? r.tag : null,
-      starts: 0, registered: 0, buyers: 0, revenue: 0, spend: null, buyersAll: 0, revenueAll: 0,
+      starts: 0, registered: 0, buyers: 0, revenue: 0, spend: null, spendAuto: true, native: {}, buyersAll: 0, revenueAll: 0,
     }
     a.starts += r.starts
     a.registered += r.registered
@@ -50,7 +52,11 @@ function aggregate(rows: AdRow[], group: Group): Agg[] {
     a.revenue += r.revenue_usd
     a.buyersAll += r.buyers_all_time
     a.revenueAll += r.revenue_usd_all_time
-    if (r.spend_usd != null) a.spend = (a.spend ?? 0) + r.spend_usd
+    if (r.spend_usd != null) {
+      a.spend = (a.spend ?? 0) + r.spend_usd
+      if (!r.spend_auto) a.spendAuto = false
+    }
+    for (const [cur, amount] of Object.entries(r.spend_native ?? {})) a.native[cur] = (a.native[cur] ?? 0) + amount
     map.set(key, a)
   }
   return [...map.values()].sort((x, y) => (x.key === '' ? 1 : y.key === '' ? -1 : y.registered - x.registered || y.starts - x.starts))
@@ -185,6 +191,24 @@ export default function AdminAds() {
 
   useEffect(() => { load() }, [load])
 
+  const [syncing, setSyncing] = useState(false)
+  const [syncMsg, setSyncMsg] = useState('')
+
+  async function runSync() {
+    setSyncing(true)
+    setSyncMsg('')
+    try {
+      const r = await syncAdsSpend()
+      const added = Object.entries(r.booked ?? {}).map(([c, a]) => `${Number(a)} ${c}`).join(' + ')
+      setSyncMsg(r.skipped_no_rate?.length ? 'Курс валюты недоступен, попробуйте позже' : added ? `Добавлено: ${added}` : 'Новых расходов нет')
+      await load(true)
+    } catch (e) {
+      setSyncMsg((e as Error).message)
+    } finally {
+      setSyncing(false)
+    }
+  }
+
   const rows = useMemo(() => (data ? aggregate(data.rows, group) : []), [data, group])
   const t = data?.totals
 
@@ -212,6 +236,33 @@ export default function AdminAds() {
 
       {data && t && !loading && (
         <>
+          <div className="bg-white rounded-lg border border-gray-200 px-4 py-3 mb-4 flex flex-wrap items-center gap-x-4 gap-y-2">
+            <div className="text-sm">
+              <span className="font-semibold text-gray-700">Telegram Ads: </span>
+              {data.tg_ads.configured
+                ? <span className="text-green-700">подключён</span>
+                : <span className="text-red-600">не подключён (на сервере не задан TG_ADS_API_TOKEN)</span>}
+              {data.tg_ads.configured && (
+                <span className="text-gray-500">
+                  {' · '}{data.tg_ads.last_sync ? `обновлено ${new Date(data.tg_ads.last_sync).toLocaleString('ru', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}` : 'ещё не обновлялось'}
+                  {' · расходы подтягиваются раз в сутки, пересчёт в $ по курсу дня'}
+                </span>
+              )}
+            </div>
+            {data.tg_ads.configured && (
+              <button onClick={runSync} disabled={syncing}
+                className="text-sm bg-blue-600 text-white px-3 py-1.5 rounded-lg hover:bg-blue-700 disabled:opacity-50">
+                {syncing ? 'Обновляю…' : 'Обновить расходы'}
+              </button>
+            )}
+            {syncMsg && <span className="text-sm text-gray-600">{syncMsg}</span>}
+            {data.tg_ads.unattributed_usd > 0 && (
+              <span className="text-xs text-amber-700">
+                {usd(data.tg_ads.unattributed_usd)} расхода не отнесено к метке: в ссылке объявления нет метки ad_…
+              </span>
+            )}
+          </div>
+
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-4">
             <Card label="Нажали «Старт»" value={String(t.starts)} hint="уникальных людей" />
             <Card label="Завели аккаунт" value={String(t.registered)} hint={t.starts ? `${Math.round(Math.min(100, (t.registered / t.starts) * 100))}% от нажавших` : undefined} />
@@ -265,8 +316,18 @@ export default function AdminAds() {
                       <td className="px-4 py-3 text-gray-500 tabular-nums">{pct(regToBuy)}</td>
                       <td className="px-4 py-3 text-gray-900 font-medium tabular-nums">{usd(a.revenue)}</td>
                       <td className="px-4 py-3">
-                        {a.tag ? <SpendCell tag={a.tag} value={a.spend} onSaved={() => load(true)} />
-                          : <span className="text-gray-700 tabular-nums">{a.spend != null ? usd(a.spend) : '—'}</span>}
+                        {a.tag && !(a.spend != null && a.spendAuto)
+                          ? <SpendCell tag={a.tag} value={a.spend} onSaved={() => load(true)} />
+                          : (
+                            <div>
+                              <span className="text-gray-700 tabular-nums">{a.spend != null ? usd(a.spend) : '—'}</span>
+                              {a.spend != null && a.spendAuto && (
+                                <div className="text-xs text-gray-400 whitespace-nowrap">
+                                  авто, Telegram Ads{Object.keys(a.native).length > 0 && ` · ${Object.entries(a.native).map(([c, n]) => `${n} ${c}`).join(' + ')}`}
+                                </div>
+                              )}
+                            </div>
+                          )}
                       </td>
                       <td className="px-4 py-3 text-gray-700 tabular-nums">{cpa != null ? usd(cpa) : '—'}</td>
                       <td className={`px-4 py-3 tabular-nums font-medium ${roi == null ? 'text-gray-400' : roi >= 0 ? 'text-green-700' : 'text-red-600'}`}>

@@ -287,6 +287,8 @@ export interface AdRow {
   buyers_all_time: number
   revenue_usd_all_time: number
   spend_usd: number | null
+  spend_auto: boolean
+  spend_native: Record<string, number> | null
   cpa_usd: number | null
   roi_pct: number | null
 }
@@ -296,6 +298,19 @@ export interface AdsData {
   rows: AdRow[]
   totals: { starts: number; registered: number; buyers: number; revenue_usd: number; spend_usd: number }
   tracking_since: string | null
+  tg_ads: { configured: boolean; last_sync: string | null; unattributed_usd: number }
+}
+
+export interface AdsSyncResult {
+  configured: boolean
+  ads?: number
+  booked?: Record<string, string>
+  tags_updated?: string[]
+  skipped_no_rate?: string[]
+}
+
+export function syncAdsSpend() {
+  return adminReq<AdsSyncResult>(`/v1/admin/ads/sync`, { method: 'POST' })
 }
 
 export function getAds(days = 30) {
