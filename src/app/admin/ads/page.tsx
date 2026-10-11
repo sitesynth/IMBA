@@ -104,6 +104,13 @@ function SpendCell({ tag, value, onSaved }: { tag: string; value: number | null;
   )
 }
 
+const RU_TO_LAT: Record<string, string> = {
+  а: 'a', б: 'b', в: 'v', г: 'g', д: 'd', е: 'e', ё: 'e', ж: 'zh', з: 'z', и: 'i', й: 'y', к: 'k', л: 'l', м: 'm',
+  н: 'n', о: 'o', п: 'p', р: 'r', с: 's', т: 't', у: 'u', ф: 'f', х: 'h', ц: 'ts', ч: 'ch', ш: 'sh', щ: 'sch',
+  ъ: '', ы: 'y', ь: '', э: 'e', ю: 'yu', я: 'ya',
+}
+const translit = (s: string) => s.replace(/[а-яё]/g, ch => RU_TO_LAT[ch] ?? '')
+
 function LinkBuilder() {
   const [bot, setBot] = useState(BOTS[0])
   const [source, setSource] = useState('')
@@ -111,7 +118,8 @@ function LinkBuilder() {
   const [creative, setCreative] = useState('')
   const [copied, setCopied] = useState(false)
 
-  const clean = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
+  const clean = (s: string) =>
+    translit(s.toLowerCase()).replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
   const tag = ['ad', clean(source), clean(campaign), clean(creative)].filter((p, i) => i === 0 || p).join('_')
   const ready = clean(source) !== ''
   const tooLong = tag.length > 64
@@ -131,7 +139,7 @@ function LinkBuilder() {
       <h2 className="text-sm font-semibold text-gray-700 mb-1">Ссылка для рекламы</h2>
       <p className="text-xs text-gray-500 mb-3">
         Формат метки: <code>ad_источник_кампания_креатив</code>. Внутри части допустимы только латиница, цифры и «-»;
-        остальное заменится автоматически. Метка запоминается при первом заходе человека по ссылке.
+        русские буквы заменятся транслитом, остальное дефисом. Метка запоминается при первом заходе человека по ссылке.
       </p>
       <div className="flex flex-wrap gap-2 mb-3">
         <select value={bot} onChange={e => setBot(e.target.value)} className={input}>
