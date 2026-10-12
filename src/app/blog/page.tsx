@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     description: 'Practical guides: which VPN works against censorship, how to pay for ChatGPT and Netflix, eSIM for international travel.',
     type: 'website',
     url: SITE_URL + '/blog',
-    images: [{ url: SITE_URL + '/og-image.png', width: 1200, height: 630 }],
+    images: [{ url: SITE_URL + '/og-imba-live.jpg', width: 1200, height: 630 }],
     locale: 'en_US',
     siteName: 'IMBA',
   },
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'IMBA Blog — VPN, eSIM & Virtual Card Guides',
     description: 'Practical guides: which VPN works against censorship, how to pay for ChatGPT and Netflix, eSIM for international travel.',
-    images: [SITE_URL + '/og-image.png'],
+    images: [SITE_URL + '/og-imba-live.jpg'],
   },
 }
 

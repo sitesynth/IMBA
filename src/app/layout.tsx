@@ -50,9 +50,10 @@ export const metadata: Metadata = {
     url: SITE_URL,
     images: [
       {
-        url: SITE_URL + '/og-image.png',
+        url: SITE_URL + '/og-imba-live.jpg',
         width: 1200,
         height: 630,
+        type: 'image/jpeg',
         alt: TITLE,
       },
     ],
@@ -61,7 +62,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: TITLE,
     description: DESCRIPTION_SHORT,
-    images: [SITE_URL + '/og-image.png'],
+    images: [SITE_URL + '/og-imba-live.jpg'],
   },
 }
 

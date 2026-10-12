@@ -56,7 +56,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       description: post.excerpt,
       type: 'article',
       url: `${SITE_URL}/blog/${slug}`,
-      images: [{ url: post.ogImage ?? SITE_URL + '/og-image.png', width: 1200, height: 630 }],
+      images: [{ url: post.ogImage ?? SITE_URL + '/og-imba-live.jpg', width: 1200, height: 630 }],
       locale: 'en_US',
       siteName: 'IMBA',
     },
@@ -64,7 +64,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       card: 'summary_large_image',
       title: post.title,
       description: post.excerpt,
-      images: [post.ogImage ?? SITE_URL + '/og-image.png'],
+      images: [post.ogImage ?? SITE_URL + '/og-imba-live.jpg'],
     },
   }
 }
@@ -254,7 +254,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         inLanguage: 'en',
         author: { '@type': 'Person', '@id': SITE_URL + '/blog/author/sergey-karpov#person', name: 'Sergey Karpov', url: SITE_URL + '/blog/author/sergey-karpov' },
         publisher: { '@type': 'Organization', '@id': SITE_URL + '/#organization', name: 'IMBA', logo: { '@type': 'ImageObject', url: SITE_URL + '/favicon.png', width: 512, height: 512 } },
-        image: { '@type': 'ImageObject', url: post.ogImage ?? SITE_URL + '/og-image.png', width: 1200, height: 630 },
+        image: { '@type': 'ImageObject', url: post.ogImage ?? SITE_URL + '/og-imba-live.jpg', width: 1200, height: 630 },
         isPartOf: { '@type': 'WebSite', '@id': SITE_URL + '/#website' },
         breadcrumb: {
           '@type': 'BreadcrumbList',

@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     siteName: 'IMBA',
     locale: 'en_US',
     type: 'website',
-    images: [{ url: SITE_URL + '/og-image.png', width: 1200, height: 630 }],
+    images: [{ url: SITE_URL + '/og-imba-live.jpg', width: 1200, height: 630 }],
   },
 }
 
