@@ -29,7 +29,7 @@ const word = Archivo_Black({
 
 const TITLE = 'IMBA — VPN, eSIM & Virtual Card. Internet Without Borders.'
 const DESCRIPTION = 'VPN, eSIM, and virtual Visa/Mastercard in one subscription. VLESS Reality protocol — works in China, UAE, Turkey, and anywhere else that blocks it. 50+ servers, zero logs.'
-const DESCRIPTION_SHORT = 'VPN, eSIM & virtual card in one plan. Works anywhere they try to block it. 7 days free.'
+const DESCRIPTION_SHORT = 'VPN, eSIM & virtual card in one plan.'
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
