@@ -136,7 +136,6 @@ export default function BlogPage() {
         <h2 className="display text-2xl md:text-4xl mb-3">Stay in the loop</h2>
         <p className="font-medium text-ink/70 max-w-xl mx-auto mb-6 text-sm md:text-base">
           New guides, protocol updates, and mirror links — in the IMBA Telegram channel.
-          Following also unlocks 7 days of VPN free.
         </p>
         <a href="https://t.me/imba_live" target="_blank" rel="noopener" className="pill pill-ink text-base">Follow on Telegram →</a>
       </section>

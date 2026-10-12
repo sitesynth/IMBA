@@ -118,7 +118,7 @@ const dict = {
   'vpn.select': { ru: 'Выбрать', en: 'Select' },
   'vpn.buy_btn': { ru: 'Купить', en: 'Buy' },
   'vpn.renew_btn': { ru: 'Продлить', en: 'Renew' },
-  'vpn.trial_label': { ru: '7 дней — бесплатно', en: '7 days — free' },
+  'vpn.trial_label': { ru: 'Первый месяц — 50 ₽', en: 'First month — $0.56' },
   'vpn.trial_sub': { ru: 'Один раз на аккаунт, без карты', en: 'Once per account, no card required' },
   'vpn.trial_btn': { ru: 'Активировать', en: 'Activate' },
   'vpn.renew': { ru: 'Продлить подписку', en: 'Renew subscription' },
@@ -232,7 +232,7 @@ const dict = {
   'notif.empty': { ru: 'Нет новых уведомлений', en: 'No new notifications' },
 
   // ── Trial block ───────────────────────────────────────────────────────────
-  'trial.heading': { ru: 'Первый месяц −90%', en: 'First month −90%' },
+  'trial.heading': { ru: 'Первый месяц −80%', en: 'First month −80%' },
   'trial.desc': { ru: 'Активируй IMBA Старт: месяц VPN за 50 ₽ вместо 249 ₽, без ограничений по трафику.', en: 'Activate IMBA Start: 1 month VPN for ₽50 instead of ₽249, no traffic limits.' },
   'trial.claim_btn': { ru: 'Забрать месяц за 50 ₽ →', en: 'Get first month for ₽50 →' },
   'trial.topup_hint': { ru: 'На балансе не хватает 50 ₽ — пополни и нажми снова.', en: 'Balance too low — top up ₽50 and try again.' },
@@ -260,18 +260,18 @@ const dict = {
   'social.after_join': { ru: 'После вступления нажми кнопку ниже', en: 'After joining, click the button below' },
   'social.checking': { ru: 'Проверяем…', en: 'Checking…' },
   'social.verify_btn': { ru: 'Я вступил → Активировать VPN', en: 'I joined → Activate VPN' },
-  'social.cta': { ru: 'Вступи в VK-сообщество или Telegram-канал — и получи 7 дней VPN бесплатно', en: 'Join our VK or Telegram — get 7 days of VPN free' },
+  'social.cta': { ru: 'Вступи в VK-сообщество или Telegram-канал — и следи за новостями', en: 'Join our VK or Telegram for news and updates' },
 
   // ── Phone verify ──────────────────────────────────────────────────────────
   'phone.sms_error': { ru: 'Ошибка отправки SMS', en: 'SMS sending error' },
   'phone.wrong_code': { ru: 'Неверный код', en: 'Wrong code' },
-  'phone.desc': { ru: 'Подтверди номер телефона → получи 7 дней VPN бесплатно', en: 'Verify phone → get 7 days of VPN free' },
+  'phone.desc': { ru: 'Подтверди номер телефона', en: 'Verify your phone number' },
   'phone.get_code': { ru: 'Получить код', en: 'Get code' },
   'phone.change_number': { ru: 'Изменить номер', en: 'Change number' },
 
   // ── Telegram verify ───────────────────────────────────────────────────────
   'tg.link_error': { ru: 'Ошибка привязки Telegram', en: 'Telegram linking error' },
-  'tg.desc': { ru: 'Подтверди Telegram → получи 7 дней VPN бесплатно', en: 'Verify Telegram → get 7 days of VPN free' },
+  'tg.desc': { ru: 'Подтверди Telegram', en: 'Verify your Telegram' },
   'tg.activating': { ru: 'Активируем…', en: 'Activating…' },
 
   // ── VPN servers panel ─────────────────────────────────────────────────────

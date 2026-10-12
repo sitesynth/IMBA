@@ -15,7 +15,7 @@ import { CITY_EN, COUNTRY_CODE_EN, FLAG_BY_CODE } from '@/lib/geo-names'
 
 export const metadata: Metadata = {
   title: 'IMBA — VPN, eSIM & Virtual Card. Internet Without Borders.',
-  description: 'VPN, eSIM, and virtual Visa/Mastercard in one subscription. VLESS Reality protocol works in China, UAE, Turkey, and anywhere else that blocks it. 50+ servers, zero logs. Try 7 days free.',
+  description: 'VPN, eSIM, and virtual Visa/Mastercard in one subscription. VLESS Reality protocol works in China, UAE, Turkey, and anywhere else that blocks it. 50+ servers, zero logs. First month for $0.56.',
   alternates: { canonical: SITE_URL },
 }
 
@@ -65,7 +65,7 @@ export default async function HomePage() {
       <Marquee
         bg="var(--ink)"
         textColor="var(--paper)"
-        items={['WORKS WORLDWIDE', 'VLESS REALITY', '7 DAYS FREE', '50+ SERVERS', 'eSIM IN 190 COUNTRIES', 'VIRTUAL CARD']}
+        items={['WORKS WORLDWIDE', 'VLESS REALITY', 'FIRST MONTH $0.56', '50+ SERVERS', 'eSIM IN 190 COUNTRIES', 'VIRTUAL CARD']}
       />
 
       {/* Nav + Hero */}
@@ -110,7 +110,7 @@ export default async function HomePage() {
             </h1>
             <p className="display text-xl md:text-2xl text-ink/50 mb-5">Your internet. Anywhere.</p>
             <p className="text-lg md:text-xl font-semibold text-ink/70 max-w-2xl mx-auto mb-8">
-              IMBA runs on VLESS Reality — to your ISP, it looks like regular HTTPS traffic. Works in China, UAE, Turkey, and any other country that tries to block it. 7 days free, no card needed. Plus eSIM for travel and a virtual card for global payments — all in one dashboard.
+              IMBA runs on VLESS Reality — to your ISP, it looks like regular HTTPS traffic. Works in China, UAE, Turkey, and any other country that tries to block it. First month for just $0.56. Plus eSIM for travel and a virtual card for global payments — all in one dashboard.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
               <Link href="/auth/register" className="pill pill-ink text-base imba-btn-pulse">Get Started →</Link>
@@ -211,12 +211,12 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Free trial */}
+      {/* First month offer */}
       <section id="free-vpn" className="rounded-xl px-5 md:px-12 py-12 md:py-16" style={{ background: 'var(--yellow)' }}>
         <div className="max-w-5xl mx-auto">
-          <h2 className="display text-3xl md:text-5xl mb-4">7 days free — no card needed</h2>
+          <h2 className="display text-3xl md:text-5xl mb-4">First month for $0.56 (50 ₽)</h2>
           <p className="text-base md:text-lg font-medium text-ink/75 leading-relaxed mb-8 max-w-3xl">
-            Free VPNs from app stores usually mean ads, overcrowded servers, and your data being sold — that's how they cover costs. IMBA's deal is different: follow our Telegram channel and get a full week of access. Same VLESS Reality, same servers as paid plans.
+            Free VPNs from app stores usually mean ads, overcrowded servers, and your data being sold — that's how they cover costs. IMBA's deal is different: a full month of access for $0.56, 80% off the regular price. Same VLESS Reality, same servers, unlimited traffic.
           </p>
           <div className="grid md:grid-cols-2 gap-4 mb-8 max-w-2xl">
             <a href="https://t.me/imba_live" target="_blank" rel="noopener" className="panel p-5 hover:-translate-y-1 transition-transform duration-200" style={{ background: 'var(--paper)' }}>
@@ -225,13 +225,13 @@ export default async function HomePage() {
             </a>
             <Link href="/auth/register" className="panel p-5 hover:-translate-y-1 transition-transform duration-200 flex flex-col justify-center" style={{ background: 'var(--paper)' }}>
               <h3 className="display text-lg mb-1">Sign up →</h3>
-              <p className="text-sm font-medium text-ink/70">Email only, activate free plan</p>
+              <p className="text-sm font-medium text-ink/70">Email only, pick a server</p>
             </Link>
           </div>
           <p className="text-sm md:text-base font-medium text-ink/75 mb-6 max-w-3xl">
-            How to activate: register → follow IMBA on Telegram → activate <strong>IMBA Start</strong> in your dashboard — VPN free for 7 days. Got a promo code? Apply it in the dashboard too.
+            How it works: register → choose a server in your dashboard → pay $0.56 for the first month. Got a promo code? Apply it in the dashboard too.
           </p>
-          <Link href="/auth/register" className="pill pill-ink text-base">Get 7 Days Free →</Link>
+          <Link href="/auth/register" className="pill pill-ink text-base">Get First Month for $0.56 →</Link>
         </div>
       </section>
 
@@ -280,8 +280,8 @@ export default async function HomePage() {
           <div className="grid md:grid-cols-3 gap-5">
             {[
               {
-                n: '01', t: '7 days free',
-                d: <>Email only. Follow IMBA on Telegram and activate Start: VPN free for 7 days. No card required.</>,
+                n: '01', t: 'First month $0.56',
+                d: <>Email only. Pick a server and pay $0.56 for your first month — 80% off.</>,
               },
               {
                 n: '02', t: 'Install Happ',
@@ -358,7 +358,7 @@ export default async function HomePage() {
 
         <div className="grid md:grid-cols-3 gap-4 md:gap-6">
           {[
-            { name: 'Start', price: 'Free', bg: 'var(--paper)', feats: ['VPN: 1 week free', { text: 'eSIM World 500 MB', soon: true as const }, { text: 'Virtual card 7 days', soon: true as const }], cta: 'Get started' },
+            { name: 'Start', price: '$0.56 first month', bg: 'var(--paper)', feats: ['VPN: first month $0.56', { text: 'eSIM World 500 MB', soon: true as const }, { text: 'Virtual card 7 days', soon: true as const }], cta: 'Get started' },
             { name: 'IMBA COMBO', price: '$9.99/mo', bg: 'var(--yellow)', hot: true, soon: true, feats: ['VPN Pro unlimited', { text: 'eSIM 15 GB worldwide', soon: true as const }, { text: '3 virtual cards', soon: true as const }], cta: 'Coming soon' },
             { name: 'VPN Pro', price: minVpnPriceUsd ? `from $${minVpnPriceUsd.toFixed(2)}/mo` : 'from $1.99/mo', bg: 'var(--blue-100)', feats: ['Europe, US, Asia', 'No logs or slowdowns', 'Unlimited traffic', 'Any device', 'Bypass censorship'], cta: 'Get VPN' },
           ].map((p) => (
@@ -400,7 +400,7 @@ export default async function HomePage() {
           ))}
         </div>
         <p className="text-center text-sm md:text-base font-medium text-ink/60 mt-8 max-w-3xl mx-auto">
-          Start free: after signing up, follow IMBA on Telegram and activate the Start plan — VPN free for 7 days. No payment, no card required. Upgrade anytime.
+          Start for $0.56: your first month of VPN costs 80% less. Upgrade anytime.
         </p>
       </section>
 
@@ -412,7 +412,7 @@ export default async function HomePage() {
         <div className="max-w-3xl mx-auto">
           <FaqAccordion items={[
             { q: 'Does IMBA VPN work in China, UAE, and Turkey?', a: 'Yes. The primary protocol is VLESS Reality, whose traffic is indistinguishable from regular HTTPS. It passes DPI systems deployed in China\'s Great Firewall, UAE, Turkey, and other highly censored networks. 50+ servers across 30+ countries.', color: 'var(--violet-100)' },
-            { q: 'Is there a free VPN trial?', a: 'Yes: after signing up, follow IMBA on Telegram and activate the Start plan — 7 days free with full VPN access on VLESS Reality. No ads, no data selling, no overcrowded servers.', color: 'var(--blue-100)' },
+            { q: 'Is there a free VPN trial?', a: 'There is no free trial, but your first month costs just $0.56 (50 ₽) — 80% off — with full VPN access on VLESS Reality and unlimited traffic. No ads, no data selling, no overcrowded servers.', color: 'var(--blue-100)' },
             { q: 'Will VPN slow down my internet?', a: 'Minimally. XTLS Reality adds almost no overhead: YouTube in 4K, video calls, and gaming work just like without a VPN.', color: 'var(--green-100)' },
             { q: 'Which devices are supported?', a: 'iPhone, iPad, Android, Windows, macOS, Linux, Android TV. One subscription covers multiple devices simultaneously.', color: 'var(--paper)' },
             { q: 'Do you keep logs?', a: 'No. We don\'t record browsing history, IP addresses, or connection timestamps. Zero-knowledge architecture: there\'s simply no data to hand over.', color: 'var(--violet-100)' },
@@ -440,7 +440,7 @@ export default async function HomePage() {
         '@type': 'FAQPage',
         mainEntity: [
           { '@type': 'Question', name: 'Does IMBA VPN work in China, UAE, and Turkey?', acceptedAnswer: { '@type': 'Answer', text: 'Yes. The primary protocol is VLESS Reality, whose traffic is indistinguishable from regular HTTPS. It passes DPI systems in China, UAE, Turkey, and other censored networks. 50+ servers across 30+ countries.' } },
-          { '@type': 'Question', name: 'Is there a free VPN trial?', acceptedAnswer: { '@type': 'Answer', text: 'Yes: follow IMBA on Telegram after signing up and activate the Start plan — 7 days free with full VPN access on VLESS Reality. No ads, no data selling.' } },
+          { '@type': 'Question', name: 'Is there a free VPN trial?', acceptedAnswer: { '@type': 'Answer', text: 'There is no free trial, but the first month costs just $0.56 (50 RUB) — 80% off — with full VPN access on VLESS Reality. No ads, no data selling.' } },
           { '@type': 'Question', name: 'Will VPN slow down my internet?', acceptedAnswer: { '@type': 'Answer', text: 'Minimally. XTLS Reality adds almost no overhead: YouTube in 4K, video calls, and gaming work just like without a VPN.' } },
           { '@type': 'Question', name: 'Which devices are supported?', acceptedAnswer: { '@type': 'Answer', text: 'iPhone, iPad, Android, Windows, macOS, Linux, Android TV. One subscription covers multiple devices simultaneously.' } },
           { '@type': 'Question', name: 'Do you keep logs?', acceptedAnswer: { '@type': 'Answer', text: 'No. We don\'t record browsing history, IP addresses, or connection timestamps. Zero-knowledge architecture — there\'s simply no data to hand over.' } },
@@ -469,7 +469,7 @@ export default async function HomePage() {
         applicationCategory: 'VPNApplication',
         operatingSystem: 'iOS, Android, Windows, macOS, Linux, Android TV',
         description: 'VPN client running VLESS Reality — works in China, UAE, Turkey, and any censored network. Zero logs.',
-        offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD', availability: 'https://schema.org/InStock', url: SITE_URL + '/auth/register', description: '7 days free' },
+        offers: { '@type': 'Offer', price: '0.56', priceCurrency: 'USD', availability: 'https://schema.org/InStock', url: SITE_URL + '/auth/register', description: 'First month for $0.56' },
         publisher: { '@type': 'Organization', '@id': SITE_URL + '/#organization' },
       })}} />
 

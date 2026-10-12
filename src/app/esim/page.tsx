@@ -9,11 +9,11 @@ import { SITE_URL } from '@/lib/site'
 
 export const metadata: Metadata = {
   title: 'eSIM for International Travel — Internet in 190+ Countries | IMBA',
-  description: 'Travel eSIM for 190+ countries. Activate via QR in 1 minute. 5–10x cheaper than roaming. Works on iPhone and Android. 500 MB free for new users.',
+  description: 'Travel eSIM for 190+ countries. Activate via QR in 1 minute. 5–10x cheaper than roaming. Works on iPhone and Android.',
   alternates: { canonical: SITE_URL + '/esim' },
   openGraph: {
     title: 'eSIM for International Travel — Internet in 190+ Countries | IMBA',
-    description: 'Activate via QR in 1 minute. 5–10x cheaper than roaming. 500 MB free.',
+    description: 'Activate via QR in 1 minute. 5–10x cheaper than roaming.',
     url: SITE_URL + '/esim',
     siteName: 'IMBA',
     locale: 'en_US',
@@ -50,7 +50,7 @@ const productSchema = {
   description: 'Travel eSIM for 190+ countries. Activate via QR in 1 minute. Your home SIM stays active.',
   brand: { '@type': 'Brand', name: 'IMBA' },
   offers: [
-    { '@type': 'Offer', name: 'Start', price: '0', priceCurrency: 'USD', description: 'eSIM 500 MB for 7 days free with IMBA Telegram follow', availability: 'https://schema.org/InStock', url: SITE_URL + '/auth/register' },
+    { '@type': 'Offer', name: 'Start', price: '0.56', priceCurrency: 'USD', description: 'VPN first month for $0.56', availability: 'https://schema.org/InStock', url: SITE_URL + '/auth/register' },
     { '@type': 'Offer', name: 'Country plans', price: '3', priceCurrency: 'USD', description: 'From $3 per GB, packages from 1 GB to unlimited in 190+ countries', availability: 'https://schema.org/InStock', url: SITE_URL + '/auth/register' },
   ],
 }
@@ -86,7 +86,7 @@ export default function EsimPage() {
               eSIM for International Travel: Internet in 190+ Countries
             </h1>
             <p className="text-base md:text-lg font-semibold text-ink/65 max-w-xl mb-8">
-              Pick your destination, scan the QR code — and you&apos;re online at local rates. Up to 10x cheaper than roaming, no physical SIM card needed. Your home number stays active. New users get 500 MB free.
+              Pick your destination, scan the QR code — and you&apos;re online at local rates. Up to 10x cheaper than roaming, no physical SIM card needed. Your home number stays active.
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
               <Link href="/auth/register" className="pill text-base" style={{ background: '#C9A4FF', color: '#111111', boxShadow: '0 6px 0 0 rgba(17,17,17,0.2)' }}>
@@ -243,9 +243,9 @@ export default function EsimPage() {
 
       {/* Free trial */}
       <section className="rounded-xl px-5 md:px-12 py-12 md:py-16" style={{ background: 'var(--violet-100)' }}>
-        <h2 className="display text-3xl md:text-5xl mb-3 text-center">Try free: eSIM 500 MB for 7 days</h2>
+        <h2 className="display text-3xl md:text-5xl mb-3 text-center">Try IMBA VPN: first month $0.56</h2>
         <p className="font-semibold text-ink/55 mb-8 text-sm md:text-base max-w-2xl mx-auto text-center">
-          Not sure yet? Try it risk-free: sign up, follow IMBA on Telegram, and activate the Start plan — 500 MB eSIM plus VPN for 7 days. Enough for maps, messaging, and getting around on your first day abroad.
+          Not sure yet? Sign up and get your first month of full VPN access for $0.56 — 80% off. Buy an eSIM package for your trip whenever you're ready.
         </p>
         <div className="grid sm:grid-cols-1 gap-4 max-w-sm mx-auto mb-8">
           <a href="https://t.me/imba_live" target="_blank" rel="noopener noreferrer" className="panel p-5 hover:-translate-y-0.5 transition-transform">
@@ -255,7 +255,7 @@ export default function EsimPage() {
         </div>
         <div className="text-center">
           <Link href="/auth/register" className="pill text-base" style={{ background: '#C9A4FF', color: '#111111', boxShadow: '0 6px 0 0 rgba(17,17,17,0.2)' }}>
-            Get 500 MB free →
+            Get first month $0.56 →
           </Link>
         </div>
       </section>

@@ -14,14 +14,14 @@ export const posts: Post[] = [
   {
     slug: 'vpn-na-kompyutere',
     title: 'How to Set Up a VPN on Windows and macOS (2026 Guide)',
-    excerpt: 'Step-by-step guide to installing IMBA VPN on Windows or macOS using the Happ app. VLESS Reality protocol, 5-minute setup, 7 days free.',
+    excerpt: 'Step-by-step guide to installing IMBA VPN on Windows or macOS using the Happ app. VLESS Reality protocol, 5-minute setup, first month for $0.56.',
     category: 'VPN',
     categoryColor: 'var(--violet)',
     date: 'July 11, 2026',
     readTime: '5 min',
     ogImage: 'https://www.imba.live/blog/og-vpn-na-kompyutere.png',
     content: `
-To install a VPN on your computer, download the Happ app for Windows or macOS, paste your IMBA subscription link, and disable Mux in server settings. The whole process takes 5 minutes, and the first 7 days are free.
+To install a VPN on your computer, download the Happ app for Windows or macOS, paste your IMBA subscription link, and disable Mux in server settings. The whole process takes 5 minutes, and the first month costs just $0.56.
 
 ## What you need
 
@@ -31,9 +31,9 @@ To install a VPN on your computer, download the Happ app for Windows or macOS, p
 
 Important: standard VPN protocols (OpenVPN, WireGuard) suffer from the same DPI blocking on desktop as on mobile. This guide is built around VLESS Reality — to your ISP, this traffic looks like ordinary HTTPS. For context, read our [protocol comparison guide](/blog/vpn-russia-2026).
 
-## Step 1. Create your account and get 7 days free
+## Step 1. Create your account
 
-Sign up at [imba.live/auth/register](https://www.imba.live/auth/register) — email only. After registering, follow IMBA on [Telegram](https://t.me/imba_live) and activate the Start plan in your dashboard: VPN for 7 days free (plus 500 MB eSIM, handy for travel).
+Sign up at [imba.live/auth/register](https://www.imba.live/auth/register) — email only. After registering, activate the Start plan in your dashboard — the first month is $0.56.
 
 ## Step 2. Copy your subscription link
 
@@ -79,7 +79,7 @@ Yes. One subscription link works across multiple devices: add it to Happ on [And
 
 ### Is it free?
 
-The first 7 days are free with a Telegram follow. After that, the Pro plan is $9.99/mo, which includes VPN, eSIM, and a virtual card.
+The first month is $0.56. After that, the Pro plan is $9.99/mo, which includes VPN, eSIM, and a virtual card.
     `.trim(),
   },
   {
@@ -139,7 +139,7 @@ Here's how it works technically:
 
 If you're in a country with internet censorship and want a reliable VPN, you need a protocol with proper obfuscation. IMBA VPN uses VLESS Reality, which is currently the most censorship-resistant protocol available.
 
-[Try IMBA free for 7 days](/auth/register)
+[Try IMBA for $0.56 the first month](/auth/register)
     `.trim(),
   },
   {
@@ -617,7 +617,7 @@ Your TV traffic now routes through IMBA VPN. All streaming apps will see the IP 
 - **Speed**: pick the server with the lowest ping for the smoothest streaming
 - **Reconnect on startup**: in Happ settings, enable auto-connect so VPN restarts automatically after a reboot
 
-[Get IMBA VPN free for 7 days](/auth/register)
+[Get IMBA VPN — first month $0.56](/auth/register)
     `.trim(),
   },
   {
@@ -638,7 +638,7 @@ Happ is the VPN client app that powers IMBA VPN. It supports VLESS Reality and W
 
 You need an IMBA account and your subscription link:
 1. Sign up at [imba.live](https://www.imba.live/auth/register)
-2. Follow IMBA on Telegram to activate your free 7-day trial
+2. Activate the Start plan — the first month is $0.56
 3. In your dashboard, go to **VPN** and copy the **subscription link**
 
 ## Installing on Android
@@ -706,7 +706,7 @@ Choosing the right server: the ping shown next to each server is your latency. L
 | Connection drops frequently | Try VLESS Reality on a different port (options in server settings) |
 | iOS says VPN configuration failed | Delete and reinstall the VPN profile in Settings, then VPN |
 
-[Start your free trial](/auth/register)
+[Start your first month for $0.56](/auth/register)
     `.trim(),
   },
   {
@@ -733,7 +733,7 @@ IMBA VPN uses VLESS Reality, which looks like regular HTTPS traffic to your ISP.
 
 ## Step 1: Create your IMBA account
 
-Sign up at [imba.live](https://www.imba.live/auth/register) with your email. Follow IMBA on Telegram and activate the free 7-day trial in your dashboard.
+Sign up at [imba.live](https://www.imba.live/auth/register) with your email. Activate the Start plan in your dashboard — the first month is $0.56.
 
 ## Step 2: Copy your subscription link
 
@@ -786,7 +786,7 @@ Yes. Paste the same subscription link into Happ on any number of devices.
 
 Your IMBA dashboard always has the latest download links, including mirrors. If one link is blocked, use the mirror.
 
-[Start your 7-day free trial](/auth/register)
+[Start your first month for $0.56](/auth/register)
     `.trim(),
   },
   {
@@ -813,7 +813,7 @@ IMBA VPN uses VLESS Reality — a protocol that makes your VPN traffic look like
 
 ## Step 1: Create your account and get your subscription link
 
-Sign up at [imba.live](https://www.imba.live/auth/register). Follow IMBA on Telegram, activate the free 7-day trial, and copy your subscription link from the VPN section of your dashboard.
+Sign up at [imba.live](https://www.imba.live/auth/register). Activate the Start plan, and copy your subscription link from the VPN section of your dashboard.
 
 ## Step 2: Install Happ on iPhone
 
@@ -860,7 +860,7 @@ Tap a server, then tap **Connect**, then approve the VPN configuration request (
 
 **Slow speeds** — try a different server. Geographic distance matters; pick servers closer to you for everyday use.
 
-[Start your 7-day free trial](/auth/register)
+[Start your first month for $0.56](/auth/register)
     `.trim(),
   },
   {
@@ -1145,7 +1145,7 @@ That said, a VPN is the practical reality of internet use in France for anyone w
 
 ## Quick setup
 
-1. Sign up at [imba.live](https://www.imba.live/auth/register) and get 7 days free
+1. Sign up at [imba.live](https://www.imba.live/auth/register) and activate the Start plan (first month $0.56)
 2. Install Happ on your device
 3. Connect to a Netherlands or Switzerland server
 4. Enable the kill switch in Happ settings
@@ -1229,7 +1229,7 @@ These numbers have been growing year over year, driven by increasing awareness o
 - **European servers with low latency:** connect to nearby servers for minimal speed impact
 - **Costa Rica jurisdiction:** outside EU data retention requirements and not subject to German or EU government data requests
 
-[Start your 7 days free](/auth/register)
+[Start your first month for $0.56](/auth/register)
     `.trim(),
   },
 ]

@@ -88,7 +88,7 @@ export default async function BillingPage() {
           <div className="font-bold text-sm text-ink/60 mb-3">
             {activeVpn?.expires_at
               ? `${t('billing.active_until', locale)} ${new Date(activeVpn.expires_at).toLocaleDateString(getDateLocale(locale))}`
-              : locale === 'ru' ? '7 дней пробный период' : '7-day trial'}
+              : locale === 'ru' ? 'Первый месяц 50 ₽' : 'First month $0.56'}
           </div>
         </div>
       </div>
@@ -180,7 +180,7 @@ export default async function BillingPage() {
         <div className="panel" style={{ background: 'var(--paper)' }}>
           <div className="display text-xl mb-1">{t('plan.start', locale)}</div>
           <div className="font-bold text-sm text-ink/60 mb-3">
-            {locale === 'ru' ? '7 дней бесплатно' : '7 days free'}
+            {locale === 'ru' ? 'Первый месяц 50 ₽' : 'First month $0.56'}
           </div>
           <ul className="space-y-2 font-semibold text-sm mb-5">
             {t('plan.start_features', locale).split('|').map((f) => (
@@ -190,7 +190,7 @@ export default async function BillingPage() {
             ))}
           </ul>
           <a href="/dashboard/vpn" className="pill pill-paper inline-flex">
-            {locale === 'ru' ? 'Активировать пробный период →' : 'Activate free trial →'}
+            {locale === 'ru' ? 'Подключить за 50 ₽ →' : 'Get it for $0.56 →'}
           </a>
         </div>
       )}
