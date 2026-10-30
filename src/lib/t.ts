@@ -77,7 +77,7 @@ const dict = {
   'card.issue_desc': { ru: 'Моментальный выпуск. Оплата Netflix, Spotify, ChatGPT, Adobe и любых зарубежных сервисов.', en: 'Instant issue. Pay for Netflix, Spotify, ChatGPT, Adobe, and any international service.' },
   'soon.chip': { ru: 'Скоро', en: 'Coming soon' },
   'card.soon_heading': { ru: 'Карта IMBA скоро', en: 'IMBA card is coming soon' },
-  'card.soon_note': { ru: 'Виртуальные карты скоро запустятся — мы сообщим.', en: 'Virtual cards are launching soon — we will notify you.' },
+  'card.soon_note': { ru: 'Виртуальные карты скоро запустятся.', en: 'Virtual cards are launching soon.' },
   'card.soon_btn': { ru: 'Скоро', en: 'Coming soon' },
   'card.issue_free': { ru: 'Выпуск бесплатно', en: 'Free to issue' },
   'card.another': { ru: 'Ещё одна карта', en: 'Another card' },

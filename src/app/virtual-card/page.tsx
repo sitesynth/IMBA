@@ -96,9 +96,9 @@ export default function VirtualCardPage() {
               A virtual Visa or Mastercard in USD, EUR, or AED — issued in under a minute, funded via crypto or bank transfer. Works for ChatGPT, Netflix, Spotify, Steam, Amazon, and any other service that accepts international cards.
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
-              <a href="https://t.me/imba_live" target="_blank" rel="noopener noreferrer" className="pill text-base" style={{ background: '#55DB9C', color: '#111111', boxShadow: '0 6px 0 0 rgba(17,17,17,0.2)' }}>
-                Coming soon — get notified →
-              </a>
+              <span className="pill text-base opacity-60 cursor-default select-none" style={{ background: '#55DB9C', color: '#111111', boxShadow: '0 6px 0 0 rgba(17,17,17,0.2)' }}>
+                Coming soon
+              </span>
               <Link href="#how" className="pill pill-paper text-base">How it works</Link>
             </div>
           </div>
@@ -161,13 +161,15 @@ export default function VirtualCardPage() {
         <div className="grid md:grid-cols-3 gap-5 max-w-4xl mx-auto">
           {[
             { step: '01', title: 'Top up your balance', desc: 'Via USDT, BTC, or bank transfer. No specific card or bank required.', cta: 'Top up →', href: '/auth/register' },
-            { step: '02', title: 'Issue your card', desc: 'One click in the dashboard. Card number, expiry, CVV, and billing address are ready instantly.', cta: 'Coming soon', href: 'https://t.me/imba_live' },
+            { step: '02', title: 'Issue your card', desc: 'One click in the dashboard. Card number, expiry, CVV, and billing address are ready instantly.', cta: 'Coming soon', href: '' },
             { step: '03', title: 'Pay anywhere', desc: 'Enter the card details on any website as you would with any card. Works in 190+ countries, online and for subscriptions.', cta: 'Get started →', href: '/auth/register' },
           ].map(item => (
             <div key={item.step} className="panel p-7 flex flex-col gap-4" style={{ background: 'var(--green-100)' }}>
               <div className="flex items-start justify-between gap-2">
                 <span className="display text-5xl text-ink/20">{item.step}</span>
-                <Link href={item.href} className="pill pill-sm flex-shrink-0" style={{ background: '#55DB9C', color: '#111111', boxShadow: '0 4px 0 0 rgba(17,17,17,0.2)', fontSize: '12px' }}>{item.cta}</Link>
+                {item.href
+                  ? <Link href={item.href} className="pill pill-sm flex-shrink-0" style={{ background: '#55DB9C', color: '#111111', boxShadow: '0 4px 0 0 rgba(17,17,17,0.2)', fontSize: '12px' }}>{item.cta}</Link>
+                  : <span className="pill pill-sm flex-shrink-0 opacity-60 cursor-default select-none" style={{ background: '#55DB9C', color: '#111111', boxShadow: '0 4px 0 0 rgba(17,17,17,0.2)', fontSize: '12px' }}>{item.cta}</span>}
               </div>
               <h3 className="display text-xl">{item.title}</h3>
               <p className="text-sm font-semibold text-ink/65 leading-relaxed">{item.desc}</p>
@@ -290,8 +292,8 @@ export default function VirtualCardPage() {
       {/* CTA */}
       <section className="rounded-xl text-center py-16 px-6" style={{ background: 'var(--green)' }}>
         <h2 className="display text-4xl md:text-6xl mb-4">Ready to pay anywhere?</h2>
-        <p className="font-semibold text-lg text-ink/70 mb-8">Virtual cards are launching soon. Follow us on Telegram to get notified.</p>
-        <a href="https://t.me/imba_live" target="_blank" rel="noopener noreferrer" className="pill pill-ink text-base imba-btn-pulse">Get notified →</a>
+        <p className="font-semibold text-lg text-ink/70 mb-8">Virtual cards are launching soon.</p>
+        <span className="pill pill-ink text-base opacity-60 cursor-default select-none">Coming soon</span>
       </section>
 
       {/* Footer */}
