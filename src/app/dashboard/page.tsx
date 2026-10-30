@@ -11,6 +11,8 @@ import { LottieSticker } from '@/components/LottieSticker'
 import { PinnedBanner } from '@/components/PinnedBanner'
 import { TrialBlock, PromoInputRow } from '@/components/TrialBlock'
 import { planLabel } from '@/lib/plan-name'
+import { CARD_ISSUING_ENABLED } from '@/lib/features'
+import { SoonChip } from '@/components/SoonChip'
 import { InstallPrompt } from '@/components/InstallPrompt'
 import { formatMoney, type FxRates } from '@/lib/format'
 import { useToast } from '@/components/ToastProvider'
@@ -237,7 +239,7 @@ export default function DashboardPage() {
         {/* Card */}
         <Link href="/dashboard/card" className="panel group" style={{ background: 'var(--green-100)' }}>
           <div className="flex items-center justify-between mb-4">
-            <span className="chip bg-paper">{t('dash.card_chip', locale)}</span>
+            <span className="chip bg-paper">{t('dash.card_chip', locale)}{!CARD_ISSUING_ENABLED && <SoonChip locale={locale} />}</span>
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" strokeWidth={2.5} />
           </div>
           {card ? (
@@ -250,8 +252,8 @@ export default function DashboardPage() {
             </>
           ) : (
             <>
-              <div className="display text-xl mb-2">{t('dash.issue_card', locale)}</div>
-              <p className="text-xs font-semibold text-ink/60">Visa/Mastercard, USD · EUR · AED</p>
+              <div className="display text-xl mb-2">{CARD_ISSUING_ENABLED ? t('dash.issue_card', locale) : t('card.soon_heading', locale)}</div>
+              <p className="text-xs font-semibold text-ink/60">{CARD_ISSUING_ENABLED ? 'Visa/Mastercard, USD · EUR · AED' : t('card.soon_note', locale)}</p>
             </>
           )}
         </Link>

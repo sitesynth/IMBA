@@ -7,12 +7,14 @@ import { LottieSticker } from '@/components/LottieSticker'
 import { CardActions } from '@/components/CardActions'
 import { getLocale, getDateLocale } from '@/lib/i18n'
 import { t } from '@/lib/t'
+import { CARD_ISSUING_ENABLED } from '@/lib/features'
 import type { VirtualCard, Transaction } from '@/lib/types'
 
 // ── Server actions ────────────────────────────────────────────────────────────
 
 async function issueCard(formData: FormData) {
   'use server'
+  if (!CARD_ISSUING_ENABLED) return
   const card_holder = (formData.get('card_holder') as string) || 'IMBA USER'
   const currency    = (formData.get('currency') as string) || 'USD'
   try {
@@ -100,7 +102,12 @@ export default async function CardPage() {
       {/* Header */}
       <div className="flex items-end justify-between gap-4 flex-wrap">
         <div>
-          <h1 className="display text-4xl md:text-5xl mb-1">{t('card.title', locale)}</h1>
+          <h1 className="display text-4xl md:text-5xl mb-1">
+            {t('card.title', locale)}
+            {!CARD_ISSUING_ENABLED && (
+              <span className="chip ml-3 align-middle text-xs" style={{ background: 'var(--yellow)' }}>{t('soon.chip', locale)}</span>
+            )}
+          </h1>
           <p className="font-semibold text-ink/60">{t('card.subtitle', locale)}</p>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
@@ -149,8 +156,8 @@ export default async function CardPage() {
         </div>
       ))}
 
-      {/* Issue new card */}
-      {canIssueMore && (
+      {/* Issue new card (disabled until CARD_ISSUING_ENABLED) */}
+      {canIssueMore && CARD_ISSUING_ENABLED && (
         <div className="panel" style={{ background: 'var(--green-100)' }}>
           {cards.length === 0 && (
             <div className="flex items-start gap-5 mb-5">
@@ -194,6 +201,19 @@ export default async function CardPage() {
               <Plus className="w-4 h-4" strokeWidth={2.5} /> {t('card.issue_btn', locale)}
             </button>
           </form>
+        </div>
+      )}
+
+      {canIssueMore && !CARD_ISSUING_ENABLED && cards.length === 0 && (
+        <div className="panel" style={{ background: 'var(--green-100)' }}>
+          <div className="flex items-start gap-5">
+            <LottieSticker name="cards" size={88} />
+            <div>
+              <div className="display text-2xl md:text-3xl mb-2">{t('card.soon_heading', locale)}</div>
+              <p className="font-semibold text-ink/70 text-sm mb-4">{t('card.soon_note', locale)}</p>
+              <button type="button" disabled className="pill pill-ink opacity-50 cursor-not-allowed">{t('card.soon_btn', locale)}</button>
+            </div>
+          </div>
         </div>
       )}
 

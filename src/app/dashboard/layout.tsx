@@ -11,13 +11,15 @@ import { ToastProvider } from '@/components/ToastProvider'
 import { formatMoney } from '@/lib/format'
 import { getLocale } from '@/lib/i18n'
 import { t } from '@/lib/t'
+import { CARD_ISSUING_ENABLED } from '@/lib/features'
+import { SoonChip } from '@/components/SoonChip'
 
 function getNavItems(locale: 'ru' | 'en') {
   return [
     { href: '/dashboard', label: t('nav.overview', locale), icon: LayoutDashboard, color: 'var(--paper)' },
     { href: '/dashboard/esim', label: 'eSIM', icon: Wifi, color: 'var(--violet-100)' },
     { href: '/dashboard/vpn', label: 'VPN', icon: Shield, color: 'var(--blue-100)' },
-    { href: '/dashboard/card', label: t('nav.card', locale), icon: CreditCard, color: 'var(--green-100)' },
+    { href: '/dashboard/card', label: t('nav.card', locale), icon: CreditCard, color: 'var(--green-100)', soon: !CARD_ISSUING_ENABLED },
     { href: '/dashboard/billing', label: t('nav.billing', locale), icon: Wallet, color: 'var(--yellow-100)' },
     { href: '/dashboard/referrals', label: t('nav.friends', locale), icon: Users, color: 'var(--green-100)' },
     { href: '/dashboard/settings', label: t('nav.settings', locale), icon: Settings, color: 'var(--cream)' },
@@ -75,7 +77,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
             </div>
 
             <nav className="flex-1 space-y-1.5">
-              {navItems.map(({ href, label, icon: Icon }) => (
+              {navItems.map(({ href, label, icon: Icon, soon }) => (
                 <Link
                   key={href}
                   href={href}
@@ -83,6 +85,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
                 >
                   <Icon className="w-4 h-4" strokeWidth={2.5} />
                   {label}
+                  {soon && <SoonChip locale={locale} />}
                 </Link>
               ))}
             </nav>

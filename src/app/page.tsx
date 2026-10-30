@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { SoonChip } from '@/components/SoonChip'
 import { LandingPricingGrid } from '@/components/LandingPricingGrid'
 import { FireIcon } from '@/components/FireIcon'
 import { Marquee } from '@/components/Marquee'
@@ -123,7 +124,7 @@ export default async function HomePage() {
       {/* Stats marquee */}
       <Marquee
         bg="var(--yellow)"
-        items={['190+ COUNTRIES', '50+ VPN SERVERS', 'FREE VIRTUAL CARD', 'VISA / MASTERCARD', 'INSTANT ACTIVATION']}
+        items={['190+ COUNTRIES', '50+ VPN SERVERS', 'VIRTUAL CARD SOON', 'VISA / MASTERCARD', 'INSTANT ACTIVATION']}
       />
 
       {/* Why VLESS Reality works */}
@@ -322,15 +323,15 @@ export default async function HomePage() {
               points: ['VLESS Reality / WireGuard', '50+ servers', 'Zero logs'],
             },
             {
-              lottie: 'cards', tag: 'Card', bg: 'var(--green-100)', href: '/virtual-card',
+              lottie: 'cards', tag: 'Card', soon: true, bg: 'var(--green-100)', href: '/virtual-card',
               title: 'Pay anywhere',
-              desc: 'Virtual Visa/Mastercard for Netflix, Spotify, ChatGPT, and any other global service. Instant issuance.',
-              points: ['Visa / Mastercard', 'USD / EUR / AED', 'Instant issuance'],
+              desc: 'Virtual Visa/Mastercard for Netflix, Spotify, ChatGPT, and any other global service. Launching soon.',
+              points: ['Visa / Mastercard', 'USD / EUR / AED', 'Launching soon'],
             },
           ].map((s) => (
             <div key={s.tag} className="panel flex items-stretch gap-4 md:gap-5 p-4 md:p-7" style={{ background: s.bg }}>
               <div className="flex-1 flex flex-col">
-                <span className="chip bg-paper mb-3 md:mb-4 w-fit">{s.tag}</span>
+                <span className="chip bg-paper mb-3 md:mb-4 w-fit">{s.tag}{s.soon && <SoonChip locale="en" />}</span>
                 <h3 className="display text-lg md:text-2xl mb-2 md:mb-3">{s.title}</h3>
                 <p className="font-medium text-ink/75 mb-3 md:mb-4 leading-relaxed text-xs md:text-sm">{s.desc}</p>
                 <ul className="space-y-1.5 md:space-y-2 font-bold text-xs md:text-sm">
@@ -416,10 +417,10 @@ export default async function HomePage() {
             { q: 'Will VPN slow down my internet?', a: 'Minimally. XTLS Reality adds almost no overhead: YouTube in 4K, video calls, and gaming work just like without a VPN.', color: 'var(--green-100)' },
             { q: 'Which devices are supported?', a: 'iPhone, iPad, Android, Windows, macOS, Linux, Android TV. One subscription covers multiple devices simultaneously.', color: 'var(--paper)' },
             { q: 'Do you keep logs?', a: 'No. We don\'t record browsing history, IP addresses, or connection timestamps. Zero-knowledge architecture: there\'s simply no data to hand over.', color: 'var(--violet-100)' },
-            { q: 'How do I pay without a local card?', a: 'With cryptocurrency (USDT, BTC) or bank transfer. You can also issue a virtual Visa/Mastercard through IMBA and use it to pay for any global service.', color: 'var(--blue-100)' },
+            { q: 'How do I pay without a local card?', a: 'With cryptocurrency (USDT, BTC) or bank transfer. A virtual Visa/Mastercard from IMBA for paying global services is coming soon.', color: 'var(--blue-100)' },
             { q: 'Which VPN protocol bypasses DPI censorship?', a: 'VLESS with XTLS Reality. It disguises the connection as a normal HTTPS request to a legitimate site, so DPI systems find no VPN signatures. OpenVPN and WireGuard are identified by traffic characteristics and blocked in most restricted networks.', color: 'var(--green-100)' },
             { q: 'Is using a VPN legal?', a: 'In most countries, using a VPN is fully legal. Always check local regulations if you\'re unsure. IMBA is registered in Costa Rica and operates under Costa Rican jurisdiction.', color: 'var(--paper)' },
-            { q: 'What else is included in the subscription?', a: 'eSIM for 190+ countries — mobile internet when traveling, and a virtual card in USD/EUR/AED for Netflix, Spotify, ChatGPT, and more. Three services, one dashboard.', color: 'var(--violet-100)' },
+            { q: 'What else is included in the subscription?', a: 'eSIM for 190+ countries — mobile internet when traveling, and a virtual card in USD/EUR/AED for Netflix, Spotify, ChatGPT, and more (virtual cards are coming soon). Three services, one dashboard.', color: 'var(--violet-100)' },
           ]} />
         </div>
       </section>
@@ -447,7 +448,7 @@ export default async function HomePage() {
           { '@type': 'Question', name: 'How do I pay without a local card?', acceptedAnswer: { '@type': 'Answer', text: 'With cryptocurrency (USDT, BTC) or bank transfer. You can also issue a virtual Visa/Mastercard through IMBA.' } },
           { '@type': 'Question', name: 'Which VPN protocol bypasses DPI censorship?', acceptedAnswer: { '@type': 'Answer', text: 'VLESS with XTLS Reality. It disguises the connection as a normal HTTPS request to a legitimate site, so DPI systems find no VPN signatures.' } },
           { '@type': 'Question', name: 'Is using a VPN legal?', acceptedAnswer: { '@type': 'Answer', text: 'In most countries, using a VPN is fully legal. Always check local regulations. IMBA is registered in Costa Rica.' } },
-          { '@type': 'Question', name: 'What else is included in the subscription?', acceptedAnswer: { '@type': 'Answer', text: 'eSIM for 190+ countries and a virtual card in USD/EUR/AED for Netflix, Spotify, ChatGPT, and more. Three services, one dashboard.' } },
+          { '@type': 'Question', name: 'What else is included in the subscription?', acceptedAnswer: { '@type': 'Answer', text: 'eSIM for 190+ countries and a virtual card in USD/EUR/AED for Netflix, Spotify, ChatGPT, and more (virtual cards are coming soon). Three services, one dashboard.' } },
         ],
       })}} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({

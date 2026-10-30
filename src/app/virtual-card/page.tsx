@@ -9,11 +9,11 @@ import { SITE_URL } from '@/lib/site'
 
 export const metadata: Metadata = {
   title: 'Virtual Visa/Mastercard for Global Payments | IMBA',
-  description: 'Virtual Visa/Mastercard in USD, EUR, and AED. Pay for ChatGPT, Netflix, Spotify, Steam, Amazon from anywhere. Issue in 1 minute, fund with crypto or bank transfer.',
+  description: 'Virtual Visa/Mastercard in USD, EUR, and AED. Pay for ChatGPT, Netflix, Spotify, Steam, Amazon from anywhere. Launching soon — fund with crypto or bank transfer.',
   alternates: { canonical: SITE_URL + '/virtual-card' },
   openGraph: {
     title: 'Virtual Visa/Mastercard for Global Payments | IMBA',
-    description: 'Virtual card in USD, EUR, AED. ChatGPT, Netflix, Spotify, Steam, Amazon. Issue in 1 minute.',
+    description: 'Virtual card in USD, EUR, AED. ChatGPT, Netflix, Spotify, Steam, Amazon. Launching soon.',
     url: SITE_URL + '/virtual-card',
     siteName: 'IMBA',
     locale: 'en_US',
@@ -47,10 +47,10 @@ const productSchema = {
   '@context': 'https://schema.org',
   '@type': 'Product',
   name: 'IMBA Virtual Card',
-  description: 'Virtual Visa/Mastercard in USD, EUR, and AED for global online payments. Issue in 1 minute, fund with crypto or bank transfer.',
+  description: 'Virtual Visa/Mastercard in USD, EUR, and AED for global online payments. Launching soon — fund with crypto or bank transfer.',
   brand: { '@type': 'Brand', name: 'IMBA' },
   offers: [
-    { '@type': 'Offer', name: 'Start', price: '0', priceCurrency: 'USD', description: '1 virtual card, free to issue', availability: 'https://schema.org/InStock', url: SITE_URL + '/auth/register' },
+    { '@type': 'Offer', name: 'Start', price: '0', priceCurrency: 'USD', description: '1 virtual card, launching soon', availability: 'https://schema.org/PreOrder', url: SITE_URL + '/auth/register' },
     { '@type': 'Offer', name: 'Pro', price: '9.99', priceCurrency: 'USD', description: '3 virtual cards, priority support', availability: 'https://schema.org/InStock', url: SITE_URL + '/auth/register' },
     { '@type': 'Offer', name: 'Business', price: '24.99', priceCurrency: 'USD', description: '10 virtual cards, API access', availability: 'https://schema.org/InStock', url: SITE_URL + '/auth/register' },
   ],
@@ -78,7 +78,7 @@ export default function VirtualCardPage() {
 
       <Marquee
         bg="var(--green-100)"
-        items={['VISA / MASTERCARD', 'USD · EUR · AED', 'ISSUE IN 1 MINUTE', 'FUND WITH CRYPTO', 'NETFLIX · SPOTIFY · CHATGPT']}
+        items={['VISA / MASTERCARD', 'USD · EUR · AED', 'COMING SOON', 'FUND WITH CRYPTO', 'NETFLIX · SPOTIFY · CHATGPT']}
       />
 
       <SiteHeader />
@@ -88,6 +88,7 @@ export default function VirtualCardPage() {
         <div className="px-5 md:px-12 py-14 md:py-20 max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-8 md:gap-12">
           <div className="flex-1">
             <span className="chip mb-5 inline-block" style={{ background: 'var(--green)', borderColor: 'var(--ink)' }}>Virtual Card</span>
+            <span className="chip mb-5 ml-2 inline-block" style={{ background: 'var(--yellow)', borderColor: 'var(--ink)' }}>Coming soon</span>
             <h1 className="display text-3xl md:text-[2.1rem] mb-6 leading-tight">
               Virtual Visa/Mastercard for Global Payments
             </h1>
@@ -95,9 +96,9 @@ export default function VirtualCardPage() {
               A virtual Visa or Mastercard in USD, EUR, or AED — issued in under a minute, funded via crypto or bank transfer. Works for ChatGPT, Netflix, Spotify, Steam, Amazon, and any other service that accepts international cards.
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
-              <Link href="/auth/register" className="pill text-base" style={{ background: '#55DB9C', color: '#111111', boxShadow: '0 6px 0 0 rgba(17,17,17,0.2)' }}>
-                Issue card →
-              </Link>
+              <a href="https://t.me/imba_live" target="_blank" rel="noopener noreferrer" className="pill text-base" style={{ background: '#55DB9C', color: '#111111', boxShadow: '0 6px 0 0 rgba(17,17,17,0.2)' }}>
+                Coming soon — get notified →
+              </a>
               <Link href="#how" className="pill pill-paper text-base">How it works</Link>
             </div>
           </div>
@@ -160,7 +161,7 @@ export default function VirtualCardPage() {
         <div className="grid md:grid-cols-3 gap-5 max-w-4xl mx-auto">
           {[
             { step: '01', title: 'Top up your balance', desc: 'Via USDT, BTC, or bank transfer. No specific card or bank required.', cta: 'Top up →', href: '/auth/register' },
-            { step: '02', title: 'Issue your card', desc: 'One click in the dashboard. Card number, expiry, CVV, and billing address are ready instantly.', cta: 'Issue →', href: '/auth/register' },
+            { step: '02', title: 'Issue your card', desc: 'One click in the dashboard. Card number, expiry, CVV, and billing address are ready instantly.', cta: 'Coming soon', href: 'https://t.me/imba_live' },
             { step: '03', title: 'Pay anywhere', desc: 'Enter the card details on any website as you would with any card. Works in 190+ countries, online and for subscriptions.', cta: 'Get started →', href: '/auth/register' },
           ].map(item => (
             <div key={item.step} className="panel p-7 flex flex-col gap-4" style={{ background: 'var(--green-100)' }}>
@@ -289,8 +290,8 @@ export default function VirtualCardPage() {
       {/* CTA */}
       <section className="rounded-xl text-center py-16 px-6" style={{ background: 'var(--green)' }}>
         <h2 className="display text-4xl md:text-6xl mb-4">Ready to pay anywhere?</h2>
-        <p className="font-semibold text-lg text-ink/70 mb-8">Issue your card in 1 minute. No documentation required.</p>
-        <Link href="/auth/register" className="pill pill-ink text-base imba-btn-pulse">Issue card →</Link>
+        <p className="font-semibold text-lg text-ink/70 mb-8">Virtual cards are launching soon. Follow us on Telegram to get notified.</p>
+        <a href="https://t.me/imba_live" target="_blank" rel="noopener noreferrer" className="pill pill-ink text-base imba-btn-pulse">Get notified →</a>
       </section>
 
       {/* Footer */}
