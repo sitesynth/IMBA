@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import { Loader2, Gift, Wallet } from 'lucide-react'
+import { Loader2, Wallet } from 'lucide-react'
 import { useLocale } from '@/lib/useLocale'
 import { t } from '@/lib/t'
 import type { VpnTariff, FxRates } from '@/lib/types'
@@ -35,21 +35,18 @@ function tariffDisplay(tariff: VpnTariff, currency: string): { per: string; tota
 export function VpnTariffGrid({
   tariffs,
   serverId,
-  trialAvailable,
   balance = 0,
   activePlan,
   currency = 'USD',
 }: {
   tariffs: VpnTariff[]
   serverId: string
-  trialAvailable: boolean
   balance?: number
   activePlan?: string | null
   currency?: string
   rates?: FxRates
 }) {
   const locale = useLocale()
-  const [trialLoading, setTrialLoading] = useState(false)
   const [buyLoading, setBuyLoading] = useState<number | null>(null)
   const [error, setError] = useState<string | null>(null)
 
@@ -79,23 +76,6 @@ export function VpnTariffGrid({
         amount_usd: String(tariff.total_usd),
       })
       window.location.href = `/dashboard/billing/topup?${params}`
-    }
-  }
-
-  async function activateTrial() {
-    setError(null)
-    setTrialLoading(true)
-    try {
-      const res = await fetch('/api/action/vpn-trial', { method: 'POST', cache: 'no-store' })
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}))
-        throw new Error(data.detail ?? 'Activation error')
-      }
-      window.location.reload()
-    } catch (e: unknown) {
-      setError((e as Error).message || 'Activation error')
-    } finally {
-      setTrialLoading(false)
     }
   }
 
@@ -149,25 +129,6 @@ export function VpnTariffGrid({
           )
         })}
       </div>
-
-      {trialAvailable && (
-        <button
-          onClick={activateTrial}
-          disabled={trialLoading}
-          className="w-full flex items-center justify-between gap-4 rounded-3xl border-2 border-dashed border-ink/30 p-5 text-left transition-colors hover:border-ink disabled:opacity-60"
-        >
-          <div className="flex items-center gap-3">
-            <Gift className="w-6 h-6 shrink-0" strokeWidth={2.5} />
-            <div>
-              <div className="font-extrabold text-sm">{t('vpn.trial_label', locale)}</div>
-              <div className="text-xs font-semibold text-ink/50">{t('vpn.trial_sub', locale)}</div>
-            </div>
-          </div>
-          <span className="pill pill-paper text-sm shrink-0">
-            {trialLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : t('vpn.trial_btn', locale)}
-          </span>
-        </button>
-      )}
 
       {error && <p className="text-sm font-bold text-red-600">{error}</p>}
     </div>

@@ -166,7 +166,6 @@ export default async function BillingPage() {
           <VpnTariffGrid
             tariffs={tariffs}
             serverId={vpnServerId}
-            trialAvailable={false}
             balance={balanceUsd}
             activePlan={activeVpn?.plan ?? null}
             currency={cur}
@@ -175,7 +174,7 @@ export default async function BillingPage() {
         </div>
       )}
 
-      {/* Start trial */}
+      {/* Start plan: first month */}
       {!activeVpn && !user.trial_activated && (
         <div className="panel" style={{ background: 'var(--paper)' }}>
           <div className="display text-xl mb-1">{t('plan.start', locale)}</div>

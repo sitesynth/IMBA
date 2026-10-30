@@ -27,7 +27,7 @@ const faqItems = [
   { q: 'How do I fund the card?', a: 'Via cryptocurrency (USDT, BTC, and others) or bank transfer. No specific card or bank account required.', color: 'var(--paper)' },
   { q: 'What are the fees?', a: 'All fees for top-up and conversion are shown before you confirm — no hidden charges. Current rates are in the Tariffs section of your dashboard.', color: 'var(--green-100)' },
   { q: 'Does it work for recurring subscriptions?', a: 'Yes. ChatGPT Plus, Netflix, Spotify, and other services with automatic billing will charge the card as long as it has a sufficient balance.', color: 'var(--paper)' },
-  { q: 'How many cards can I have?', a: 'On the free Start plan — 1 card. On Pro ($9.99/mo) — 3 cards. On Business ($24.99/mo) — 10 cards.', color: 'var(--green-100)' },
+  { q: 'How many cards can I have?', a: 'On the Start plan — 1 card. On Pro ($9.99/mo) — 3 cards. On Business ($24.99/mo) — 10 cards.', color: 'var(--green-100)' },
   { q: 'What if a payment fails?', a: 'Check your balance and card currency. Some services require a billing address — it is provided with your card details. If the problem persists, contact IMBA support.', color: 'var(--paper)' },
   { q: 'Is the virtual card secure?', a: 'Yes. A virtual card cannot be physically lost or skimmed. Every transaction is visible in your dashboard, and you can block the card instantly with one click.', color: 'var(--green-100)' },
   { q: 'What currencies are supported?', a: 'USD, EUR, and AED. If you pay in a different currency, conversion is automatic and the exchange rate is shown before the transaction.', color: 'var(--paper)' },

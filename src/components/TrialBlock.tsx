@@ -107,6 +107,9 @@ export function TrialBlock({ onActivated, onPromoApplied }: Props) {
       <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 13, fontWeight: 600, marginBottom: 12, lineHeight: 1.45 }}>
         {t('trial.desc', locale)}
       </p>
+      <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: 12, fontWeight: 600, marginTop: -6, marginBottom: 12 }}>
+        {t('trial.then', locale)}
+      </p>
 
       <button
         onClick={claimFirstMonth}

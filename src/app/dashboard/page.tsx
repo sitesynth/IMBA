@@ -10,6 +10,7 @@ import { t } from '@/lib/t'
 import { LottieSticker } from '@/components/LottieSticker'
 import { PinnedBanner } from '@/components/PinnedBanner'
 import { TrialBlock, PromoInputRow } from '@/components/TrialBlock'
+import { planLabel } from '@/lib/plan-name'
 import { InstallPrompt } from '@/components/InstallPrompt'
 import { formatMoney, type FxRates } from '@/lib/format'
 import { useToast } from '@/components/ToastProvider'
@@ -75,7 +76,7 @@ export default function DashboardPage() {
   const safeUser = {
     ...user,
     balance: typeof user.balance === 'number' ? user.balance : 0,
-    plan_name: user.plan_name || t('dash.plan', locale),
+    plan_name: planLabel(user.plan_name, locale) || t('dash.plan', locale),
   }
   const rates: FxRates = user.rates ?? { EUR: 0.92, RUB: 90 }
   const cur = user.currency ?? 'USD'
@@ -108,7 +109,7 @@ export default function DashboardPage() {
       <PinnedBanner />
       <InstallPrompt />
 
-      {/* Trial expiry warning — shown 3 days before end */}
+      {/* Expiry warning — shown 3 days before end */}
       {safeUser.trial_activated && daysLeft !== null && daysLeft > 0 && daysLeft <= 3 && (
         <div className="panel flex items-center justify-between gap-3 flex-wrap"
           style={{ background: daysLeft <= 1 ? '#ef4444' : '#FFD731', color: '#111' }}>
@@ -117,7 +118,7 @@ export default function DashboardPage() {
             <span className="font-extrabold text-sm">
               {daysLeft === 1
                 ? t('dash.trial_tomorrow', locale)
-                : locale === 'ru' ? `Пробный период заканчивается через ${daysLeft} ${pluralDays(daysLeft, locale)}` : `Trial ends in ${daysLeft} ${pluralDays(daysLeft, locale)}`}
+                : locale === 'ru' ? `Подписка заканчивается через ${daysLeft} ${pluralDays(daysLeft, locale)}` : `Your subscription ends in ${daysLeft} ${pluralDays(daysLeft, locale)}`}
             </span>
           </div>
           <Link href="/dashboard/billing" className="pill pill-ink pill-sm shrink-0">

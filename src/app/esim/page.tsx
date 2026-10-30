@@ -241,7 +241,7 @@ export default function EsimPage() {
         </p>
       </section>
 
-      {/* Free trial */}
+      {/* First month offer */}
       <section className="rounded-xl px-5 md:px-12 py-12 md:py-16" style={{ background: 'var(--violet-100)' }}>
         <h2 className="display text-3xl md:text-5xl mb-3 text-center">Try IMBA VPN: first month $0.56</h2>
         <p className="font-semibold text-ink/55 mb-8 text-sm md:text-base max-w-2xl mx-auto text-center">

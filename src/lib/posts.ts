@@ -26,7 +26,7 @@ To install a VPN on your computer, download the Happ app for Windows or macOS, p
 ## What you need
 
 - A computer running Windows 10/11 or macOS
-- An IMBA account — sign up with just your email, no card needed
+- An IMBA account — sign up with just your email
 - 5 minutes
 
 Important: standard VPN protocols (OpenVPN, WireGuard) suffer from the same DPI blocking on desktop as on mobile. This guide is built around VLESS Reality — to your ISP, this traffic looks like ordinary HTTPS. For context, read our [protocol comparison guide](/blog/vpn-russia-2026).
@@ -79,7 +79,7 @@ Yes. One subscription link works across multiple devices: add it to Happ on [And
 
 ### Is it free?
 
-The first month is $0.56. After that, the Pro plan is $9.99/mo, which includes VPN, eSIM, and a virtual card.
+The first month is $0.56. After that, VPN is from $1.67/mo on a 1-year plan ($2.99/mo month to month). The Pro plan at $9.99/mo adds eSIM and a virtual card.
     `.trim(),
   },
   {

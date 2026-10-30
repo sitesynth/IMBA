@@ -358,7 +358,7 @@ export default async function HomePage() {
 
         <div className="grid md:grid-cols-3 gap-4 md:gap-6">
           {[
-            { name: 'Start', price: '$0.56 first month', bg: 'var(--paper)', feats: ['VPN: first month $0.56', { text: 'eSIM World 500 MB', soon: true as const }, { text: 'Virtual card 7 days', soon: true as const }], cta: 'Get started' },
+            { name: 'Start', price: '$0.56 first month', bg: 'var(--paper)', feats: ['VPN: first month $0.56, then from $1.67/mo on a 1-year plan', { text: 'eSIM World 500 MB', soon: true as const }, { text: 'Virtual card 7 days', soon: true as const }], cta: 'Get started' },
             { name: 'IMBA COMBO', price: '$9.99/mo', bg: 'var(--yellow)', hot: true, soon: true, feats: ['VPN Pro unlimited', { text: 'eSIM 15 GB worldwide', soon: true as const }, { text: '3 virtual cards', soon: true as const }], cta: 'Coming soon' },
             { name: 'VPN Pro', price: minVpnPriceUsd ? `from $${minVpnPriceUsd.toFixed(2)}/mo` : 'from $1.99/mo', bg: 'var(--blue-100)', feats: ['Europe, US, Asia', 'No logs or slowdowns', 'Unlimited traffic', 'Any device', 'Bypass censorship'], cta: 'Get VPN' },
           ].map((p) => (
@@ -412,7 +412,7 @@ export default async function HomePage() {
         <div className="max-w-3xl mx-auto">
           <FaqAccordion items={[
             { q: 'Does IMBA VPN work in China, UAE, and Turkey?', a: 'Yes. The primary protocol is VLESS Reality, whose traffic is indistinguishable from regular HTTPS. It passes DPI systems deployed in China\'s Great Firewall, UAE, Turkey, and other highly censored networks. 50+ servers across 30+ countries.', color: 'var(--violet-100)' },
-            { q: 'Is there a free VPN trial?', a: 'There is no free trial, but your first month costs just $0.56 (50 ₽) — 80% off — with full VPN access on VLESS Reality and unlimited traffic. No ads, no data selling, no overcrowded servers.', color: 'var(--blue-100)' },
+            { q: 'Is there a free VPN trial?', a: 'There is no free trial, but your first month costs just $0.56 (50 ₽) — 80% off — with full VPN access on VLESS Reality and unlimited traffic. After that it is from $1.67/mo (149 ₽) on a 1-year plan, or $2.99/mo month to month. No ads, no data selling, no overcrowded servers.', color: 'var(--blue-100)' },
             { q: 'Will VPN slow down my internet?', a: 'Minimally. XTLS Reality adds almost no overhead: YouTube in 4K, video calls, and gaming work just like without a VPN.', color: 'var(--green-100)' },
             { q: 'Which devices are supported?', a: 'iPhone, iPad, Android, Windows, macOS, Linux, Android TV. One subscription covers multiple devices simultaneously.', color: 'var(--paper)' },
             { q: 'Do you keep logs?', a: 'No. We don\'t record browsing history, IP addresses, or connection timestamps. Zero-knowledge architecture: there\'s simply no data to hand over.', color: 'var(--violet-100)' },
@@ -430,7 +430,7 @@ export default async function HomePage() {
           <LottieSticker name="rocket" size={120} />
         </div>
         <h2 className="display text-4xl md:text-6xl mb-4">Ready to start?</h2>
-        <p className="font-semibold text-lg text-ink/70 mb-8">Sign up in one minute. No card required.</p>
+        <p className="font-semibold text-lg text-ink/70 mb-8">Sign up in one minute. First month just $0.56.</p>
         <Link href="/auth/register" className="pill pill-ink text-base imba-btn-pulse">Get Started →</Link>
       </section>
 
@@ -440,7 +440,7 @@ export default async function HomePage() {
         '@type': 'FAQPage',
         mainEntity: [
           { '@type': 'Question', name: 'Does IMBA VPN work in China, UAE, and Turkey?', acceptedAnswer: { '@type': 'Answer', text: 'Yes. The primary protocol is VLESS Reality, whose traffic is indistinguishable from regular HTTPS. It passes DPI systems in China, UAE, Turkey, and other censored networks. 50+ servers across 30+ countries.' } },
-          { '@type': 'Question', name: 'Is there a free VPN trial?', acceptedAnswer: { '@type': 'Answer', text: 'There is no free trial, but the first month costs just $0.56 (50 RUB) — 80% off — with full VPN access on VLESS Reality. No ads, no data selling.' } },
+          { '@type': 'Question', name: 'Is there a free VPN trial?', acceptedAnswer: { '@type': 'Answer', text: 'There is no free trial, but the first month costs just $0.56 (50 RUB) — 80% off — with full VPN access on VLESS Reality. After that it is from $1.67/mo (149 RUB) on a 1-year plan, or $2.99/mo month to month. No ads, no data selling.' } },
           { '@type': 'Question', name: 'Will VPN slow down my internet?', acceptedAnswer: { '@type': 'Answer', text: 'Minimally. XTLS Reality adds almost no overhead: YouTube in 4K, video calls, and gaming work just like without a VPN.' } },
           { '@type': 'Question', name: 'Which devices are supported?', acceptedAnswer: { '@type': 'Answer', text: 'iPhone, iPad, Android, Windows, macOS, Linux, Android TV. One subscription covers multiple devices simultaneously.' } },
           { '@type': 'Question', name: 'Do you keep logs?', acceptedAnswer: { '@type': 'Answer', text: 'No. We don\'t record browsing history, IP addresses, or connection timestamps. Zero-knowledge architecture — there\'s simply no data to hand over.' } },
@@ -452,9 +452,9 @@ export default async function HomePage() {
       })}} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
         '@context': 'https://schema.org', '@type': 'Product', '@id': SITE_URL + '/#plan-start',
-        name: 'IMBA Start', description: 'Free plan: 1 eSIM profile, basic VPN, 1 virtual card.',
+        name: 'IMBA Start', description: 'First month $0.56 (80% off), then from $1.67/mo on a 1-year plan: full VPN on VLESS Reality, unlimited traffic.',
         brand: { '@type': 'Brand', name: 'IMBA' },
-        offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD', availability: 'https://schema.org/InStock', url: SITE_URL + '/auth/register' },
+        offers: { '@type': 'Offer', price: '0.56', priceCurrency: 'USD', availability: 'https://schema.org/InStock', url: SITE_URL + '/auth/register', description: 'First month; then from $1.67/mo on a 1-year plan' },
       })}} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
         '@context': 'https://schema.org', '@type': 'Product', '@id': SITE_URL + '/#plan-combo',

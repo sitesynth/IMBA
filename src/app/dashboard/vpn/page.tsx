@@ -6,6 +6,7 @@ import { LottieSticker } from '@/components/LottieSticker'
 import { AnimatedBalance } from '@/components/AnimatedBalance'
 import { VpnServersPanel } from '@/components/VpnServersPanel'
 import { VpnTariffGrid } from '@/components/VpnTariffGrid'
+import { FirstMonthPlate } from '@/components/FirstMonthPlate'
 import { VpnPromoInput } from '@/components/VpnPromoInput'
 import { SocialVerifyWrapper } from '@/components/SocialVerifyWrapper'
 import { getLocale, getDateLocale } from '@/lib/i18n'
@@ -104,7 +105,6 @@ export default async function VpnPage() {
             <VpnTariffGrid
               tariffs={tariffs}
               serverId={active.server_id ?? defaultServerId}
-              trialAvailable={false}
               balance={user.balance}
               activePlan={active.plan}
               currency={user.currency}
@@ -133,12 +133,13 @@ export default async function VpnPage() {
             {!user.trial_activated && <SocialVerifyWrapper />}
           </div>
 
+          {!user.trial_activated && <FirstMonthPlate />}
+
           <div>
             <h2 className="display text-2xl mb-3">{t('vpn.choose_plan', locale)}</h2>
             <VpnTariffGrid
               tariffs={tariffs}
               serverId={defaultServerId}
-              trialAvailable={!user.trial_activated}
               balance={user.balance}
               currency={user.currency}
               rates={rates}

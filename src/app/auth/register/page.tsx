@@ -24,7 +24,7 @@ export default function RegisterPage() {
             <LottieSticker name="keys" size={96} />
           </div>
           <h1 className="display text-4xl mb-1">Create account</h1>
-          <p className="font-semibold text-ink/60">Free. No card required.</p>
+          <p className="font-semibold text-ink/60">Sign up with email. First month just $0.56.</p>
         </div>
 
         <Suspense fallback={<FormSkeleton />}>

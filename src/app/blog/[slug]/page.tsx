@@ -234,7 +234,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
           {/* CTA */}
           <div className="mt-12 rounded-2xl p-6 md:p-8 text-center" style={{ background: 'var(--yellow)', border: '2px solid var(--ink)' }}>
-            <p className="font-black text-xl mb-2">Try IMBA free</p>
+            <p className="font-black text-xl mb-2">Try IMBA for $0.56</p>
             <p className="text-sm text-ink/70 mb-5">eSIM + VPN + virtual card in one subscription</p>
             <Link href="/auth/register" className="pill pill-ink">Get started</Link>
           </div>
