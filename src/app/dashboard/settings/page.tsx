@@ -5,6 +5,7 @@ import { getCurrentUser, logout } from '@/lib/auth'
 import { apiFetch } from '@/lib/api'
 import { CurrencySelector } from '@/components/CurrencySelector'
 import { OpenSupportButton } from '@/components/OpenSupportButton'
+import { LanguageSwitch } from '@/components/LanguageSwitch'
 import { getLocale } from '@/lib/i18n'
 import { t } from '@/lib/t'
 
@@ -35,6 +36,11 @@ export default async function SettingsPage() {
           {t('settings.currency_desc', locale)}
         </p>
         <CurrencySelector current={user.currency ?? 'USD'} action={updateCurrency} />
+      </div>
+
+      <div className="panel" style={{ background: 'var(--paper)' }}>
+        <h2 className="display text-xl md:text-2xl mb-4">{t('settings.language', locale)}</h2>
+        <LanguageSwitch locale={locale} />
       </div>
 
       <div className="panel" style={{ background: 'var(--paper)' }}>

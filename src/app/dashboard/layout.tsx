@@ -13,7 +13,6 @@ import { getLocale } from '@/lib/i18n'
 import { t } from '@/lib/t'
 import { CARD_ISSUING_ENABLED } from '@/lib/features'
 import { SoonChip } from '@/components/SoonChip'
-import { LanguageSwitch } from '@/components/LanguageSwitch'
 import { LocaleProvider } from '@/lib/locale-context'
 
 function getNavItems(locale: 'ru' | 'en') {
@@ -55,7 +54,6 @@ export default async function DashboardLayout({ children }: { children: React.Re
         <Logo size="sm" tone="blue" href="/dashboard" />
         <div className="flex items-center gap-2">
           <NotificationBell />
-          <LanguageSwitch locale={locale} />
           <span className="chip" style={{ background: 'var(--yellow)' }}><AnimatedBalance balance={user.balance} currency={user.currency} rates={user.rates} /></span>
           <Link href="/dashboard/settings" className="pill pill-paper pill-sm" aria-label={t('nav.settings', locale)}>
             <Settings className="w-4 h-4" strokeWidth={2.5} />
@@ -107,7 +105,6 @@ export default async function DashboardLayout({ children }: { children: React.Re
                   <div className="text-xs font-semibold text-ink/50 truncate">{user.email}</div>
                 </div>
               </div>
-              <div className="px-1 mb-3"><LanguageSwitch locale={locale} /></div>
               <form action={logout}>
                 <button
                   type="submit"
