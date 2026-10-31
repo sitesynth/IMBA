@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { Zap, Smartphone, Download, Link, Terminal, Moon } from 'lucide-react'
 import { CopyButton } from '@/components/CopyButton'
-import { SpeedBadge } from '@/components/SpeedBadge'
+import { PingBadge } from '@/components/PingBadge'
 import type { VpnServer } from '@/lib/types'
 import { useLocale } from '@/lib/useLocale'
 import { t, type TKey } from '@/lib/t'
@@ -250,12 +250,6 @@ function WdttInstructions({ platform, link, locale }: { platform: Platform; link
   )
 }
 
-function serverProbeUrl(host?: string): string {
-  if (!host) return 'https://38-19-201-176.sslip.io/speedtest'
-  const dashed = host.replace(/\./g, '-')
-  return `https://${dashed}.sslip.io/speedtest`
-}
-
 export function VpnServersPanel({ servers, vlessMap, serverKey, hasActive, wdttLink }: Props) {
   const locale = useLocale()
   const [selectedPanel, setSelectedPanel] = useState<'happ' | 'wdtt'>('happ')
@@ -458,7 +452,7 @@ export function VpnServersPanel({ servers, vlessMap, serverKey, hasActive, wdttL
                   </div>
                 </div>
                 <div className="flex items-center gap-2 flex-wrap">
-                  <SpeedBadge cacheKey={s.id} probeUrl={serverProbeUrl(s.host)} />
+                  <PingBadge ping={s.ping} />
                   {hasActive && vlessUri ? (
                     <CopyButton text={vlessUri} label="v2box" className="pill pill-paper pill-sm text-xs" />
                   ) : (
