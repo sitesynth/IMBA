@@ -2,6 +2,13 @@ export type Locale = 'ru' | 'en'
 
 const RU_HOSTS = ['imba.run', 'www.imba.run', 'localhost']
 
+export const LANG_COOKIE = 'imba_lang'
+
+/** A language picked with the switcher (cookie) wins; otherwise the domain decides. */
+export function resolveLocale(host: string, cookie?: string | null): Locale {
+  return cookie === 'ru' || cookie === 'en' ? cookie : getLocaleFromHost(host)
+}
+
 export function getLocaleFromHost(host: string): Locale {
   const h = host.toLowerCase()
   return RU_HOSTS.some(rh => h === rh || h.endsWith('.' + rh)) ? 'ru' : 'en'

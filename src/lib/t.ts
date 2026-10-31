@@ -142,6 +142,7 @@ const dict = {
   'esim.empty': { ru: 'У тебя ещё нет eSIM', en: "You don't have an eSIM yet" },
   'esim.empty_desc': { ru: 'Выбери пакет ниже — активация по QR за минуту.', en: 'Pick a plan below — activate via QR in a minute.' },
   'esim.buy': { ru: 'Купить eSIM', en: 'Buy eSIM' },
+  'esim.charge_note': { ru: 'Списание с баланса IMBA · {n} стран', en: 'Charged from your IMBA balance · {n} countries' },
   'esim.mb': { ru: 'МБ', en: 'MB' },
   'esim.per_gb': { ru: '/ГБ', en: '/GB' },
 
