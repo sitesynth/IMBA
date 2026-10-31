@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { Zap, Smartphone, Download, Link, Terminal, Moon } from 'lucide-react'
 import { CopyButton } from '@/components/CopyButton'
-import { PingBadge } from '@/components/PingBadge'
+import { LivePing } from '@/components/LivePing'
 import type { VpnServer } from '@/lib/types'
 import { useLocale } from '@/lib/useLocale'
 import { t, type TKey } from '@/lib/t'
@@ -452,7 +452,7 @@ export function VpnServersPanel({ servers, vlessMap, serverKey, hasActive, wdttL
                   </div>
                 </div>
                 <div className="flex items-center gap-2 flex-wrap">
-                  <PingBadge ping={s.ping} />
+                  <LivePing host={s.host} />
                   {hasActive && vlessUri ? (
                     <CopyButton text={vlessUri} label="v2box" className="pill pill-paper pill-sm text-xs" />
                   ) : (
