@@ -5,6 +5,8 @@ import { Tag } from 'lucide-react'
 import { getFingerprint } from '@/lib/fingerprint'
 import { useLocale } from '@/lib/useLocale'
 import { t } from '@/lib/t'
+import { useFirstMonthPrices, fillPrices } from '@/lib/useFirstMonthPrices'
+import type { FxRates } from '@/lib/types'
 
 const VK_GROUP_URL = 'https://vk.com/club239876488'
 const TG_CHANNEL_URL = 'https://telegram.dog/imba_live'
@@ -13,10 +15,13 @@ const DEFAULT_SERVER_ID = 'c973f18c-36df-4926-b369-05ebc0604579'
 interface Props {
   onActivated: () => void
   onPromoApplied: (msg: string) => void
+  currency?: string
+  rates?: FxRates
 }
 
-export function TrialBlock({ onActivated, onPromoApplied }: Props) {
+export function TrialBlock({ onActivated, onPromoApplied, currency = 'USD', rates = { EUR: 0.92, RUB: 90 } }: Props) {
   const locale = useLocale()
+  const prices = useFirstMonthPrices(currency, rates)
   const searchParams = useSearchParams()
 
   const [claiming, setClaiming] = useState(false)
@@ -105,15 +110,15 @@ export function TrialBlock({ onActivated, onPromoApplied }: Props) {
       </div>
 
       <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 13, fontWeight: 600, marginBottom: 12, lineHeight: 1.45 }}>
-        {t('trial.desc', locale)}
+        {prices && fillPrices(t('trial.desc', locale), prices)}
       </p>
       <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: 12, fontWeight: 600, marginTop: -6, marginBottom: 12 }}>
-        {t('trial.then', locale)}
+        {prices?.yearly && fillPrices(t('trial.then', locale), prices)}
       </p>
 
       <button
         onClick={claimFirstMonth}
-        disabled={claiming}
+        disabled={claiming || !prices}
         className="w-full mb-3"
         style={{
           padding: '14px 16px', borderRadius: 16, border: 'none',
@@ -123,13 +128,13 @@ export function TrialBlock({ onActivated, onPromoApplied }: Props) {
       >
         {claiming
           ? (locale === 'ru' ? 'Активируем…' : 'Activating…')
-          : t('trial.claim_btn', locale)}
+          : prices ? fillPrices(t('trial.claim_btn', locale), prices) : '…'}
       </button>
 
       {needsTopup && (
         <p style={{ fontSize: 12, fontWeight: 700, color: '#FFD731', marginBottom: 8 }}>
-          {t('trial.topup_hint', locale)}
-          {' '}<a href="/dashboard/billing/topup?amount_usd=0.56" style={{ color: '#FFD731', textDecoration: 'underline' }}>
+          {prices && fillPrices(t('trial.topup_hint', locale), prices)}
+          {' '}<a href={prices ? `/dashboard/billing/topup?amount_usd=${prices.priceUsd}` : '/dashboard/billing/topup'} style={{ color: '#FFD731', textDecoration: 'underline' }}>
             {locale === 'ru' ? 'Пополнить' : 'Top up'}
           </a>
         </p>

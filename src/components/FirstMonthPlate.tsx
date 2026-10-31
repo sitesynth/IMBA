@@ -2,12 +2,15 @@
 import { useState } from 'react'
 import { useLocale } from '@/lib/useLocale'
 import { t } from '@/lib/t'
+import { useFirstMonthPrices, fillPrices } from '@/lib/useFirstMonthPrices'
+import type { FxRates } from '@/lib/types'
 
 const DEFAULT_SERVER_ID = 'c973f18c-36df-4926-b369-05ebc0604579'
 
 // First-month offer shown on the VPN page for users who haven't claimed it yet.
-export function FirstMonthPlate() {
+export function FirstMonthPlate({ currency, rates }: { currency: string; rates: FxRates }) {
   const locale = useLocale()
+  const prices = useFirstMonthPrices(currency, rates)
   const [claiming, setClaiming] = useState(false)
   const [needsTopup, setNeedsTopup] = useState(false)
   const [error, setError] = useState('')
@@ -41,11 +44,11 @@ export function FirstMonthPlate() {
       <div style={{ color: '#FFD731', fontSize: 11, fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 8 }}>
         {t('trial.heading', locale)}
       </div>
-      <p style={{ opacity: 0.6, fontSize: 13, fontWeight: 600, marginBottom: 4, lineHeight: 1.45 }}>{t('trial.desc', locale)}</p>
-      <p style={{ opacity: 0.4, fontSize: 12, fontWeight: 600, marginBottom: 12 }}>{t('trial.then', locale)}</p>
+      <p style={{ opacity: 0.6, fontSize: 13, fontWeight: 600, marginBottom: 4, lineHeight: 1.45 }}>{prices && fillPrices(t('trial.desc', locale), prices)}</p>
+      {prices?.yearly && <p style={{ opacity: 0.4, fontSize: 12, fontWeight: 600, marginBottom: 12 }}>{fillPrices(t('trial.then', locale), prices)}</p>}
       <button
         onClick={claim}
-        disabled={claiming}
+        disabled={claiming || !prices}
         className="w-full"
         style={{
           padding: '14px 16px', borderRadius: 16, border: 'none',
@@ -53,12 +56,12 @@ export function FirstMonthPlate() {
           cursor: claiming ? 'default' : 'pointer', opacity: claiming ? 0.6 : 1,
         }}
       >
-        {claiming ? (locale === 'ru' ? 'Активируем…' : 'Activating…') : t('trial.claim_btn', locale)}
+        {claiming ? (locale === 'ru' ? 'Активируем…' : 'Activating…') : prices ? fillPrices(t('trial.claim_btn', locale), prices) : '…'}
       </button>
       {needsTopup && (
         <p style={{ fontSize: 12, fontWeight: 700, color: '#FFD731', marginTop: 10 }}>
-          {t('trial.topup_hint', locale)}{' '}
-          <a href="/dashboard/billing/topup?amount_usd=0.56" style={{ color: '#FFD731', textDecoration: 'underline' }}>
+          {prices && fillPrices(t('trial.topup_hint', locale), prices)}{' '}
+          <a href={prices ? `/dashboard/billing/topup?amount_usd=${prices.priceUsd}` : '/dashboard/billing/topup'} style={{ color: '#FFD731', textDecoration: 'underline' }}>
             {locale === 'ru' ? 'Пополнить' : 'Top up'}
           </a>
         </p>

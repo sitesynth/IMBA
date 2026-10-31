@@ -174,6 +174,8 @@ export default function DashboardPage() {
           <TrialBlock
             onActivated={() => window.location.reload()}
             onPromoApplied={(msg) => addToast(msg, 'success')}
+            currency={cur}
+            rates={rates}
           />
         )}
 

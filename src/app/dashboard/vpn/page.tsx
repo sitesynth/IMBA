@@ -133,7 +133,7 @@ export default async function VpnPage() {
             {!user.trial_activated && <SocialVerifyWrapper />}
           </div>
 
-          {!user.trial_activated && <FirstMonthPlate />}
+          {!user.trial_activated && <FirstMonthPlate currency={user.currency ?? 'USD'} rates={rates} />}
 
           <div>
             <h2 className="display text-2xl mb-3">{t('vpn.choose_plan', locale)}</h2>
