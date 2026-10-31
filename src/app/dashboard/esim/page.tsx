@@ -107,7 +107,7 @@ export default async function EsimPage() {
 
       <div>
         <h2 className="display text-2xl md:text-3xl mb-1">{t('esim.buy', locale)}</h2>
-        <p className="font-semibold text-ink/60 mb-5 text-sm">Списание с баланса IMBA · {Object.keys(catalog).length} стран</p>
+        <p className="font-semibold text-ink/60 mb-5 text-sm">{t('esim.charge_note', locale).replace('{n}', String(Object.keys(catalog).length))}</p>
         <EsimShop catalog={catalog} userBalance={(user as any).balance ?? 0} />
       </div>
     </div>

@@ -30,6 +30,21 @@ export const FLAG_BY_CODE: Record<string, string> = {
   AT: '🇦🇹', RU: '🇷🇺',
 }
 
+const regionNames: { en?: Intl.DisplayNames } = {}
+
+/** Country name for the active locale. The API returns Russian names keyed by ISO code:
+ *  the Russian locale keeps them; English uses COUNTRY_EN first, then Intl for the rest. */
+export function countryName(code: string, apiName: string, locale: string): string {
+  if (locale !== 'en') return apiName
+  if (COUNTRY_EN[apiName]) return COUNTRY_EN[apiName]
+  try {
+    const dn = (regionNames.en ??= new Intl.DisplayNames(['en'], { type: 'region' }))
+    const name = dn.of(code.toUpperCase())
+    if (name && name !== code.toUpperCase()) return name
+  } catch { /* not an ISO region code */ }
+  return apiName
+}
+
 /** Translate a value through a dictionary; Russian locale keeps the source string. */
 export function loc(map: Record<string, string>, value: string, locale: string): string {
   return locale === 'en' ? (map[value] ?? value) : value

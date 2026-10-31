@@ -5,6 +5,7 @@ import { Search, X, Loader2, CheckCircle2, AlertCircle } from 'lucide-react'
 import type { EsimCatalog } from '@/lib/types'
 import { useLocale } from '@/lib/useLocale'
 import { t } from '@/lib/t'
+import { countryName } from '@/lib/geo-names'
 
 const POPULAR = ['TR','TH','AE','EG','DE','JP','CN','US','SG','GE','AM','KZ','IL','IN','ID','GB','FR','IT','ES','KR']
 
@@ -44,10 +45,10 @@ export function EsimShop({ catalog, userBalance }: Props) {
       .filter(([code, info]) =>
         info.flag !== '🌐' &&
         info.country !== code &&
-        (info.country.toLowerCase().includes(q) || code.toLowerCase() === q)
+        (info.country.toLowerCase().includes(q) || countryName(code, info.country, locale).toLowerCase().includes(q) || code.toLowerCase() === q)
       )
       .slice(0, 8)
-  }, [catalog, query])
+  }, [catalog, query, locale])
 
   const popular = POPULAR.filter(c => catalog[c] && catalog[c].flag !== '🌐')
   const selectedInfo = selected ? catalog[selected] : null
@@ -104,7 +105,7 @@ export function EsimShop({ catalog, userBalance }: Props) {
             : <Search className="w-5 h-5 text-ink/40 shrink-0" strokeWidth={2.5} />}
 
           {selectedInfo ? (
-            <span className="flex-1 font-extrabold text-base">{selectedInfo.country}</span>
+            <span className="flex-1 font-extrabold text-base">{countryName(selected as string, selectedInfo.country, locale)}</span>
           ) : (
             <input
               ref={inputRef}
@@ -137,7 +138,7 @@ export function EsimShop({ catalog, userBalance }: Props) {
                 className="w-full flex items-center gap-3 px-4 py-3 hover:bg-ink/5 transition-colors text-left border-b border-ink/5 last:border-0"
               >
                 <span className="text-2xl">{info.flag}</span>
-                <span className="font-extrabold text-sm">{info.country}</span>
+                <span className="font-extrabold text-sm">{countryName(code, info.country, locale)}</span>
                 <span className="ml-auto text-xs font-bold text-ink/40">
                   {t('esim.from', locale)} ${Math.min(...Object.values(info.prices)).toFixed(2)}
                 </span>
@@ -151,7 +152,7 @@ export function EsimShop({ catalog, userBalance }: Props) {
       {selected && selectedInfo && (
         <div className="panel" style={{ background: 'var(--violet-100)' }}>
           <p className="text-xs font-extrabold uppercase tracking-widest text-ink/40 mb-4">
-            {t('esim.packages', locale)} — {selectedInfo.country}
+            {t('esim.packages', locale)} — {countryName(selected as string, selectedInfo.country, locale)}
           </p>
           <div className="space-y-2">
             {Object.entries(selectedInfo.prices).map(([gb, price]) => {
@@ -222,7 +223,7 @@ export function EsimShop({ catalog, userBalance }: Props) {
                 >
                   <span className="text-2xl shrink-0">{info.flag}</span>
                   <div className="min-w-0">
-                    <div className="font-extrabold text-sm truncate">{info.country}</div>
+                    <div className="font-extrabold text-sm truncate">{countryName(code, info.country, locale)}</div>
                     <div className="text-xs font-bold text-ink/40">{t('esim.from', locale)} ${cheapest.toFixed(2)}</div>
                   </div>
                 </button>
