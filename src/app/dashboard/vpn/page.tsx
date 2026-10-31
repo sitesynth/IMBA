@@ -6,9 +6,9 @@ import { LottieSticker } from '@/components/LottieSticker'
 import { AnimatedBalance } from '@/components/AnimatedBalance'
 import { VpnServersPanel } from '@/components/VpnServersPanel'
 import { VpnTariffGrid } from '@/components/VpnTariffGrid'
-import { FirstMonthPlate } from '@/components/FirstMonthPlate'
+import { TrialBlockWrapper } from '@/components/TrialBlockWrapper'
+import { PromoInputRow } from '@/components/TrialBlock'
 import { VpnPromoInput } from '@/components/VpnPromoInput'
-import { SocialVerifyWrapper } from '@/components/SocialVerifyWrapper'
 import { getLocale, getDateLocale } from '@/lib/i18n'
 import { t } from '@/lib/t'
 import type { VpnSubscription, VpnServer, VpnTariff } from '@/lib/types'
@@ -130,10 +130,10 @@ export default async function VpnPage() {
                 <p className="font-semibold opacity-60 text-sm">{t('vpn.locations', locale)}</p>
               </div>
             </div>
-            {!user.trial_activated && <SocialVerifyWrapper />}
+            {!user.trial_activated
+              ? <TrialBlockWrapper currency={user.currency ?? 'USD'} rates={rates} />
+              : <PromoInputRow />}
           </div>
-
-          {!user.trial_activated && <FirstMonthPlate currency={user.currency ?? 'USD'} rates={rates} />}
 
           <div>
             <h2 className="display text-2xl mb-3">{t('vpn.choose_plan', locale)}</h2>
