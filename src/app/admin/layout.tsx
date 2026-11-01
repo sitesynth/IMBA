@@ -171,7 +171,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <img src="/imba-color.svg" alt="IMBA" style={{ height: '18px', width: 'auto' }} />
           <span style={{ color: 'rgba(17,17,17,0.35)', fontSize: '12px', fontWeight: 600 }}>admin</span>
         </header>
-        <main className="flex-1 min-h-0 p-4 sm:p-8 overflow-auto">
+        <main className="relative flex-1 min-h-0 p-4 sm:p-8 overflow-auto">
           {children}
         </main>
       </div>

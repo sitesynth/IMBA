@@ -83,19 +83,19 @@ function sourceLabel(src: string | null): string {
   return src
 }
 
-function CustomerStat({ icon, label, value, tone = 'default', onClick }: {
-  icon: React.ReactNode; label: string; value: React.ReactNode; tone?: 'default' | 'good' | 'bad' | 'muted'; onClick?: () => void
+function CustomerStat({ icon, label, value, tone = 'default', onClick, wide }: {
+  icon: React.ReactNode; label: string; value: React.ReactNode; tone?: 'default' | 'good' | 'bad' | 'muted'; onClick?: () => void; wide?: boolean
 }) {
   const color = tone === 'good' ? 'text-green-700' : tone === 'bad' ? 'text-red-600' : tone === 'muted' ? 'text-gray-400' : 'text-gray-900'
   return (
     <div
       onClick={onClick}
-      className={`flex items-start gap-2 min-w-0 rounded-lg border border-gray-200 bg-white px-3 py-2 ${onClick ? 'cursor-pointer hover:border-gray-300' : ''}`}
+      className={`flex items-start gap-2 min-w-0 rounded-lg border border-gray-200 bg-white px-3 py-2 ${wide ? 'col-span-2' : ''} ${onClick ? 'cursor-pointer hover:border-gray-300' : ''}`}
     >
       <span className="mt-0.5 text-gray-400 shrink-0">{icon}</span>
       <div className="min-w-0">
         <div className="text-[10px] font-semibold uppercase tracking-wide text-gray-400">{label}</div>
-        <div className={`text-sm font-semibold truncate ${color}`}>{value}</div>
+        <div className={`text-sm font-semibold ${wide ? 'break-words' : 'truncate'} ${color}`} title={typeof value === 'string' ? value : undefined}>{value}</div>
       </div>
     </div>
   )
@@ -122,7 +122,7 @@ function CustomerStrip({ c }: { c: SupportCustomer }) {
           tone={vpnActive ? 'good' : c.vpn_status ? 'bad' : 'muted'}
         />
         <CustomerStat icon={<Gift className="w-4 h-4" />} label="Первый месяц 50 ₽" value={c.first_month_used ? 'использован' : 'не брал'} tone={c.first_month_used ? 'default' : 'muted'} />
-        <CustomerStat icon={<Route className="w-4 h-4" />} label="Откуда пришёл" value={sourceLabel(c.source)} />
+        <CustomerStat wide icon={<Route className="w-4 h-4" />} label="Откуда пришёл" value={sourceLabel(c.source)} />
         <CustomerStat
           icon={<CreditCard className="w-4 h-4" />}
           label="Платежи"
@@ -162,7 +162,7 @@ export default function AdminSupport() {
   const [sending, setSending] = useState(false)
   const [pendingImage, setPendingImage] = useState<File | null>(null)
   const [pendingPreview, setPendingPreview] = useState<string | null>(null)
-  const bottomRef = useRef<HTMLDivElement>(null)
+  const messagesRef = useRef<HTMLDivElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   // ── Load list ────────────────────────────────────────────────
@@ -201,7 +201,8 @@ export default function AdminSupport() {
   }, [selectedId, loadTicket])
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+    const list = messagesRef.current
+    if (list) list.scrollTo({ top: list.scrollHeight, behavior: 'smooth' })
   }, [ticket?.transcript.length])
 
   // ── Paste handler ─────────────────────────────────────────────
@@ -292,7 +293,7 @@ export default function AdminSupport() {
   }
 
   return (
-    <div className="-m-4 sm:-m-8 h-[calc(100%+2rem)] sm:h-[calc(100%+4rem)] flex gap-0 overflow-hidden">
+    <div className="absolute inset-0 flex gap-0 overflow-hidden">
 
       {/* ── LEFT: ticket list ── */}
       <div style={{ width: listWidth }} className="flex-shrink-0 border-r border-gray-200 bg-white flex flex-col overflow-hidden">
@@ -419,7 +420,7 @@ export default function AdminSupport() {
             {ticket.customer && <CustomerStrip c={ticket.customer} />}
 
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
+            <div ref={messagesRef} className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
               {ticket.transcript.map((m, i) => m.role === 'system' ? (
                 <div key={i} className="flex justify-center">
                   <div className={`flex items-center gap-1.5 text-[11px] font-medium px-3 py-1 rounded-full ${SYSTEM_EVENT[m.event ?? 'opened']?.cls ?? 'bg-gray-100 text-gray-600'}`}>
@@ -530,7 +531,6 @@ export default function AdminSupport() {
                   </div>
                 </div>
               ))}
-              <div ref={bottomRef} />
             </div>
 
             {/* Reply box */}
