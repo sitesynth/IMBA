@@ -122,6 +122,22 @@ export interface SupportMessage {
   edited_at?: string
 }
 
+export interface SupportCustomer {
+  user_id: string
+  telegram_id: string | null
+  source: string | null
+  balance: number
+  first_month_used: boolean
+  language: string
+  registered_at: string | null
+  vpn_status: string | null
+  vpn_expires_at: string | null
+  payments_count: number
+  payments_total_usd: number
+  last_payment_at: string | null
+  tickets_total: number
+}
+
 export interface SupportTicketDetail {
   ticket_id: string
   user_id?: string
@@ -130,6 +146,7 @@ export interface SupportTicketDetail {
   status: string
   subject: string
   transcript: SupportMessage[]
+  customer?: SupportCustomer | null
   created_at: string
   updated_at: string
 }

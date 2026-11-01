@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useRef, useState, useCallback } from 'react'
-import { Pencil, Trash2, Check } from 'lucide-react'
+import { Pencil, Trash2, Check, Wallet, ShieldCheck, Gift, Route, CreditCard, CalendarDays, Hash, Copy, ExternalLink, MessageCircle } from 'lucide-react'
 import { useResizableWidth } from '@/lib/useResizableWidth'
 import { Send, Loader2, X, CheckCircle } from 'lucide-react'
 
@@ -13,7 +13,7 @@ function PaperclipIcon({ className }: { className?: string }) {
 }
 import {
   getSupport, getSupportTicket, replySupportTicket, setSupportStatus, editSupportMessage, deleteSupportMessage,
-  SupportTicket, SupportTicketDetail, AdminApiError,
+  SupportTicket, SupportTicketDetail, SupportCustomer, AdminApiError,
 } from '@/lib/admin-api'
 
 const STATUS_FILTERS = [
@@ -69,6 +69,75 @@ function Linkified({ text, onDark }: { text: string; onDark: boolean }) {
         )
       })}
     </>
+  )
+}
+
+function sourceLabel(src: string | null): string {
+  if (!src) return '—'
+  if (src.startsWith('telegram_bot')) {
+    const ad = src.split(':')[1]
+    return ad ? `Telegram-бот · реклама ${ad}` : 'Telegram-бот'
+  }
+  if (src === 'email') return 'Сайт · почта'
+  if (src === 'google') return 'Сайт · Google'
+  return src
+}
+
+function CustomerStat({ icon, label, value, tone = 'default', onClick }: {
+  icon: React.ReactNode; label: string; value: React.ReactNode; tone?: 'default' | 'good' | 'bad' | 'muted'; onClick?: () => void
+}) {
+  const color = tone === 'good' ? 'text-green-700' : tone === 'bad' ? 'text-red-600' : tone === 'muted' ? 'text-gray-400' : 'text-gray-900'
+  return (
+    <div
+      onClick={onClick}
+      className={`flex items-start gap-2 min-w-0 rounded-lg border border-gray-200 bg-white px-3 py-2 ${onClick ? 'cursor-pointer hover:border-gray-300' : ''}`}
+    >
+      <span className="mt-0.5 text-gray-400 shrink-0">{icon}</span>
+      <div className="min-w-0">
+        <div className="text-[10px] font-semibold uppercase tracking-wide text-gray-400">{label}</div>
+        <div className={`text-sm font-semibold truncate ${color}`}>{value}</div>
+      </div>
+    </div>
+  )
+}
+
+function CustomerStrip({ c }: { c: SupportCustomer }) {
+  const [copied, setCopied] = useState(false)
+  const date = (iso: string | null) => (iso ? new Date(iso).toLocaleDateString('ru-RU') : '—')
+  const vpnActive = c.vpn_status === 'active' && c.vpn_expires_at && new Date(c.vpn_expires_at) > new Date()
+  return (
+    <div className="bg-gray-50 border-b border-gray-200 px-5 py-3 shrink-0">
+      <div className="grid grid-cols-2 md:grid-cols-3 2xl:grid-cols-6 gap-2">
+        <CustomerStat
+          icon={copied ? <Check className="w-4 h-4 text-green-600" /> : <Hash className="w-4 h-4" />}
+          label="ID клиента (нажми — скопировать)"
+          value={c.user_id.slice(0, 8)}
+          onClick={() => { navigator.clipboard?.writeText(c.user_id); setCopied(true); setTimeout(() => setCopied(false), 1500) }}
+        />
+        <CustomerStat icon={<Wallet className="w-4 h-4" />} label="Баланс" value={`$${c.balance.toFixed(2)}`} tone={c.balance > 0 ? 'default' : 'muted'} />
+        <CustomerStat
+          icon={<ShieldCheck className="w-4 h-4" />}
+          label="VPN"
+          value={vpnActive ? `активен до ${date(c.vpn_expires_at)}` : c.vpn_status ? `закончился ${date(c.vpn_expires_at)}` : 'нет подписки'}
+          tone={vpnActive ? 'good' : c.vpn_status ? 'bad' : 'muted'}
+        />
+        <CustomerStat icon={<Gift className="w-4 h-4" />} label="Первый месяц 50 ₽" value={c.first_month_used ? 'использован' : 'не брал'} tone={c.first_month_used ? 'default' : 'muted'} />
+        <CustomerStat icon={<Route className="w-4 h-4" />} label="Откуда пришёл" value={sourceLabel(c.source)} />
+        <CustomerStat
+          icon={<CreditCard className="w-4 h-4" />}
+          label="Платежи"
+          value={c.payments_count ? `${c.payments_count} · $${c.payments_total_usd.toFixed(2)}` : 'не платил'}
+          tone={c.payments_count ? 'default' : 'muted'}
+        />
+      </div>
+      <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2 text-[11px] text-gray-500">
+        <span className="flex items-center gap-1"><CalendarDays className="w-3 h-3" /> регистрация {date(c.registered_at)}</span>
+        {c.last_payment_at && <span>последний платёж {date(c.last_payment_at)}</span>}
+        {c.telegram_id && <span className="flex items-center gap-1"><MessageCircle className="w-3 h-3" /> Telegram ID {c.telegram_id}</span>}
+        <span>тикетов: {c.tickets_total}</span>
+        <span>язык: {c.language}</span>
+      </div>
+    </div>
   )
 }
 
@@ -322,18 +391,32 @@ export default function AdminSupport() {
                     <option key={s} value={s}>{s}</option>
                   ))}
                 </select>
+                {ticket.user_id && (
+                  <a
+                    href={`/admin/users/${ticket.user_id}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg border border-gray-200 bg-white text-gray-700 font-medium hover:bg-gray-50 transition-colors"
+                    title="Открыть профиль клиента"
+                  >
+                    <ExternalLink className="w-3.5 h-3.5" />
+                    Профиль
+                  </a>
+                )}
                 {ticket.status !== 'closed' && (
                   <button
                     onClick={() => changeStatus('closed')}
-                    className="flex items-center gap-1 text-xs px-2.5 py-1 rounded-lg bg-green-600 text-white font-medium hover:bg-green-700 transition-colors"
-                    title="Close ticket"
+                    className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg bg-green-600 text-white font-medium hover:bg-green-700 transition-colors"
+                    title="Закрыть тикет"
                   >
                     <CheckCircle className="w-3.5 h-3.5" />
-                    Close
+                    Закрыть
                   </button>
                 )}
               </div>
             </div>
+
+            {ticket.customer && <CustomerStrip c={ticket.customer} />}
 
             {/* Messages */}
             <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
