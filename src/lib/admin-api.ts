@@ -815,6 +815,14 @@ export function editSupportMessage(ticketId: string, index: number, text: string
 }
 
 
+export function deleteSupportMessage(ticketId: string, index: number) {
+  return adminReq<{ ticket_id: string; status: string; transcript: SupportMessage[] }>(
+    `/v1/admin/support/${ticketId}/messages/${index}`,
+    { method: "DELETE" },
+  )
+}
+
+
 export function setSupportStatus(ticketId: string, status: string) {
   return adminReq<{ ticket_id: string; status: string; transcript: SupportMessage[] }>(
     `/v1/admin/support/${ticketId}/status`,

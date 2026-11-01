@@ -10,7 +10,7 @@ function PaperclipIcon({ className }: { className?: string }) {
   )
 }
 import {
-  getSupport, getSupportTicket, replySupportTicket, setSupportStatus, editSupportMessage,
+  getSupport, getSupportTicket, replySupportTicket, setSupportStatus, editSupportMessage, deleteSupportMessage,
   SupportTicket, SupportTicketDetail, AdminApiError,
 } from '@/lib/admin-api'
 
@@ -154,6 +154,17 @@ export default function AdminSupport() {
       setChatError(e instanceof AdminApiError ? e.message : (e as Error).message)
     } finally {
       setSending(false)
+    }
+  }
+
+  async function removeMessage(i: number) {
+    if (!selectedId || !window.confirm('Delete this message from the chat? The copy already sent to the client in Telegram stays there.')) return
+    try {
+      const res = await deleteSupportMessage(selectedId, i)
+      setTicket((prev) => prev ? { ...prev, transcript: res.transcript } : prev)
+      setEditIdx(null)
+    } catch (e) {
+      setChatError(e instanceof Error ? e.message : 'Failed to delete message')
     }
   }
 
@@ -366,6 +377,11 @@ export default function AdminSupport() {
                           className="ml-2 underline hover:text-white"
                         >
                           Edit
+                        </button>
+                      )}
+                      {m.role === 'admin' && editIdx !== i && (
+                        <button onClick={() => removeMessage(i)} className="ml-2 underline hover:text-red-300">
+                          Delete
                         </button>
                       )}
                     </p>
