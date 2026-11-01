@@ -123,6 +123,9 @@ export interface SupportMessage {
 }
 
 export interface SupportCustomer {
+  campaign_tag: string | null
+  campaign_started_at: string | null
+  first_touch_at: string | null
   user_id: string
   telegram_id: string | null
   source: string | null

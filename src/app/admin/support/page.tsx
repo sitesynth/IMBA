@@ -90,7 +90,7 @@ function CustomerStat({ icon, label, value, tone = 'default', onClick, wide }: {
   return (
     <div
       onClick={onClick}
-      className={`flex items-start gap-2 min-w-0 rounded-lg border border-gray-200 bg-white px-3 py-2 ${wide ? 'col-span-2' : ''} ${onClick ? 'cursor-pointer hover:border-gray-300' : ''}`}
+      className={`flex items-start gap-2 min-w-0 rounded-lg border border-gray-200 bg-white px-3 py-2 ${wide ? 'flex-[2] min-w-[260px]' : 'flex-1 min-w-[140px]'} ${onClick ? 'cursor-pointer hover:border-gray-300' : ''}`}
     >
       <span className="mt-0.5 text-gray-400 shrink-0">{icon}</span>
       <div className="min-w-0">
@@ -107,7 +107,7 @@ function CustomerStrip({ c }: { c: SupportCustomer }) {
   const vpnActive = c.vpn_status === 'active' && c.vpn_expires_at && new Date(c.vpn_expires_at) > new Date()
   return (
     <div className="bg-gray-50 border-b border-gray-200 px-5 py-3 shrink-0">
-      <div className="grid grid-cols-2 md:grid-cols-3 2xl:grid-cols-6 gap-2">
+      <div className="flex flex-wrap gap-2">
         <CustomerStat
           icon={copied ? <Check className="w-4 h-4 text-green-600" /> : <Hash className="w-4 h-4" />}
           label="ID клиента (нажми — скопировать)"
@@ -122,7 +122,18 @@ function CustomerStrip({ c }: { c: SupportCustomer }) {
           tone={vpnActive ? 'good' : c.vpn_status ? 'bad' : 'muted'}
         />
         <CustomerStat icon={<Gift className="w-4 h-4" />} label="Первый месяц 50 ₽" value={c.first_month_used ? 'использован' : 'не брал'} tone={c.first_month_used ? 'default' : 'muted'} />
-        <CustomerStat wide icon={<Route className="w-4 h-4" />} label="Откуда пришёл" value={sourceLabel(c.source)} />
+        <CustomerStat
+          wide
+          icon={<Route className="w-4 h-4" />}
+          label="Откуда пришёл"
+          value={
+            <>
+              {sourceLabel(c.source)}
+              {c.campaign_started_at && <span className="font-normal text-gray-500"> · кампания с {date(c.campaign_started_at)}</span>}
+              {c.first_touch_at && <span className="font-normal text-gray-500"> · клиент зашёл {date(c.first_touch_at)}</span>}
+            </>
+          }
+        />
         <CustomerStat
           icon={<CreditCard className="w-4 h-4" />}
           label="Платежи"
