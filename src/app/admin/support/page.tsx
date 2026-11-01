@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useRef, useState, useCallback } from 'react'
+import { Pencil, Trash2 } from 'lucide-react'
 import { Send, Loader2, X, CheckCircle } from 'lucide-react'
 
 function PaperclipIcon({ className }: { className?: string }) {
@@ -371,20 +372,27 @@ export default function AdminSupport() {
                     <p className={`text-[10px] mt-1 ${m.role === 'admin' ? 'text-white/50' : 'text-gray-400'}`}>
                       {new Date(m.at).toLocaleString()}
                       {m.edited_at && ' · edited'}
-                      {m.role === 'admin' && editIdx !== i && (
-                        <button
-                          onClick={() => { setEditIdx(i); setEditText(m.text.trim()); setEditResend(true) }}
-                          className="ml-2 underline hover:text-white"
-                        >
-                          Edit
-                        </button>
-                      )}
-                      {m.role === 'admin' && editIdx !== i && (
-                        <button onClick={() => removeMessage(i)} className="ml-2 underline hover:text-red-300">
-                          Delete
-                        </button>
-                      )}
                     </p>
+                    {editIdx !== i && (
+                      <div className="flex gap-1 mt-1.5 -mb-0.5">
+                        {m.role === 'admin' && (
+                          <button
+                            onClick={() => { setEditIdx(i); setEditText(m.text.trim()); setEditResend(true) }}
+                            title="Edit message"
+                            className="p-1 rounded-md opacity-60 hover:opacity-100 hover:bg-white/15 transition"
+                          >
+                            <Pencil className="w-3.5 h-3.5" strokeWidth={2.2} />
+                          </button>
+                        )}
+                        <button
+                          onClick={() => removeMessage(i)}
+                          title="Delete message"
+                          className={`p-1 rounded-md opacity-60 hover:opacity-100 transition ${m.role === 'admin' ? 'hover:bg-white/15 hover:text-red-300' : 'hover:bg-gray-100 hover:text-red-600'}`}
+                        >
+                          <Trash2 className="w-3.5 h-3.5" strokeWidth={2.2} />
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}
