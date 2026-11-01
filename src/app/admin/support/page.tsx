@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useRef, useState, useCallback } from 'react'
-import { Pencil, Trash2 } from 'lucide-react'
+import { Pencil, Trash2, Check } from 'lucide-react'
 import { useResizableWidth } from '@/lib/useResizableWidth'
 import { Send, Loader2, X, CheckCircle } from 'lucide-react'
 
@@ -348,7 +348,7 @@ export default function AdminSupport() {
               ) : (
                 <div key={i} className={`flex ${m.role === 'admin' ? 'justify-end' : 'justify-start'}`}>
                   <div
-                    className={`max-w-[70%] rounded-xl px-3 py-2 text-sm ${
+                    className={`${editIdx === i ? 'w-full max-w-3xl' : 'max-w-[70%]'} rounded-xl px-3 py-2 text-sm ${
                       m.role === 'admin' ? 'bg-gray-900 text-white' : 'bg-white border border-gray-200 text-gray-900'
                     }`}
                   >
@@ -376,27 +376,43 @@ export default function AdminSupport() {
                       )
                     )}
                     {editIdx === i ? (
-                      <div className="space-y-2">
+                      <div className="space-y-3 py-1">
                         <textarea
+                          ref={(el) => {
+                            if (el) {
+                              el.style.height = 'auto'
+                              el.style.height = `${Math.min(el.scrollHeight + 2, Math.round(window.innerHeight * 0.55))}px`
+                            }
+                          }}
                           value={editText}
                           onChange={(e) => setEditText(e.target.value)}
-                          rows={Math.min(8, Math.max(3, editText.split('\n').length + 1))}
-                          className="w-full rounded-lg px-2 py-1.5 text-sm text-gray-900 bg-white outline-none"
+                          className="w-full min-h-[9rem] resize-none rounded-lg border border-white/20 bg-white/95 px-3 py-2.5 text-[15px] leading-relaxed text-gray-900 outline-none focus:ring-2 focus:ring-sky-400"
                           autoFocus
                         />
-                        <label className="flex items-center gap-1.5 text-[11px] text-white/80">
-                          <input type="checkbox" checked={editResend} onChange={(e) => setEditResend(e.target.checked)} />
+                        <label className="flex items-center gap-2 text-xs text-white/80 cursor-pointer select-none">
+                          <input
+                            type="checkbox"
+                            checked={editResend}
+                            onChange={(e) => setEditResend(e.target.checked)}
+                            className="w-4 h-4 accent-sky-400"
+                          />
+                          <Send className="w-3.5 h-3.5" strokeWidth={2.2} />
                           Send the corrected text to the client in Telegram
                         </label>
                         <div className="flex gap-2">
                           <button
                             onClick={saveEdit}
                             disabled={editSaving || !editText.trim()}
-                            className="px-3 py-1 rounded-lg bg-white text-gray-900 text-xs font-semibold disabled:opacity-50"
+                            className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-white text-gray-900 text-sm font-semibold hover:bg-gray-100 disabled:opacity-50 transition"
                           >
+                            <Check className="w-4 h-4" strokeWidth={2.6} />
                             {editSaving ? 'Saving…' : 'Save'}
                           </button>
-                          <button onClick={() => setEditIdx(null)} className="px-3 py-1 rounded-lg text-xs text-white/70 hover:text-white">
+                          <button
+                            onClick={() => setEditIdx(null)}
+                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-white/70 hover:text-white hover:bg-white/10 transition"
+                          >
+                            <X className="w-4 h-4" strokeWidth={2.4} />
                             Cancel
                           </button>
                         </div>
