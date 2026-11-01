@@ -45,6 +45,32 @@ function fileToDataUrl(file: File): Promise<string> {
   })
 }
 
+function Linkified({ text, onDark }: { text: string; onDark: boolean }) {
+  const parts = text.split(/(https?:\/\/[^\s<>"]+)/g)
+  return (
+    <>
+      {parts.map((part, i) => {
+        if (!/^https?:\/\//.test(part)) return <span key={i}>{part}</span>
+        const url = part.replace(/[.,;:!?)\]]+$/, '')
+        const tail = part.slice(url.length)
+        return (
+          <span key={i}>
+            <a
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`font-semibold underline underline-offset-2 break-all ${onDark ? 'text-sky-300 hover:text-sky-200' : 'text-blue-600 hover:text-blue-800'}`}
+            >
+              {url}
+            </a>
+            {tail}
+          </span>
+        )
+      })}
+    </>
+  )
+}
+
 export default function AdminSupport() {
   // ── List state ───────────────────────────────────────────────
   const [tickets, setTickets] = useState<SupportTicket[]>([])
@@ -367,7 +393,7 @@ export default function AdminSupport() {
                         </div>
                       </div>
                     ) : (
-                      m.text.trim() && <p className="whitespace-pre-wrap">{m.text}</p>
+                      m.text.trim() && <p className="whitespace-pre-wrap"><Linkified text={m.text} onDark={m.role === 'admin'} /></p>
                     )}
                     <p className={`text-[10px] mt-1 ${m.role === 'admin' ? 'text-white/50' : 'text-gray-400'}`}>
                       {new Date(m.at).toLocaleString()}
