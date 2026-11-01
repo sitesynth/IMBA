@@ -310,3 +310,34 @@ input[type="number"]::-webkit-inner-spin-button {
   margin: 0;
 }
 input[type="number"] { -moz-appearance: textfield; }
+
+/* ── Admin: readability and form fields (scoped to the admin shell) ── */
+.admin-root {
+  font-size: 15px;
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
+}
+.admin-root .text-gray-400 { color: #6b7280; }          /* was ~2.5:1 on white, now ~4.8:1 */
+.admin-root .text-gray-300 { color: #9ca3af; }
+.admin-root .text-xs { font-size: 0.8125rem; }          /* 13px */
+.admin-root .text-\[11px\],
+.admin-root .text-\[10px\] { font-size: 0.75rem; }      /* never below 12px */
+.admin-root input:not([type='checkbox']):not([type='radio']):not([type='file']):not([type='range']),
+.admin-root textarea,
+.admin-root select {
+  font-size: 15px;
+  line-height: 1.4;
+  border-color: #cbd5e1;
+  border-radius: 0.625rem;
+}
+.admin-root input:not([type='checkbox']):not([type='radio']):not([type='file']):not([type='range']),
+.admin-root select { min-height: 2.5rem; }
+.admin-root ::placeholder { color: #6b7280; opacity: 1; }
+.admin-root input:focus,
+.admin-root textarea:focus,
+.admin-root select:focus {
+  outline: none;
+  border-color: #2E7DF6 !important;
+  box-shadow: 0 0 0 4px rgba(46, 125, 246, 0.15);
+}
+

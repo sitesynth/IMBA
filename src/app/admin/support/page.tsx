@@ -83,19 +83,24 @@ function sourceLabel(src: string | null): string {
   return src
 }
 
-function CustomerStat({ icon, label, value, tone = 'default', onClick, wide }: {
-  icon: React.ReactNode; label: string; value: React.ReactNode; tone?: 'default' | 'good' | 'bad' | 'muted'; onClick?: () => void; wide?: boolean
+function CustomerStat({ icon, label, value, sub, tone = 'default', onClick, hint, wide }: {
+  icon: React.ReactNode; label: string; value: React.ReactNode; sub?: React.ReactNode
+  tone?: 'default' | 'good' | 'bad' | 'muted'; onClick?: () => void; hint?: string; wide?: boolean
 }) {
-  const color = tone === 'good' ? 'text-green-700' : tone === 'bad' ? 'text-red-600' : tone === 'muted' ? 'text-gray-400' : 'text-gray-900'
+  const color = tone === 'good' ? 'text-green-700' : tone === 'bad' ? 'text-red-600' : tone === 'muted' ? 'text-gray-500' : 'text-gray-900'
   return (
     <div
       onClick={onClick}
-      className={`flex items-start gap-2 min-w-0 rounded-lg border border-gray-200 bg-white px-3 py-2 ${wide ? 'flex-[2] min-w-[260px]' : 'flex-1 min-w-[140px]'} ${onClick ? 'cursor-pointer hover:border-gray-300' : ''}`}
+      title={hint}
+      className={`flex items-start gap-2.5 min-w-0 rounded-xl border border-gray-200 bg-white px-3.5 py-2.5 shadow-sm ${
+        wide ? 'flex-[2.4] basis-[300px]' : 'flex-1 basis-[150px]'
+      } ${onClick ? 'cursor-pointer hover:border-gray-300 hover:shadow' : ''}`}
     >
-      <span className="mt-0.5 text-gray-400 shrink-0">{icon}</span>
-      <div className="min-w-0">
-        <div className="text-[10px] font-semibold uppercase tracking-wide text-gray-400">{label}</div>
-        <div className={`text-sm font-semibold ${wide ? 'break-words' : 'truncate'} ${color}`} title={typeof value === 'string' ? value : undefined}>{value}</div>
+      <span className="mt-0.5 text-gray-500 shrink-0">{icon}</span>
+      <div className="min-w-0 flex-1">
+        <div className="text-[11px] font-bold uppercase tracking-wide text-gray-500 truncate">{label}</div>
+        <div className={`text-[15px] font-bold leading-snug truncate ${color}`}>{value}</div>
+        {sub && <div className="text-xs font-medium text-gray-500 leading-snug truncate">{sub}</div>}
       </div>
     </div>
   )
@@ -105,46 +110,49 @@ function CustomerStrip({ c }: { c: SupportCustomer }) {
   const [copied, setCopied] = useState(false)
   const date = (iso: string | null) => (iso ? new Date(iso).toLocaleDateString('ru-RU') : '—')
   const vpnActive = c.vpn_status === 'active' && c.vpn_expires_at && new Date(c.vpn_expires_at) > new Date()
+  const sourceDates = [
+    c.campaign_started_at && `кампания с ${date(c.campaign_started_at)}`,
+    c.first_touch_at && `зашёл ${date(c.first_touch_at)}`,
+  ].filter(Boolean).join(' · ')
   return (
     <div className="bg-gray-50 border-b border-gray-200 px-5 py-3 shrink-0">
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-nowrap items-stretch gap-2 overflow-x-auto pb-0.5">
         <CustomerStat
-          icon={copied ? <Check className="w-4 h-4 text-green-600" /> : <Hash className="w-4 h-4" />}
-          label="ID клиента (нажми — скопировать)"
+          icon={copied ? <Check className="w-[18px] h-[18px] text-green-600" /> : <Hash className="w-[18px] h-[18px]" />}
+          label="ID"
           value={c.user_id.slice(0, 8)}
+          sub={copied ? 'скопировано' : 'нажми — копировать'}
+          hint={c.user_id}
           onClick={() => { navigator.clipboard?.writeText(c.user_id); setCopied(true); setTimeout(() => setCopied(false), 1500) }}
         />
-        <CustomerStat icon={<Wallet className="w-4 h-4" />} label="Баланс" value={`$${c.balance.toFixed(2)}`} tone={c.balance > 0 ? 'default' : 'muted'} />
+        <CustomerStat icon={<Wallet className="w-[18px] h-[18px]" />} label="Баланс" value={`$${c.balance.toFixed(2)}`} tone={c.balance > 0 ? 'default' : 'muted'} />
         <CustomerStat
-          icon={<ShieldCheck className="w-4 h-4" />}
+          icon={<ShieldCheck className="w-[18px] h-[18px]" />}
           label="VPN"
-          value={vpnActive ? `активен до ${date(c.vpn_expires_at)}` : c.vpn_status ? `закончился ${date(c.vpn_expires_at)}` : 'нет подписки'}
+          value={vpnActive ? 'активен' : c.vpn_status ? 'закончился' : 'нет'}
+          sub={c.vpn_status ? `до ${date(c.vpn_expires_at)}` : undefined}
           tone={vpnActive ? 'good' : c.vpn_status ? 'bad' : 'muted'}
         />
-        <CustomerStat icon={<Gift className="w-4 h-4" />} label="Первый месяц 50 ₽" value={c.first_month_used ? 'использован' : 'не брал'} tone={c.first_month_used ? 'default' : 'muted'} />
+        <CustomerStat icon={<Gift className="w-[18px] h-[18px]" />} label="Первый месяц" value={c.first_month_used ? 'использован' : 'не брал'} tone={c.first_month_used ? 'default' : 'muted'} />
         <CustomerStat
-          wide
-          icon={<Route className="w-4 h-4" />}
-          label="Откуда пришёл"
-          value={
-            <>
-              {sourceLabel(c.source)}
-              {c.campaign_started_at && <span className="font-normal text-gray-500"> · кампания с {date(c.campaign_started_at)}</span>}
-              {c.first_touch_at && <span className="font-normal text-gray-500"> · клиент зашёл {date(c.first_touch_at)}</span>}
-            </>
-          }
-        />
-        <CustomerStat
-          icon={<CreditCard className="w-4 h-4" />}
+          icon={<CreditCard className="w-[18px] h-[18px]" />}
           label="Платежи"
           value={c.payments_count ? `${c.payments_count} · $${c.payments_total_usd.toFixed(2)}` : 'не платил'}
+          sub={c.last_payment_at ? `последний ${date(c.last_payment_at)}` : undefined}
           tone={c.payments_count ? 'default' : 'muted'}
         />
+        <CustomerStat
+          wide
+          icon={<Route className="w-[18px] h-[18px]" />}
+          label="Откуда пришёл"
+          value={sourceLabel(c.source)}
+          sub={sourceDates || undefined}
+          hint={[sourceLabel(c.source), sourceDates].filter(Boolean).join(' — ')}
+        />
       </div>
-      <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2 text-[11px] text-gray-500">
-        <span className="flex items-center gap-1"><CalendarDays className="w-3 h-3" /> регистрация {date(c.registered_at)}</span>
-        {c.last_payment_at && <span>последний платёж {date(c.last_payment_at)}</span>}
-        {c.telegram_id && <span className="flex items-center gap-1"><MessageCircle className="w-3 h-3" /> Telegram ID {c.telegram_id}</span>}
+      <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2 text-xs font-medium text-gray-500">
+        <span className="flex items-center gap-1"><CalendarDays className="w-3.5 h-3.5" /> регистрация {date(c.registered_at)}</span>
+        {c.telegram_id && <span className="flex items-center gap-1"><MessageCircle className="w-3.5 h-3.5" /> Telegram ID {c.telegram_id}</span>}
         <span>тикетов: {c.tickets_total}</span>
         <span>язык: {c.language}</span>
       </div>
@@ -588,13 +596,13 @@ export default function AdminSupport() {
                     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send() }
                   }}
                   placeholder="Type a reply… (Enter to send, paste screenshot)"
-                  rows={2}
-                  className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-gray-900"
+                  rows={3}
+                  className="flex-1 min-h-[5.5rem] rounded-xl border border-gray-300 bg-white px-3.5 py-2.5 text-[15px] leading-relaxed text-gray-900 placeholder:text-gray-500 resize-none focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/15"
                 />
                 <button
                   onClick={send}
                   disabled={(!reply.trim() && !pendingImage) || sending}
-                  className="self-end px-4 py-2 rounded-lg bg-gray-900 text-white text-sm font-medium disabled:opacity-40 flex items-center gap-1.5"
+                  className="self-end px-5 py-2.5 rounded-xl bg-gray-900 text-white text-sm font-semibold hover:bg-gray-800 disabled:opacity-40 flex items-center gap-1.5 transition-colors"
                 >
                   {sending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
                   Send
