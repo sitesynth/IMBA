@@ -10,7 +10,7 @@ function PaperclipIcon({ className }: { className?: string }) {
   )
 }
 import {
-  getSupport, getSupportTicket, replySupportTicket, setSupportStatus,
+  getSupport, getSupportTicket, replySupportTicket, setSupportStatus, editSupportMessage,
   SupportTicket, SupportTicketDetail, AdminApiError,
 } from '@/lib/admin-api'
 
@@ -57,6 +57,10 @@ export default function AdminSupport() {
   const [chatLoading, setChatLoading] = useState(false)
   const [chatError, setChatError] = useState('')
   const [reply, setReply] = useState('')
+  const [editIdx, setEditIdx] = useState<number | null>(null)
+  const [editText, setEditText] = useState('')
+  const [editResend, setEditResend] = useState(true)
+  const [editSaving, setEditSaving] = useState(false)
   const [sending, setSending] = useState(false)
   const [pendingImage, setPendingImage] = useState<File | null>(null)
   const [pendingPreview, setPendingPreview] = useState<string | null>(null)
@@ -150,6 +154,20 @@ export default function AdminSupport() {
       setChatError(e instanceof AdminApiError ? e.message : (e as Error).message)
     } finally {
       setSending(false)
+    }
+  }
+
+  async function saveEdit() {
+    if (editIdx === null || !selectedId || editSaving) return
+    setEditSaving(true)
+    try {
+      const res = await editSupportMessage(selectedId, editIdx, editText, editResend)
+      setTicket((prev) => prev ? { ...prev, transcript: res.transcript } : prev)
+      setEditIdx(null)
+    } catch (e) {
+      setChatError(e instanceof Error ? e.message : 'Failed to edit message')
+    } finally {
+      setEditSaving(false)
     }
   }
 
@@ -310,9 +328,46 @@ export default function AdminSupport() {
                         </a>
                       )
                     )}
-                    {m.text.trim() && <p className="whitespace-pre-wrap">{m.text}</p>}
+                    {editIdx === i ? (
+                      <div className="space-y-2">
+                        <textarea
+                          value={editText}
+                          onChange={(e) => setEditText(e.target.value)}
+                          rows={Math.min(8, Math.max(3, editText.split('\n').length + 1))}
+                          className="w-full rounded-lg px-2 py-1.5 text-sm text-gray-900 bg-white outline-none"
+                          autoFocus
+                        />
+                        <label className="flex items-center gap-1.5 text-[11px] text-white/80">
+                          <input type="checkbox" checked={editResend} onChange={(e) => setEditResend(e.target.checked)} />
+                          Send the corrected text to the client in Telegram
+                        </label>
+                        <div className="flex gap-2">
+                          <button
+                            onClick={saveEdit}
+                            disabled={editSaving || !editText.trim()}
+                            className="px-3 py-1 rounded-lg bg-white text-gray-900 text-xs font-semibold disabled:opacity-50"
+                          >
+                            {editSaving ? 'Saving…' : 'Save'}
+                          </button>
+                          <button onClick={() => setEditIdx(null)} className="px-3 py-1 rounded-lg text-xs text-white/70 hover:text-white">
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      m.text.trim() && <p className="whitespace-pre-wrap">{m.text}</p>
+                    )}
                     <p className={`text-[10px] mt-1 ${m.role === 'admin' ? 'text-white/50' : 'text-gray-400'}`}>
                       {new Date(m.at).toLocaleString()}
+                      {m.edited_at && ' · edited'}
+                      {m.role === 'admin' && editIdx !== i && (
+                        <button
+                          onClick={() => { setEditIdx(i); setEditText(m.text.trim()); setEditResend(true) }}
+                          className="ml-2 underline hover:text-white"
+                        >
+                          Edit
+                        </button>
+                      )}
                     </p>
                   </div>
                 </div>

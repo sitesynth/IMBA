@@ -119,6 +119,7 @@ export interface SupportMessage {
   text: string
   at: string
   image_url?: string
+  edited_at?: string
 }
 
 export interface SupportTicketDetail {
@@ -802,6 +803,14 @@ export function replySupportTicket(ticketId: string, message: string, image_url?
   return adminReq<{ ticket_id: string; status: string; transcript: SupportMessage[] }>(
     `/v1/admin/support/${ticketId}/reply`,
     { method: "POST", body: JSON.stringify({ message, image_url }) },
+  )
+}
+
+
+export function editSupportMessage(ticketId: string, index: number, text: string, resend: boolean) {
+  return adminReq<{ ticket_id: string; status: string; transcript: SupportMessage[] }>(
+    `/v1/admin/support/${ticketId}/messages/${index}`,
+    { method: "PATCH", body: JSON.stringify({ text, resend }) },
   )
 }
 
