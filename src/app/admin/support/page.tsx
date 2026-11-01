@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { Pencil, Trash2 } from 'lucide-react'
+import { useResizableWidth } from '@/lib/useResizableWidth'
 import { Send, Loader2, X, CheckCircle } from 'lucide-react'
 
 function PaperclipIcon({ className }: { className?: string }) {
@@ -84,6 +85,7 @@ export default function AdminSupport() {
   const [chatLoading, setChatLoading] = useState(false)
   const [chatError, setChatError] = useState('')
   const [reply, setReply] = useState('')
+  const { width: listWidth, startDrag: startListDrag } = useResizableWidth('admin.supportListWidth', 320, 240, 560)
   const [editIdx, setEditIdx] = useState<number | null>(null)
   const [editText, setEditText] = useState('')
   const [editResend, setEditResend] = useState(true)
@@ -221,10 +223,10 @@ export default function AdminSupport() {
   }
 
   return (
-    <div className="h-[calc(100vh-80px)] flex gap-0 overflow-hidden -mx-6 -my-6">
+    <div className="-m-4 sm:-m-8 h-[calc(100%+2rem)] sm:h-[calc(100%+4rem)] flex gap-0 overflow-hidden">
 
       {/* ── LEFT: ticket list ── */}
-      <div className="w-80 flex-shrink-0 border-r border-gray-200 bg-white flex flex-col overflow-hidden">
+      <div style={{ width: listWidth }} className="flex-shrink-0 border-r border-gray-200 bg-white flex flex-col overflow-hidden">
         <div className="px-4 pt-4 pb-3 border-b border-gray-100">
           <h1 className="text-lg font-bold text-gray-900 mb-3">Support</h1>
           <div className="flex flex-wrap gap-1">
@@ -277,6 +279,13 @@ export default function AdminSupport() {
           )}
         </div>
       </div>
+
+      {/* drag to resize the ticket list */}
+      <div
+        onMouseDown={startListDrag}
+        title="Drag to resize"
+        className="w-1.5 -ml-0.5 shrink-0 cursor-col-resize hover:bg-blue-400/40 active:bg-blue-400/60 transition-colors z-10"
+      />
 
       {/* ── RIGHT: chat panel ── */}
       <div className="flex-1 flex flex-col overflow-hidden bg-gray-50">

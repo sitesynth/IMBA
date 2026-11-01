@@ -3,8 +3,9 @@ import { useEffect, useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { clearAdminToken, getAdminToken } from '@/lib/admin-api'
+import { useResizableWidth } from '@/lib/useResizableWidth'
 
-function AdminSidebar({ onClose }: { onClose?: () => void }) {
+function AdminSidebar({ onClose, width }: { onClose?: () => void; width: number }) {
   const pathname = usePathname()
 
   const NAV_GROUPS = [
@@ -42,7 +43,7 @@ function AdminSidebar({ onClose }: { onClose?: () => void }) {
   ]
 
   return (
-    <aside className="w-64 h-full flex flex-col" style={{ background: '#F3F0E9', borderRight: '1px solid rgba(17,17,17,0.08)' }}>
+    <aside className="h-full flex flex-col" style={{ width, background: '#F3F0E9', borderRight: '1px solid rgba(17,17,17,0.08)' }}>
       <div className="px-4 py-4 flex items-center justify-between" style={{ borderBottom: '1px solid rgba(17,17,17,0.07)' }}>
         <Link href="/admin/stats" className="flex items-center gap-2">
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -96,6 +97,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const pathname = usePathname()
   const [ready, setReady] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const { width: sidebarWidth, startDrag: startSidebarDrag } = useResizableWidth('admin.sidebarWidth', 256, 200, 420)
 
   useEffect(() => {
     const token = getAdminToken()
@@ -122,7 +124,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
+    <div className="h-screen overflow-hidden bg-gray-50 flex">
       {sidebarOpen && (
         <div
           className="fixed inset-0 bg-black/40 z-20 lg:hidden"
@@ -136,7 +138,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
         <div className="h-full flex flex-col">
-          <AdminSidebar onClose={() => setSidebarOpen(false)} />
+          <AdminSidebar onClose={() => setSidebarOpen(false)} width={sidebarWidth} />
           <div className="px-2 py-3" style={{ borderTop: '1px solid rgba(17,17,17,0.07)', background: '#F3F0E9' }}>
             <button
               onClick={handleLogout}
@@ -151,7 +153,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </div>
       </div>
 
-      <div className="flex-1 flex flex-col min-w-0">
+      {/* drag to resize the menu */}
+      <div
+        onMouseDown={startSidebarDrag}
+        title="Drag to resize"
+        className="hidden lg:block w-1.5 -ml-0.5 shrink-0 cursor-col-resize hover:bg-blue-400/40 active:bg-blue-400/60 transition-colors z-10"
+      />
+
+      <div className="flex-1 flex flex-col min-w-0 min-h-0">
         <header className="lg:hidden px-4 py-3 flex items-center gap-3 shrink-0" style={{ background: '#F3F0E9', borderBottom: '1px solid rgba(17,17,17,0.07)' }}>
           <button onClick={() => setSidebarOpen(o => !o)} className="p-1" style={{ color: 'rgba(17,17,17,0.4)' }}>
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -162,7 +171,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <img src="/imba-color.svg" alt="IMBA" style={{ height: '18px', width: 'auto' }} />
           <span style={{ color: 'rgba(17,17,17,0.35)', fontSize: '12px', fontWeight: 600 }}>admin</span>
         </header>
-        <main className="flex-1 p-4 sm:p-8 overflow-auto">
+        <main className="flex-1 min-h-0 p-4 sm:p-8 overflow-auto">
           {children}
         </main>
       </div>
