@@ -130,6 +130,7 @@ export interface SupportCustomer {
   telegram_id: string | null
   source: string | null
   balance: number
+  balance_rub: number | null
   first_month_used: boolean
   language: string
   registered_at: string | null
@@ -840,6 +841,34 @@ export function deleteSupportMessage(ticketId: string, index: number) {
     `/v1/admin/support/${ticketId}/messages/${index}`,
     { method: "DELETE" },
   )
+}
+
+
+export interface SupportTemplate {
+  id: string
+  title: string
+  text: string
+  sort_order: number
+}
+
+export function getSupportTemplates() {
+  return adminReq<SupportTemplate[]>("/v1/admin/support-templates")
+}
+
+export function createSupportTemplate(title: string, text: string) {
+  return adminReq<SupportTemplate>("/v1/admin/support-templates", {
+    method: "POST", body: JSON.stringify({ title, text }),
+  })
+}
+
+export function updateSupportTemplate(id: string, title: string, text: string) {
+  return adminReq<SupportTemplate>(`/v1/admin/support-templates/${id}`, {
+    method: "PATCH", body: JSON.stringify({ title, text }),
+  })
+}
+
+export function deleteSupportTemplate(id: string) {
+  return adminReq<{ ok: boolean }>(`/v1/admin/support-templates/${id}`, { method: "DELETE" })
 }
 
 

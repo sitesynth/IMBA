@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useRef, useState, useCallback } from 'react'
-import { Pencil, Trash2, Check, Wallet, ShieldCheck, Gift, Route, CreditCard, CalendarDays, Hash, Copy, ExternalLink, MessageCircle } from 'lucide-react'
+import { Zap, Plus, Settings2, Pencil, Trash2, Check, Wallet, ShieldCheck, Gift, Route, CreditCard, CalendarDays, Hash, Copy, ExternalLink, MessageCircle } from 'lucide-react'
 import { useResizableWidth } from '@/lib/useResizableWidth'
 import { Send, Loader2, X, CheckCircle } from 'lucide-react'
 
@@ -13,6 +13,7 @@ function PaperclipIcon({ className }: { className?: string }) {
 }
 import {
   getSupport, getSupportTicket, replySupportTicket, setSupportStatus, editSupportMessage, deleteSupportMessage,
+  getSupportTemplates, createSupportTemplate, updateSupportTemplate, deleteSupportTemplate, SupportTemplate,
   SupportTicket, SupportTicketDetail, SupportCustomer, AdminApiError,
 } from '@/lib/admin-api'
 
@@ -174,6 +175,56 @@ export default function AdminSupport() {
   const [chatError, setChatError] = useState('')
   const [reply, setReply] = useState('')
   const { width: listWidth, startDrag: startListDrag } = useResizableWidth('admin.supportListWidth', 320, 240, 560)
+  const [templates, setTemplates] = useState<SupportTemplate[]>([])
+  const [showTemplates, setShowTemplates] = useState(false)
+  const [tplDraft, setTplDraft] = useState<{ id?: string; title: string; text: string } | null>(null)
+  const [tplSaving, setTplSaving] = useState(false)
+  const replyRef = useRef<HTMLTextAreaElement>(null)
+
+  useEffect(() => {
+    getSupportTemplates().then(setTemplates).catch(() => {})
+  }, [])
+
+  function fillTemplate(text: string) {
+    const c = ticket?.customer
+    const until = c?.vpn_expires_at ? new Date(c.vpn_expires_at).toLocaleDateString('ru-RU') : '—'
+    return text
+      .replaceAll('{vpn_до}', until)
+      .replaceAll('{баланс_руб}', c?.balance_rub != null ? String(c.balance_rub) : '—')
+  }
+
+  function insertTemplate(t: SupportTemplate) {
+    const filled = fillTemplate(t.text)
+    setReply((prev) => (prev.trim() ? `${prev.trim()}\n\n${filled}` : filled))
+    setTimeout(() => replyRef.current?.focus(), 0)
+  }
+
+  async function saveTemplate() {
+    if (!tplDraft || !tplDraft.title.trim() || !tplDraft.text.trim() || tplSaving) return
+    setTplSaving(true)
+    try {
+      const saved = tplDraft.id
+        ? await updateSupportTemplate(tplDraft.id, tplDraft.title, tplDraft.text)
+        : await createSupportTemplate(tplDraft.title, tplDraft.text)
+      setTemplates((prev) => tplDraft.id ? prev.map((t) => (t.id === saved.id ? saved : t)) : [...prev, saved])
+      setTplDraft(null)
+    } catch (e) {
+      setChatError(e instanceof Error ? e.message : 'Failed to save template')
+    } finally {
+      setTplSaving(false)
+    }
+  }
+
+  async function removeTemplate(id: string) {
+    if (!window.confirm('Удалить этот быстрый ответ?')) return
+    try {
+      await deleteSupportTemplate(id)
+      setTemplates((prev) => prev.filter((t) => t.id !== id))
+      if (tplDraft?.id === id) setTplDraft(null)
+    } catch (e) {
+      setChatError(e instanceof Error ? e.message : 'Failed to delete template')
+    }
+  }
   const [editIdx, setEditIdx] = useState<number | null>(null)
   const [editText, setEditText] = useState('')
   const [editResend, setEditResend] = useState(true)
@@ -368,6 +419,70 @@ export default function AdminSupport() {
           )}
         </div>
       </div>
+
+      {showTemplates && (
+        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4" onClick={() => setShowTemplates(false)}>
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[85vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200">
+              <h2 className="text-base font-bold text-gray-900 flex items-center gap-2"><Zap className="w-4 h-4" /> Быстрые ответы</h2>
+              <button onClick={() => setShowTemplates(false)} className="p-1 rounded-md text-gray-500 hover:bg-gray-100" aria-label="Закрыть"><X className="w-5 h-5" /></button>
+            </div>
+            <div className="flex-1 overflow-y-auto px-5 py-4 space-y-2">
+              <p className="text-xs text-gray-500">
+                В тексте можно использовать <code className="px-1 rounded bg-gray-100">{'{vpn_до}'}</code> (дата окончания VPN клиента) и <code className="px-1 rounded bg-gray-100">{'{баланс_руб}'}</code> (остаток на балансе в рублях): они подставляются при вставке.
+              </p>
+              {templates.map((t) => (
+                <div key={t.id} className="flex items-start gap-2 rounded-xl border border-gray-200 p-3">
+                  <div className="min-w-0 flex-1">
+                    <div className="text-sm font-bold text-gray-900">{t.title}</div>
+                    <div className="text-sm text-gray-600 whitespace-pre-wrap line-clamp-3">{t.text}</div>
+                  </div>
+                  <button onClick={() => setTplDraft({ id: t.id, title: t.title, text: t.text })} className="p-1.5 rounded-md text-gray-500 hover:bg-gray-100 hover:text-gray-900" title="Изменить"><Pencil className="w-4 h-4" /></button>
+                  <button onClick={() => removeTemplate(t.id)} className="p-1.5 rounded-md text-gray-500 hover:bg-red-50 hover:text-red-600" title="Удалить"><Trash2 className="w-4 h-4" /></button>
+                </div>
+              ))}
+              {tplDraft ? (
+                <div className="rounded-xl border-2 border-blue-500 p-3 space-y-2 bg-blue-50/40">
+                  <input
+                    value={tplDraft.title}
+                    onChange={(e) => setTplDraft({ ...tplDraft, title: e.target.value })}
+                    placeholder="Название кнопки"
+                    maxLength={120}
+                    className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-[15px]"
+                    autoFocus
+                  />
+                  <textarea
+                    value={tplDraft.text}
+                    onChange={(e) => setTplDraft({ ...tplDraft, text: e.target.value })}
+                    placeholder="Текст ответа"
+                    rows={5}
+                    className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-[15px] leading-relaxed resize-y"
+                  />
+                  <div className="flex gap-2">
+                    <button
+                      onClick={saveTemplate}
+                      disabled={tplSaving || !tplDraft.title.trim() || !tplDraft.text.trim()}
+                      className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-gray-900 text-white text-sm font-semibold hover:bg-gray-800 disabled:opacity-50"
+                    >
+                      <Check className="w-4 h-4" /> {tplSaving ? 'Сохраняю…' : 'Сохранить'}
+                    </button>
+                    <button onClick={() => setTplDraft(null)} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-gray-600 hover:bg-gray-100">
+                      <X className="w-4 h-4" /> Отмена
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  onClick={() => setTplDraft({ title: '', text: '' })}
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-dashed border-gray-300 text-sm font-semibold text-gray-700 hover:bg-gray-50 w-full justify-center"
+                >
+                  <Plus className="w-4 h-4" /> Новый быстрый ответ
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* drag to resize the ticket list */}
       <div
@@ -569,6 +684,30 @@ export default function AdminSupport() {
                 </div>
               )}
 
+              {/* Quick replies */}
+              <div className="flex items-center gap-2 mb-2 overflow-x-auto pb-1">
+                <span className="flex items-center gap-1 text-xs font-bold uppercase tracking-wide text-gray-500 shrink-0">
+                  <Zap className="w-3.5 h-3.5" /> Быстрые ответы
+                </span>
+                {templates.map((t) => (
+                  <button
+                    key={t.id}
+                    onClick={() => insertTemplate(t)}
+                    title={fillTemplate(t.text)}
+                    className="shrink-0 px-3 py-1 rounded-full border border-gray-300 bg-white text-[13px] font-semibold text-gray-800 hover:bg-gray-900 hover:text-white hover:border-gray-900 transition-colors whitespace-nowrap"
+                  >
+                    {t.title}
+                  </button>
+                ))}
+                <button
+                  onClick={() => { setShowTemplates(true); setTplDraft(null) }}
+                  className="shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-full text-[13px] font-semibold text-gray-600 hover:bg-gray-100 transition-colors"
+                  title="Добавить или изменить быстрые ответы"
+                >
+                  <Settings2 className="w-3.5 h-3.5" /> Изменить
+                </button>
+              </div>
+
               <div className="flex gap-2 items-end">
                 {/* Hidden file input */}
                 <input
@@ -590,6 +729,7 @@ export default function AdminSupport() {
                 </button>
 
                 <textarea
+                  ref={replyRef}
                   value={reply}
                   onChange={(e) => setReply(e.target.value)}
                   onKeyDown={(e) => {
