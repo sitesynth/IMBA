@@ -6,7 +6,7 @@ import { clearAdminToken, getAdminToken } from '@/lib/admin-api'
 import { useResizableWidth } from '@/lib/useResizableWidth'
 import { useResizableTableColumns } from '@/lib/useResizableTableColumns'
 import {
-  Activity, ArrowLeftRight, BarChart3, Bell, CreditCard, FileText, Layers, LifeBuoy, LogOut, Megaphone,
+  Activity, ArrowLeftRight, BarChart3, Bell, CreditCard, FileText, KeyRound, Layers, LifeBuoy, LogOut, Megaphone,
   Repeat, Server, Share2, Shield, ShoppingBag, Smartphone, Tags, Ticket, Users, Wallet, X,
   type LucideIcon,
 } from 'lucide-react'
@@ -39,6 +39,7 @@ const NAV_GROUPS: { title: string; items: NavItem[] }[] = [
       { href: '/admin/cards', label: 'Карты', icon: CreditCard },
       { href: '/admin/tariffs', label: 'Тарифы', icon: Tags },
       { href: '/admin/plans', label: 'Планы', icon: Layers },
+      { href: '/admin/api', label: 'API', icon: KeyRound },
     ],
   },
   {
