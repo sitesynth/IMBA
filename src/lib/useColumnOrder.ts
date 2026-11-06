@@ -44,9 +44,11 @@ export function useColumnOrder(key: string, ids: string[]) {
           e.preventDefault()
           return
         }
-        setDragging(id)
         e.dataTransfer.effectAllowed = 'move'
         e.dataTransfer.setData('text/plain', id)
+        // Chrome aborts the drag when the source element re-renders inside dragstart; React would
+        // flush this state update (the dimming class) synchronously, so let the drag begin first.
+        setTimeout(() => setDragging(id), 0)
       },
       onDragOver: (e: DragEvent<HTMLElement>) => {
         if (!dragging) return
