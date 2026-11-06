@@ -147,7 +147,7 @@ curl ${BASE}/me \\
 `}</Code>
           <Endpoint method="GET" path="/catalog/esim?country=TH" />
           <P>
-            The packages for one country (ISO 3166-1 alpha-2 code). The <Ic>sku</Ic> is what you pass when ordering.
+            The packages for one country (ISO 3166-1 alpha-2 code). The <Ic>sku</Ic> is our own package id: stable, and the only thing you pass when ordering.
           </P>
           <Code>{`
 {
@@ -155,8 +155,8 @@ curl ${BASE}/me \\
   "country": "TH",
   "name": "Thailand",
   "packages": [
-    { "sku": "PQ2I5PFIT", "name": "Thailand 100MB 7Days", "data_gb": 0.1,
-      "duration_days": 7, "speed": "3G/4G/5G", "price_usd": 0.68 }
+    { "sku": "imba_rkcnusvuczf6", "name": "Thailand 1 GB, 30 days", "data_gb": 1.0,
+      "duration_days": 30, "speed": "4G/5G", "price_usd": 3.99 }
   ]
 }
 `}</Code>
@@ -193,26 +193,29 @@ curl -X POST ${BASE}/orders/esim \\
   -H "Authorization: Bearer imba_live_xxxxxxxx" \\
   -H "Idempotency-Key: order-2041" \\
   -H "Content-Type: application/json" \\
-  -d '{"sku": "PQ2I5PFIT", "label": "Anna, Bangkok trip"}'
+  -d '{"sku": "imba_rkcnusvuczf6", "label": "Anna, Bangkok trip"}'
 `}</Code>
           <Code>{`
 {
   "order_id": "a5f0b74b-b1b2-44a0-90f4-490e6477adfa",
   "kind": "esim",
-  "sku": "PQ2I5PFIT",
+  "sku": "imba_rkcnusvuczf6",
+  "name": "Thailand 1 GB, 30 days",
   "country": "TH",
-  "data_gb": 0.1,
-  "duration_days": 7,
+  "data_gb": 1.0,
+  "duration_days": 30,
   "iccid": "8910300000012345678",
   "activation_code": "LPA:1$smdp.example.com$ABCD-1234",
-  "qr_code": "https://.../qr.png",
-  "charged_usd": 0.68,
-  "balance_usd": 41.82
+  "qr_code": "https://api.imba.live/v1/partner/qr/a5f0b74b-b1b2-44a0-90f4-490e6477adfa.png",
+  "charged_usd": 3.99,
+  "balance_usd": 38.51
 }
 `}</Code>
           <P>
             Show the customer the <Ic>qr_code</Ic> image, or give them the <Ic>activation_code</Ic> to type in under
-            Settings, Cellular, Add eSIM. If the supplier fails, you are not charged.
+            Settings, Cellular, Add eSIM. The QR image is a plain link that works in an <Ic>&lt;img&gt;</Ic> tag or an
+            e-mail; anyone who has the link can see the code, so send it only to your customer. If the order fails,
+            you are not charged.
           </P>
         </Section>
 
