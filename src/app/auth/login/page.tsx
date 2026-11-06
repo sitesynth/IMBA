@@ -27,9 +27,9 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
           <div className="flex justify-center mb-4">
             <LottieSticker name="approved" size={88} />
           </div>
-          <h1 className="display text-3xl mb-1">{partner ? 'Partner API' : 'Welcome back'}</h1>
+          <h1 className="display text-3xl mb-1">{partner ? 'IMBA API cabinet' : 'Welcome back'}</h1>
           <p className="font-semibold text-ink/60">
-            {partner ? 'Sign in with your IMBA account to open the partner cabinet' : 'Sign in to your dashboard'}
+            {partner ? 'Sign in with your IMBA account to open the API cabinet' : 'Sign in to your dashboard'}
           </p>
         </div>
 

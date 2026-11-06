@@ -6,7 +6,7 @@ import { SITE_URL } from '@/lib/site'
 const BASE = 'https://api.imba.live/v1/partner'
 
 export const metadata: Metadata = {
-  title: 'IMBA Partner API: sell eSIM and VPN',
+  title: 'IMBA API: sell eSIM and VPN',
   description:
     'Reseller API for IMBA: browse eSIM and VPN catalogs, top up a balance with crypto, and buy eSIM profiles and VPN keys for your own customers. Bearer keys, idempotent orders, USD prices.',
   alternates: { canonical: `${SITE_URL}/api` },
@@ -82,7 +82,7 @@ export default function ApiDocs() {
 
       <main className="max-w-4xl mx-auto px-4 sm:px-6 py-10 space-y-6">
         <div className="space-y-3 pb-2">
-          <h1 className="text-4xl font-bold tracking-tight">IMBA Partner API</h1>
+          <h1 className="text-4xl font-bold tracking-tight">IMBA API</h1>
           <p className="text-lg text-gray-600 max-w-2xl leading-relaxed">
             Sell eSIM data plans and VPN subscriptions from your own app, bot or site. You top up a balance, we
             issue the product and take the price from it.
@@ -103,7 +103,7 @@ export default function ApiDocs() {
           <ol className="list-decimal pl-5 space-y-1.5 text-[15px] text-gray-700">
             <li>
               <Link href="/auth/login?for=partner&redirect=%2Fdashboard%2Fapi" className="text-blue-600 hover:underline">Sign in</Link>{' '}
-              with your IMBA account (or create one) and open the partner cabinet to get a key. It is shown once, so keep it in your server config, never in a browser or app.
+              with your IMBA account (or create one) and open the IMBA API cabinet to get a key. It is shown once, so keep it in your server config, never in a browser or app.
             </li>
             <li>Top up your balance with crypto (<a href="#balance" className="text-blue-600 hover:underline">details</a>).</li>
             <li>Read the catalog, pick a <Ic>sku</Ic>, and place the order.</li>

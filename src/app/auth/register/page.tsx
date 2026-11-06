@@ -28,10 +28,10 @@ export default async function RegisterPage({ searchParams }: { searchParams: Pro
           <div className="flex justify-center mb-4">
             <LottieSticker name="keys" size={96} />
           </div>
-          <h1 className="display text-4xl mb-1">{partner ? 'Partner API' : 'Create account'}</h1>
+          <h1 className="display text-4xl mb-1">{partner ? 'IMBA API cabinet' : 'Create account'}</h1>
           <p className="font-semibold text-ink/60">
             {partner
-              ? 'One IMBA account for the partner cabinet: get your API key and sell eSIM and VPN.'
+              ? 'One IMBA account for the API cabinet: get your key and sell eSIM and VPN.'
               : 'Sign up with email. First month just $0.56.'}
           </p>
         </div>

@@ -54,7 +54,7 @@ function CheckEmailContent() {
         <p className="font-semibold text-ink/60 text-sm mb-6">
           We sent a confirmation link to{' '}
           <span className="font-extrabold text-ink">{email || 'your email'}</span>.
-          {partner ? 'Click the button in the email to open the partner cabinet.' : 'Click the button in the email to sign in.'}
+          {partner ? 'Click the button in the email to open the API cabinet.' : 'Click the button in the email to sign in.'}
         </p>
 
         <div className="panel mb-4 text-left">

@@ -1,7 +1,8 @@
 'use client'
 import Link from 'next/link'
 import { useState } from 'react'
-import { Check, Copy, KeyRound } from 'lucide-react'
+import { Check, Copy } from 'lucide-react'
+import { LottieSticker } from '@/components/LottieSticker'
 
 interface ApiOrder {
   order_id: string
@@ -25,11 +26,20 @@ export type ApiState =
     }
 
 const usd = (n: number) => `$${n.toFixed(2)}`
-const card = 'bg-white rounded-xl border border-gray-200 p-5'
 
 function describe(o: ApiOrder) {
   if (o.kind === 'vpn') return `VPN, ${o.months} ${o.months === 1 ? 'month' : 'months'}`
   return `eSIM ${o.country ?? ''} ${o.data_gb ?? ''} GB`.trim()
+}
+
+function Stat({ label, value, note, tone }: { label: string; value: string; note?: string; tone: string }) {
+  return (
+    <div className="panel">
+      <span className="chip" style={{ background: tone }}>{label}</span>
+      <div className="display text-4xl mt-4 tabular-nums">{value}</div>
+      {note && <div className="font-semibold text-ink/60 text-sm mt-2">{note}</div>}
+    </div>
+  )
 }
 
 export function ApiCabinet({ initial, email }: { initial: ApiState | null; email: string }) {
@@ -66,129 +76,117 @@ export function ApiCabinet({ initial, email }: { initial: ApiState | null; email
   }
 
   return (
-    <div className="admin-root space-y-6 max-w-4xl">
-      <div className="flex items-start justify-between gap-4 flex-wrap">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Partner API</h1>
-          <p className="text-sm text-gray-600 mt-1">
-            Sell IMBA eSIM and VPN to your own customers. Signed in as <span className="font-semibold">{email}</span>.
-          </p>
-        </div>
-        <Link href="/api" className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-semibold bg-white hover:bg-gray-50">
-          API documentation
-        </Link>
-      </div>
+    <div className="space-y-6 max-w-4xl fade-up">
+      {/* Hero, in the landing page's blue with its floating stickers */}
+      <section
+        className="relative overflow-hidden rounded-3xl border-2 border-ink px-6 py-8 md:px-10 md:py-10"
+        style={{ background: 'var(--blue)', color: 'var(--paper)', boxShadow: '6px 6px 0 0 var(--ink)' }}
+      >
+        <LottieSticker name="keys" size={110} className="sticker hidden sm:block" style={{ top: '8%', right: '4%', ['--rot' as string]: '-12deg' }} />
+        <LottieSticker name="coin" size={84} className="sticker hidden md:block" style={{ bottom: '8%', right: '22%', ['--rot' as string]: '10deg', animationDelay: '0.8s' }} />
+        <span className="chip" style={{ background: 'var(--yellow)', color: 'var(--ink)' }}>eSIM · VPN · API</span>
+        <h1 className="display text-4xl md:text-6xl mt-4 mb-3">IMBA API<br />cabinet</h1>
+        <p className="font-semibold max-w-md" style={{ opacity: 0.9 }}>
+          Sell IMBA eSIM and VPN to your own customers. Signed in as <span className="font-extrabold">{email}</span>.
+        </p>
+        <Link href="/api" className="pill pill-yellow pill-sm mt-5 inline-flex">API documentation →</Link>
+      </section>
 
-      {error && <div className="text-sm text-red-700 bg-red-50 rounded-lg px-3 py-2">{error}</div>}
+      {error && (
+        <div className="border-2 border-ink rounded-2xl px-4 py-3 font-bold text-sm" style={{ background: '#FFD7D7' }}>{error}</div>
+      )}
 
       {newKey && (
-        <div className="rounded-xl border-2 border-blue-500 bg-blue-50 p-5 space-y-3">
-          <h2 className="text-lg font-bold text-gray-900">Your API key</h2>
-          <p className="text-sm text-gray-700">
+        <section className="panel space-y-3" style={{ background: 'var(--yellow)' }}>
+          <h2 className="display text-2xl">Your API key</h2>
+          <p className="font-semibold text-sm">
             This is the only time the key is shown. Copy it into your server configuration now; if you lose it, replace it with a new one.
           </p>
           <div className="flex items-stretch gap-2">
-            <code className="flex-1 min-w-0 break-all bg-white border border-gray-200 rounded-lg px-3 py-2 text-xs font-mono select-all">{newKey}</code>
-            <button onClick={copyKey} className="px-3 border border-gray-300 bg-white rounded-lg hover:bg-gray-50" aria-label="Copy key">
-              {copied ? <Check className="w-4 h-4 text-green-600" /> : <Copy className="w-4 h-4" />}
+            <code className="flex-1 min-w-0 break-all bg-paper border-2 border-ink rounded-2xl px-4 py-3 text-xs font-mono select-all">{newKey}</code>
+            <button onClick={copyKey} className="pill pill-paper pill-sm" aria-label="Copy key">
+              {copied ? <Check className="w-4 h-4" strokeWidth={3} /> : <Copy className="w-4 h-4" strokeWidth={3} />}
             </button>
           </div>
-          <button onClick={() => setNewKey(null)} className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700">
-            I saved the key
-          </button>
-        </div>
+          <button onClick={() => setNewKey(null)} className="pill pill-ink pill-sm">I saved the key</button>
+        </section>
       )}
 
       {!state && (
-        <div className={card}>
-          <p className="text-sm text-gray-700">Could not load your API status. Reload the page in a moment.</p>
-        </div>
+        <div className="panel"><p className="font-semibold">Could not load your API status. Reload the page in a moment.</p></div>
       )}
 
       {state && !state.enabled && (
-        <div className={`${card} space-y-4`}>
-          <div className="flex items-center gap-3">
-            <KeyRound className="w-6 h-6 text-blue-600" />
-            <h2 className="text-lg font-bold text-gray-900">Get access to the API</h2>
-          </div>
-          <p className="text-sm text-gray-700 max-w-2xl">
-            You get a key for the eSIM and VPN catalogs and for ordering. Orders are paid from your IMBA balance
-            (currently <span className="font-semibold">{usd(state.balance_usd)}</span>), which you top up with crypto or any other method on the billing page.
+        <section className="panel space-y-4">
+          <span className="chip" style={{ background: 'var(--green)' }}>Step 1</span>
+          <h2 className="display text-3xl">Get your key</h2>
+          <p className="font-semibold text-ink/70 max-w-2xl">
+            One key for the eSIM and VPN catalogs and for ordering. Orders are paid from your IMBA balance
+            (now <span className="font-extrabold text-ink">{usd(state.balance_usd)}</span>), which you top up with crypto or any other method on the billing page.
             New keys start at 30 requests per minute and a $50 daily spend limit; write to us to raise them.
           </p>
-          <button onClick={() => call('/enable')} disabled={busy} className="px-5 py-2.5 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700 disabled:opacity-50">
-            {busy ? 'Creating…' : 'Get my API key'}
+          <button onClick={() => call('/enable')} disabled={busy} className="pill pill-ink disabled:opacity-60">
+            {busy ? 'Creating…' : 'Get my API key →'}
           </button>
-        </div>
+        </section>
       )}
 
       {state && state.enabled && (
         <>
           {state.status === 'suspended' && (
-            <div className="text-sm text-red-700 bg-red-50 rounded-lg px-3 py-2">
+            <div className="border-2 border-ink rounded-2xl px-4 py-3 font-bold text-sm" style={{ background: '#FFD7D7' }}>
               API access is suspended for your account. Requests are refused until it is switched back on; contact us.
             </div>
           )}
 
           <div className="grid sm:grid-cols-3 gap-4">
-            <div className={card}>
-              <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Balance</div>
-              <div className="text-3xl font-bold text-gray-900 mt-1 tabular-nums">{usd(state.balance_usd)}</div>
-              <Link href="/dashboard/billing" className="inline-block mt-3 px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg text-sm font-semibold hover:bg-blue-100">
-                Top up
-              </Link>
+            <div className="panel">
+              <span className="chip" style={{ background: 'var(--yellow)' }}>Balance</span>
+              <div className="display text-4xl mt-4 tabular-nums">{usd(state.balance_usd)}</div>
+              <Link href="/dashboard/billing" className="pill pill-ink pill-sm mt-3 inline-flex">Top up →</Link>
             </div>
-            <div className={card}>
-              <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Spent today</div>
-              <div className="text-3xl font-bold text-gray-900 mt-1 tabular-nums">{usd(state.limits.spent_today_usd)}</div>
-              <div className="text-sm text-gray-600 mt-1">
-                {state.limits.daily_spend_usd ? `of ${usd(state.limits.daily_spend_usd)} daily limit` : 'no daily limit'}
-              </div>
-            </div>
-            <div className={card}>
-              <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Rate limit</div>
-              <div className="text-3xl font-bold text-gray-900 mt-1 tabular-nums">{state.limits.requests_per_minute}</div>
-              <div className="text-sm text-gray-600 mt-1">requests per minute</div>
-            </div>
+            <Stat
+              label="Spent today" tone="var(--green)" value={usd(state.limits.spent_today_usd)}
+              note={state.limits.daily_spend_usd ? `of ${usd(state.limits.daily_spend_usd)} daily limit` : 'no daily limit'}
+            />
+            <Stat label="Rate limit" tone="var(--paper)" value={String(state.limits.requests_per_minute)} note="requests per minute" />
           </div>
 
-          <div className={`${card} space-y-3`}>
-            <h2 className="text-lg font-bold text-gray-900">API key</h2>
+          <section className="panel space-y-3">
+            <h2 className="display text-2xl">API key</h2>
             <div className="flex items-center gap-3 flex-wrap">
-              <code className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm font-mono">{state.key_prefix}…</code>
-              <button onClick={replaceKey} disabled={busy} className="px-3 py-2 text-sm font-semibold border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50">
-                Replace key
-              </button>
+              <code className="bg-cream border-2 border-ink rounded-2xl px-4 py-2.5 text-sm font-mono">{state.key_prefix}…</code>
+              <button onClick={replaceKey} disabled={busy} className="pill pill-paper pill-sm disabled:opacity-60">Replace key</button>
             </div>
-            <pre className="bg-gray-900 text-gray-100 rounded-xl px-4 py-3.5 text-[13px] leading-relaxed overflow-x-auto font-mono"><code>{`curl https://api.imba.live/v1/partner/me \\
+            <pre className="rounded-2xl border-2 border-ink px-4 py-3.5 text-[13px] leading-relaxed overflow-x-auto font-mono" style={{ background: 'var(--ink)', color: 'var(--paper)' }}><code>{`curl https://api.imba.live/v1/partner/me \\
   -H "Authorization: Bearer ${state.key_prefix}…"`}</code></pre>
-          </div>
+          </section>
 
-          <div className={`${card} p-0 overflow-hidden`}>
-            <div className="px-5 py-4 border-b border-gray-200"><h2 className="text-lg font-bold text-gray-900">Recent orders</h2></div>
+          <section className="panel p-0 overflow-hidden" style={{ padding: 0 }}>
+            <div className="px-5 py-4 border-b-2 border-ink"><h2 className="display text-2xl">Recent orders</h2></div>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="bg-gray-50 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                  <tr className="text-left text-xs font-extrabold uppercase tracking-wide text-ink/60">
                     <th className="px-5 py-3">Date</th>
                     <th className="px-5 py-3">Product</th>
                     <th className="px-5 py-3 text-right">Charged</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100">
+                <tbody>
                   {state.orders.length === 0 ? (
-                    <tr><td colSpan={3} className="px-5 py-8 text-center text-gray-500">No orders yet. Place the first one through the API.</td></tr>
+                    <tr><td colSpan={3} className="px-5 py-8 text-center font-semibold text-ink/60">No orders yet. Place the first one through the API.</td></tr>
                   ) : state.orders.map((o) => (
-                    <tr key={o.order_id}>
-                      <td className="px-5 py-3 text-gray-600 whitespace-nowrap">{new Date(o.created_at).toLocaleString('en', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}</td>
-                      <td className="px-5 py-3 text-gray-900">{describe(o)}</td>
-                      <td className="px-5 py-3 text-right font-semibold tabular-nums">{usd(o.charged_usd)}</td>
+                    <tr key={o.order_id} className="border-t border-ink/15">
+                      <td className="px-5 py-3 font-semibold text-ink/60 whitespace-nowrap">{new Date(o.created_at).toLocaleString('en', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}</td>
+                      <td className="px-5 py-3 font-bold">{describe(o)}</td>
+                      <td className="px-5 py-3 text-right font-extrabold tabular-nums">{usd(o.charged_usd)}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
-          </div>
+          </section>
         </>
       )}
     </div>

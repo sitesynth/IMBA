@@ -4,7 +4,7 @@ import { getCurrentUser } from '@/lib/auth'
 import { api } from '@/lib/api'
 import { ApiCabinet, type ApiState } from './ApiCabinet'
 
-export const metadata: Metadata = { title: 'Partner API', robots: { index: false } }
+export const metadata: Metadata = { title: 'IMBA API cabinet', robots: { index: false } }
 
 export default async function ApiPage() {
   const user = await getCurrentUser()
