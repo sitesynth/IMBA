@@ -6,7 +6,9 @@ import { resetPassword } from '@/lib/auth'
 import { Logo } from '@/components/Logo'
 
 export function ResetForm() {
-  const token = useSearchParams().get('token') ?? ''
+  const params = useSearchParams()
+  const token = params.get('token') ?? ''
+  const partner = params.get('for') === 'partner'
   const [state, action, pending] = useActionState(resetPassword, undefined)
 
   if (!token) {
@@ -39,6 +41,7 @@ export function ResetForm() {
         <div className="panel">
           <form action={action} className="space-y-4">
             <input type="hidden" name="token" value={token} />
+            {partner && <input type="hidden" name="audience" value="partner" />}
             {state?.message && (
               <div className="border-2 border-ink rounded-2xl px-4 py-3 font-bold text-sm" style={{ background: '#FFD7D7' }}>
                 {state.message}

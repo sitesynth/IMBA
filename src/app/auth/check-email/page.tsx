@@ -9,6 +9,7 @@ import { Mail } from 'lucide-react'
 function CheckEmailContent() {
   const searchParams = useSearchParams()
   const email = searchParams.get('email') ?? ''
+  const partner = searchParams.get('for') === 'partner'
   const [sent, setSent] = useState(false)
   const [loading, setLoading] = useState(false)
 
@@ -19,7 +20,7 @@ function CheckEmailContent() {
       await fetch('/api/v1/auth/resend-verify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, frontend_url: window.location.origin }),
+        body: JSON.stringify({ email, frontend_url: window.location.origin, audience: partner ? 'partner' : undefined }),
       })
       setSent(true)
     } finally {
@@ -53,7 +54,7 @@ function CheckEmailContent() {
         <p className="font-semibold text-ink/60 text-sm mb-6">
           We sent a confirmation link to{' '}
           <span className="font-extrabold text-ink">{email || 'your email'}</span>.
-          Click the button in the email to sign in.
+          {partner ? 'Click the button in the email to open the partner cabinet.' : 'Click the button in the email to sign in.'}
         </p>
 
         <div className="panel mb-4 text-left">

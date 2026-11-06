@@ -1,11 +1,22 @@
 'use client'
 import Link from 'next/link'
-import { useActionState } from 'react'
+import { Suspense, useActionState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { forgotPassword } from '@/lib/auth'
 import { Logo } from '@/components/Logo'
 
 export default function ForgotPasswordPage() {
+  return (
+    <Suspense>
+      <ForgotPassword />
+    </Suspense>
+  )
+}
+
+function ForgotPassword() {
   const [state, action, pending] = useActionState(forgotPassword, undefined)
+  const partner = useSearchParams().get('for') === 'partner'
+  const loginHref = partner ? '/auth/login?for=partner&redirect=%2Fdashboard%2Fapi' : '/auth/login'
 
   if (state?.message === 'ok') {
     return (
@@ -20,7 +31,7 @@ export default function ForgotPasswordPage() {
             </p>
           </div>
           <p className="text-center font-semibold text-ink/60 mt-5">
-            <Link href="/auth/login" className="font-extrabold text-ink hover:opacity-60 underline underline-offset-2">
+            <Link href={loginHref} className="font-extrabold text-ink hover:opacity-60 underline underline-offset-2">
               ← Back to sign in
             </Link>
           </p>
@@ -40,6 +51,7 @@ export default function ForgotPasswordPage() {
 
         <div className="panel">
           <form action={action} className="space-y-4">
+            {partner && <input type="hidden" name="audience" value="partner" />}
             {state?.message && state.message !== 'ok' && (
               <div className="border-2 border-ink rounded-2xl px-4 py-3 font-bold text-sm" style={{ background: '#FFD7D7' }}>
                 {state.message}
@@ -65,7 +77,7 @@ export default function ForgotPasswordPage() {
         </div>
 
         <p className="text-center font-semibold text-ink/60 mt-5">
-          <Link href="/auth/login" className="font-extrabold text-ink hover:opacity-60 underline underline-offset-2">
+          <Link href={loginHref} className="font-extrabold text-ink hover:opacity-60 underline underline-offset-2">
             ← Back to sign in
           </Link>
         </p>

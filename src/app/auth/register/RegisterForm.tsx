@@ -11,6 +11,7 @@ export function RegisterForm() {
   const params = useSearchParams()
   const errorCode = params.get('error') ?? undefined
   const redirectTo = params.get('redirect') ?? ''
+  const partner = params.get('for') === 'partner'
   const [origin, setOrigin] = useState('')
   const scriptLoaded = useRef(false)
 
@@ -38,6 +39,7 @@ export function RegisterForm() {
       <form action={action} className="space-y-4">
         {redirectTo && <input type="hidden" name="redirectTo" value={redirectTo} />}
         {origin && <input type="hidden" name="frontend_url" value={origin} />}
+        {partner && <input type="hidden" name="audience" value="partner" />}
         {state?.message && (
           <div className="border-2 border-ink rounded-2xl px-4 py-3 font-bold text-sm" style={{ background: '#FFD7D7' }}>
             {state.message}

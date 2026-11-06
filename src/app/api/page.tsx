@@ -71,12 +71,12 @@ export default function ApiDocs() {
             <img src="/imba-color.svg" alt="IMBA" style={{ height: '24px', width: 'auto' }} />
             <span className="text-[13px] font-semibold tracking-wide text-gray-600">API</span>
           </Link>
-          <a
-            href="https://t.me/imba_live_bot"
+          <Link
+            href="/auth/login?for=partner&redirect=%2Fdashboard%2Fapi"
             className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700"
           >
-            Get an API key
-          </a>
+            Sign in to get a key
+          </Link>
         </div>
       </header>
 
@@ -101,7 +101,10 @@ export default function ApiDocs() {
             Every request goes to <Ic>{BASE}</Ic> over HTTPS and returns JSON. All prices are in US dollars.
           </P>
           <ol className="list-decimal pl-5 space-y-1.5 text-[15px] text-gray-700">
-            <li>Ask us for a key. It is shown once, so keep it in your server config, never in a browser or app.</li>
+            <li>
+              <Link href="/auth/login?for=partner&redirect=%2Fdashboard%2Fapi" className="text-blue-600 hover:underline">Sign in</Link>{' '}
+              with your IMBA account (or create one) and open the partner cabinet to get a key. It is shown once, so keep it in your server config, never in a browser or app.
+            </li>
             <li>Top up your balance with crypto (<a href="#balance" className="text-blue-600 hover:underline">details</a>).</li>
             <li>Read the catalog, pick a <Ic>sku</Ic>, and place the order.</li>
           </ol>
@@ -324,7 +327,7 @@ curl -X POST ${BASE}/topup \\
         </Section>
 
         <p className="text-sm text-gray-500 pb-8">
-          Questions or a key request: <a href="https://t.me/imba_live_bot" className="text-blue-600 hover:underline">@imba_live_bot</a> on Telegram.
+          Questions or higher limits: <a href="https://t.me/imba_live_bot" className="text-blue-600 hover:underline">@imba_live_bot</a> on Telegram.
         </p>
       </main>
     </div>

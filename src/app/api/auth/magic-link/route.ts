@@ -7,6 +7,7 @@ const appUrl = () => process.env.NEXT_PUBLIC_APP_URL ?? 'https://imba.live'
 export async function POST(request: NextRequest) {
   const body = await request.json()
   const { action, email, token } = body
+  const audience = body.audience === 'partner' ? 'partner' : undefined
 
   if (action === 'request') {
     if (!email) return NextResponse.json({ error: 'Missing email' }, { status: 400 })
@@ -14,7 +15,7 @@ export async function POST(request: NextRequest) {
     const res = await fetch(`${apiUrl()}/v1/auth/magic-link`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, frontend_url: appUrl() }),
+      body: JSON.stringify({ email, frontend_url: appUrl(), audience }),
     }).catch(() => null)
 
     if (!res?.ok) {

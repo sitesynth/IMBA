@@ -7,6 +7,7 @@ function MagicLinkVerify() {
   const router = useRouter()
   const params = useSearchParams()
   const token = params.get('token')
+  const partner = params.get('for') === 'partner'
   const ran = useRef(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -20,7 +21,7 @@ function MagicLinkVerify() {
       body: JSON.stringify({ action: 'verify', token }),
     }).then(async (res) => {
       if (res.ok) {
-        router.replace('/dashboard')
+        router.replace(partner ? '/dashboard/api' : '/dashboard')
       } else {
         const err = await res.json().catch(() => ({}))
         setError(err.error || 'Ссылка недействительна или уже использована')
@@ -28,7 +29,7 @@ function MagicLinkVerify() {
     }).catch(() => {
       setError('Произошла ошибка. Попробуй ещё раз.')
     })
-  }, [token, router])
+  }, [token, router, partner])
 
   if (!token) {
     return (

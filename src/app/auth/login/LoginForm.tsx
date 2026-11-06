@@ -11,6 +11,7 @@ export function LoginForm() {
   const params = useSearchParams()
   const errorCode = params.get('error') ?? undefined
   const redirectTo = params.get('redirect') ?? ''
+  const partner = params.get('for') === 'partner'
 
   return (
     <div className="panel">
@@ -18,7 +19,7 @@ export function LoginForm() {
       <div className="space-y-2.5">
         <GoogleButton />
         <VKLoginButton />
-        <MagicLinkSection />
+        <MagicLinkSection partner={partner} />
       </div>
       <OrDivider />
       <form action={action} className="space-y-4">
@@ -32,7 +33,7 @@ export function LoginForm() {
         <Field label="Password" name="password" type="password" placeholder="••••••••" error={state?.errors?.password?.[0]} />
         <div className="flex items-center justify-between mt-1 mb-1">
           <span />
-          <Link href="/auth/forgot-password" className="text-xs font-bold text-ink/50 hover:text-ink underline underline-offset-2">
+          <Link href={partner ? '/auth/forgot-password?for=partner' : '/auth/forgot-password'} className="text-xs font-bold text-ink/50 hover:text-ink underline underline-offset-2">
             Forgot password?
           </Link>
         </div>
@@ -44,7 +45,7 @@ export function LoginForm() {
   )
 }
 
-function MagicLinkSection() {
+function MagicLinkSection({ partner }: { partner: boolean }) {
   const [email, setEmail] = useState('')
   const [status, setStatus] = useState<'idle' | 'loading' | 'sent' | 'error'>('idle')
   const [errMsg, setErrMsg] = useState('')
@@ -57,7 +58,7 @@ function MagicLinkSection() {
       const res = await fetch('/api/auth/magic-link', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'request', email: email.trim() }),
+        body: JSON.stringify({ action: 'request', email: email.trim(), audience: partner ? 'partner' : undefined }),
       })
       if (res.ok) {
         setStatus('sent')

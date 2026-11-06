@@ -14,7 +14,12 @@ function FormSkeleton() {
   )
 }
 
-export default function LoginPage() {
+export default async function LoginPage({ searchParams }: { searchParams: Promise<{ for?: string; redirect?: string }> }) {
+  const { for: audience, redirect } = await searchParams
+  const partner = audience === 'partner'
+  const registerHref = partner
+    ? `/auth/register?for=partner&redirect=${encodeURIComponent(redirect || '/dashboard/api')}`
+    : '/auth/register'
   return (
     <div className="flex items-center justify-center px-4 py-10">
       <div className="w-full max-w-sm fade-up">
@@ -22,8 +27,10 @@ export default function LoginPage() {
           <div className="flex justify-center mb-4">
             <LottieSticker name="approved" size={88} />
           </div>
-          <h1 className="display text-3xl mb-1">Welcome back</h1>
-          <p className="font-semibold text-ink/60">Sign in to your dashboard</p>
+          <h1 className="display text-3xl mb-1">{partner ? 'Partner API' : 'Welcome back'}</h1>
+          <p className="font-semibold text-ink/60">
+            {partner ? 'Sign in with your IMBA account to open the partner cabinet' : 'Sign in to your dashboard'}
+          </p>
         </div>
 
         <Suspense fallback={<FormSkeleton />}>
@@ -32,7 +39,7 @@ export default function LoginPage() {
 
         <p className="text-center font-semibold text-ink/60 mt-5">
           No account?{' '}
-          <a href="/auth/register" className="font-extrabold text-ink hover:opacity-60 underline underline-offset-2">
+          <a href={registerHref} className="font-extrabold text-ink hover:opacity-60 underline underline-offset-2">
             Create one
           </a>
         </p>

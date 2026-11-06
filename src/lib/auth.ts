@@ -23,6 +23,7 @@ export async function signup(state: FormState, formData: FormData): Promise<Form
   const email = (formData.get('email') as string)?.trim()
   const password = formData.get('password') as string
   const redirectTo = formData.get('redirectTo') as string | null
+  const audience = formData.get('audience') === 'partner' ? 'partner' : undefined
 
   const errors: NonNullable<FormState>['errors'] = {}
   if (!name || name.length < 2) errors.name = ['Имя должно быть не менее 2 символов']
@@ -47,7 +48,7 @@ export async function signup(state: FormState, formData: FormData): Promise<Form
     const frontend_url = (formData.get('frontend_url') as string) || undefined
     await apiFetch<{ status: string; email: string }>('/v1/auth/register', {
       method: 'POST',
-      body: JSON.stringify({ name, email, password, frontend_url }),
+      body: JSON.stringify({ name, email, password, frontend_url, audience }),
       skipAuth: true,
     })
   } catch (e) {
@@ -58,7 +59,7 @@ export async function signup(state: FormState, formData: FormData): Promise<Form
     return { message: 'Не удалось зарегистрироваться. Сервер недоступен.' }
   }
 
-  redirect('/auth/check-email?email=' + encodeURIComponent(email))
+  redirect('/auth/check-email?email=' + encodeURIComponent(email) + (audience ? '&for=partner' : ''))
 }
 
 export async function login(state: FormState, formData: FormData): Promise<FormState> {
@@ -92,6 +93,7 @@ export async function logout() {
 
 export async function forgotPassword(_: FormState, formData: FormData): Promise<FormState> {
   const email = (formData.get('email') as string)?.trim()
+  const audience = formData.get('audience') === 'partner' ? 'partner' : undefined
   if (!email || !email.includes('@')) return { errors: { email: ['Введите корректный email'] } }
 
   try {
@@ -102,7 +104,7 @@ export async function forgotPassword(_: FormState, formData: FormData): Promise<
     await fetch(`${apiUrl}/v1/auth/forgot-password`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, frontend_url }),
+      body: JSON.stringify({ email, frontend_url, audience }),
     })
   } catch {
     // Always show success to prevent email enumeration
@@ -115,6 +117,7 @@ export async function resetPassword(_: FormState, formData: FormData): Promise<F
   const token = formData.get('token') as string
   const password = formData.get('password') as string
   const confirm = formData.get('confirm') as string
+  const partner = formData.get('audience') === 'partner'
 
   if (!password || password.length < 6) return { errors: { password: ['Минимум 6 символов'] } }
   if (password !== confirm) return { errors: { confirm: ['Пароли не совпадают'] } }
@@ -131,7 +134,7 @@ export async function resetPassword(_: FormState, formData: FormData): Promise<F
     return { message: 'Не удалось сбросить пароль. Попробуй позже.' }
   }
 
-  redirect('/auth/login?reset=1')
+  redirect(partner ? '/auth/login?reset=1&for=partner&redirect=%2Fdashboard%2Fapi' : '/auth/login?reset=1')
 }
 
 export async function getCurrentUser(): Promise<UserProfile | null> {
