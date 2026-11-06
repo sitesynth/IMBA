@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { ChevronDown, ChevronUp } from 'lucide-react'
+import { useColumnOrder } from '@/lib/useColumnOrder'
 import { getUsers, getUser, addBalance, toggleUser, deleteUser, toggleVpnUnlimited, getVpnTrafficStats, AdminUser, AdminUserDetail, VpnTrafficStat } from '@/lib/admin-api'
 
 function fmtBytes(bytes: number): string {
@@ -9,7 +10,10 @@ function fmtBytes(bytes: number): string {
   return (bytes / 1e6).toFixed(0) + ' MB'
 }
 
-function UserRow({ u, index, onRefresh, onDeleted, selected, onSelect, trafficBytes }: { u: AdminUser; index: number; onRefresh: () => void; onDeleted: (id: string) => void; selected: boolean; onSelect: (e: React.MouseEvent) => void; trafficBytes?: number }) {
+// Columns the user can reorder by dragging their headers; checkbox, # and the expand chevron stay put.
+const COLUMN_IDS = ['email', 'name', 'plan', 'balance', 'total_paid', 'traffic', 'source', 'city', 'is_active', 'created_at']
+
+function UserRow({ u, index, order, onRefresh, onDeleted, selected, onSelect, trafficBytes }: { u: AdminUser; index: number; order: string[]; onRefresh: () => void; onDeleted: (id: string) => void; selected: boolean; onSelect: (e: React.MouseEvent) => void; trafficBytes?: number }) {
   const [open, setOpen] = useState(false)
   const [detail, setDetail] = useState<AdminUserDetail | null>(null)
   const [loadingDetail, setLoadingDetail] = useState(false)
@@ -75,24 +79,46 @@ function UserRow({ u, index, onRefresh, onDeleted, selected, onSelect, trafficBy
           <input type="checkbox" checked={selected} onChange={() => {}} />
         </td>
         <td className="px-4 py-3 text-sm text-gray-400 tabular-nums">{index + 1}</td>
-        <td className="px-4 py-3 text-sm text-gray-900">
-          <div>{u.email}</div>
-          {u.telegram_id && <div className="text-xs text-blue-500">TG: {u.telegram_id}</div>}
-          {u.vk_id && <div className="text-xs text-indigo-500">VK: {u.vk_id}</div>}
-        </td>
-        <td className="px-4 py-3 text-sm text-gray-700">{u.name || '—'}</td>
-        <td className="px-4 py-3 text-sm text-gray-700">{u.plan || '—'}</td>
-        <td className="px-4 py-3 text-sm text-gray-900 font-mono">${u.balance?.toFixed(2)}</td>
-        <td className="px-4 py-3 text-sm font-mono text-green-700">${(u.total_paid ?? 0).toFixed(2)}</td>
-        <td className="px-4 py-3 text-xs font-mono tabular-nums text-gray-500" title="VPN traffic this month">{fmtBytes(trafficBytes ?? 0)}</td>
-        <td className="px-4 py-3 text-xs text-gray-500">{u.source || '—'}</td>
-        <td className="px-4 py-3 text-xs text-gray-500">{u.city || '—'}</td>
-        <td className="px-4 py-3 text-sm">
-          {u.is_active
-            ? <span className="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">Active</span>
-            : <span className="px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">Blocked</span>}
-        </td>
-        <td className="px-3 py-3 text-xs text-gray-500 tabular-nums whitespace-nowrap">{new Date(u.created_at).toLocaleDateString('ru')}</td>
+        {order.map(id => ({
+          email: (
+            <td key="email" className="px-4 py-3 text-sm text-gray-900">
+              <div>{u.email}</div>
+              {u.telegram_id && <div className="text-xs text-blue-500">TG: {u.telegram_id}</div>}
+              {u.vk_id && <div className="text-xs text-indigo-500">VK: {u.vk_id}</div>}
+            </td>
+          ),
+          name: (
+            <td key="name" className="px-4 py-3 text-sm text-gray-700">{u.name || '—'}</td>
+          ),
+          plan: (
+            <td key="plan" className="px-4 py-3 text-sm text-gray-700">{u.plan || '—'}</td>
+          ),
+          balance: (
+            <td key="balance" className="px-4 py-3 text-sm text-gray-900 font-mono">${u.balance?.toFixed(2)}</td>
+          ),
+          total_paid: (
+            <td key="total_paid" className="px-4 py-3 text-sm font-mono text-green-700">${(u.total_paid ?? 0).toFixed(2)}</td>
+          ),
+          traffic: (
+            <td key="traffic" className="px-4 py-3 text-xs font-mono tabular-nums text-gray-500" title="VPN traffic this month">{fmtBytes(trafficBytes ?? 0)}</td>
+          ),
+          source: (
+            <td key="source" className="px-4 py-3 text-xs text-gray-500">{u.source || '—'}</td>
+          ),
+          city: (
+            <td key="city" className="px-4 py-3 text-xs text-gray-500">{u.city || '—'}</td>
+          ),
+          is_active: (
+            <td key="is_active" className="px-4 py-3 text-sm">
+              {u.is_active
+                ? <span className="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">Active</span>
+                : <span className="px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">Blocked</span>}
+            </td>
+          ),
+          created_at: (
+            <td key="created_at" className="px-3 py-3 text-xs text-gray-500 tabular-nums whitespace-nowrap">{new Date(u.created_at).toLocaleDateString('ru')}</td>
+          ),
+        } as Record<string, React.ReactNode>)[id])}
         <td className="px-4 py-3 text-sm text-gray-400">
           {open ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
         </td>
@@ -287,7 +313,21 @@ function UserRow({ u, index, onRefresh, onDeleted, selected, onSelect, trafficBy
   )
 }
 
+const COLUMN_LABELS: Record<string, string> = {
+  email: 'Email / Contact',
+  name: 'Name',
+  plan: 'Plan',
+  balance: 'Balance',
+  total_paid: 'Total paid',
+  traffic: 'VPN Traffic',
+  source: 'Source',
+  city: 'City',
+  is_active: 'Status',
+  created_at: 'Created',
+}
+
 export default function AdminUsers() {
+  const columns = useColumnOrder('admin.colorder:users', COLUMN_IDS)
   const [users, setUsers] = useState<AdminUser[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -394,10 +434,14 @@ export default function AdminUsers() {
     return sortDir === 'asc' ? cmp : -cmp
   })
 
-  const SortTh = ({ col, label }: { col: string; label: string }) => (
+  // a plain function, not a component: a component declared in render remounts its <th> on every
+  // render, which would drop a column width being dragged and cancel a header drag mid-way
+  const sortTh = (col: string, label: string) => (
     <th
+      key={col}
+      {...columns.dragProps(col)}
       onClick={() => handleSort(col)}
-      className={`px-4 py-3 text-left text-xs font-semibold cursor-pointer select-none hover:bg-gray-100 transition-colors ${sortKey === col ? 'text-blue-600' : 'text-gray-700'}`}
+      className={`px-4 py-3 text-left text-xs font-semibold cursor-pointer select-none hover:bg-gray-100 transition-colors ${sortKey === col ? 'text-blue-600' : 'text-gray-700'} ${columns.dragClass(col)}`}
     >
       <span className="inline-flex items-center gap-1">
         {label}
@@ -458,6 +502,14 @@ export default function AdminUsers() {
 
       {error && <div className="mb-4 text-red-600 text-sm">{error}</div>}
 
+      {!columns.isDefault && (
+        <div className="flex justify-end mb-2">
+          <button onClick={columns.reset} className="text-xs font-medium text-gray-500 hover:text-gray-800">
+            Вернуть порядок колонок
+          </button>
+        </div>
+      )}
+
       <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
@@ -467,16 +519,7 @@ export default function AdminUsers() {
                   <input type="checkbox" checked={selected.size === sortedUsers.length && sortedUsers.length > 0} onChange={toggleAll} />
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700">#</th>
-                <SortTh col="email" label="Email / Contact" />
-                <SortTh col="name" label="Name" />
-                <SortTh col="plan" label="Plan" />
-                <SortTh col="balance" label="Balance" />
-                <SortTh col="total_paid" label="Total paid" />
-                <SortTh col="traffic" label="VPN Traffic" />
-                <SortTh col="source" label="Source" />
-                <SortTh col="city" label="City" />
-                <SortTh col="is_active" label="Status" />
-                <SortTh col="created_at" label="Created" />
+                {columns.order.map(id => sortTh(id, COLUMN_LABELS[id]))}
                 <th className="px-4 py-3"></th>
               </tr>
             </thead>
@@ -488,6 +531,7 @@ export default function AdminUsers() {
                   key={u.user_id}
                   u={u}
                   index={i}
+                  order={columns.order}
                   onRefresh={load}
                   onDeleted={(id) => setUsers(prev => prev.filter(x => x.user_id !== id))}
                   selected={selected.has(u.user_id)}

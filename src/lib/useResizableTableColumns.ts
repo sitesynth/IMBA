@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, type RefObject } from 'react'
 
-const EDGE = 6        // px from a header cell's right border that grabs the column
+const EDGE = 8        // px from a header cell's right border that grabs the column (useColumnOrder leaves it alone)
 const MIN_WIDTH = 60
 const KEY_PREFIX = 'admin.cols:'
 
@@ -33,6 +33,19 @@ function applyWidths(table: HTMLTableElement, widths: number[]) {
   table.dataset.resized = '1'
 }
 
+/** Saved widths are keyed by data-col where a page sets it (columns it lets the user reorder), else by position. */
+function cellKey(th: HTMLTableCellElement, i: number) {
+  return th.dataset.col ?? `#${i}`
+}
+
+function savedWidths(table: HTMLTableElement, saved: unknown): number[] | null {
+  const cells = headerCells(table)
+  if (Array.isArray(saved)) return saved.length === cells.length ? saved : null
+  if (!saved || typeof saved !== 'object') return null
+  const map = saved as Record<string, number>
+  return cells.map((th, i) => map[cellKey(th, i)] ?? th.getBoundingClientRect().width)
+}
+
 function resetWidths(table: HTMLTableElement) {
   headerCells(table).forEach((th) => { th.style.width = '' })
   table.style.tableLayout = ''
@@ -59,7 +72,8 @@ export function useResizableTableColumns(rootRef: RefObject<HTMLElement | null>,
         if (table.dataset.resized || !table.tHead) return
         try {
           const saved = JSON.parse(localStorage.getItem(storageKey(root, table)) || 'null')
-          if (Array.isArray(saved)) applyWidths(table, saved)
+          const widths = savedWidths(table, saved)
+          if (widths) applyWidths(table, widths)
         } catch {}
       })
     }
@@ -87,6 +101,7 @@ export function useResizableTableColumns(rootRef: RefObject<HTMLElement | null>,
       if (!th || e.button !== 0 || !nearRightEdge(th, e.clientX)) return
       const table = th.closest('table') as HTMLTableElement
       e.preventDefault()
+      window.getSelection()?.removeAllRanges()
 
       const cells = headerCells(table)
       const widths = cells.map((c) => c.getBoundingClientRect().width)
@@ -104,7 +119,12 @@ export function useResizableTableColumns(rootRef: RefObject<HTMLElement | null>,
         window.removeEventListener('mouseup', up)
         document.body.style.userSelect = ''
         document.body.style.cursor = ''
-        try { localStorage.setItem(storageKey(root, table), JSON.stringify(widths.map(Math.round))) } catch {}
+        // the mouseup that ends a resize must not also click the header (it sorts on some pages)
+        const swallow = (ce: MouseEvent) => { ce.stopPropagation(); ce.preventDefault() }
+        window.addEventListener('click', swallow, { capture: true, once: true })
+        setTimeout(() => window.removeEventListener('click', swallow, { capture: true }), 0)
+        const map = Object.fromEntries(cells.map((c, i) => [cellKey(c, i), Math.round(widths[i])]))
+        try { localStorage.setItem(storageKey(root, table), JSON.stringify(map)) } catch {}
       }
       document.body.style.userSelect = 'none'
       document.body.style.cursor = 'col-resize'

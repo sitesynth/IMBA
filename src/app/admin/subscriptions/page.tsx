@@ -1,10 +1,11 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import {
   getSubscriptions, updateSubscription, getPlans,
   Subscription, Plan, AdminApiError,
 } from '@/lib/admin-api'
 import { RefreshCw, ChevronDown } from 'lucide-react'
+import { useColumnOrder } from '@/lib/useColumnOrder'
 
 const STATUS_LABELS: Record<string, string> = {
   active: 'Активна',
@@ -124,7 +125,19 @@ function PlanSelect({
   )
 }
 
+const COLUMNS: { id: string; label: string }[] = [
+  { id: 'user', label: 'Пользователь' },
+  { id: 'plan', label: 'План' },
+  { id: 'status', label: 'Статус' },
+  { id: 'starts', label: 'Начало' },
+  { id: 'expires', label: 'Истекает' },
+  { id: 'auto_renew', label: 'Авто-продление' },
+  { id: 'actions', label: 'Действия' },
+]
+const COLUMN_IDS = COLUMNS.map(c => c.id)
+
 export default function AdminSubscriptions() {
+  const columns = useColumnOrder('admin.colorder:subscriptions', COLUMN_IDS)
   const [subs, setSubs] = useState<Subscription[]>([])
   const [plans, setPlans] = useState<Plan[]>([])
   const [loading, setLoading] = useState(true)
@@ -159,6 +172,67 @@ export default function AdminSubscriptions() {
   }
 
   const fmtDate = (s: string) => new Date(s).toLocaleDateString('ru-RU', { day: '2-digit', month: 'short', year: 'numeric' })
+
+  const subscriptionCells = (sub: Subscription): Record<string, ReactNode> => ({
+    user: (
+      <td key="user" className="px-4 py-3">
+        <div className="font-medium text-gray-900">{sub.email}</div>
+        {sub.name && <div className="text-xs text-gray-500">{sub.name}</div>}
+      </td>
+    ),
+    plan: (
+      <td key="plan" className="px-4 py-3">
+        <PlanSelect sub={sub} plans={plans} onDone={load} />
+        <div className="text-xs text-gray-500">${sub.price_usd}/мес</div>
+      </td>
+    ),
+    status: (
+      <td key="status" className="px-4 py-3">
+        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${STATUS_COLORS[sub.status] ?? 'bg-gray-100 text-gray-500'}`}>
+          {STATUS_LABELS[sub.status] ?? sub.status}
+        </span>
+      </td>
+    ),
+    starts: (
+      <td key="starts" className="px-4 py-3 text-gray-600">{fmtDate(sub.starts_at)}</td>
+    ),
+    expires: (
+      <td key="expires" className="px-4 py-3 text-gray-600">{fmtDate(sub.expires_at)}</td>
+    ),
+    auto_renew: (
+      <td key="auto_renew" className="px-4 py-3">
+        <label className="flex items-center gap-2 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={sub.auto_renew}
+            onChange={() => toggleAutoRenew(sub)}
+            className="w-4 h-4 rounded"
+          />
+          <span className="text-xs text-gray-600">{sub.auto_renew ? 'Да' : 'Нет'}</span>
+        </label>
+      </td>
+    ),
+    actions: (
+      <td key="actions" className="px-4 py-3">
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setExtending(sub)}
+            className="px-2 py-1 text-xs bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 font-medium"
+          >
+            Продлить
+          </button>
+          {sub.status !== 'cancelled' && (
+            <button
+              onClick={() => cancel(sub)}
+              className="px-2 py-1 text-xs bg-red-50 text-red-600 rounded-lg hover:bg-red-100 font-medium"
+            >
+              Отменить
+            </button>
+          )}
+        </div>
+      </td>
+    ),
+  })
 
   return (
     <div className="max-w-7xl space-y-6">
@@ -201,18 +275,28 @@ export default function AdminSubscriptions() {
         })}
       </div>
 
+      {!columns.isDefault && (
+        <div className="flex justify-end mb-2">
+          <button onClick={columns.reset} className="text-xs font-medium text-gray-500 hover:text-gray-800">
+            Вернуть порядок колонок
+          </button>
+        </div>
+      )}
+
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="bg-gray-50 border-b border-gray-200 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">
-                <th className="px-4 py-3">Пользователь</th>
-                <th className="px-4 py-3">План</th>
-                <th className="px-4 py-3">Статус</th>
-                <th className="px-4 py-3">Начало</th>
-                <th className="px-4 py-3">Истекает</th>
-                <th className="px-4 py-3">Авто-продление</th>
-                <th className="px-4 py-3">Действия</th>
+                {columns.order.map(id => (
+                  <th
+                    key={id}
+                    {...columns.dragProps(id)}
+                    className={`px-4 py-3 cursor-grab select-none ${columns.dragClass(id)}`}
+                  >
+                    {COLUMNS.find(c => c.id === id)?.label}
+                  </th>
+                ))}
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -222,50 +306,7 @@ export default function AdminSubscriptions() {
                 <tr><td colSpan={7} className="px-4 py-8 text-center text-gray-400">Подписок не найдено</td></tr>
               ) : subs.map(sub => (
                 <tr key={sub.id} className="hover:bg-gray-50 transition">
-                  <td className="px-4 py-3">
-                    <div className="font-medium text-gray-900">{sub.email}</div>
-                    {sub.name && <div className="text-xs text-gray-500">{sub.name}</div>}
-                  </td>
-                  <td className="px-4 py-3">
-                    <PlanSelect sub={sub} plans={plans} onDone={load} />
-                    <div className="text-xs text-gray-500">${sub.price_usd}/мес</div>
-                  </td>
-                  <td className="px-4 py-3">
-                    <span className={`px-2 py-1 rounded-full text-xs font-semibold ${STATUS_COLORS[sub.status] ?? 'bg-gray-100 text-gray-500'}`}>
-                      {STATUS_LABELS[sub.status] ?? sub.status}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 text-gray-600">{fmtDate(sub.starts_at)}</td>
-                  <td className="px-4 py-3 text-gray-600">{fmtDate(sub.expires_at)}</td>
-                  <td className="px-4 py-3">
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={sub.auto_renew}
-                        onChange={() => toggleAutoRenew(sub)}
-                        className="w-4 h-4 rounded"
-                      />
-                      <span className="text-xs text-gray-600">{sub.auto_renew ? 'Да' : 'Нет'}</span>
-                    </label>
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => setExtending(sub)}
-                        className="px-2 py-1 text-xs bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 font-medium"
-                      >
-                        Продлить
-                      </button>
-                      {sub.status !== 'cancelled' && (
-                        <button
-                          onClick={() => cancel(sub)}
-                          className="px-2 py-1 text-xs bg-red-50 text-red-600 rounded-lg hover:bg-red-100 font-medium"
-                        >
-                          Отменить
-                        </button>
-                      )}
-                    </div>
-                  </td>
+                  {columns.order.map(id => subscriptionCells(sub)[id])}
                 </tr>
               ))}
             </tbody>
