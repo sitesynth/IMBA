@@ -1,9 +1,10 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { clearAdminToken, getAdminToken } from '@/lib/admin-api'
 import { useResizableWidth } from '@/lib/useResizableWidth'
+import { useResizableTableColumns } from '@/lib/useResizableTableColumns'
 import {
   Activity, ArrowLeftRight, BarChart3, Bell, CreditCard, FileText, Layers, LifeBuoy, LogOut, Megaphone,
   Repeat, Server, Share2, Shield, ShoppingBag, Smartphone, Tags, Ticket, Users, Wallet, X,
@@ -128,6 +129,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [ready, setReady] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const { width: sidebarWidth, startDrag: startSidebarDrag } = useResizableWidth('admin.sidebarWidth', 256, 200, 420)
+  const mainRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
     const token = getAdminToken()
@@ -141,6 +143,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   useEffect(() => {
     setSidebarOpen(false)
   }, [pathname])
+
+  // <main> only exists once the token check has passed
+  useResizableTableColumns(mainRef, ready && pathname !== '/admin/login')
 
   if (!ready) return null
 
@@ -190,7 +195,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <img src="/imba-color.svg" alt="IMBA" style={{ height: '18px', width: 'auto' }} />
           <span style={{ color: 'rgba(17,17,17,0.35)', fontSize: '12px', fontWeight: 600 }}>admin</span>
         </header>
-        <main className="relative flex-1 min-h-0 p-4 sm:p-8 overflow-auto">
+        <main ref={mainRef} className="relative flex-1 min-h-0 p-4 sm:p-8 overflow-auto">
           {children}
         </main>
       </div>

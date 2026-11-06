@@ -341,3 +341,19 @@ input[type="number"] { -moz-appearance: textfield; }
   box-shadow: 0 0 0 4px rgba(46, 125, 246, 0.15);
 }
 
+
+/* Resizable admin table columns (src/lib/useResizableTableColumns.ts): a hint line on the
+   draggable border, and clipped cells once a table has explicit widths. */
+.admin-root thead th { position: relative; }
+.admin-root thead th:hover::after {
+  content: '';
+  position: absolute;
+  top: 20%;
+  bottom: 20%;
+  right: 0;
+  width: 2px;
+  border-radius: 1px;
+  background: rgba(46, 125, 246, 0.35);
+}
+.admin-root table[data-resized] th,
+.admin-root table[data-resized] td { overflow: hidden; text-overflow: ellipsis; }
