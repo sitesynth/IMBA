@@ -18,7 +18,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
   const { for: audience, redirect } = await searchParams
   const partner = audience === 'partner'
   const registerHref = partner
-    ? `/auth/register?for=partner&redirect=${encodeURIComponent(redirect || '/dashboard/api')}`
+    ? `/auth/register?for=partner&redirect=${encodeURIComponent(redirect || '/api/cabinet')}`
     : '/auth/register'
   return (
     <div className="flex items-center justify-center px-4 py-10">

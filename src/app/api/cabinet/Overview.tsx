@@ -3,34 +3,7 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { Check, Copy } from 'lucide-react'
 import { LottieSticker } from '@/components/LottieSticker'
-
-interface ApiOrder {
-  order_id: string
-  kind: 'esim' | 'vpn'
-  created_at: string
-  charged_usd: number
-  country?: string
-  data_gb?: number
-  months?: number
-}
-
-export type ApiState =
-  | { enabled: false; balance_usd: number }
-  | {
-      enabled: true
-      status: 'active' | 'suspended'
-      key_prefix: string
-      balance_usd: number
-      limits: { requests_per_minute: number; daily_spend_usd: number | null; spent_today_usd: number }
-      orders: ApiOrder[]
-    }
-
-const usd = (n: number) => `$${n.toFixed(2)}`
-
-function describe(o: ApiOrder) {
-  if (o.kind === 'vpn') return `VPN, ${o.months} ${o.months === 1 ? 'month' : 'months'}`
-  return `eSIM ${o.country ?? ''} ${o.data_gb ?? ''} GB`.trim()
-}
+import { describeOrder, usd, type ApiState } from './types'
 
 function Stat({ label, value, note, tone }: { label: string; value: string; note?: string; tone: string }) {
   return (
@@ -42,7 +15,7 @@ function Stat({ label, value, note, tone }: { label: string; value: string; note
   )
 }
 
-export function ApiCabinet({ initial, email }: { initial: ApiState | null; email: string }) {
+export function Overview({ initial, email }: { initial: ApiState | null; email: string }) {
   const [state, setState] = useState<ApiState | null>(initial)
   const [newKey, setNewKey] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
@@ -76,8 +49,8 @@ export function ApiCabinet({ initial, email }: { initial: ApiState | null; email
   }
 
   return (
-    <div className="space-y-6 max-w-4xl fade-up">
-      {/* Hero, in the landing page's blue with its floating stickers */}
+    <div className="space-y-6 fade-up">
+      {/* Hero in the landing page's blue, with its floating stickers */}
       <section
         className="relative overflow-hidden rounded-3xl border-2 border-ink px-6 py-8 md:px-10 md:py-10"
         style={{ background: 'var(--blue)', color: 'var(--paper)', boxShadow: '6px 6px 0 0 var(--ink)' }}
@@ -89,7 +62,7 @@ export function ApiCabinet({ initial, email }: { initial: ApiState | null; email
         <p className="font-semibold max-w-md" style={{ opacity: 0.9 }}>
           Sell IMBA eSIM and VPN to your own customers. Signed in as <span className="font-extrabold">{email}</span>.
         </p>
-        <Link href="/api" className="pill pill-yellow pill-sm mt-5 inline-flex">API documentation →</Link>
+        <Link href="/api/cabinet/docs" className="pill pill-yellow pill-sm mt-5 inline-flex">API documentation →</Link>
       </section>
 
       {error && (
@@ -119,10 +92,10 @@ export function ApiCabinet({ initial, email }: { initial: ApiState | null; email
       {state && !state.enabled && (
         <section className="panel space-y-4">
           <span className="chip" style={{ background: 'var(--green)' }}>Step 1</span>
-          <h2 className="display text-3xl">Get your key</h2>
+          <h2 className="display text-3xl">Become a partner</h2>
           <p className="font-semibold text-ink/70 max-w-2xl">
-            One key for the eSIM and VPN catalogs and for ordering. Orders are paid from your IMBA balance
-            (now <span className="font-extrabold text-ink">{usd(state.balance_usd)}</span>), which you top up with crypto or any other method on the billing page.
+            This creates your partner account: its own key and its own balance, starting at $0 and separate from your IMBA balance.
+            Orders are paid from it, and you top it up with crypto on the <Link href="/api/cabinet/topup" className="underline underline-offset-2 text-ink">Top up</Link> page.
             New keys start at 30 requests per minute and a $50 daily spend limit; write to us to raise them.
           </p>
           <button onClick={() => call('/enable')} disabled={busy} className="pill pill-ink disabled:opacity-60">
@@ -143,7 +116,7 @@ export function ApiCabinet({ initial, email }: { initial: ApiState | null; email
             <div className="panel">
               <span className="chip" style={{ background: 'var(--yellow)' }}>Balance</span>
               <div className="display text-4xl mt-4 tabular-nums">{usd(state.balance_usd)}</div>
-              <Link href="/dashboard/billing" className="pill pill-ink pill-sm mt-3 inline-flex">Top up →</Link>
+              <Link href="/api/cabinet/topup" className="pill pill-ink pill-sm mt-3 inline-flex">Top up →</Link>
             </div>
             <Stat
               label="Spent today" tone="var(--green)" value={usd(state.limits.spent_today_usd)}
@@ -162,24 +135,20 @@ export function ApiCabinet({ initial, email }: { initial: ApiState | null; email
   -H "Authorization: Bearer ${state.key_prefix}…"`}</code></pre>
           </section>
 
-          <section className="panel p-0 overflow-hidden" style={{ padding: 0 }}>
-            <div className="px-5 py-4 border-b-2 border-ink"><h2 className="display text-2xl">Recent orders</h2></div>
+          <section className="panel" style={{ padding: 0, overflow: 'hidden' }}>
+            <div className="px-5 py-4 border-b-2 border-ink flex items-center justify-between gap-3">
+              <h2 className="display text-2xl">Latest orders</h2>
+              <Link href="/api/cabinet/orders" className="text-sm font-extrabold underline underline-offset-2">All orders →</Link>
+            </div>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
-                <thead>
-                  <tr className="text-left text-xs font-extrabold uppercase tracking-wide text-ink/60">
-                    <th className="px-5 py-3">Date</th>
-                    <th className="px-5 py-3">Product</th>
-                    <th className="px-5 py-3 text-right">Charged</th>
-                  </tr>
-                </thead>
                 <tbody>
                   {state.orders.length === 0 ? (
-                    <tr><td colSpan={3} className="px-5 py-8 text-center font-semibold text-ink/60">No orders yet. Place the first one through the API.</td></tr>
-                  ) : state.orders.map((o) => (
-                    <tr key={o.order_id} className="border-t border-ink/15">
+                    <tr><td className="px-5 py-8 text-center font-semibold text-ink/60">No orders yet. Place the first one through the API.</td></tr>
+                  ) : state.orders.slice(0, 5).map((o) => (
+                    <tr key={o.order_id} className="border-t border-ink/15 first:border-t-0">
                       <td className="px-5 py-3 font-semibold text-ink/60 whitespace-nowrap">{new Date(o.created_at).toLocaleString('en', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}</td>
-                      <td className="px-5 py-3 font-bold">{describe(o)}</td>
+                      <td className="px-5 py-3 font-bold">{describeOrder(o)}</td>
                       <td className="px-5 py-3 text-right font-extrabold tabular-nums">{usd(o.charged_usd)}</td>
                     </tr>
                   ))}

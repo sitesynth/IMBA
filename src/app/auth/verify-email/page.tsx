@@ -28,7 +28,7 @@ function VerifyContent() {
           setError(data.error || 'This link is invalid or has already been used')
           return
         }
-        router.replace(partner ? '/dashboard/api' : '/dashboard?welcome=1')
+        router.replace(partner ? '/api/cabinet' : '/dashboard?welcome=1')
       })
       .catch(() => setError('Network error. Please try again.'))
   }, [token])

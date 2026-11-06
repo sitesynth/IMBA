@@ -16,7 +16,7 @@ export default function ForgotPasswordPage() {
 function ForgotPassword() {
   const [state, action, pending] = useActionState(forgotPassword, undefined)
   const partner = useSearchParams().get('for') === 'partner'
-  const loginHref = partner ? '/auth/login?for=partner&redirect=%2Fdashboard%2Fapi' : '/auth/login'
+  const loginHref = partner ? '/auth/login?for=partner&redirect=%2Fapi%2Fcabinet' : '/auth/login'
 
   if (state?.message === 'ok') {
     return (

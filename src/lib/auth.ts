@@ -134,7 +134,7 @@ export async function resetPassword(_: FormState, formData: FormData): Promise<F
     return { message: 'Не удалось сбросить пароль. Попробуй позже.' }
   }
 
-  redirect(partner ? '/auth/login?reset=1&for=partner&redirect=%2Fdashboard%2Fapi' : '/auth/login?reset=1')
+  redirect(partner ? '/auth/login?reset=1&for=partner&redirect=%2Fapi%2Fcabinet' : '/auth/login?reset=1')
 }
 
 export async function getCurrentUser(): Promise<UserProfile | null> {

@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { LayoutDashboard, Wifi, Shield, CreditCard, KeyRound, Wallet, Settings, LogOut, Users } from 'lucide-react'
+import { LayoutDashboard, Wifi, Shield, CreditCard, Wallet, Settings, LogOut, Users } from 'lucide-react'
 import { getCurrentUser, logout } from '@/lib/auth'
 import { Logo } from '@/components/Logo'
 import { Marquee } from '@/components/Marquee'
@@ -23,7 +23,6 @@ function getNavItems(locale: 'ru' | 'en') {
     { href: '/dashboard/card', label: t('nav.card', locale), icon: CreditCard, color: 'var(--green-100)', soon: !CARD_ISSUING_ENABLED },
     { href: '/dashboard/billing', label: t('nav.billing', locale), icon: Wallet, color: 'var(--yellow-100)' },
     { href: '/dashboard/referrals', label: t('nav.friends', locale), icon: Users, color: 'var(--green-100)' },
-    { href: '/dashboard/api', label: 'API', icon: KeyRound, color: 'var(--blue-100)' },
     { href: '/dashboard/settings', label: t('nav.settings', locale), icon: Settings, color: 'var(--cream)' },
   ]
 }

@@ -21,7 +21,7 @@ function MagicLinkVerify() {
       body: JSON.stringify({ action: 'verify', token }),
     }).then(async (res) => {
       if (res.ok) {
-        router.replace(partner ? '/dashboard/api' : '/dashboard')
+        router.replace(partner ? '/api/cabinet' : '/dashboard')
       } else {
         const err = await res.json().catch(() => ({}))
         setError(err.error || 'Ссылка недействительна или уже использована')
