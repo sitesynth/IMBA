@@ -178,6 +178,14 @@ body {
   animation: float 6s ease-in-out infinite;
   will-change: transform;
 }
+/* Cubes that turn slowly in place */
+.sticker-spin {
+  position: absolute;
+  animation: spin-slow 18s linear infinite;
+  filter: drop-shadow(4px 6px 0 rgba(17,17,17,0.22));
+}
+@keyframes spin-slow { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .sticker-spin { animation: none; } }
 @keyframes float {
   0%, 100% { transform: translateY(0) rotate(var(--rot, 0deg)); }
   50%      { transform: translateY(-14px) rotate(var(--rot, 0deg)); }
