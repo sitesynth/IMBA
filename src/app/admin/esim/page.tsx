@@ -44,7 +44,7 @@ interface HistoryItem {
 
 const STATUS_LABEL: Record<string, { text: string; cls: string }> = {
   '1':            { text: 'Активна',      cls: 'bg-green-100 text-green-700' },
-  '2':            { text: 'Использована', cls: 'bg-gray-100 text-gray-500' },
+  '2':            { text: 'Использована', cls: 'bg-gray-100 text-gray-600' },
   '3':            { text: 'Истекла',      cls: 'bg-red-100 text-red-600' },
   'active':       { text: 'Активна',      cls: 'bg-green-100 text-green-700' },
   'expired':      { text: 'Истекла',      cls: 'bg-red-100 text-red-600' },
@@ -55,8 +55,13 @@ const STATUS_LABEL: Record<string, { text: string; cls: string }> = {
 }
 
 function statusBadge(status: string) {
-  const s = STATUS_LABEL[status] ?? { text: status, cls: 'bg-gray-100 text-gray-500' }
-  return <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${s.cls}`}>{s.text}</span>
+  const s = STATUS_LABEL[status] ?? { text: status, cls: 'bg-gray-100 text-gray-600' }
+  return (
+    <span className={`inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full ${s.cls}`}>
+      <span className="w-1.5 h-1.5 rounded-full bg-current opacity-70" />
+      {s.text}
+    </span>
+  )
 }
 
 export default function EsimAdminPage() {
@@ -157,13 +162,13 @@ export default function EsimAdminPage() {
       {/* Header */}
       <div className="flex items-start justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-1">eSIM Access</h1>
-          <p className="text-sm text-gray-500">Управление пакетами и выданными SIM-картами</p>
+          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight mb-1">eSIM Access</h1>
+          <p className="text-sm text-gray-600">Управление пакетами и выданными SIM-картами</p>
         </div>
         <div className="flex items-center gap-3 flex-wrap">
           {/* Markup setting */}
-          <div className="bg-white border border-gray-200 rounded-xl px-4 py-2">
-            <div className="text-xs text-gray-400 mb-1">Наценка (×)</div>
+          <div className="bg-white border border-gray-200 rounded-xl shadow-sm px-4 py-3">
+            <div className="text-xs font-bold uppercase tracking-wide text-gray-600 mb-1.5">Наценка (×)</div>
             <div className="flex items-center gap-2">
               <input
                 type="number"
@@ -171,15 +176,15 @@ export default function EsimAdminPage() {
                 min="1"
                 value={markup}
                 onChange={e => setMarkup(e.target.value)}
-                className="w-20 text-sm font-bold border border-gray-200 rounded-lg px-2 py-1 focus:outline-none focus:border-gray-400"
+                className="w-20 text-sm font-bold border border-gray-300 rounded-lg px-2 py-1"
               />
-              <span className="text-xs text-gray-400">
+              <span className="text-xs font-semibold text-gray-600 tabular-nums">
                 = +{Math.round((parseFloat(markup) - 1) * 100) || 0}%
               </span>
               <button
                 onClick={saveMarkup}
                 disabled={markupSaving}
-                className="px-3 py-1 rounded-lg bg-gray-900 text-white text-xs font-medium hover:bg-gray-700 disabled:opacity-50 transition"
+                className="px-3.5 py-1.5 rounded-lg bg-gray-900 text-white text-xs font-semibold hover:bg-gray-700 disabled:opacity-50 transition"
               >
                 {markupSaved ? '✓' : 'Сохранить'}
               </button>
@@ -187,9 +192,9 @@ export default function EsimAdminPage() {
           </div>
 
           {balance !== null && (
-            <div className="bg-white border border-gray-200 rounded-xl px-4 py-2 text-right">
-              <div className="text-xs text-gray-400">Баланс аккаунта</div>
-              <div className={`text-lg font-bold ${balance > 0 ? 'text-gray-900' : 'text-red-500'}`}>
+            <div className={`border rounded-xl shadow-sm px-4 py-3 text-right ${balance > 0 ? 'bg-white border-gray-200' : 'bg-red-50 border-red-200'}`}>
+              <div className="text-xs font-bold uppercase tracking-wide text-gray-600">Баланс аккаунта</div>
+              <div className={`text-2xl font-extrabold tabular-nums leading-tight ${balance > 0 ? 'text-gray-900' : 'text-red-600'}`}>
                 ${balance.toFixed(2)}
               </div>
             </div>
@@ -198,7 +203,7 @@ export default function EsimAdminPage() {
             href="https://esimaccess.com/recharge"
             target="_blank"
             rel="noopener noreferrer"
-            className="px-4 py-2 rounded-xl bg-gray-900 text-white text-sm font-medium hover:bg-gray-700 transition whitespace-nowrap"
+            className="px-5 py-3 rounded-xl bg-blue-600 text-white text-sm font-semibold shadow-sm hover:bg-blue-700 transition whitespace-nowrap"
           >
             + Пополнить
           </a>
@@ -206,13 +211,13 @@ export default function EsimAdminPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 bg-gray-100 p-1 rounded-xl w-fit">
+      <div className="flex gap-1 bg-gray-200/70 p-1 rounded-xl w-fit">
         {(['packages', 'orders', 'history'] as const).map(t => (
           <button
             key={t}
             onClick={() => setTab(t)}
-            className={`px-5 py-2 rounded-lg text-sm font-medium transition ${
-              tab === t ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
+            className={`px-5 py-2 rounded-lg text-sm font-semibold transition ${
+              tab === t ? 'bg-gray-900 text-white shadow-sm' : 'text-gray-600 hover:text-gray-900 hover:bg-white/70'
             }`}
           >
             {t === 'packages' ? 'Пакеты' :
@@ -236,7 +241,7 @@ export default function EsimAdminPage() {
             <select
               value={country}
               onChange={e => setCountry(e.target.value)}
-              className="border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 bg-white"
+              className="border border-gray-300 rounded-lg px-3 py-2 text-sm font-medium text-gray-700 bg-white shadow-sm"
             >
               <option value="">Все страны</option>
               {locations.map(l => (
@@ -246,48 +251,48 @@ export default function EsimAdminPage() {
             <button
               onClick={loadPackages}
               disabled={loading}
-              className="px-4 py-2 rounded-lg bg-gray-900 text-white text-sm font-medium hover:bg-gray-700 disabled:opacity-50 transition"
+              className="px-5 py-2 rounded-lg bg-gray-900 text-white text-sm font-semibold shadow-sm hover:bg-gray-700 disabled:opacity-50 transition"
             >
               {loading ? 'Загрузка…' : 'Найти'}
             </button>
-            <span className="text-sm text-gray-400">{packages.length} пакетов</span>
+            <span className="text-sm font-semibold text-gray-600 tabular-nums">{packages.length} пакетов</span>
           </div>
 
-          <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+          <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-gray-100 bg-gray-50 text-xs text-gray-500 uppercase tracking-wide">
-                    <th className="text-left px-4 py-3">Название</th>
-                    <th className="text-left px-4 py-3">Страна</th>
-                    <th className="text-right px-4 py-3">Данные</th>
-                    <th className="text-right px-4 py-3">Дней</th>
-                    <th className="text-right px-4 py-3">Закупка</th>
-                    <th className="text-right px-4 py-3">Продажа ×{markup}</th>
-                    <th className="text-right px-4 py-3">Прибыль</th>
-                    <th className="text-left px-4 py-3">Скорость</th>
+                  <tr className="border-b-2 border-gray-200 bg-gray-50 text-xs font-bold text-gray-700 uppercase tracking-wide">
+                    <th className="text-left px-4 py-3.5">Название</th>
+                    <th className="text-left px-4 py-3.5">Страна</th>
+                    <th className="text-right px-4 py-3.5">Данные</th>
+                    <th className="text-right px-4 py-3.5">Дней</th>
+                    <th className="text-right px-4 py-3.5">Закупка</th>
+                    <th className="text-right px-4 py-3.5">Продажа ×{markup}</th>
+                    <th className="text-right px-4 py-3.5">Прибыль</th>
+                    <th className="text-left px-4 py-3.5">Скорость</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-50">
+                <tbody className="divide-y divide-gray-100">
                   {packages.map(p => {
                     const sellPrice = p.price_usd * parseFloat(markup)
                     const profit = sellPrice - p.price_usd
                     return (
-                    <tr key={p.package_code} className="hover:bg-gray-50 transition">
-                      <td className="px-4 py-3 font-medium text-gray-900 max-w-[200px] truncate">{p.name}</td>
-                      <td className="px-4 py-3 text-gray-500">{p.location_code}</td>
-                      <td className="px-4 py-3 text-right font-mono text-gray-900">{p.data_gb} GB</td>
-                      <td className="px-4 py-3 text-right text-gray-700">{p.duration_days}д</td>
-                      <td className="px-4 py-3 text-right font-semibold text-gray-900">${p.price_usd.toFixed(2)}</td>
-                      <td className="px-4 py-3 text-right font-semibold text-blue-600">${sellPrice.toFixed(2)}</td>
+                    <tr key={p.package_code} className="hover:bg-blue-50/40 transition-colors">
+                      <td className="px-4 py-3 font-semibold text-gray-900 max-w-[260px] truncate" title={p.name}>{p.name}</td>
+                      <td className="px-4 py-3"><span className="inline-block rounded-md bg-gray-100 px-2 py-0.5 text-xs font-bold text-gray-700 tracking-wide">{p.location_code}</span></td>
+                      <td className="px-4 py-3 text-right font-mono font-semibold text-gray-900 tabular-nums">{p.data_gb} GB</td>
+                      <td className="px-4 py-3 text-right text-gray-800 tabular-nums">{p.duration_days}д</td>
+                      <td className="px-4 py-3 text-right font-semibold text-gray-900 tabular-nums">${p.price_usd.toFixed(2)}</td>
+                      <td className="px-4 py-3 text-right font-bold text-blue-700 tabular-nums">${sellPrice.toFixed(2)}</td>
                       <td className="px-4 py-3 text-right">
-                        <span className="font-semibold text-green-600">+${profit.toFixed(2)}</span>
+                        <span className="inline-block rounded-md bg-green-50 px-2 py-0.5 font-bold text-green-700 tabular-nums">+${profit.toFixed(2)}</span>
                       </td>
-                      <td className="px-4 py-3 text-xs text-gray-400">{p.speed}</td>
+                      <td className="px-4 py-3 text-xs font-medium text-gray-600">{p.speed}</td>
                     </tr>
                   )})}
                   {!loading && packages.length === 0 && (
-                    <tr><td colSpan={8} className="px-4 py-8 text-center text-gray-400 text-sm">Нет пакетов</td></tr>
+                    <tr><td colSpan={8} className="px-4 py-8 text-center text-gray-500 font-medium text-sm">Нет пакетов</td></tr>
                   )}
                 </tbody>
               </table>
@@ -299,45 +304,45 @@ export default function EsimAdminPage() {
       {/* ORDERS TAB (eSIM Access provider list) */}
       {tab === 'orders' && (
         <div className="space-y-4">
-          <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+          <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-gray-100 bg-gray-50 text-xs text-gray-500 uppercase tracking-wide">
-                    <th className="text-left px-4 py-3">ICCID</th>
-                    <th className="text-left px-4 py-3">Пакет</th>
-                    <th className="text-left px-4 py-3">Страна</th>
-                    <th className="text-right px-4 py-3">Данные</th>
-                    <th className="text-right px-4 py-3">Использовано</th>
-                    <th className="text-left px-4 py-3">Статус</th>
-                    <th className="text-left px-4 py-3">Истекает</th>
-                    <th className="text-left px-4 py-3">QR</th>
+                  <tr className="border-b-2 border-gray-200 bg-gray-50 text-xs font-bold text-gray-700 uppercase tracking-wide">
+                    <th className="text-left px-4 py-3.5">ICCID</th>
+                    <th className="text-left px-4 py-3.5">Пакет</th>
+                    <th className="text-left px-4 py-3.5">Страна</th>
+                    <th className="text-right px-4 py-3.5">Данные</th>
+                    <th className="text-right px-4 py-3.5">Использовано</th>
+                    <th className="text-left px-4 py-3.5">Статус</th>
+                    <th className="text-left px-4 py-3.5">Истекает</th>
+                    <th className="text-left px-4 py-3.5">QR</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-50">
+                <tbody className="divide-y divide-gray-100">
                   {orders.map(e => (
-                    <tr key={e.iccid || e.order_no} className="hover:bg-gray-50 transition">
-                      <td className="px-4 py-3 font-mono text-xs text-gray-600">{e.iccid || '—'}</td>
-                      <td className="px-4 py-3 text-gray-700 max-w-[160px] truncate">{e.package_name || '—'}</td>
-                      <td className="px-4 py-3 text-gray-500">{e.location_code || '—'}</td>
-                      <td className="px-4 py-3 text-right font-mono text-gray-900">{e.data_gb} GB</td>
-                      <td className="px-4 py-3 text-right text-gray-500">{e.used_gb} GB</td>
+                    <tr key={e.iccid || e.order_no} className="hover:bg-blue-50/40 transition-colors">
+                      <td className="px-4 py-3 font-mono text-xs font-medium text-gray-700 select-all">{e.iccid || '—'}</td>
+                      <td className="px-4 py-3 font-medium text-gray-800 max-w-[200px] truncate" title={e.package_name}>{e.package_name || '—'}</td>
+                      <td className="px-4 py-3 text-gray-700 font-semibold">{e.location_code || '—'}</td>
+                      <td className="px-4 py-3 text-right font-mono font-semibold text-gray-900 tabular-nums">{e.data_gb} GB</td>
+                      <td className="px-4 py-3 text-right text-gray-700 tabular-nums">{e.used_gb} GB</td>
                       <td className="px-4 py-3">{statusBadge(e.smdp_status || String(e.status))}</td>
-                      <td className="px-4 py-3 text-xs text-gray-400">
+                      <td className="px-4 py-3 text-xs text-gray-600 tabular-nums">
                         {e.expired_time ? new Date(e.expired_time).toLocaleDateString('ru') : '—'}
                       </td>
                       <td className="px-4 py-3">
                         {e.qr_code ? (
                           <button
                             onClick={() => setSelectedQr(e)}
-                            className="text-xs text-blue-600 hover:underline"
+                            className="rounded-md border border-blue-200 bg-blue-50 px-2.5 py-1 text-xs font-bold text-blue-700 hover:bg-blue-100 transition"
                           >QR</button>
                         ) : '—'}
                       </td>
                     </tr>
                   ))}
                   {!loading && orders.length === 0 && (
-                    <tr><td colSpan={8} className="px-4 py-8 text-center text-gray-400 text-sm">Нет выданных SIM</td></tr>
+                    <tr><td colSpan={8} className="px-4 py-8 text-center text-gray-500 font-medium text-sm">Нет выданных SIM</td></tr>
                   )}
                 </tbody>
               </table>
@@ -349,15 +354,15 @@ export default function EsimAdminPage() {
               <button
                 onClick={() => loadOrders(ordersPage - 1)}
                 disabled={ordersPage <= 1 || loading}
-                className="px-3 py-1.5 rounded-lg border border-gray-200 text-sm text-gray-600 hover:bg-gray-50 disabled:opacity-40"
+                className="px-3.5 py-2 rounded-lg border border-gray-300 bg-white text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-50 disabled:opacity-40"
               >←</button>
-              <span className="px-3 py-1.5 text-sm text-gray-500">
+              <span className="px-3 py-2 text-sm font-semibold text-gray-600 tabular-nums">
                 {ordersPage} / {Math.ceil(ordersTotal / 20)}
               </span>
               <button
                 onClick={() => loadOrders(ordersPage + 1)}
                 disabled={ordersPage >= Math.ceil(ordersTotal / 20) || loading}
-                className="px-3 py-1.5 rounded-lg border border-gray-200 text-sm text-gray-600 hover:bg-gray-50 disabled:opacity-40"
+                className="px-3.5 py-2 rounded-lg border border-gray-300 bg-white text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-50 disabled:opacity-40"
               >→</button>
             </div>
           )}
@@ -367,40 +372,40 @@ export default function EsimAdminPage() {
       {/* HISTORY TAB (our DB) */}
       {tab === 'history' && (
         <div className="space-y-4">
-          <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+          <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-gray-100 bg-gray-50 text-xs text-gray-500 uppercase tracking-wide">
-                    <th className="text-left px-4 py-3">Дата</th>
-                    <th className="text-left px-4 py-3">Пользователь</th>
-                    <th className="text-left px-4 py-3">Страна</th>
-                    <th className="text-right px-4 py-3">Данные</th>
-                    <th className="text-right px-4 py-3">Использовано</th>
-                    <th className="text-left px-4 py-3">Статус</th>
-                    <th className="text-left px-4 py-3">Истекает</th>
-                    <th className="text-left px-4 py-3">Провайдер</th>
+                  <tr className="border-b-2 border-gray-200 bg-gray-50 text-xs font-bold text-gray-700 uppercase tracking-wide">
+                    <th className="text-left px-4 py-3.5">Дата</th>
+                    <th className="text-left px-4 py-3.5">Пользователь</th>
+                    <th className="text-left px-4 py-3.5">Страна</th>
+                    <th className="text-right px-4 py-3.5">Данные</th>
+                    <th className="text-right px-4 py-3.5">Использовано</th>
+                    <th className="text-left px-4 py-3.5">Статус</th>
+                    <th className="text-left px-4 py-3.5">Истекает</th>
+                    <th className="text-left px-4 py-3.5">Провайдер</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-50">
+                <tbody className="divide-y divide-gray-100">
                   {history.map(h => (
-                    <tr key={h.id} className="hover:bg-gray-50 transition">
-                      <td className="px-4 py-3 text-xs text-gray-400 whitespace-nowrap">
+                    <tr key={h.id} className="hover:bg-blue-50/40 transition-colors">
+                      <td className="px-4 py-3 text-xs text-gray-600 whitespace-nowrap tabular-nums">
                         {h.created_at ? new Date(h.created_at).toLocaleString('ru', { day: '2-digit', month: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit' }) : '—'}
                       </td>
-                      <td className="px-4 py-3 text-gray-700 max-w-[180px] truncate text-xs">{h.user_email}</td>
-                      <td className="px-4 py-3 font-mono text-gray-600 text-xs">{h.country}</td>
-                      <td className="px-4 py-3 text-right font-mono text-gray-900">{h.data_gb} GB</td>
-                      <td className="px-4 py-3 text-right text-gray-500">{h.used_gb} GB</td>
+                      <td className="px-4 py-3 text-gray-800 font-medium max-w-[220px] truncate text-sm" title={h.user_email}>{h.user_email}</td>
+                      <td className="px-4 py-3"><span className="inline-block rounded-md bg-gray-100 px-2 py-0.5 text-xs font-bold text-gray-700 tracking-wide">{h.country}</span></td>
+                      <td className="px-4 py-3 text-right font-mono font-semibold text-gray-900 tabular-nums">{h.data_gb} GB</td>
+                      <td className="px-4 py-3 text-right text-gray-700 tabular-nums">{h.used_gb} GB</td>
                       <td className="px-4 py-3">{statusBadge(h.status)}</td>
-                      <td className="px-4 py-3 text-xs text-gray-400">
+                      <td className="px-4 py-3 text-xs text-gray-600 tabular-nums">
                         {h.expires_at ? new Date(h.expires_at).toLocaleDateString('ru') : '—'}
                       </td>
-                      <td className="px-4 py-3 text-xs text-gray-400">{h.provider}</td>
+                      <td className="px-4 py-3"><span className="inline-block rounded-md bg-gray-100 px-2 py-0.5 text-xs font-semibold text-gray-700">{h.provider}</span></td>
                     </tr>
                   ))}
                   {!loading && history.length === 0 && (
-                    <tr><td colSpan={8} className="px-4 py-8 text-center text-gray-400 text-sm">Нет покупок</td></tr>
+                    <tr><td colSpan={8} className="px-4 py-8 text-center text-gray-500 font-medium text-sm">Нет покупок</td></tr>
                   )}
                 </tbody>
               </table>
@@ -412,15 +417,15 @@ export default function EsimAdminPage() {
               <button
                 onClick={() => loadHistory(historyPage - 1)}
                 disabled={historyPage <= 1 || loading}
-                className="px-3 py-1.5 rounded-lg border border-gray-200 text-sm text-gray-600 hover:bg-gray-50 disabled:opacity-40"
+                className="px-3.5 py-2 rounded-lg border border-gray-300 bg-white text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-50 disabled:opacity-40"
               >←</button>
-              <span className="px-3 py-1.5 text-sm text-gray-500">
+              <span className="px-3 py-2 text-sm font-semibold text-gray-600 tabular-nums">
                 {historyPage} / {Math.ceil(historyTotal / 30)}
               </span>
               <button
                 onClick={() => loadHistory(historyPage + 1)}
                 disabled={historyPage >= Math.ceil(historyTotal / 30) || loading}
-                className="px-3 py-1.5 rounded-lg border border-gray-200 text-sm text-gray-600 hover:bg-gray-50 disabled:opacity-40"
+                className="px-3.5 py-2 rounded-lg border border-gray-300 bg-white text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-50 disabled:opacity-40"
               >→</button>
             </div>
           )}
