@@ -54,9 +54,7 @@ export function CabinetShell({
                   <Logo size="md" tone="blue" href="/api" />
                   <NotificationBell />
                 </div>
-                <div className="px-1 mb-5">
-                  <span className="chip" style={{ background: 'var(--yellow)' }}>API cabinet</span>
-                </div>
+                <div className="mb-2" />
 
                 <CabinetNav variant="side" />
 
