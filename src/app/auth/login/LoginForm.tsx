@@ -17,8 +17,8 @@ export function LoginForm() {
     <div className="panel">
       <AuthError code={errorCode} />
       <div className="space-y-2.5">
-        <GoogleButton />
-        <VKLoginButton />
+        <GoogleButton partner={partner} />
+        <VKLoginButton after={partner ? '/api/cabinet' : undefined} />
         <MagicLinkSection partner={partner} />
       </div>
       <OrDivider />

@@ -127,12 +127,26 @@ export function Overview({ initial, email }: { initial: ApiState | null; email: 
 
           <section className="panel space-y-3">
             <h2 className="display text-2xl">API key</h2>
-            <div className="flex items-center gap-3 flex-wrap">
-              <code className="bg-cream border-2 border-ink rounded-2xl px-4 py-2.5 text-sm font-mono">{state.key_prefix}…</code>
-              <button onClick={replaceKey} disabled={busy} className="pill pill-paper pill-sm disabled:opacity-60">Replace key</button>
-            </div>
-            <pre className="rounded-2xl border-2 border-ink px-4 py-3.5 text-[13px] leading-relaxed overflow-x-auto font-mono" style={{ background: 'var(--ink)', color: 'var(--paper)' }}><code>{`curl https://api.imba.live/v1/partner/me \\
+            {state.key_issued ? (
+              <>
+                <div className="flex items-center gap-3 flex-wrap">
+                  <code className="bg-cream border-2 border-ink rounded-2xl px-4 py-2.5 text-sm font-mono">{state.key_prefix}…</code>
+                  <button onClick={replaceKey} disabled={busy} className="pill pill-paper pill-sm disabled:opacity-60">Replace key</button>
+                </div>
+                <pre className="rounded-2xl border-2 border-ink px-4 py-3.5 text-[13px] leading-relaxed overflow-x-auto font-mono" style={{ background: 'var(--ink)', color: 'var(--paper)' }}><code>{`curl https://api.imba.live/v1/partner/me \\
   -H "Authorization: Bearer ${state.key_prefix}…"`}</code></pre>
+              </>
+            ) : (
+              <>
+                <p className="font-semibold text-ink/70 max-w-2xl">
+                  Your partner account is ready with its own balance of $0, separate from your IMBA balance. Create a key to start calling the API.
+                  New keys start at 30 requests per minute and a $50 daily spend limit; write to us to raise them.
+                </p>
+                <button onClick={() => call('/enable')} disabled={busy} className="pill pill-ink disabled:opacity-60">
+                  {busy ? 'Creating…' : 'Get my API key →'}
+                </button>
+              </>
+            )}
           </section>
 
           <section className="panel" style={{ padding: 0, overflow: 'hidden' }}>

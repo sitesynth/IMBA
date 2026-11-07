@@ -19,5 +19,11 @@ export async function GET(request: NextRequest) {
     path: '/',
     maxAge: 600,
   })
+  // Signing in from the API cabinet's own login page returns to the cabinet, not the IMBA app.
+  if (request.nextUrl.searchParams.get('for') === 'partner') {
+    cookieStore.set('g_for', 'partner', { httpOnly: true, secure: true, sameSite: 'lax', path: '/', maxAge: 600 })
+  } else {
+    cookieStore.delete('g_for')
+  }
   return NextResponse.redirect(buildAuthUrl(state, origin))
 }

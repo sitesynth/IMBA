@@ -18,7 +18,7 @@ function genDeviceId(): string {
   return `${h.slice(0, 8)}-${h.slice(8, 12)}-${h.slice(12, 16)}-${h.slice(16, 20)}-${h.slice(20)}`
 }
 
-async function redirectToVK(mode: string) {
+async function redirectToVK(mode: string, after: string) {
   const verifier = b64url(crypto.getRandomValues(new Uint8Array(32)).buffer)
   const hash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(verifier))
   const challenge = b64url(hash)
@@ -27,6 +27,8 @@ async function redirectToVK(mode: string) {
 
   try {
     sessionStorage.setItem('vk_auth_mode', mode)
+    if (after) sessionStorage.setItem('vk_after_login', after)
+    else sessionStorage.removeItem('vk_after_login')
     sessionStorage.setItem('vk_code_verifier', verifier)
   } catch {}
 
@@ -55,13 +57,15 @@ interface Props {
   className?: string
   /** Transparent full-parent overlay — parent must be position:relative */
   overlay?: boolean
+  /** Where to land after a successful login (the API cabinet sets this) */
+  after?: string
 }
 
-export function VKIDButton({ mode, onError, label = 'VK ID', className = 'pill pill-sm', overlay = false }: Props) {
+export function VKIDButton({ mode, onError, label = 'VK ID', className = 'pill pill-sm', overlay = false, after = '' }: Props) {
   const locale = useLocale()
   if (!VK_APP_ID) return null
 
-  const handleClick = () => redirectToVK(mode).catch(err => onError?.(err.message || t('auth.vk_error', locale)))
+  const handleClick = () => redirectToVK(mode, after).catch(err => onError?.(err.message || t('auth.vk_error', locale)))
 
   if (overlay) {
     return (

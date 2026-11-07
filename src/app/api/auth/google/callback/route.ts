@@ -15,6 +15,8 @@ export async function GET(request: NextRequest) {
   const cookieStore = await cookies()
   const savedState = cookieStore.get('g_state')?.value
   cookieStore.delete('g_state')
+  const forPartner = cookieStore.get('g_for')?.value === 'partner'
+  cookieStore.delete('g_for')
 
   if (!code || !state || state !== savedState) {
     return NextResponse.redirect(new URL('/auth/login?error=google_failed', origin))
@@ -31,7 +33,7 @@ export async function GET(request: NextRequest) {
     const { token } = await res.json()
     await setApiToken(token)
 
-    const response = NextResponse.redirect(new URL('/dashboard', origin))
+    const response = NextResponse.redirect(new URL(forPartner ? '/api/cabinet' : '/dashboard', origin))
     const refCode = cookieStore.get('imba_ref')?.value
     if (refCode && /^[a-zA-Z0-9_-]{4,30}$/.test(refCode)) {
       try {

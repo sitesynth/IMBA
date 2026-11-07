@@ -125,7 +125,13 @@ function VkCallbackContent() {
           const e = await res.json().catch(() => ({}))
           throw new Error(e.error || 'VK auth failed')
         }
-        router.replace('/dashboard')
+        let after = '/dashboard'
+        try {
+          const saved = sessionStorage.getItem('vk_after_login')
+          if (saved === '/api/cabinet') after = saved
+          sessionStorage.removeItem('vk_after_login')
+        } catch {}
+        router.replace(after)
       }
     }
 

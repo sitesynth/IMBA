@@ -34,7 +34,7 @@ export function RegisterForm() {
   return (
     <div className="panel">
       <AuthError code={errorCode} />
-      <GoogleButton label="Continue with Google" />
+      <GoogleButton label="Continue with Google" partner={partner} />
       <OrDivider />
       <form action={action} className="space-y-4">
         {redirectTo && <input type="hidden" name="redirectTo" value={redirectTo} />}
