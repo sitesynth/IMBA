@@ -314,8 +314,8 @@ curl -X POST ${BASE}/topup \\
             </table>
           </div>
           <P>
-            New keys start at 60 requests per minute and a daily spend limit of $200. Both are shown in{' '}
-            <Ic>GET /me</Ic> and can be raised on request.
+            New keys start at 30 requests per minute with no daily spend limit. The limits are shown in{' '}
+            <Ic>GET /me</Ic>; the rate can be raised on request.
           </P>
         </Section>
 

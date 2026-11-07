@@ -100,7 +100,7 @@ export function Overview({ initial, email }: { initial: ApiState | null; email: 
           <p className="font-semibold text-ink/70 max-w-2xl">
             This creates your partner account: its own key and its own balance, starting at $0 and separate from your IMBA balance.
             Orders are paid from it, and you top it up with crypto on the <Link href="/api/cabinet/topup" className="underline underline-offset-2 text-ink">Top up</Link> page.
-            New keys start at 30 requests per minute and a $50 daily spend limit; write to us to raise them.
+            New keys start at 30 requests per minute with no daily spend limit; write to us to raise the rate.
           </p>
           <button onClick={() => call('/enable')} disabled={busy} className="pill pill-ink disabled:opacity-60">
             {busy ? 'Creating…' : 'Get my API key →'}
@@ -144,7 +144,7 @@ export function Overview({ initial, email }: { initial: ApiState | null; email: 
               <>
                 <p className="font-semibold text-ink/70 max-w-2xl">
                   Your partner account is ready with its own balance of $0, separate from your IMBA balance. Create a key to start calling the API.
-                  New keys start at 30 requests per minute and a $50 daily spend limit; write to us to raise them.
+                  New keys start at 30 requests per minute with no daily spend limit; write to us to raise the rate.
                 </p>
                 <button onClick={() => call('/enable')} disabled={busy} className="pill pill-ink disabled:opacity-60">
                   {busy ? 'Creating…' : 'Get my API key →'}
