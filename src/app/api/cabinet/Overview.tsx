@@ -57,7 +57,7 @@ export function Overview({ initial, email }: { initial: ApiState | null; email: 
       >
         <LottieSticker name="plug" size={170} className="sticker hidden md:block xl:hidden" style={{ top: '50%', marginTop: -95, right: '15%', ['--rot' as string]: '-4deg' }} />
         <LottieSticker name="plug" size={120} className="sticker sm:hidden" style={{ top: '6%', right: '3%', ['--rot' as string]: '-4deg' }} />
-        <LottieSticker name="keys" size={120} className="sticker hidden sm:block" style={{ top: '3%', right: '3%', ['--rot' as string]: '-12deg', animationDelay: '0.4s' }} />
+        <LottieSticker name="keys" size={120} className="sticker hidden sm:block" style={{ top: '3%', right: 'calc(3% + 30px)', ['--rot' as string]: '-12deg', animationDelay: '0.4s' }} />
         <LottieSticker name="coin" size={170} className="sticker hidden md:block" style={{ bottom: '2%', right: '3%', ['--rot' as string]: '10deg', animationDelay: '0.8s' }} />
         {/* Wide screens: the plug sits left of centre; the cubes and the coin stay on the right */}
         <LottieSticker name="plug" size={210} className="sticker hidden xl:block" style={{ top: '50%', marginTop: -118, left: '40%', ['--rot' as string]: '-3deg' }} />
