@@ -21,6 +21,7 @@ export function Overview({ initial, email }: { initial: ApiState | null; email: 
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const [copied, setCopied] = useState(false)
+  const [keyCopied, setKeyCopied] = useState(false)
 
   async function call(path: string) {
     setBusy(true); setError('')
@@ -41,6 +42,19 @@ export function Overview({ initial, email }: { initial: ApiState | null; email: 
   async function replaceKey() {
     if (!confirm('Replace the key? The current key stops working immediately.')) return
     await call('/rotate-key')
+  }
+
+  async function copyStoredKey() {
+    setError('')
+    try {
+      const res = await fetch('/api/v1/me/api/key')
+      const body = await res.json().catch(() => ({}))
+      if (!res.ok) throw new Error(body.detail || `Request failed (${res.status})`)
+      await navigator.clipboard.writeText(body.api_key)
+      setKeyCopied(true); setTimeout(() => setKeyCopied(false), 2000)
+    } catch (e) {
+      setError((e as Error).message)
+    }
   }
 
   async function copyKey() {
@@ -135,8 +149,17 @@ export function Overview({ initial, email }: { initial: ApiState | null; email: 
               <>
                 <div className="flex items-center gap-3 flex-wrap">
                   <code className="bg-cream border-2 border-ink rounded-2xl px-4 py-2.5 text-sm font-mono">{state.key_prefix}…</code>
+                  {state.key_copyable && (
+                    <button onClick={copyStoredKey} className="pill pill-ink pill-sm inline-flex items-center gap-1.5">
+                      {keyCopied ? <Check className="w-4 h-4" strokeWidth={3} /> : <Copy className="w-4 h-4" strokeWidth={2.5} />}
+                      {keyCopied ? 'Copied' : 'Copy key'}
+                    </button>
+                  )}
                   <button onClick={replaceKey} disabled={busy} className="pill pill-paper pill-sm disabled:opacity-60">Replace key</button>
                 </div>
+                {!state.key_copyable && (
+                  <p className="text-sm font-semibold text-ink/60">This key was issued before copying existed. Replace it once and the new key can be copied here any time.</p>
+                )}
                 <pre className="rounded-2xl border-2 border-ink px-4 py-3.5 text-[13px] leading-relaxed overflow-x-auto font-mono" style={{ background: 'var(--ink)', color: 'var(--paper)' }}><code>{`curl https://api.imba.live/v1/partner/me \\
   -H "Authorization: Bearer ${state.key_prefix}…"`}</code></pre>
               </>

@@ -16,6 +16,7 @@ export type ApiState =
       status: 'active' | 'suspended'
       key_prefix: string
       key_issued: boolean
+      key_copyable: boolean
       balance_usd: number
       limits: { requests_per_minute: number; daily_spend_usd: number | null; spent_today_usd: number }
       orders: ApiOrder[]
