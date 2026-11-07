@@ -6,6 +6,13 @@ import { usd } from '../types'
 export interface EsimCountry { code: string; name: string; packages: number; from_price_usd: number }
 interface Pkg { sku: string; name: string; data_gb: number; duration_days: number; speed: string | null; price_usd: number }
 
+// Regional-indicator flag for an ISO-2 code (a globe when the code is not one), same as the eSIM storefront
+function flag(code: string) {
+  const c = code.toUpperCase()
+  if (!/^[A-Z]{2}$/.test(c)) return '🌐'
+  return String.fromCodePoint(0x1f1e6 + c.charCodeAt(0) - 65, 0x1f1e6 + c.charCodeAt(1) - 65)
+}
+
 export function PricingClient({ countries }: { countries: EsimCountry[] }) {
   const [query, setQuery] = useState('')
   const [open, setOpen] = useState<string | null>(null)
@@ -75,7 +82,7 @@ export function PricingClient({ countries }: { countries: EsimCountry[] }) {
                   className="border-t border-ink/15 cursor-pointer hover:bg-cream"
                   aria-expanded={open === c.code}
                 >
-                  <td className="px-5 py-3 font-extrabold">{c.name} <span className="text-ink/40 font-semibold">{c.code}</span></td>
+                  <td className="px-5 py-3 font-extrabold"><span className="text-xl mr-2.5 align-middle" aria-hidden="true">{flag(c.code)}</span>{c.name} <span className="text-ink/40 font-semibold">{c.code}</span></td>
                   <td className="px-5 py-3 text-right tabular-nums font-semibold">{c.packages}</td>
                   <td className="px-5 py-3 text-right tabular-nums font-extrabold">{usd(c.from_price_usd)}</td>
                 </tr>
