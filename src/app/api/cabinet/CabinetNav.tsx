@@ -1,11 +1,12 @@
 'use client'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { BarChart3, BookOpen, LayoutDashboard, LifeBuoy, ListOrdered, Receipt, Wallet } from 'lucide-react'
+import { BarChart3, BookOpen, LayoutDashboard, LifeBuoy, ListOrdered, Receipt, Tag, Wallet } from 'lucide-react'
 
 const ITEMS = [
   { href: '/api/cabinet', label: 'Overview', icon: LayoutDashboard, exact: true },
   { href: '/api/cabinet/docs', label: 'Documentation', icon: BookOpen },
+  { href: '/api/cabinet/pricing', label: 'Pricing', icon: Tag },
   { href: '/api/cabinet/usage', label: 'Usage', icon: BarChart3 },
   { href: '/api/cabinet/orders', label: 'Orders', icon: ListOrdered, sideOnly: true },
   { href: '/api/cabinet/topup', label: 'Top up', icon: Wallet },
@@ -22,7 +23,7 @@ export function CabinetNav({ variant }: { variant: 'side' | 'bottom' }) {
   const isActive = (href: string, exact?: boolean) => (exact ? pathname === href : pathname.startsWith(href))
 
   if (variant === 'bottom') {
-    const cls = 'flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl text-[10px] font-extrabold'
+    const cls = 'flex flex-col items-center gap-0.5 px-2 py-1.5 rounded-xl text-[10px] font-extrabold'
     return (
       <>
         {ITEMS.filter((i) => !i.sideOnly).map(({ href, label, icon: Icon, exact }) => (
