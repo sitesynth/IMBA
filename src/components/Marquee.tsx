@@ -1,5 +1,8 @@
 export function Marquee({ items, bg, textColor }: { items: string[]; bg: string; textColor?: string }) {
-  const row = [...items, ...items]
+  // Two identical halves make the -50% loop seamless; each half must be wider than the screen,
+  // so a short list is repeated (a 5-word ticker is narrower than a wide monitor).
+  const half = [...items, ...items, ...items]
+  const row = [...half, ...half]
   const style: React.CSSProperties = {
     fontFamily: 'var(--font-display), Impact, sans-serif',
     fontWeight: 900,
