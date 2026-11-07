@@ -8,6 +8,17 @@ export const metadata: Metadata = {
   description:
     'Reseller API for IMBA: browse eSIM and VPN catalogs, top up a balance with crypto, and buy eSIM profiles and VPN keys for your own customers. Bearer keys, idempotent orders, USD prices.',
   alternates: { canonical: `${SITE_URL}/api` },
+  openGraph: {
+    title: 'IMBA API: sell eSIM and VPN',
+    description: 'Sell eSIM and VPN to your own customers with a single API key.',
+    url: `${SITE_URL}/api`,
+    images: [{ url: `${SITE_URL}/og-api.png`, width: 1200, height: 630, alt: 'IMBA API' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'IMBA API: sell eSIM and VPN',
+    images: [`${SITE_URL}/og-api.png`],
+  },
 }
 
 export default function ApiDocs() {
