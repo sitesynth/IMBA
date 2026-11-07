@@ -55,11 +55,13 @@ export function Overview({ initial, email }: { initial: ApiState | null; email: 
         className="relative overflow-hidden rounded-3xl border-2 border-ink px-6 py-8 md:px-10 md:py-10"
         style={{ background: 'var(--blue)', color: 'var(--paper)', boxShadow: '6px 6px 0 0 var(--ink)' }}
       >
-        <LottieSticker name="keys" size={110} className="sticker hidden sm:block" style={{ top: '8%', right: '4%', ['--rot' as string]: '-12deg' }} />
-        <LottieSticker name="coin" size={84} className="sticker hidden md:block" style={{ bottom: '8%', right: '22%', ['--rot' as string]: '10deg', animationDelay: '0.8s' }} />
+        <LottieSticker name="plug" size={165} className="sticker hidden md:block" style={{ top: '34%', right: '5%', ['--rot' as string]: '-4deg' }} />
+        <LottieSticker name="plug" size={120} className="sticker sm:hidden" style={{ top: '6%', right: '3%', ['--rot' as string]: '-4deg' }} />
+        <LottieSticker name="keys" size={88} className="sticker hidden sm:block" style={{ top: '6%', right: '6%', ['--rot' as string]: '-12deg', animationDelay: '0.4s' }} />
+        <LottieSticker name="coin" size={74} className="sticker hidden md:block" style={{ bottom: '8%', right: '3%', ['--rot' as string]: '10deg', animationDelay: '0.8s' }} />
         <span className="chip" style={{ background: 'var(--yellow)', color: 'var(--ink)' }}>eSIM · VPN · API</span>
         <h1 className="display text-4xl md:text-6xl mt-4 mb-3">IMBA API<br />cabinet</h1>
-        <p className="font-semibold max-w-md" style={{ opacity: 0.9 }}>
+        <p className="font-semibold max-w-sm md:max-w-[22rem]" style={{ opacity: 0.9 }}>
           Sell IMBA eSIM and VPN to your own customers. Signed in as <span className="font-extrabold">{email}</span>.
         </p>
         <Link href="/api/cabinet/docs" className="pill pill-yellow pill-sm mt-5 inline-flex">API documentation →</Link>
