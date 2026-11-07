@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { getVpnSubs, recreateVpn, revokeVpnAdmin, adminReq, AdminVpnSub } from '@/lib/admin-api'
+import { ApiVpnPrices } from '@/components/admin/ApiVpnPrices'
 
 function TrafficSettings() {
   const [limitGb, setLimitGb] = useState('300')
@@ -142,6 +143,7 @@ export default function AdminVpnPage() {
       </div>
 
       <TrafficSettings />
+      <ApiVpnPrices />
 
       {/* Summary cards */}
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6">

@@ -1,4 +1,5 @@
 'use client'
+import { ApiVpnPrices } from '@/components/admin/ApiVpnPrices'
 import { useCallback, useEffect, useState } from 'react'
 import { Copy, Check, KeyRound, Plus, RefreshCw } from 'lucide-react'
 import { adminReq, AdminApiError } from '@/lib/admin-api'
@@ -211,17 +212,8 @@ function CreditModal({ client, onDone, onClose }: { client: ApiClient; onDone: (
   )
 }
 
-interface VpnTariff { months: number; total_usd: number }
-
-function PricingCard({ settings, tariffs, onSaved }: { settings: Settings; tariffs: VpnTariff[]; onSaved: () => void }) {
-  const factor = parseFloat(settings.api_vpn_factor ?? '0.8') || 0.8
+function PricingCard({ settings, onSaved }: { settings: Settings; onSaved: () => void }) {
   const [markup, setMarkup] = useState(settings.api_esim_markup ?? '1.5')
-  // The price the API charges for each VPN plan: the saved one, else the storefront price x the fallback factor
-  const [prices, setPrices] = useState<Record<number, string>>(() =>
-    Object.fromEntries(tariffs.map(t => {
-      const saved = parseFloat(settings[`api_vpn_price_${t.months}`] ?? '')
-      return [t.months, String(saved > 0 ? saved : Math.round(t.total_usd * factor * 100) / 100)]
-    })))
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [error, setError] = useState('')
@@ -229,15 +221,9 @@ function PricingCard({ settings, tariffs, onSaved }: { settings: Settings; tarif
   async function save() {
     const m = parseFloat(markup)
     if (isNaN(m) || m < 1) { setError('Наценка eSIM не может быть меньше 1'); return }
-    const body: Record<string, string> = { api_esim_markup: String(m) }
-    for (const t of tariffs) {
-      const p = parseFloat(prices[t.months])
-      if (isNaN(p) || p <= 0) { setError(`Укажите цену VPN на ${t.months} мес.`); return }
-      body[`api_vpn_price_${t.months}`] = String(Math.round(p * 100) / 100)
-    }
     setSaving(true); setError('')
     try {
-      await adminReq('/v1/admin/settings', { method: 'PATCH', body: JSON.stringify(body) })
+      await adminReq('/v1/admin/settings', { method: 'PATCH', body: JSON.stringify({ api_esim_markup: String(m) }) })
       setSaved(true); setTimeout(() => setSaved(false), 2000)
       onSaved()
     } catch (e) { setError(errText(e)) } finally { setSaving(false) }
@@ -246,52 +232,15 @@ function PricingCard({ settings, tariffs, onSaved }: { settings: Settings; tarif
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-5">
       <h2 className="text-lg font-bold mb-1">Цены для API-клиентов</h2>
-      <p className="text-sm text-gray-500 mb-4">Действуют для всех клиентов, у кого нет своей наценки. Наценка на сайте — ×{settings.esim_markup ?? '1.5'} (её меняют на вкладке eSIM).</p>
-      <div className="max-w-2xl space-y-5">
+      <p className="text-sm text-gray-500 mb-4">Действуют для всех клиентов, у кого нет своей наценки. Наценка на сайте — ×{settings.esim_markup ?? '1.5'} (её меняют на вкладке eSIM). Цены VPN по тарифам задаются ниже и на странице VPN Subscriptions.</p>
+      <div className="max-w-sm">
         <Field label="Наценка на eSIM, ×" hint="Цена клиенту = оптовая цена × это число">
           <input type="number" min={1} step="0.01" value={markup} onChange={e => setMarkup(e.target.value)} className={inputCls} />
         </Field>
-        <div>
-          <div className="text-sm font-medium text-gray-700 mb-1">Цена VPN по API, $</div>
-          <p className="text-xs text-gray-500 mb-2">Цена продажи партнёру за каждый тариф. Должна быть ниже розницы на сайте.</p>
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="text-left text-xs text-gray-500 border-b border-gray-200">
-                <th className="py-2 pr-3 font-medium">Тариф</th>
-                <th className="py-2 pr-3 font-medium text-right">Розница на сайте</th>
-                <th className="py-2 pr-3 font-medium">Цена по API</th>
-                <th className="py-2 font-medium text-right">Скидка</th>
-              </tr>
-            </thead>
-            <tbody>
-              {tariffs.map(t => {
-                const p = parseFloat(prices[t.months])
-                const off = isNaN(p) ? null : Math.round((1 - p / t.total_usd) * 100)
-                const bad = off !== null && off <= 0
-                return (
-                  <tr key={t.months} className="border-b border-gray-100">
-                    <td className="py-2 pr-3 font-medium">{t.months} мес.</td>
-                    <td className="py-2 pr-3 text-right tabular-nums text-gray-600">{usd(t.total_usd)}</td>
-                    <td className="py-2 pr-3">
-                      <input
-                        type="number" min={0} step="0.01" value={prices[t.months] ?? ''}
-                        onChange={e => setPrices(v => ({ ...v, [t.months]: e.target.value }))}
-                        className={`${inputCls} w-32`} aria-label={`Цена на ${t.months} мес.`}
-                      />
-                    </td>
-                    <td className={`py-2 text-right tabular-nums font-medium ${bad ? 'text-red-600' : 'text-green-700'}`}>
-                      {off === null ? '' : bad ? 'не дешевле розницы' : `−${off}%`}
-                    </td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
-        </div>
       </div>
       {error && <p className="text-sm text-red-600 bg-red-50 rounded-lg px-3 py-2 mt-3 max-w-2xl">{error}</p>}
       <button onClick={save} disabled={saving} className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700 disabled:opacity-50">
-        {saved ? 'Сохранено' : saving ? 'Сохраняю…' : 'Сохранить цены'}
+        {saved ? 'Сохранено' : saving ? 'Сохраняю…' : 'Сохранить наценку'}
       </button>
     </div>
   )
@@ -300,7 +249,6 @@ function PricingCard({ settings, tariffs, onSaved }: { settings: Settings; tarif
 export default function AdminApi() {
   const [clients, setClients] = useState<ApiClient[]>([])
   const [settings, setSettings] = useState<Settings>({})
-  const [tariffs, setTariffs] = useState<VpnTariff[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [creating, setCreating] = useState(false)
@@ -311,12 +259,11 @@ export default function AdminApi() {
   const load = useCallback(async () => {
     setLoading(true); setError('')
     try {
-      const [list, s, tf] = await Promise.all([
+      const [list, s] = await Promise.all([
         adminReq<ApiClient[]>('/v1/admin/api-clients'),
         adminReq<Settings>('/v1/admin/settings'),
-        adminReq<VpnTariff[]>('/v1/admin/vpn-tariffs'),
       ])
-      setClients(list); setSettings(s); setTariffs(tf)
+      setClients(list); setSettings(s)
     } catch (e) { setError(errText(e)) } finally { setLoading(false) }
   }, [])
 
@@ -364,7 +311,8 @@ export default function AdminApi() {
 
       {error && <div className="text-sm text-red-600 bg-red-50 rounded-lg px-3 py-2">{error}</div>}
 
-      <PricingCard key={`${settings.api_esim_markup}|${settings.api_vpn_factor}|${tariffs.map(t => settings[`api_vpn_price_${t.months}`]).join(',')}`} settings={settings} tariffs={tariffs} onSaved={load} />
+      <PricingCard key={settings.api_esim_markup} settings={settings} onSaved={load} />
+      <ApiVpnPrices />
 
       <div className="flex gap-3 flex-wrap">
         {[
