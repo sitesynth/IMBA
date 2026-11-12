@@ -14,7 +14,7 @@ import { CITY_EN, COUNTRY_EN, loc } from '@/lib/geo-names'
 // Fallback shared credentials — used only for users without a per-user link (legacy/trial)
 const WDTT_FALLBACK_PASSWORD = 'CGFxnHnHXvpb'
 const WDTT_VK_HASH = 'WFNnNWAeRPkesAmtYkf40YIh-Zo-jJe_TfNeZ7jrCv8'
-const WDTT_SERVER = '38.19.201.176'
+const WDTT_SERVER = '157.173.36.241'
 const WDTT_FALLBACK_LINK = `wdtt://${WDTT_SERVER}:56000:56001:9000:${WDTT_FALLBACK_PASSWORD}:${WDTT_VK_HASH}`
 
 // Extract password from a wdtt:// link (format: wdtt://host:port:wgport:apiport:password:hash)
