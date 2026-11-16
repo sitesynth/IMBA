@@ -9,6 +9,7 @@ import { NotificationBell } from '@/components/NotificationBell'
 import { SupportWidget } from '@/components/SupportWidget'
 import { ToastProvider } from '@/components/ToastProvider'
 import { MobileNavLink } from '@/components/MobileNavLink'
+import { SidebarNavLink } from '@/components/SidebarNavLink'
 import { formatMoney } from '@/lib/format'
 import { getLocale } from '@/lib/i18n'
 import { t } from '@/lib/t'
@@ -81,15 +82,11 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
             <nav className="flex-1 space-y-1.5">
               {navItems.map(({ href, label, icon: Icon, soon }) => (
-                <Link
-                  key={href}
-                  href={href}
-                  className="flex items-center gap-3 px-3.5 py-3 rounded-2xl text-sm font-extrabold text-ink/70 border-2 border-transparent hover:border-ink hover:bg-cream transition-colors"
-                >
+                <SidebarNavLink key={href} href={href}>
                   <Icon className="w-4 h-4" strokeWidth={2.5} />
                   {label}
                   {soon && <SoonChip locale={locale} />}
-                </Link>
+                </SidebarNavLink>
               ))}
             </nav>
 
@@ -126,9 +123,10 @@ export default async function DashboardLayout({ children }: { children: React.Re
       </div>
 
       {/* Mobile bottom nav */}
+      <div className="md:hidden h-[72px]" aria-hidden />
       <nav
-        className="md:hidden rounded-xl flex items-center justify-around px-2 py-2"
-        style={{ background: 'var(--paper)' }}
+        className="md:hidden fixed inset-x-[5px] z-40 rounded-xl flex items-center justify-around px-2 py-2 border-2 border-ink"
+        style={{ background: 'var(--paper)', bottom: 'max(5px, env(safe-area-inset-bottom))' }}
       >
         {navItems.slice(0, 5).map(({ href, label, icon: Icon }) => (
           <MobileNavLink key={href} href={href}>

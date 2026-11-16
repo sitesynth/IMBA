@@ -96,11 +96,10 @@ export function SupportWidget() {
 
   const panel = open && typeof document !== 'undefined' ? createPortal(
     <div
-      className="fixed z-[9999] flex flex-col rounded-3xl border-2 border-ink overflow-hidden"
+      className="fixed z-[9999] flex flex-col rounded-3xl border-2 border-ink overflow-hidden bottom-[156px] right-4 md:bottom-[88px]"
       style={{
-        bottom: 88, right: 16,
         width: 'min(380px, calc(100vw - 32px))',
-        height: 'min(520px, calc(100vh - 120px))',
+        height: 'min(520px, calc(100vh - 190px))',
         background: 'var(--paper)',
         boxShadow: '5px 5px 0 #111',
       }}
@@ -199,8 +198,8 @@ export function SupportWidget() {
     <>
       <button
         onClick={() => setOpen(v => !v)}
-        className="fixed z-[9998] w-14 h-14 rounded-full border-2 border-ink flex items-center justify-center transition-transform hover:scale-105 active:scale-95"
-        style={{ bottom: 20, right: 16, background: 'var(--yellow)', boxShadow: '4px 4px 0 #111' }}
+        className="fixed z-[9998] bottom-[88px] right-4 md:bottom-5 w-14 h-14 rounded-full border-2 border-ink flex items-center justify-center transition-transform hover:scale-105 active:scale-95"
+        style={{ background: 'var(--yellow)', boxShadow: '4px 4px 0 #111' }}
         aria-label={t('support.aria', locale)}
       >
         {open ? <X className="w-5 h-5" strokeWidth={2.5} /> : <LifeBuoy className="w-6 h-6" strokeWidth={2.5} />}
