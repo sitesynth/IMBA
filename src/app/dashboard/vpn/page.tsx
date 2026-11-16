@@ -35,7 +35,11 @@ function buildVlessMap(uris: string[]): Record<string, string> {
   for (const uri of uris) {
     const atPart = uri.split('@')[1] || ''
     const host = atPart.split(':')[0] || atPart.split('?')[0]
-    if (host) map[host] = uri
+    const port = (atPart.split(':')[1] || '').split(/[?#]/)[0]
+    if (host) {
+      if (!map[host]) map[host] = uri
+      if (port) map[`${host}:${port}`] = uri
+    }
   }
   return map
 }

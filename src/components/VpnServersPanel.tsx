@@ -436,7 +436,7 @@ export function VpnServersPanel({ servers, vlessMap, serverKey, hasActive, wdttL
 
         <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
           {servers.map((s) => {
-            const vlessUri = s.host ? vlessMap[s.host] : undefined
+            const vlessUri = s.host ? vlessMap[s.port ? `${s.host}:${s.port}` : s.host] : undefined
             return (
               <div
                 key={s.id}

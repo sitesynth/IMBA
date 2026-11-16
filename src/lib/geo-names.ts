@@ -6,6 +6,7 @@ export const CITY_EN: Record<string, string> = {
   'Москва': 'Moscow', 'Лондон': 'London', 'Париж': 'Paris',
   'Амстердам': 'Amsterdam', 'Варшава': 'Warsaw', 'Прага': 'Prague',
   'Стокгольм': 'Stockholm', 'Хельсинки': 'Helsinki', 'Вена': 'Vienna',
+  'Патры': 'Patras', 'Узбекистан': 'Uzbekistan', 'Санкт-Петербург': 'Saint Petersburg',
 }
 
 export const COUNTRY_EN: Record<string, string> = {
@@ -20,14 +21,14 @@ export const COUNTRY_CODE_EN: Record<string, string> = {
   DE: 'GERMANY', PT: 'PORTUGAL', US: 'USA', NL: 'NETHERLANDS', FR: 'FRANCE',
   GB: 'UK', FI: 'FINLAND', TR: 'TURKEY', JP: 'JAPAN', SG: 'SINGAPORE',
   UA: 'UKRAINE', PL: 'POLAND', CZ: 'CZECHIA', SE: 'SWEDEN', NO: 'NORWAY',
-  AT: 'AUSTRIA', RU: 'RUSSIA',
+  AT: 'AUSTRIA', RU: 'RUSSIA', GR: 'GREECE', UZ: 'UZBEKISTAN',
 }
 
 export const FLAG_BY_CODE: Record<string, string> = {
   DE: '🇩🇪', PT: '🇵🇹', US: '🇺🇸', NL: '🇳🇱', FR: '🇫🇷',
   GB: '🇬🇧', FI: '🇫🇮', TR: '🇹🇷', JP: '🇯🇵', SG: '🇸🇬',
   UA: '🇺🇦', PL: '🇵🇱', CZ: '🇨🇿', SE: '🇸🇪', NO: '🇳🇴',
-  AT: '🇦🇹', RU: '🇷🇺',
+  AT: '🇦🇹', RU: '🇷🇺', GR: '🇬🇷', UZ: '🇺🇿',
 }
 
 const regionNames: { en?: Intl.DisplayNames } = {}
