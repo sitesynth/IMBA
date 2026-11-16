@@ -8,6 +8,7 @@ import { AnimatedBalance } from '@/components/AnimatedBalance'
 import { NotificationBell } from '@/components/NotificationBell'
 import { SupportWidget } from '@/components/SupportWidget'
 import { ToastProvider } from '@/components/ToastProvider'
+import { MobileNavLink } from '@/components/MobileNavLink'
 import { formatMoney } from '@/lib/format'
 import { getLocale } from '@/lib/i18n'
 import { t } from '@/lib/t'
@@ -130,14 +131,10 @@ export default async function DashboardLayout({ children }: { children: React.Re
         style={{ background: 'var(--paper)' }}
       >
         {navItems.slice(0, 5).map(({ href, label, icon: Icon }) => (
-          <Link
-            key={href}
-            href={href}
-            className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl text-[10px] font-extrabold text-ink/60"
-          >
+          <MobileNavLink key={href} href={href}>
             <Icon className="w-5 h-5" strokeWidth={2.5} />
             {label}
-          </Link>
+          </MobileNavLink>
         ))}
       </nav>
 
