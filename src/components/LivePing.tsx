@@ -32,7 +32,20 @@ async function measure(host: string): Promise<number | null> {
   return Math.round(samples[Math.floor(samples.length / 2)])
 }
 
-export function LivePing({ host }: { host?: string }) {
+// Latency from the entry node to the exit (measured on the entry itself, published next to /ping).
+// The bridge port identifies the exit; the total shown = visitor→entry + entry→exit, like a client-side test through the tunnel.
+async function leg(host: string, port?: number): Promise<number> {
+  if (!port) return 0
+  try {
+    const res = await fetch(`https://${host.replace(/\./g, '-')}.sslip.io/legs.json?t=${Date.now()}`, { cache: 'no-store', mode: 'cors' })
+    const v = (await res.json())?.[String(port)]
+    return typeof v === 'number' ? v : 0
+  } catch {
+    return 0
+  }
+}
+
+export function LivePing({ host, port }: { host?: string; port?: number }) {
   const locale = useLocale()
   const ru = locale === 'ru'
   const [state, setState] = useState<State>({ kind: 'loading' })
@@ -41,13 +54,14 @@ export function LivePing({ host }: { host?: string }) {
     if (!host) return
     let cancelled = false
     async function run() {
-      const ms = await measure(host as string)
+      const entry = await measure(host as string)
+      const ms = entry === null ? null : entry + (await leg(host as string, port))
       if (!cancelled) setState(ms === null ? { kind: 'down' } : { kind: 'ok', ms })
     }
     run()
     const id = setInterval(run, 60000)
     return () => { cancelled = true; clearInterval(id) }
-  }, [host])
+  }, [host, port])
 
   if (!host) return null
 
@@ -66,7 +80,7 @@ export function LivePing({ host }: { host?: string }) {
       </span>
     )
   }
-  const bg = state.ms < 80 ? 'var(--green-100)' : state.ms < 150 ? 'var(--yellow)' : '#fee2e2'
+  const bg = state.ms < 100 ? 'var(--green-100)' : state.ms < 220 ? 'var(--yellow)' : '#fee2e2'
   return (
     <span className="chip whitespace-nowrap" style={{ background: bg }} title={ru ? 'Пинг от вашего устройства до сервера, обновляется раз в минуту' : 'Ping from your device to the server, refreshed every minute'}>
       <Zap className="w-3 h-3 shrink-0" strokeWidth={3} />

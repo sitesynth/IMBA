@@ -452,7 +452,7 @@ export function VpnServersPanel({ servers, vlessMap, serverKey, hasActive, wdttL
                   </div>
                 </div>
                 <div className="flex items-center gap-2 flex-wrap">
-                  <LivePing host={s.host} />
+                  <LivePing host={s.host} port={s.port} />
                   {hasActive && vlessUri ? (
                     <CopyButton text={vlessUri} label="v2box" className="pill pill-paper pill-sm text-xs" />
                   ) : (
