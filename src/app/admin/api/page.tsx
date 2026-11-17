@@ -16,6 +16,7 @@ interface ApiClient {
   esim_markup: number | null
   trial_per_day: number | null
   device_limit: number | null
+  free_until: string | null
   vpn_prices: Record<string, number | null>
   vpn_prices_general: Record<string, number>
   spent_today_usd: number
@@ -147,6 +148,7 @@ function EditModal({ client, onDone, onClose }: { client: ApiClient; onDone: () 
   const [prices, setPrices] = useState<Record<string, string>>(
     Object.fromEntries(Object.keys(client.vpn_prices_general ?? {}).map(m => [m, client.vpn_prices?.[m] == null ? '' : String(client.vpn_prices[m])])),
   )
+  const [freeUntil, setFreeUntil] = useState((client.free_until ?? '').slice(0, 10))
   const [saving, setSaving] = useState(false)
   const [applying, setApplying] = useState(false)
   const [note, setNote] = useState('')
@@ -173,6 +175,7 @@ function EditModal({ client, onDone, onClose }: { client: ApiClient; onDone: () 
           daily_limit_usd: parseFloat(daily) || 0,
           ...(trials.trim() !== '' ? { trial_per_day: parseInt(trials) || 0 } : {}),
           ...(devices.trim() !== '' ? { device_limit: parseInt(devices) || 0 } : {}),
+          free_until: freeUntil,
           vpn_prices: Object.fromEntries(Object.entries(prices).map(([m, v]) => [m, v.trim() === '' ? null : parseFloat(v)])),
           ...(markup.trim() ? { esim_markup: parseFloat(markup) } : { clear_esim_markup: true }),
         }),
@@ -205,6 +208,9 @@ function EditModal({ client, onDone, onClose }: { client: ApiClient; onDone: () 
             {note && <p className="text-xs text-green-700 mt-1">{note}</p>}
           </div>
         )}
+        <Field label="Бесплатный период до" hint="Пока дата не прошла, ключи VPN для партнёра бесплатны (цена 0). Пусто — обычные цены. Триалы бесплатны всегда.">
+          <input type="date" value={freeUntil} onChange={e => setFreeUntil(e.target.value)} className={inputCls} />
+        </Field>
         <div>
           <p className="text-sm font-medium text-gray-700 mb-1">Цена VPN для этого партнёра, $ за ключ</p>
           <div className="grid grid-cols-4 gap-2">
@@ -408,6 +414,7 @@ export default function AdminApi() {
                   <td className="px-4 py-3 font-mono text-xs text-gray-600">{c.key_prefix}…</td>
                   <td className="px-4 py-3 font-semibold text-gray-900 tabular-nums">{usd(c.balance_usd)}</td>
                   <td className="px-4 py-3 text-xs text-gray-600">
+                    {c.free_until && new Date(c.free_until) > new Date() && <div className="text-green-700 font-medium">бесплатно до {c.free_until.slice(0, 10)}</div>}
                     <div>{c.rate_limit_per_min} запр./мин · триалов {c.trial_per_day == null ? 'общий лимит' : c.trial_per_day === 0 ? 'без лимита' : `${c.trial_per_day}/сут`}{c.device_limit != null ? ` · устройств ${c.device_limit === 0 ? '∞' : c.device_limit}` : ''}</div>
                     <div>{c.daily_limit_usd ? `${usd(c.spent_today_usd)} из ${usd(c.daily_limit_usd)} за сутки` : `${usd(c.spent_today_usd)} за сутки, без лимита`}</div>
                   </td>
