@@ -248,9 +248,9 @@ curl -X POST ${BASE}/orders/vpn \\
         <Section id="trial" title="VPN trial key">
           <Endpoint method="POST" path="/orders/vpn-trial" />
           <P>
-            A short key for a few days. Body: <Ic>days</Ic> from 1 to 14 (default 3). It needs an{' '}
+            A 7-day trial key. Body: <Ic>days</Ic> (optional, 1 to 7, default 7). It needs an{' '}
             <Ic>Idempotency-Key</Ic> like any order. A trial costs nothing by default and has a traffic cap
-            (10 GB by default); the response shows the price actually charged and the cap. You can issue up to 50
+            (20 GB); the response shows the price actually charged and the cap. You can issue up to 100
             trials a day; the limits can be changed for your account on request.
           </P>
           <Code>{`
@@ -258,7 +258,7 @@ curl -X POST ${BASE}/orders/vpn-trial \\
   -H "Authorization: Bearer imba_live_xxxxxxxx" \\
   -H "Idempotency-Key: trial-2043" \\
   -H "Content-Type: application/json" \\
-  -d '{"days": 3}'
+  -d '{"days": 7}'
 `}</Code>
           <Code>{`
 {
@@ -267,16 +267,16 @@ curl -X POST ${BASE}/orders/vpn-trial \\
   "trial": true,
   "key_id": "b2cc5ddc-c0f4-4d0a-a4ff-deb712eb51fc",
   "subscription_url": "https://vpn.imba.live/43cHrvcgvewLpT6q",
-  "days": 3,
-  "expires_at": "2026-11-20T11:43:55+00:00",
-  "traffic_limit_gb": 10.0,
+  "days": 7,
+  "expires_at": "2026-11-24T11:43:55+00:00",
+  "traffic_limit_gb": 20.0,
   "charged_usd": 0.0,
   "balance_usd": 20.0
 }
 `}</Code>
           <P>
             To turn a trial into a paid key, extend it with <Ic>POST /orders/vpn</Ic> and its <Ic>key_id</Ic>. The
-            link stays the same, the plan is added to the current end date, the trial traffic cap is removed and{' '}
+            link stays the same, the plan is added to the current end date, the trial 20 GB cap is removed and{' '}
             <Ic>trial</Ic> becomes <Ic>false</Ic> in <Ic>GET /keys/{'{key_id}'}</Ic>.
           </P>
         </Section>
@@ -388,7 +388,7 @@ curl -X POST ${BASE}/topup \\
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {[
-                  ['400', 'Bad request: a missing idempotency key, an unknown VPN plan, trial days outside 1 to 14, a top-up outside 5 to 5000.'],
+                  ['400', 'Bad request: a missing idempotency key, an unknown VPN plan, trial days outside 1 to 7, a top-up outside 5 to 5000.'],
                   ['401', 'Missing or invalid API key.'],
                   ['402', 'Not enough balance for this order. Top up and retry.'],
                   ['403', 'The key is suspended.'],
