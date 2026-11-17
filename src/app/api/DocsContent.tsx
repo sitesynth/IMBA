@@ -10,6 +10,7 @@ const SECTIONS = [
   ['catalog-vpn', 'VPN catalog'],
   ['order-esim', 'Buy an eSIM'],
   ['order-vpn', 'Buy or extend VPN'],
+  ['trial', 'VPN trial key'],
   ['keys', 'VPN keys: status, block, unblock'],
   ['orders', 'Order history'],
   ['balance', 'Balance and top-up'],
@@ -244,6 +245,42 @@ curl -X POST ${BASE}/orders/vpn \\
           </P>
         </Section>
 
+        <Section id="trial" title="VPN trial key">
+          <Endpoint method="POST" path="/orders/vpn-trial" />
+          <P>
+            A short key for a few days. Body: <Ic>days</Ic> from 1 to 14 (default 3). It needs an{' '}
+            <Ic>Idempotency-Key</Ic> like any order. A trial costs nothing by default and has a traffic cap
+            (10 GB by default); the response shows the price actually charged and the cap. You can issue up to 50
+            trials a day; the limits can be changed for your account on request.
+          </P>
+          <Code>{`
+curl -X POST ${BASE}/orders/vpn-trial \\
+  -H "Authorization: Bearer imba_live_xxxxxxxx" \\
+  -H "Idempotency-Key: trial-2043" \\
+  -H "Content-Type: application/json" \\
+  -d '{"days": 3}'
+`}</Code>
+          <Code>{`
+{
+  "order_id": "b1f4c1de-6a2e-4d3c-9a77-2f0e8b6c1a10",
+  "kind": "vpn",
+  "trial": true,
+  "key_id": "b2cc5ddc-c0f4-4d0a-a4ff-deb712eb51fc",
+  "subscription_url": "https://vpn.imba.live/43cHrvcgvewLpT6q",
+  "days": 3,
+  "expires_at": "2026-11-20T11:43:55+00:00",
+  "traffic_limit_gb": 10.0,
+  "charged_usd": 0.0,
+  "balance_usd": 20.0
+}
+`}</Code>
+          <P>
+            To turn a trial into a paid key, extend it with <Ic>POST /orders/vpn</Ic> and its <Ic>key_id</Ic>. The
+            link stays the same, the plan is added to the current end date, the trial traffic cap is removed and{' '}
+            <Ic>trial</Ic> becomes <Ic>false</Ic> in <Ic>GET /keys/{'{key_id}'}</Ic>.
+          </P>
+        </Section>
+
         <Section id="keys" title="VPN keys: status, block, unblock">
           <Endpoint method="GET" path="/keys?limit=50&offset=0" />
           <P>
@@ -351,13 +388,13 @@ curl -X POST ${BASE}/topup \\
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {[
-                  ['400', 'Bad request: a missing idempotency key, an unknown VPN plan, a top-up outside 5 to 5000.'],
+                  ['400', 'Bad request: a missing idempotency key, an unknown VPN plan, trial days outside 1 to 14, a top-up outside 5 to 5000.'],
                   ['401', 'Missing or invalid API key.'],
                   ['402', 'Not enough balance for this order. Top up and retry.'],
                   ['403', 'The key is suspended.'],
                   ['404', 'Unknown sku, country, key_id or order.'],
                   ['409', 'The idempotency key is already in use by another request; or the key is blocked and cannot be renewed; or it has expired and cannot be enabled.'],
-                  ['429', 'Too many requests (the response carries a Retry-After header), or the daily spend limit is reached.'],
+                  ['429', 'Too many requests (the response carries a Retry-After header), the daily spend limit or the daily trial limit is reached.'],
                   ['502 / 503', 'A supplier, the VPN panel or the payment provider failed. You are not charged and a key is not changed. Retry later.'],
                 ].map(([code, text]) => (
                   <tr key={code}>
