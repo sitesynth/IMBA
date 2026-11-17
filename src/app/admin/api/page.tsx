@@ -16,6 +16,8 @@ interface ApiClient {
   esim_markup: number | null
   trial_per_day: number | null
   device_limit: number | null
+  vpn_prices: Record<string, number | null>
+  vpn_prices_general: Record<string, number>
   spent_today_usd: number
   orders: number
   revenue_usd: number
@@ -142,6 +144,9 @@ function EditModal({ client, onDone, onClose }: { client: ApiClient; onDone: () 
   const [markup, setMarkup] = useState(client.esim_markup == null ? '' : String(client.esim_markup))
   const [trials, setTrials] = useState(client.trial_per_day == null ? '' : String(client.trial_per_day))
   const [devices, setDevices] = useState(client.device_limit == null ? '' : String(client.device_limit))
+  const [prices, setPrices] = useState<Record<string, string>>(
+    Object.fromEntries(Object.keys(client.vpn_prices_general ?? {}).map(m => [m, client.vpn_prices?.[m] == null ? '' : String(client.vpn_prices[m])])),
+  )
   const [saving, setSaving] = useState(false)
   const [applying, setApplying] = useState(false)
   const [note, setNote] = useState('')
@@ -168,6 +173,7 @@ function EditModal({ client, onDone, onClose }: { client: ApiClient; onDone: () 
           daily_limit_usd: parseFloat(daily) || 0,
           ...(trials.trim() !== '' ? { trial_per_day: parseInt(trials) || 0 } : {}),
           ...(devices.trim() !== '' ? { device_limit: parseInt(devices) || 0 } : {}),
+          vpn_prices: Object.fromEntries(Object.entries(prices).map(([m, v]) => [m, v.trim() === '' ? null : parseFloat(v)])),
           ...(markup.trim() ? { esim_markup: parseFloat(markup) } : { clear_esim_markup: true }),
         }),
       })
@@ -199,6 +205,18 @@ function EditModal({ client, onDone, onClose }: { client: ApiClient; onDone: () 
             {note && <p className="text-xs text-green-700 mt-1">{note}</p>}
           </div>
         )}
+        <div>
+          <p className="text-sm font-medium text-gray-700 mb-1">Цена VPN для этого партнёра, $ за ключ</p>
+          <div className="grid grid-cols-4 gap-2">
+            {Object.entries(client.vpn_prices_general ?? {}).map(([m, general]) => (
+              <label key={m} className="text-xs text-gray-500">
+                {m} мес.
+                <input type="number" min={0} step="0.01" value={prices[m] ?? ''} onChange={e => setPrices({ ...prices, [m]: e.target.value })} className={`${inputCls} mt-1`} placeholder={String(general)} />
+              </label>
+            ))}
+          </div>
+          <p className="text-xs text-gray-500 mt-1">Пусто — общая цена (серым). Новая цена действует на следующие покупки и продления, оплаченные ключи не пересчитываются.</p>
+        </div>
         <Field label="Наценка eSIM, ×" hint="Пусто — общая наценка API из блока выше"><input type="number" min={1} step="0.01" value={markup} onChange={e => setMarkup(e.target.value)} className={inputCls} placeholder="общая" /></Field>
         {error && <p className="text-sm text-red-600 bg-red-50 rounded-lg px-3 py-2">{error}</p>}
         <div className="flex gap-3">
