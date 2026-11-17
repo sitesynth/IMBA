@@ -14,6 +14,8 @@ interface ApiClient {
   rate_limit_per_min: number
   daily_limit_usd: number
   esim_markup: number | null
+  trial_per_day: number | null
+  device_limit: number | null
   spent_today_usd: number
   orders: number
   revenue_usd: number
@@ -138,8 +140,20 @@ function EditModal({ client, onDone, onClose }: { client: ApiClient; onDone: () 
   const [rate, setRate] = useState(String(client.rate_limit_per_min))
   const [daily, setDaily] = useState(String(client.daily_limit_usd))
   const [markup, setMarkup] = useState(client.esim_markup == null ? '' : String(client.esim_markup))
+  const [trials, setTrials] = useState(client.trial_per_day == null ? '' : String(client.trial_per_day))
+  const [devices, setDevices] = useState(client.device_limit == null ? '' : String(client.device_limit))
   const [saving, setSaving] = useState(false)
+  const [applying, setApplying] = useState(false)
+  const [note, setNote] = useState('')
   const [error, setError] = useState('')
+
+  async function applyDevices() {
+    setApplying(true); setError(''); setNote('')
+    try {
+      const r = await adminReq<{ limit: number; updated: number; failed: number }>(`/v1/admin/api-clients/${client.id}/apply-devices`, { method: 'POST' })
+      setNote(`Лимит ${r.limit} применён к ${r.updated} выданным ключам${r.failed ? `, ошибок: ${r.failed}` : ''}`)
+    } catch (e) { setError(errText(e)) } finally { setApplying(false) }
+  }
 
   async function submit(e: React.FormEvent) {
     e.preventDefault()
@@ -152,6 +166,8 @@ function EditModal({ client, onDone, onClose }: { client: ApiClient; onDone: () 
           contact: contact.trim(),
           rate_limit_per_min: parseInt(rate) || 60,
           daily_limit_usd: parseFloat(daily) || 0,
+          ...(trials.trim() !== '' ? { trial_per_day: parseInt(trials) || 0 } : {}),
+          ...(devices.trim() !== '' ? { device_limit: parseInt(devices) || 0 } : {}),
           ...(markup.trim() ? { esim_markup: parseFloat(markup) } : { clear_esim_markup: true }),
         }),
       })
@@ -168,6 +184,21 @@ function EditModal({ client, onDone, onClose }: { client: ApiClient; onDone: () 
           <Field label="Запросов в минуту"><input type="number" min={1} value={rate} onChange={e => setRate(e.target.value)} className={inputCls} /></Field>
           <Field label="Лимит трат в сутки, $" hint="0 — без лимита"><input type="number" min={0} step="1" value={daily} onChange={e => setDaily(e.target.value)} className={inputCls} /></Field>
         </div>
+        <div className="grid grid-cols-2 gap-3">
+          <Field label="Триалов в сутки" hint="0 — без лимита, пусто — общий лимит (100)"><input type="number" min={0} value={trials} onChange={e => setTrials(e.target.value)} className={inputCls} placeholder="общий" /></Field>
+          <Field label="Устройств на ключ" hint="0 — без лимита, пусто — не менять">
+            <input type="number" min={0} max={100} value={devices} onChange={e => setDevices(e.target.value)} className={inputCls} placeholder="не задан" />
+          </Field>
+        </div>
+        {client.device_limit != null && (
+          <div>
+            <button type="button" onClick={applyDevices} disabled={applying} className="px-3 py-1.5 text-xs bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 font-medium disabled:opacity-50">
+              {applying ? 'Применяю…' : `Применить лимит ${client.device_limit} к уже выданным ключам`}
+            </button>
+            <p className="text-xs text-gray-500 mt-1">Новые ключи получают лимит сами. Сначала сохраните изменения выше. Лимит работает, только когда в панели Remnawave включён учёт устройств (HWID).</p>
+            {note && <p className="text-xs text-green-700 mt-1">{note}</p>}
+          </div>
+        )}
         <Field label="Наценка eSIM, ×" hint="Пусто — общая наценка API из блока выше"><input type="number" min={1} step="0.01" value={markup} onChange={e => setMarkup(e.target.value)} className={inputCls} placeholder="общая" /></Field>
         {error && <p className="text-sm text-red-600 bg-red-50 rounded-lg px-3 py-2">{error}</p>}
         <div className="flex gap-3">
@@ -359,7 +390,7 @@ export default function AdminApi() {
                   <td className="px-4 py-3 font-mono text-xs text-gray-600">{c.key_prefix}…</td>
                   <td className="px-4 py-3 font-semibold text-gray-900 tabular-nums">{usd(c.balance_usd)}</td>
                   <td className="px-4 py-3 text-xs text-gray-600">
-                    <div>{c.rate_limit_per_min} запр./мин</div>
+                    <div>{c.rate_limit_per_min} запр./мин · триалов {c.trial_per_day == null ? 'общий лимит' : c.trial_per_day === 0 ? 'без лимита' : `${c.trial_per_day}/сут`}{c.device_limit != null ? ` · устройств ${c.device_limit === 0 ? '∞' : c.device_limit}` : ''}</div>
                     <div>{c.daily_limit_usd ? `${usd(c.spent_today_usd)} из ${usd(c.daily_limit_usd)} за сутки` : `${usd(c.spent_today_usd)} за сутки, без лимита`}</div>
                   </td>
                   <td className="px-4 py-3 text-gray-700">{c.esim_markup == null ? <span className="text-gray-500">общая</span> : `×${c.esim_markup}`}</td>
