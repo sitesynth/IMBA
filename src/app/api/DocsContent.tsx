@@ -10,6 +10,7 @@ const SECTIONS = [
   ['catalog-vpn', 'VPN catalog'],
   ['order-esim', 'Buy an eSIM'],
   ['order-vpn', 'Buy or extend VPN'],
+  ['keys', 'VPN keys: status, block, unblock'],
   ['orders', 'Order history'],
   ['balance', 'Balance and top-up'],
   ['idempotency', 'Idempotency'],
@@ -237,8 +238,62 @@ curl -X POST ${BASE}/orders/vpn \\
           <P>
             <Ic>subscription_url</Ic> is a standard subscription link. It opens in Happ, V2Box and other clients that
             import VLESS subscriptions, and lists every server we run. Keep the <Ic>key_id</Ic>
-            to extend the key later.
+            to extend the key later. Extending keeps the same link and adds the plan to the current end date (or to
+            today if the key has already expired). A key you blocked with <Ic>/disable</Ic> cannot be extended until
+            you unblock it: the request returns <Ic>409</Ic>.
           </P>
+        </Section>
+
+        <Section id="keys" title="VPN keys: status, block, unblock">
+          <Endpoint method="GET" path="/keys?limit=50&offset=0" />
+          <P>
+            The keys you issued, newest first (up to 200 per page): <Ic>key_id</Ic>, <Ic>state</Ic>,{' '}
+            <Ic>subscription_url</Ic>, <Ic>expires_at</Ic>, <Ic>days_left</Ic>, <Ic>created_at</Ic>. This list is
+            cheap to call. Traffic and last connection are only in the single-key request below.
+          </P>
+          <Endpoint method="GET" path="/keys/{key_id}" />
+          <P>
+            One key with live data from our VPN panel. <Ic>state</Ic> is <Ic>active</Ic>, <Ic>disabled</Ic> (blocked by
+            you) or <Ic>expired</Ic> (the paid period ended). <Ic>last_online_at</Ic> and <Ic>first_connected_at</Ic>
+            are <Ic>null</Ic> until the customer connects for the first time.
+          </P>
+          <Code>{`
+curl ${BASE}/keys/7e0ec2f7-0cf4-48e9-875c-64ab77f587b7 \
+  -H "Authorization: Bearer imba_live_xxxxxxxx"
+`}</Code>
+          <Code>{`
+{
+  "key_id": "7e0ec2f7-0cf4-48e9-875c-64ab77f587b7",
+  "state": "active",
+  "subscription_url": "https://vpn.imba.live/4aW06QUhcCV8pPHA",
+  "expires_at": "2027-02-06T19:23:42+00:00",
+  "days_left": 91,
+  "created_at": "2026-11-08T19:23:42",
+  "last_online_at": "2026-11-17T08:41:10.000Z",
+  "first_connected_at": "2026-11-08T20:02:11.000Z",
+  "traffic": { "used_bytes": 5368709120, "lifetime_bytes": 21474836480, "limit_bytes": null }
+}
+`}</Code>
+          <P>
+            <Ic>traffic.limit_bytes</Ic> is <Ic>null</Ic> when no cap is set. <Ic>traffic</Ic> itself is{' '}
+            <Ic>null</Ic> if the VPN panel did not answer; the other fields are still returned.
+          </P>
+          <Endpoint method="POST" path="/keys/{key_id}/disable" />
+          <P>
+            Blocks the key right away, for example for non-payment on your side. The customer&apos;s apps lose access
+            at their next connection or subscription refresh. The end date stays as it was and nothing is refunded.
+            Calling it again on a blocked key is safe. Returns the same body as <Ic>GET /keys/{'{key_id}'}</Ic>.
+          </P>
+          <Endpoint method="POST" path="/keys/{key_id}/enable" />
+          <P>
+            Unblocks a key you disabled, with the same link and the same end date. An expired key cannot be
+            enabled: renew it with <Ic>POST /orders/vpn</Ic> and <Ic>key_id</Ic> instead. To stop a customer
+            without blocking, simply do not renew: the key stops working on its end date.
+          </P>
+          <Code>{`
+curl -X POST ${BASE}/keys/7e0ec2f7-0cf4-48e9-875c-64ab77f587b7/disable \
+  -H "Authorization: Bearer imba_live_xxxxxxxx"
+`}</Code>
         </Section>
 
         <Section id="orders" title="Order history">
@@ -301,9 +356,9 @@ curl -X POST ${BASE}/topup \\
                   ['402', 'Not enough balance for this order. Top up and retry.'],
                   ['403', 'The key is suspended.'],
                   ['404', 'Unknown sku, country, key_id or order.'],
-                  ['409', 'The idempotency key is already in use by another request.'],
+                  ['409', 'The idempotency key is already in use by another request; or the key is blocked and cannot be renewed; or it has expired and cannot be enabled.'],
                   ['429', 'Too many requests (the response carries a Retry-After header), or the daily spend limit is reached.'],
-                  ['502 / 503', 'A supplier or the payment provider failed. You are not charged. Retry later.'],
+                  ['502 / 503', 'A supplier, the VPN panel or the payment provider failed. You are not charged and a key is not changed. Retry later.'],
                 ].map(([code, text]) => (
                   <tr key={code}>
                     <td className="px-4 py-2.5 font-mono text-gray-900 whitespace-nowrap">{code}</td>
