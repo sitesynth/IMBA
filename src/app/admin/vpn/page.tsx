@@ -215,7 +215,10 @@ export default function AdminVpnPage() {
                     </td>
                     <td className="px-4 py-3"><ProviderBadge provider={s.provider} /></td>
                     <td className="px-4 py-3 text-gray-800 font-medium">{s.plan}</td>
-                    <td className="px-4 py-3"><StatusBadge status={s.status} /></td>
+                    <td className="px-4 py-3">
+                      <StatusBadge status={s.status} />
+                      {(s as { throttled?: boolean }).throttled && <span className="ml-1.5 inline-block px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-800">шейпинг</span>}
+                    </td>
                     <td className="px-4 py-3 text-gray-600 text-sm tabular-nums whitespace-nowrap">
                       {s.expires_at ? new Date(s.expires_at).toLocaleDateString('ru') : '—'}
                     </td>

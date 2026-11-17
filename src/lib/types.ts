@@ -40,6 +40,7 @@ export type VpnSubscription = {
   expires_at: string | null
   created_at: string
   wdtt_link: string | null
+  throttled?: boolean
 }
 
 export type VpnServer = {

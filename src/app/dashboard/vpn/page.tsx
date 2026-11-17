@@ -95,6 +95,11 @@ export default async function VpnPage() {
                     {t('vpn.until', locale)} {new Date(active.expires_at).toLocaleDateString(getDateLocale(locale))}
                   </div>
                 )}
+                {active.throttled && (
+                  <div className="inline-block mt-2 px-2.5 py-1 rounded-lg border-2 border-ink bg-white text-xs font-extrabold">
+                    {locale === 'ru' ? 'Шейпинг: скорость до 10 Мбит/с' : 'Throttled: speed limited to 10 Mbit/s'}
+                  </div>
+                )}
               </div>
               <LottieSticker name="lock" size={84} className="hidden md:block" />
             </div>
