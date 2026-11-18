@@ -50,6 +50,7 @@ export type VpnServer = {
   flag: string
   host?: string
   port?: number
+  sni?: string
   ping?: number
 }
 

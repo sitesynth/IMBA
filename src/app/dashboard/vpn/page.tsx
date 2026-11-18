@@ -40,6 +40,8 @@ function buildVlessMap(uris: string[]): Record<string, string> {
       if (!map[host]) map[host] = uri
       if (port) map[`${host}:${port}`] = uri
     }
+    const sni = new URLSearchParams((uri.split('?')[1] || '').split('#')[0]).get('sni')
+    if (sni) map[`sni:${sni}`] = uri
   }
   return map
 }
