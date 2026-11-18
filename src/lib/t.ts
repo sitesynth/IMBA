@@ -301,7 +301,7 @@ const dict = {
   'wdtt.tap_connect': { ru: 'Нажми <strong>Подключить</strong>', en: 'Tap <strong>Connect</strong>' },
   'wdtt.add_subscription': { ru: 'В приложении открой <strong>Профили → Подписки</strong>, нажми <strong>«Добавить по ссылке»</strong> и вставь свою ссылку:', en: 'In the app open <strong>Profiles → Subscriptions</strong>, tap <strong>"Add by link"</strong> and paste your link:' },
   'wdtt.pick_server': { ru: 'Появятся серверы (Лиссабон, Берлин, Прага, Джексонвилл, Патры). Выбери любой и нажми <strong>Подключить</strong>', en: 'The servers appear (Lisbon, Berlin, Prague, Jacksonville, Patras). Pick any and tap <strong>Connect</strong>' },
-  'wdtt.same_link_hint': { ru: 'Это та же ссылка, что и в Happ: сервера и срок подписки подтянутся сами.', en: 'This is the same link as in Happ: servers and expiry update automatically.' },
+  'wdtt.same_link_hint': { ru: 'Ссылка заканчивается на .json: так приложение понимает её как подписку. Серверы и срок подтянутся сами.', en: 'The link ends with .json so the app reads it as a subscription. Servers and expiry update automatically.' },
   'wdtt.install_ios': { ru: 'Установи <strong>VK Turn Proxy</strong> через TestFlight:', en: 'Install <strong>VK Turn Proxy</strong> via TestFlight:' },
   'wdtt.open_testflight': { ru: 'Открыть в TestFlight', en: 'Open in TestFlight' },
   'wdtt.ios_import': { ru: 'Нажми <strong>«Import from connection link»</strong> и вставь:', en: 'Tap <strong>"Import from connection link"</strong> and paste:' },

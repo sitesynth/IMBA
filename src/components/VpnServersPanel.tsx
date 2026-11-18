@@ -292,7 +292,7 @@ export function VpnServersPanel({ servers, vlessMap, serverKey, hasActive, wdttL
             ))}
           </div>
 
-          <WdttInstructions platform={platform} link={activeWdttLink} subscriptionUrl={serverKey} locale={locale} />
+          <WdttInstructions platform={platform} link={activeWdttLink} subscriptionUrl={serverKey ? `${serverKey}.json` : null} locale={locale} />
 
           <div className="rounded-xl px-3 py-2 text-xs font-bold" style={{ background: 'var(--green-100)', color: 'var(--ink)' }}>
             {t('vpn.wl_desc', locale)}
