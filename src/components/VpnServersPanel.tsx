@@ -65,7 +65,7 @@ interface Props {
   wdttLink?: string | null
 }
 
-function WdttInstructions({ platform, link, locale }: { platform: Platform; link: string; locale: Locale }) {
+function WdttInstructions({ platform, link, subscriptionUrl, locale }: { platform: Platform; link: string; subscriptionUrl: string | null; locale: Locale }) {
   const password = wdttPassword(link)
   const macCmd = `sudo ./client-darwin-arm64 -server ${WDTT_SERVER}:56000 -wg-port 56001 -password ${password} -hash ${WDTT_VK_HASH}`
   if (platform === 'android') return (
@@ -83,16 +83,17 @@ function WdttInstructions({ platform, link, locale }: { platform: Platform; link
       <li className="flex items-start gap-2">
         <span className="font-extrabold text-ink/30 w-4 shrink-0">2.</span>
         <div className="flex-1">
-          <div className="mb-1" dangerouslySetInnerHTML={{ __html: t('wdtt.import_link', locale) }} />
+          <div className="mb-1" dangerouslySetInnerHTML={{ __html: t('wdtt.add_subscription', locale) }} />
           <div className="flex items-center gap-2 mt-2 rounded-xl px-3 py-2" style={{ background: 'var(--blue-100)' }}>
-            <p className="text-xs font-mono break-all text-ink/70 flex-1 select-all">{link}</p>
-            <CopyButton text={link} />
+            <p className="text-xs font-mono break-all text-ink/70 flex-1 select-all">{subscriptionUrl ?? link}</p>
+            <CopyButton text={subscriptionUrl ?? link} />
           </div>
+          <p className="text-xs text-ink/40 mt-1">{t('wdtt.same_link_hint', locale)}</p>
         </div>
       </li>
       <li className="flex items-start gap-2">
         <span className="font-extrabold text-ink/30 w-4 shrink-0">3.</span>
-        <span dangerouslySetInnerHTML={{ __html: t('wdtt.tap_connect', locale) }} />
+        <span dangerouslySetInnerHTML={{ __html: t('wdtt.pick_server', locale) }} />
       </li>
     </ol>
   )
@@ -291,7 +292,7 @@ export function VpnServersPanel({ servers, vlessMap, serverKey, hasActive, wdttL
             ))}
           </div>
 
-          <WdttInstructions platform={platform} link={activeWdttLink} locale={locale} />
+          <WdttInstructions platform={platform} link={activeWdttLink} subscriptionUrl={serverKey} locale={locale} />
 
           <div className="rounded-xl px-3 py-2 text-xs font-bold" style={{ background: 'var(--green-100)', color: 'var(--ink)' }}>
             {t('vpn.wl_desc', locale)}
