@@ -25,7 +25,7 @@ function wdttPassword(link: string): string {
 
 const URLS = {
   testflight: 'https://testflight.apple.com/join/ANm6cmDv',
-  apk:     'https://github.com/SpaceNeuroX/proxy-turn-vk-android/releases/download/v1.3.9/app-universal-release.apk',
+  apk:     'https://github.com/SpaceNeuroX/proxy-turn-vk-android/releases/download/v1.4.5/qwdtt-1.4.5-universal.apk',
   win:     'https://imba.run/imba-vk-proxy-setup.exe',
   macArm:  'https://github.com/cacggghp/vk-turn-proxy/releases/download/v1.8.3/client-darwin-arm64',
   macX64:  'https://github.com/cacggghp/vk-turn-proxy/releases/download/v1.8.3/client-darwin-amd64',
