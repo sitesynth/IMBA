@@ -14,6 +14,7 @@ const SECTIONS = [
   ['keys', 'VPN keys: status, block, unblock'],
   ['orders', 'Order history'],
   ['balance', 'Balance and top-up'],
+  ['webhooks', 'Webhooks'],
   ['idempotency', 'Idempotency'],
   ['errors', 'Errors and limits'],
 ] as const
@@ -35,10 +36,10 @@ function Section({ id, title, children }: { id: string; title: string; children:
   )
 }
 
-function Endpoint({ method, path }: { method: 'GET' | 'POST'; path: string }) {
+function Endpoint({ method, path }: { method: 'GET' | 'POST' | 'PUT' | 'DELETE'; path: string }) {
   return (
     <div className="flex items-center gap-2 font-mono text-sm">
-      <span className={`px-2 py-0.5 rounded-md text-xs font-bold ${method === 'GET' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}`}>
+      <span className={`px-2 py-0.5 rounded-md text-xs font-bold ${method === 'GET' ? 'bg-green-100 text-green-700' : method === 'DELETE' ? 'bg-red-100 text-red-700' : 'bg-blue-100 text-blue-700'}`}>
         {method}
       </span>
       <span className="text-gray-900 break-all">{path}</span>
@@ -109,7 +110,10 @@ curl ${BASE}/me \\
   "name": "TravelBot",
   "status": "active",
   "balance_usd": 42.5,
-  "limits": { "requests_per_minute": 60, "daily_spend_usd": 200.0, "spent_today_usd": 3.4 }
+  "limits": {
+    "requests_per_minute": 60, "daily_spend_usd": 200.0, "spent_today_usd": 3.4,
+    "trials_per_day": 100, "trials_today": 12
+  }
 }
 `}</Code>
         </Section>
@@ -290,8 +294,9 @@ curl -X POST ${BASE}/orders/vpn-trial \\
           </P>
           <Endpoint method="GET" path="/keys/{key_id}" />
           <P>
-            One key with live data from our VPN panel. <Ic>state</Ic> is <Ic>active</Ic>, <Ic>disabled</Ic> (blocked by
-            you) or <Ic>expired</Ic> (the paid period ended). <Ic>last_online_at</Ic> and <Ic>first_connected_at</Ic>
+            One key with live data from our VPN panel. <Ic>state</Ic> is <Ic>active</Ic>, <Ic>limited</Ic> (the traffic
+            cap is used up: the link stays valid but there is no connection until the traffic is reset or the key is
+            renewed), <Ic>disabled</Ic> (blocked by you) or <Ic>expired</Ic> (the paid period ended). <Ic>last_online_at</Ic> and <Ic>first_connected_at</Ic>
             are <Ic>null</Ic> until the customer connects for the first time.
           </P>
           <Code>{`
@@ -308,11 +313,13 @@ curl ${BASE}/keys/7e0ec2f7-0cf4-48e9-875c-64ab77f587b7 \
   "created_at": "2026-11-08T19:23:42",
   "last_online_at": "2026-11-17T08:41:10.000Z",
   "first_connected_at": "2026-11-08T20:02:11.000Z",
+  "devices": { "limit": 5, "connected": 2 },
   "traffic": { "used_bytes": 5368709120, "lifetime_bytes": 21474836480, "limit_bytes": null }
 }
 `}</Code>
           <P>
-            <Ic>traffic.limit_bytes</Ic> is <Ic>null</Ic> when no cap is set. <Ic>traffic</Ic> itself is{' '}
+            <Ic>devices.limit</Ic> is the number of devices the key allows (<Ic>null</Ic> when unlimited) and{' '}
+            <Ic>devices.connected</Ic> is how many are registered on it now. <Ic>traffic.limit_bytes</Ic> is <Ic>null</Ic> when no cap is set. <Ic>traffic</Ic> and <Ic>devices</Ic> are{' '}
             <Ic>null</Ic> if the VPN panel did not answer; the other fields are still returned.
           </P>
           <Endpoint method="POST" path="/keys/{key_id}/disable" />
@@ -363,6 +370,73 @@ curl -X POST ${BASE}/topup \\
 `}</Code>
           <Endpoint method="GET" path="/topups" />
           <P>Your latest top-ups with their status (<Ic>pending</Ic>, <Ic>confirmed</Ic>, <Ic>expired</Ic>).</P>
+        </Section>
+
+        <Section id="webhooks" title="Webhooks">
+          <P>
+            Instead of polling, give us an HTTPS address and we call it when something changes. Events are detected
+            every few minutes, so expect a delay of up to about 5 minutes.
+          </P>
+          <Endpoint method="PUT" path="/webhook" />
+          <P>
+            Body: <Ic>url</Ic> (public <Ic>https://</Ic> address, no credentials in it) and optional{' '}
+            <Ic>rotate_secret</Ic>. The response contains the signing <Ic>secret</Ic> only the first time (and after a
+            rotation), so save it. You get events that happen after you register; older states are not replayed.
+          </P>
+          <Code>{`
+curl -X PUT ${BASE}/webhook \\
+  -H "Authorization: Bearer imba_live_xxxxxxxx" -H "Content-Type: application/json" \\
+  -d '{"url": "https://example.com/imba-hook"}'
+`}</Code>
+          <Code>{`
+{ "configured": true, "url": "https://example.com/imba-hook",
+  "events": ["key.expiring", "key.expired", "key.limited", "key.first_connected", "topup.confirmed"],
+  "secret": "whsec_..." }
+`}</Code>
+          <Endpoint method="GET" path="/webhook" />
+          <Endpoint method="DELETE" path="/webhook" />
+          <Endpoint method="POST" path="/webhook/test" />
+          <P>
+            <Ic>POST /webhook/test</Ic> sends a <Ic>webhook.test</Ic> event right now, with one attempt and no retries, and
+            returns <Ic>delivered</Ic>, <Ic>status_code</Ic> and <Ic>error</Ic>.{' '}
+            <Ic>GET /webhook/deliveries</Ic> lists the latest events with their status, number of attempts and last error.
+          </P>
+          <P>Events, each reported once per state:</P>
+          <ul className="text-[15px] text-gray-700 leading-relaxed list-disc pl-5 space-y-1">
+            <li><Ic>key.expiring</Ic>: a paid key ends within 3 days, a trial within 24 hours. Fields: <Ic>key_id</Ic>, <Ic>trial</Ic>, <Ic>expires_at</Ic>, <Ic>days_left</Ic>.</li>
+            <li><Ic>key.expired</Ic>: the period ended. Fields: <Ic>key_id</Ic>, <Ic>trial</Ic>, <Ic>expires_at</Ic>.</li>
+            <li><Ic>key.limited</Ic>: the traffic cap is used up. Fields: <Ic>key_id</Ic>, <Ic>trial</Ic>, <Ic>used_bytes</Ic>, <Ic>limit_bytes</Ic>.</li>
+            <li><Ic>key.first_connected</Ic>: the customer connected for the first time. Fields: <Ic>key_id</Ic>, <Ic>first_connected_at</Ic>.</li>
+            <li><Ic>topup.confirmed</Ic>: a balance top-up was paid. Fields: <Ic>payment_id</Ic>, <Ic>amount_usd</Ic>, <Ic>balance_usd</Ic>.</li>
+          </ul>
+          <P>Keys you blocked with <Ic>/disable</Ic> produce no events. After you renew a key, it can report expiry again for the new date.</P>
+          <Code>{`
+POST https://example.com/imba-hook
+Content-Type: application/json
+X-IMBA-Event: key.expired
+X-IMBA-Delivery: 5b0b7d3e-...        (unique id of this event, use it to ignore repeats)
+X-IMBA-Timestamp: 1763640000
+X-IMBA-Signature: t=1763640000,v1=<hex hmac>
+
+{ "id": "5b0b7d3e-...", "event": "key.expired", "created_at": "2026-11-20T11:30:00+00:00",
+  "data": { "key_id": "7e0ec2f7-...", "trial": false, "expires_at": "2026-11-20T11:00:00+00:00" } }
+`}</Code>
+          <P>
+            Verify the signature: compute HMAC-SHA256 with your secret over <Ic>timestamp + &quot;.&quot; + raw body</Ic>, compare
+            it with <Ic>v1</Ic>, and reject requests whose timestamp is more than 5 minutes old.
+          </P>
+          <Code>{`
+import hmac, hashlib
+
+def valid(secret, header_ts, raw_body, header_sig):
+    expected = hmac.new(secret.encode(), f"{header_ts}.".encode() + raw_body, hashlib.sha256).hexdigest()
+    return hmac.compare_digest(header_sig.split("v1=")[1], expected)
+`}</Code>
+          <P>
+            Answer with any <Ic>2xx</Ic> within 10 seconds. Otherwise we retry after 1 minute, 5 minutes, 30 minutes, 2
+            hours and 12 hours, then give up (the event stays in <Ic>/webhook/deliveries</Ic> as <Ic>failed</Ic> for 30
+            days). Redirects are not followed. The same event can arrive twice, so make your handler idempotent.
+          </P>
         </Section>
 
         <Section id="idempotency" title="Idempotency">
