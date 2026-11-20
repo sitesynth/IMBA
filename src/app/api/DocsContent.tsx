@@ -294,10 +294,11 @@ curl -X POST ${BASE}/orders/vpn-trial \\
           </P>
           <Endpoint method="GET" path="/keys/{key_id}" />
           <P>
-            One key with live data from our VPN panel. <Ic>state</Ic> is <Ic>active</Ic>, <Ic>limited</Ic> (the traffic
-            cap is used up: the link stays valid but there is no connection until the traffic is reset or the key is
-            renewed), <Ic>disabled</Ic> (blocked by you) or <Ic>expired</Ic> (the paid period ended). <Ic>last_online_at</Ic> and <Ic>first_connected_at</Ic>
-            are <Ic>null</Ic> until the customer connects for the first time.
+            One key with live data from our VPN panel. <Ic>state</Ic> is <Ic>active</Ic>, <Ic>throttled</Ic> (a paid key
+            that used its 300 GB for the month: the speed is cut to 10 Mbit until the 1st of next month, the key keeps
+            working), <Ic>limited</Ic> (a trial that used its 20 GB cap: no connection; renew the key to lift it),{' '}
+            <Ic>disabled</Ic> (blocked by you) or <Ic>expired</Ic> (the paid period ended). <Ic>last_online_at</Ic> and{' '}
+            <Ic>first_connected_at</Ic> are <Ic>null</Ic> until the customer connects for the first time.
           </P>
           <Code>{`
 curl ${BASE}/keys/7e0ec2f7-0cf4-48e9-875c-64ab77f587b7 \
@@ -318,6 +319,13 @@ curl ${BASE}/keys/7e0ec2f7-0cf4-48e9-875c-64ab77f587b7 \
   "traffic": { "used_bytes": 5368709120, "lifetime_bytes": 21474836480, "limit_bytes": null }
 }
 `}</Code>
+          <P>
+            When a paid key reaches 300 GB, the current server address stops working and the customer's app moves
+            to the slower 10 Mbit server the next time it refreshes the subscription. We ask apps to refresh every
+            hour, so the break is normally up to about an hour; an app with auto-update turned off needs a manual
+            refresh. The check itself runs hourly. On the 1st of the month the key goes back to full speed, again
+            after the app refreshes.
+          </P>
           <P>
             <Ic>trial</Ic> is <Ic>true</Ic> for a trial key and turns <Ic>false</Ic> once you extend it. <Ic>devices.limit</Ic> is the number of devices the key allows (<Ic>null</Ic> when unlimited) and{' '}
             <Ic>devices.connected</Ic> is how many are registered on it now. <Ic>traffic.limit_bytes</Ic> is <Ic>null</Ic> when no cap is set. <Ic>traffic</Ic> and <Ic>devices</Ic> are{' '}
@@ -391,7 +399,7 @@ curl -X PUT ${BASE}/webhook \\
 `}</Code>
           <Code>{`
 { "configured": true, "url": "https://example.com/imba-hook",
-  "events": ["key.expiring", "key.expired", "key.limited", "key.first_connected", "topup.confirmed"],
+  "events": ["key.expiring", "key.expired", "key.limited", "key.throttled", "key.first_connected", "topup.confirmed"],
   "secret": "whsec_..." }
 `}</Code>
           <Endpoint method="GET" path="/webhook" />
@@ -423,7 +431,8 @@ curl -X PUT ${BASE}/webhook \\
           <ul className="text-[15px] text-gray-700 leading-relaxed list-disc pl-5 space-y-1">
             <li><Ic>key.expiring</Ic>: a paid key ends within 3 days, a trial within 24 hours. Fields: <Ic>key_id</Ic>, <Ic>trial</Ic>, <Ic>expires_at</Ic>, <Ic>days_left</Ic>.</li>
             <li><Ic>key.expired</Ic>: the period ended. Fields: <Ic>key_id</Ic>, <Ic>trial</Ic>, <Ic>expires_at</Ic>.</li>
-            <li><Ic>key.limited</Ic>: the traffic cap is used up. Fields: <Ic>key_id</Ic>, <Ic>trial</Ic>, <Ic>used_bytes</Ic>, <Ic>limit_bytes</Ic>.</li>
+            <li><Ic>key.throttled</Ic>: a paid key used its 300 GB and is cut to 10 Mbit until the 1st. Fields: <Ic>key_id</Ic>, <Ic>trial</Ic>, <Ic>speed_limit_mbit</Ic>, <Ic>restored_at</Ic>.</li>
+            <li><Ic>key.limited</Ic>: a trial used its 20 GB cap and stopped working. Fields: <Ic>key_id</Ic>, <Ic>trial</Ic>, <Ic>used_bytes</Ic>, <Ic>limit_bytes</Ic>.</li>
             <li><Ic>key.first_connected</Ic>: the customer connected for the first time. Fields: <Ic>key_id</Ic>, <Ic>first_connected_at</Ic>.</li>
             <li><Ic>topup.confirmed</Ic>: a balance top-up was paid. Fields: <Ic>payment_id</Ic>, <Ic>amount_usd</Ic>, <Ic>balance_usd</Ic>.</li>
           </ul>
