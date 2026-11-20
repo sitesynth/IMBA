@@ -307,6 +307,7 @@ curl ${BASE}/keys/7e0ec2f7-0cf4-48e9-875c-64ab77f587b7 \
 {
   "key_id": "7e0ec2f7-0cf4-48e9-875c-64ab77f587b7",
   "state": "active",
+  "trial": false,
   "subscription_url": "https://vpn.imba.live/4aW06QUhcCV8pPHA",
   "expires_at": "2027-02-06T19:23:42+00:00",
   "days_left": 91,
@@ -318,7 +319,7 @@ curl ${BASE}/keys/7e0ec2f7-0cf4-48e9-875c-64ab77f587b7 \
 }
 `}</Code>
           <P>
-            <Ic>devices.limit</Ic> is the number of devices the key allows (<Ic>null</Ic> when unlimited) and{' '}
+            <Ic>trial</Ic> is <Ic>true</Ic> for a trial key and turns <Ic>false</Ic> once you extend it. <Ic>devices.limit</Ic> is the number of devices the key allows (<Ic>null</Ic> when unlimited) and{' '}
             <Ic>devices.connected</Ic> is how many are registered on it now. <Ic>traffic.limit_bytes</Ic> is <Ic>null</Ic> when no cap is set. <Ic>traffic</Ic> and <Ic>devices</Ic> are{' '}
             <Ic>null</Ic> if the VPN panel did not answer; the other fields are still returned.
           </P>
@@ -397,10 +398,27 @@ curl -X PUT ${BASE}/webhook \\
           <Endpoint method="DELETE" path="/webhook" />
           <Endpoint method="POST" path="/webhook/test" />
           <P>
-            <Ic>POST /webhook/test</Ic> sends a <Ic>webhook.test</Ic> event right now, with one attempt and no retries, and
-            returns <Ic>delivered</Ic>, <Ic>status_code</Ic> and <Ic>error</Ic>.{' '}
-            <Ic>GET /webhook/deliveries</Ic> lists the latest events with their status, number of attempts and last error.
+            Sends a <Ic>webhook.test</Ic> event right now, with one attempt and no retries, and returns{' '}
+            <Ic>delivered</Ic>, <Ic>status_code</Ic> and <Ic>error</Ic>. It needs a URL set with <Ic>PUT /webhook</Ic>,
+            otherwise it answers <Ic>409</Ic>.
           </P>
+          <Endpoint method="GET" path="/webhook/deliveries?limit=50" />
+          <P>
+            The latest events (up to 200) with their delivery status: <Ic>pending</Ic> (waiting or being retried),{' '}
+            <Ic>delivered</Ic> or <Ic>failed</Ic> (gave up). Use it to see why your endpoint is not receiving events.
+          </P>
+          <Code>{`
+{
+  "deliveries": [
+    { "id": "5b0b7d3e-...", "event": "key.expired", "status": "delivered", "attempts": 1,
+      "created_at": "2026-11-20T11:30:00+00:00", "delivered_at": "2026-11-20T11:30:01+00:00",
+      "last_status_code": 200, "last_error": null },
+    { "id": "9c1f2a40-...", "event": "key.limited", "status": "pending", "attempts": 2,
+      "created_at": "2026-11-20T11:35:00+00:00", "delivered_at": null,
+      "last_status_code": 500, "last_error": "HTTP 500" }
+  ]
+}
+`}</Code>
           <P>Events, each reported once per state:</P>
           <ul className="text-[15px] text-gray-700 leading-relaxed list-disc pl-5 space-y-1">
             <li><Ic>key.expiring</Ic>: a paid key ends within 3 days, a trial within 24 hours. Fields: <Ic>key_id</Ic>, <Ic>trial</Ic>, <Ic>expires_at</Ic>, <Ic>days_left</Ic>.</li>
@@ -462,12 +480,12 @@ def valid(secret, header_ts, raw_body, header_sig):
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {[
-                  ['400', 'Bad request: a missing idempotency key, an unknown VPN plan, trial days outside 1 to 7, a top-up outside 5 to 5000.'],
+                  ['400', 'Bad request: a missing idempotency key, an unknown VPN plan, trial days outside 1 to 7, a top-up outside 5 to 5000, a webhook URL that is not a public https address.'],
                   ['401', 'Missing or invalid API key.'],
                   ['402', 'Not enough balance for this order. Top up and retry.'],
                   ['403', 'The key is suspended.'],
                   ['404', 'Unknown sku, country, key_id or order.'],
-                  ['409', 'The idempotency key is already in use by another request; or the key is blocked and cannot be renewed; or it has expired and cannot be enabled.'],
+                  ['409', 'The idempotency key is already in use by another request; or the key is blocked and cannot be renewed; or it has expired and cannot be enabled; or you called /webhook/test with no webhook URL set.'],
                   ['429', 'Too many requests (the response carries a Retry-After header), the daily spend limit or the daily trial limit is reached.'],
                   ['502 / 503', 'A supplier, the VPN panel or the payment provider failed. You are not charged and a key is not changed. Retry later.'],
                 ].map(([code, text]) => (
