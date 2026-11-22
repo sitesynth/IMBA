@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "morph": true,
+  "marquee": {
+    "enabled": true,
+    "items": ["eSIM IN 190 COUNTRIES", "ZERO-LOG VPN", "VIRTUAL CARD", "PAY ANYWHERE", "NO BORDERS"],
+    "separator": "✦",
+    "speed_dp_per_s": 75,
+    "background": "#E2CCFF",
+    "text": "#111111",
+    "separator_color": "#7E6FB0"
+  },
+  "theme": { "day_from_hour": 6, "night_from_hour": 20, "force": null },
+  "day":   { "lottie": "day.json" },
+  "night": { "lottie": "night.json" }
+}
