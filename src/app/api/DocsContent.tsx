@@ -14,6 +14,7 @@ const SECTIONS = [
   ['keys', 'VPN keys: status, block, unblock'],
   ['orders', 'Order history'],
   ['balance', 'Balance and top-up'],
+  ['domain', 'Your own domain'],
   ['webhooks', 'Webhooks'],
   ['idempotency', 'Idempotency'],
   ['errors', 'Errors and limits'],
@@ -176,6 +177,12 @@ curl ${BASE}/me \\
   ]
 }
 `}</Code>
+          <P>
+            A VPN key is sold in whole months: 1, 3, 6 or 12. The price of a plan does not change when you
+            extend an existing key — you always pay for the number of months you add. If you need a shorter
+            period than a month, take a trial key (up to 7 days, free) or write to us: we can issue a key with
+            a custom length.
+          </P>
         </Section>
 
         <Section id="order-esim" title="Buy an eSIM">
@@ -254,8 +261,9 @@ curl -X POST ${BASE}/orders/vpn \\
           <P>
             A 7-day trial key. Body: <Ic>days</Ic> (optional, 1 to 7, default 7). It needs an{' '}
             <Ic>Idempotency-Key</Ic> like any order. A trial costs nothing by default and has a traffic cap
-            (20 GB); the response shows the price actually charged and the cap. You can issue up to 100
-            trials a day; the limits can be changed for your account on request.
+            (20 GB) and a device limit (3 devices); the response shows the price actually charged, the cap and
+            the device limit. You can issue up to 100 trials a day; the limits can be changed for your account
+            on request.
           </P>
           <Code>{`
 curl -X POST ${BASE}/orders/vpn-trial \\
@@ -274,14 +282,20 @@ curl -X POST ${BASE}/orders/vpn-trial \\
   "days": 7,
   "expires_at": "2026-11-24T11:43:55+00:00",
   "traffic_limit_gb": 20.0,
+  "device_limit": 3,
   "charged_usd": 0.0,
   "balance_usd": 20.0
 }
 `}</Code>
           <P>
+            A trial key is limited to 3 devices (the panel counts devices by HWID). The limit can be raised for
+            your account on request.
+          </P>
+          <P>
             To turn a trial into a paid key, extend it with <Ic>POST /orders/vpn</Ic> and its <Ic>key_id</Ic>. The
             link stays the same, the plan is added to the current end date, the trial 20 GB cap is removed and{' '}
-            <Ic>trial</Ic> becomes <Ic>false</Ic> in <Ic>GET /keys/{'{key_id}'}</Ic>.
+            <Ic>trial</Ic> becomes <Ic>false</Ic> in <Ic>GET /keys/{'{key_id}'}</Ic>. The device limit stays as it was
+            on the trial unless we raise it for you.
           </P>
         </Section>
 
@@ -379,6 +393,45 @@ curl -X POST ${BASE}/topup \\
 `}</Code>
           <Endpoint method="GET" path="/topups" />
           <P>Your latest top-ups with their status (<Ic>pending</Ic>, <Ic>confirmed</Ic>, <Ic>expired</Ic>).</P>
+          <P>
+            When the balance drops under $50 we send one email to the address in your account settings, so you can
+            top up before orders start failing. The warning comes again only after the balance has been back above
+            $50 and drops under it once more. If you would rather not receive it, write to us and we will remove
+            your address from the list.
+          </P>
+        </Section>
+
+        <Section id="domain" title="Your own domain">
+          <P>
+            You can put the subscription links on your own domain, so your customers see your address instead of
+            ours. We set it up for you — tell us the domain and we will:
+          </P>
+          <ul className="list-disc pl-5 text-[15px] text-gray-700 leading-relaxed space-y-1">
+            <li>point your domain at our subscription host (a CNAME record we give you);</li>
+            <li>issue the TLS certificate for it and add it to our edge;</li>
+            <li>start returning <Ic>subscription_url</Ic> on your domain in every order response.</li>
+          </ul>
+          <P>
+            The path of the link stays the same (the short key id), only the host changes, so the links you
+            already handed out keep working. Nothing changes for your customers: the link opens in the same
+            clients, with the same servers.
+          </P>
+          <Code>{`
+{
+  "order_id": "b1f4c1de-6a2e-4d3c-9a77-2f0e8b6c1a10",
+  "kind": "vpn",
+  "key_id": "b2cc5ddc-c0f4-4d0a-a4ff-deb712eb51fc",
+  "subscription_url": "https://vpn.your-domain.com/43cHrvcgvewLpT6q",
+  "months": 3,
+  "expires_at": "2027-02-06T19:23:42+00:00",
+  "charged_usd": 7.49,
+  "balance_usd": 34.33
+}
+`}</Code>
+          <P>
+            You can also serve your own pages on the same domain: we can put a landing page or your own panel
+            behind it, or keep the domain for subscription links only. Write to us and we will agree the layout.
+          </P>
         </Section>
 
         <Section id="webhooks" title="Webhooks">
@@ -507,8 +560,13 @@ def valid(secret, header_ts, raw_body, header_sig):
             </table>
           </div>
           <P>
-            New keys start at 30 requests per minute with no daily spend limit. The limits are shown in{' '}
+            New keys start at 60 requests per minute with no daily spend limit. The limits are shown in{' '}
             <Ic>GET /me</Ic>; the rate can be raised on request.
+          </P>
+          <P>
+            The rate limit counts requests <Ic>per API key</Ic>, not per IP address. If every request for your
+            customers comes through one server of yours, that does not change anything — the limit is still
+            counted on your key.
           </P>
         </Section>
 
