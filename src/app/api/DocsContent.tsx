@@ -288,8 +288,8 @@ curl -X POST ${BASE}/orders/vpn-trial \\
 }
 `}</Code>
           <P>
-            A trial key is limited to 3 devices (the panel counts devices by HWID). The limit can be raised for
-            your account on request.
+            Newly issued trial keys are limited to 3 devices (the panel counts devices by HWID). Existing keys
+            need a separate update. The limit for new keys can be raised for your account on request.
           </P>
           <P>
             To turn a trial into a paid key, extend it with <Ic>POST /orders/vpn</Ic> and its <Ic>key_id</Ic>. The
@@ -334,7 +334,7 @@ curl ${BASE}/keys/7e0ec2f7-0cf4-48e9-875c-64ab77f587b7 \
 }
 `}</Code>
           <P>
-            When a paid key reaches 300 GB, the current server address stops working and the customer's app moves
+            When a paid key reaches 300 GB, the current server address stops working and the customer&apos;s app moves
             to the slower 10 Mbit server the next time it refreshes the subscription. We ask apps to refresh every
             hour, so the break is normally up to about an hour; an app with auto-update turned off needs a manual
             refresh. The check itself runs hourly. On the 1st of the month the key goes back to full speed, again
@@ -394,10 +394,9 @@ curl -X POST ${BASE}/topup \\
           <Endpoint method="GET" path="/topups" />
           <P>Your latest top-ups with their status (<Ic>pending</Ic>, <Ic>confirmed</Ic>, <Ic>expired</Ic>).</P>
           <P>
-            When the balance drops under $50 we send one email to the address in your account settings, so you can
+            When the balance drops under $50 after an order, we send one email to your API contact address, so you can
             top up before orders start failing. The warning comes again only after the balance has been back above
-            $50 and drops under it once more. If you would rather not receive it, write to us and we will remove
-            your address from the list.
+            $50 and drops under it once more after an order. Contact us to change the notification address.
           </P>
         </Section>
 
@@ -409,7 +408,7 @@ curl -X POST ${BASE}/topup \\
           <ul className="list-disc pl-5 text-[15px] text-gray-700 leading-relaxed space-y-1">
             <li>point your domain at our subscription host (a CNAME record we give you);</li>
             <li>issue the TLS certificate for it and add it to our edge;</li>
-            <li>start returning <Ic>subscription_url</Ic> on your domain in every order response.</li>
+            <li>start returning VPN <Ic>subscription_url</Ic> on your domain in VPN order responses.</li>
           </ul>
           <P>
             The path of the link stays the same (the short key id), only the host changes, so the links you
@@ -542,14 +541,15 @@ def valid(secret, header_ts, raw_body, header_sig):
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {[
-                  ['400', 'Bad request: a missing idempotency key, an unknown VPN plan, trial days outside 1 to 7, a top-up outside 5 to 5000, a webhook URL that is not a public https address.'],
+                  ['400', 'Bad request: a missing idempotency key, an unknown VPN plan, a top-up outside 5 to 5000, or an invalid webhook URL.'],
                   ['401', 'Missing or invalid API key.'],
                   ['402', 'Not enough balance for this order. Top up and retry.'],
                   ['403', 'The key is suspended.'],
                   ['404', 'Unknown sku, country, key_id or order.'],
                   ['409', 'The idempotency key is already in use by another request; or the key is blocked and cannot be renewed; or it has expired and cannot be enabled; or you called /webhook/test with no webhook URL set.'],
+                  ['422', 'A field failed validation, such as trial days outside 1 to 7.'],
                   ['429', 'Too many requests (the response carries a Retry-After header), the daily spend limit or the daily trial limit is reached.'],
-                  ['502 / 503', 'A supplier, the VPN panel or the payment provider failed. You are not charged and a key is not changed. Retry later.'],
+                  ['502 / 503', 'A supplier, the VPN panel or the payment provider failed. Check the order or key state before retrying.'],
                 ].map(([code, text]) => (
                   <tr key={code}>
                     <td className="px-4 py-2.5 font-mono text-gray-900 whitespace-nowrap">{code}</td>
