@@ -261,9 +261,8 @@ curl -X POST ${BASE}/orders/vpn \\
           <P>
             A 7-day trial key. Body: <Ic>days</Ic> (optional, 1 to 7, default 7). It needs an{' '}
             <Ic>Idempotency-Key</Ic> like any order. A trial costs nothing by default and has a traffic cap
-            (20 GB) and a device limit (3 devices); the response shows the price actually charged, the cap and
-            the device limit. You can issue up to 100 trials a day; the limits can be changed for your account
-            on request.
+            (20 GB by default); the response shows the price actually charged and the cap. You can issue up to
+            100 trials a day; the limits can be changed for your account on request.
           </P>
           <Code>{`
 curl -X POST ${BASE}/orders/vpn-trial \\
@@ -282,20 +281,21 @@ curl -X POST ${BASE}/orders/vpn-trial \\
   "days": 7,
   "expires_at": "2026-11-24T11:43:55+00:00",
   "traffic_limit_gb": 20.0,
-  "device_limit": 3,
   "charged_usd": 0.0,
   "balance_usd": 20.0
 }
 `}</Code>
           <P>
-            Newly issued trial keys are limited to 3 devices (the panel counts devices by HWID). Existing keys
-            need a separate update. The limit for new keys can be raised for your account on request.
+            Devices are counted by the panel by HWID. We set no device limit by default. On request we can set
+            a limit for your trial keys only (for example 3 devices): it applies to trial keys issued after the
+            change, and keys issued earlier keep the limit they had unless we update them. The limit of a key is{' '}
+            <Ic>devices.limit</Ic> in <Ic>GET /keys/{'{key_id}'}</Ic> (<Ic>null</Ic> means no limit).
           </P>
           <P>
             To turn a trial into a paid key, extend it with <Ic>POST /orders/vpn</Ic> and its <Ic>key_id</Ic>. The
             link stays the same, the plan is added to the current end date, the trial 20 GB cap is removed and{' '}
-            <Ic>trial</Ic> becomes <Ic>false</Ic> in <Ic>GET /keys/{'{key_id}'}</Ic>. The device limit stays as it was
-            on the trial unless we raise it for you.
+            <Ic>trial</Ic> becomes <Ic>false</Ic> in <Ic>GET /keys/{'{key_id}'}</Ic>. A device limit that was set
+            for trial keys only is lifted at the same time; a limit we set for all your keys stays.
           </P>
         </Section>
 
@@ -394,42 +394,99 @@ curl -X POST ${BASE}/topup \\
           <Endpoint method="GET" path="/topups" />
           <P>Your latest top-ups with their status (<Ic>pending</Ic>, <Ic>confirmed</Ic>, <Ic>expired</Ic>).</P>
           <P>
-            When the balance drops under $50 after an order, we send one email to your API contact address, so you can
-            top up before orders start failing. The warning comes again only after the balance has been back above
-            $50 and drops under it once more after an order. Contact us to change the notification address.
+            Your balance is <Ic>balance_usd</Ic> in <Ic>GET /me</Ic> and in every order response. Top-ups can be
+            followed with the <Ic>topup.confirmed</Ic> webhook event.
           </P>
         </Section>
 
         <Section id="domain" title="Your own domain">
           <P>
-            You can put the subscription links on your own domain, so your customers see your address instead of
-            ours. We set it up for you — tell us the domain and we will:
+            Your customers can see your domain instead of ours in two places: the server addresses inside the
+            subscription, and the subscription link itself. Both are optional, independent and managed through
+            the API. Domains under <Ic>imba.live</Ic> are not accepted.
+          </P>
+          <Endpoint method="PUT" path="/domain" />
+          <P>
+            Body: <Ic>node_domain</Ic> (server addresses, for example <Ic>nodes.example.com</Ic>) and/or{' '}
+            <Ic>subscription_domain</Ic> (the link, for example <Ic>vpn.example.com</Ic>). Send one or both; a field
+            you leave out stays as it was. A new <Ic>subscription_domain</Ic> replaces the previous one.
+          </P>
+          <Code>{`
+curl -X PUT ${BASE}/domain \\
+  -H "Authorization: Bearer imba_live_xxxxxxxx" \\
+  -H "Content-Type: application/json" \\
+  -d '{"node_domain": "nodes.example.com", "subscription_domain": "vpn.example.com"}'
+`}</Code>
+          <Endpoint method="GET" path="/domain?check=true" />
+          <Endpoint method="GET" path="/domain/records?check=true" />
+          <Endpoint method="DELETE" path="/domain" />
+          <P>
+            <Ic>GET /domain</Ic> returns your settings and what to create at your DNS provider. With{' '}
+            <Ic>check=true</Ic> every record is resolved and reported as <Ic>ok</Ic> or <Ic>missing</Ic>.{' '}
+            <Ic>DELETE</Ic> removes both domains: keys go back to our link and our addresses.
+          </P>
+
+          <h3 className="text-base font-semibold text-gray-900 mt-6 mb-2">Server addresses</h3>
+          <P>
+            Pick one of two ways. Locations change over time; with the first one you never touch DNS again.
           </P>
           <ul className="list-disc pl-5 text-[15px] text-gray-700 leading-relaxed space-y-1">
-            <li>point your domain at our subscription host (a CNAME record we give you);</li>
-            <li>issue the TLS certificate for it and add it to our edge;</li>
-            <li>start returning VPN <Ic>subscription_url</Ic> on your domain in VPN order responses.</li>
+            <li>
+              <strong>Delegate the subdomain (recommended).</strong> At your DNS provider create two NS records for{' '}
+              <Ic>nodes.example.com</Ic>: <Ic>ns1.imba.live</Ic> and <Ic>ns2.imba.live</Ic>. We answer for every
+              name under it, so a new or replaced location works at once, with nothing for you to do. The whole
+              subdomain then belongs to us, so use one you do not need for anything else.
+            </li>
+            <li>
+              <strong>Create the CNAME records yourself.</strong> <Ic>GET /domain/records</Ic> lists them: for each
+              location a <Ic>host</Ic> to create and the <Ic>cname_target</Ic> it must point to. A replaced
+              location keeps its record. When a location is added, you need one new record; we send the{' '}
+              <Ic>domain.records_changed</Ic> webhook event with the new name.
+            </li>
           </ul>
           <P>
-            The path of the link stays the same (the short key id), only the host changes, so the links you
-            already handed out keep working. Nothing changes for your customers: the link opens in the same
-            clients, with the same servers.
+            A server address is replaced in your customers' subscriptions only while its name resolves, so a
+            missing record never breaks a connection: that server simply keeps our address. Names keep working when
+            we move a location to another host.
           </P>
           <Code>{`
 {
-  "order_id": "b1f4c1de-6a2e-4d3c-9a77-2f0e8b6c1a10",
-  "kind": "vpn",
-  "key_id": "b2cc5ddc-c0f4-4d0a-a4ff-deb712eb51fc",
-  "subscription_url": "https://vpn.your-domain.com/43cHrvcgvewLpT6q",
-  "months": 3,
-  "expires_at": "2027-02-06T19:23:42+00:00",
-  "charged_usd": 7.49,
-  "balance_usd": 34.33
+  "node_domain": "nodes.example.com",
+  "available": true,
+  "records": [
+    { "name": "prague", "host": "prague.nodes.example.com",
+      "cname_target": "prague.nodes.imba.live", "status": "ok" },
+    { "name": "lisbon", "host": "lisbon.nodes.example.com",
+      "cname_target": "lisbon.nodes.imba.live", "status": "missing" }
+  ],
+  "subscription_domain": null
+}
+`}</Code>
+
+          <h3 className="text-base font-semibold text-gray-900 mt-6 mb-2">Subscription link</h3>
+          <P>
+            After <Ic>PUT /domain</Ic> with <Ic>subscription_domain</Ic>, create one CNAME record at your DNS
+            provider: your domain pointing to the <Ic>cname.target</Ic> from the response (currently{' '}
+            <Ic>fallback.imba.live</Ic>). We issue the TLS certificate automatically, usually within a few
+            minutes. Poll <Ic>GET /domain</Ic> until <Ic>live</Ic> is <Ic>true</Ic>; until then your keys keep our
+            link. From that moment <Ic>subscription_url</Ic> in order and key responses uses your domain.
+          </P>
+          <Code>{`
+{
+  "subscription_domain": {
+    "domain": "vpn.example.com",
+    "cname": { "host": "vpn.example.com", "target": "fallback.imba.live" },
+    "status": "active",
+    "ssl_status": "active",
+    "live": true,
+    "errors": []
+  }
 }
 `}</Code>
           <P>
-            You can also serve your own pages on the same domain: we can put a landing page or your own panel
-            behind it, or keep the domain for subscription links only. Write to us and we will agree the layout.
+            The path of the link stays the same (the short key id), only the host changes, so links you already
+            handed out keep working. The link opens in the same clients with the same servers. If the domain
+            sits behind Cloudflare, keep this record on DNS only (grey cloud).
           </P>
         </Section>
 
@@ -487,6 +544,7 @@ curl -X PUT ${BASE}/webhook \\
             <li><Ic>key.limited</Ic>: a trial used its 20 GB cap and stopped working. Fields: <Ic>key_id</Ic>, <Ic>trial</Ic>, <Ic>used_bytes</Ic>, <Ic>limit_bytes</Ic>.</li>
             <li><Ic>key.first_connected</Ic>: the customer connected for the first time. Fields: <Ic>key_id</Ic>, <Ic>first_connected_at</Ic>.</li>
             <li><Ic>topup.confirmed</Ic>: a balance top-up was paid. Fields: <Ic>payment_id</Ic>, <Ic>amount_usd</Ic>, <Ic>balance_usd</Ic>.</li>
+            <li><Ic>domain.records_changed</Ic>: a location was added or removed, so the records for your <Ic>node_domain</Ic> changed. Fields: <Ic>node_domain</Ic>, <Ic>added</Ic>, <Ic>removed</Ic> (names). Sent only if you set a <Ic>node_domain</Ic>; you need it only when you create the CNAME records yourself.</li>
           </ul>
           <P>Keys you blocked with <Ic>/disable</Ic> produce no events. After you renew a key, it can report expiry again for the new date.</P>
           <Code>{`
