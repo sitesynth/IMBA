@@ -397,6 +397,12 @@ curl -X POST ${BASE}/topup \\
             Your balance is <Ic>balance_usd</Ic> in <Ic>GET /me</Ic> and in every order response. Top-ups can be
             followed with the <Ic>topup.confirmed</Ic> webhook event.
           </P>
+          <P>
+            When the balance drops under $50, we send one email to your API contact address (checked every
+            5 minutes), so you can top up before orders start failing. The warning comes again only after the
+            balance has been at $50 or more and drops under it once more. Contact us to change the address or the
+            amount.
+          </P>
         </Section>
 
         <Section id="domain" title="Your own domain">
